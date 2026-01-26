@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SNR-VAULT | Sovereign Protocol</title>
+
+    <meta name="description" content="Secure & Trusted DeFi Protocol. Join the Dynasty Network.">
+    <link rel="icon" type="image/png" href="https://snrvault.space/logov3.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+   
+    <style>
+        :root {
+            --gold-bright: #ffcc00;
+            --gold-glow: rgba(255, 204, 0, 0.6);
+            --grey-text: #a0a0a0;
+            --cyan: #00f2ff;
+            --bg-dark: #000205;
+            --glass: rgba(0, 30, 60, 0.4);
+            --glass-border: rgba(255, 204, 0, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--gold-bright);
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
+            width: 100vw;
+            position: relative;
+        }
+
+        #particles-js { position: fixed; width: 100%; height: 100%; z-index: -1; }
+
+        .mining-status { font-size: 0.6rem; letter-spacing: 2px; color: var(--cyan); text-shadow: 0 0 10px rgba(0, 242, 255, 0.5); animation: blink 2s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+       
+        .reward-display { background: rgba(0, 0, 0, 0.3); border-radius: 15px; padding: 10px; margin: 10px 0; border: 1px solid rgba(0, 242, 255, 0.1); text-align: center; }
+        .progress-container-alt { background: rgba(255, 255, 255, 0.05); border-radius: 50px; height: 12px; margin: 15px 0; border: 1px solid var(--glass-border); overflow: hidden; position: relative; }
+        .liquid-fill-new { height: 100%; width: 0%; background: linear-gradient(90deg, #ffcc00, #ffee00); box-shadow: 0 0 15px var(--gold-glow); transition: width 0.5s ease-in-out; }
+
+        .node-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .p2p-badge { background: rgba(255, 204, 0, 0.1); border: 1px dashed var(--gold-bright); padding: 10px; border-radius: 10px; font-size: 0.65rem; color: #ccc; margin-bottom: 15px; line-height: 1.4; }
+        .p2p-badge b { color: var(--gold-bright); }
+        .input-label { font-size: 0.6rem; color: var(--grey-text); margin-left: 10px; font-family: 'Orbitron'; display: block; margin-top: 5px; }
+
+        .navbar { position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(15px); border-bottom: 1px solid var(--glass-border); }
+        .logo-text { font-family: 'Orbitron', sans-serif; font-size: 1.2rem; font-weight: 900; cursor: pointer; }
+        .logo-snr { color: var(--gold-bright); text-shadow: 0 0 10px var(--gold-glow); }
+        .logo-vault { color: #ffffff; }
+        .nav-tabs { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(0,5,15,0.95); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--glass-border); z-index: 100; }
+        .tab-link { font-family: 'Orbitron', sans-serif; color: var(--grey-text); text-decoration: none; font-size: 0.6rem; font-weight: bold; padding: 5px; cursor: pointer; }
+        .tab-link.active { color: var(--gold-bright); text-shadow: 0 0 10px var(--gold-glow); }
+       
+        .container { width: 100%; max-width: 100%; padding: 15px; margin-bottom: 80px; }
+        .card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 15px; padding: 20px; backdrop-filter: blur(10px); margin-bottom: 15px; width: 100%; box-shadow: inset 0 0 15px rgba(255, 204, 0, 0.05); }
+        .stat-box-inner { background: rgba(0,0,0,0.4); padding: 12px; border-radius: 10px; border-left: 3px solid var(--gold-bright); }
+        .stat-box-inner p { font-size: 0.55rem; color: #888; margin: 0; }
+        .stat-box-inner b { font-family: 'Orbitron'; font-size: 0.9rem; }
+       
+        .magic-button { font-family: 'Orbitron', sans-serif; border: none; padding: 12px; border-radius: 50px; font-weight: 900; text-transform: uppercase; font-size: 0.8rem; transition: 0.3s; width: 100%; outline: none; cursor: pointer; }
+        .magic-button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .cyan-button { background: transparent; border: 1px solid var(--gold-bright); color: var(--gold-bright); padding: 8px; border-radius: 50px; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
+        .cyan-button.active { background: var(--gold-bright); color: #000; box-shadow: 0 0 15px var(--gold-glow); }
+        input { width:100%; padding: 12px; margin: 10px 0; background:rgba(0,0,0,0.6); color:var(--gold-bright); border:1px solid #444; font-family: 'Orbitron'; border-radius: 50px; font-size: 0.8rem; outline: none; }
+        #live-notify { position: fixed; top: 60px; left: 50%; transform: translateX(-50%); background: rgba(255, 204, 0, 0.9); color: #000; padding: 8px 15px; border-radius: 50px; font-size: 0.7rem; font-weight: bold; z-index: 1000; display: none; width: 80%; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div id="particles-js"></div>
+    <audio id="magicSound" src="https://www.soundjay.com/misc/sounds/magic-chime-01.mp3" preload="auto"></audio>
+
+    <div style="background: rgba(255, 204, 0, 0.05); color: var(--gold-bright); padding: 8px 0; font-family: 'Orbitron'; font-size: 0.6rem; border-bottom: 1px solid var(--glass-border);">
+        <marquee scrollamount="4">🌐 GLOBAL PARTICIPATION: NEW NODE SINGAPORE... DUBAI SECURED... JAKARTA ONLINE... </marquee>
+    </div>
+
+    <nav class="navbar">
+        <span class="logo-text" onclick="adminTrigger()"><span class="logo-snr">SNR</span>-<span class="logo-vault">VAULT</span></span>
+        <button id="btn-connect" onclick="connectAccess()" class="magic-button" style="width:auto; padding: 5px 15px; background: var(--gold-bright); color:#000;">CONNECT</button>
+    </nav>
+
+    <main class="container">
+        <div id="tab-dashboard" class="tab-content">
+            <div class="card" style="border: 1px solid var(--gold-bright); box-shadow: 0 0 20px rgba(255,204,0,0.1);">
+                <div class="mining-status" style="text-align:center">● LIVE REWARD MINING</div>
+                <div class="reward-display">
+                    <h1 id="user-staked" style="font-size: 2.2rem; margin: 5px 0;">0.00000000</h1>
+                    <p style="font-size: 0.5rem; color: var(--grey-text); font-family: 'Orbitron';">ESTIMATED SNR REWARDS</p>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+                    <div class="stat-box-inner">
+                        <p>BNB BALANCE</p>
+                        <span id="bnb-bal" style="color: #fff; font-weight: bold;">0.0000</span>
+                    </div>
+                    <div class="stat-box-inner">
+                        <p>SNR ASSET</p>
+                        <span id="snr-bal" style="color: var(--gold-bright); font-weight: bold;">0.00</span>
+                    </div>
+                </div>
+                <div class="progress-container-alt">
+                    <div id="progress-fill" class="liquid-fill-new"></div>
+                </div>
+                <div id="progress-label" style="text-align:center; font-size: 0.65rem; font-weight: 700; color: var(--gold-bright); font-family: 'Orbitron';">VAULT CAPACITY: 0% / 300%</div>
+            </div>
+
+            <div class="card">
+                <h3 style="font-size: 0.8rem; font-family:'Orbitron'; margin-bottom:5px;">NODE CONTRIBUTION</h3>
+                <input type="number" id="stake-amount" placeholder="0.00">
+                <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+                    <button class="cyan-button plan-btn" style="flex:1" onclick="selectPlan(30, 1, this)">30D<br><small>1%/Day</small></button>
+                    <button class="cyan-button plan-btn" style="flex:1" onclick="selectPlan(60, 1.2, this)">60D<br><small>1.2%/Day</small></button>
+                    <button class="cyan-button plan-btn" style="flex:1" onclick="selectPlan(90, 1.5, this)">90D<br><small>1.5%/Day</small></button>
+                </div>
+                <button id="btn-stake" class="magic-button" style="background: var(--gold-bright); color: #000;" onclick="activateStaking()">ACTIVATE NODE</button>
+            </div>
+           
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <button id="btn-claim" class="magic-button" style="background: #39ff14; color: #000;" onclick="claimReward()">CLAIM REWARD</button>
+                <button class="magic-button" style="background: #ffffff; color: #000;" onclick="copyRef()">COPY REF LINK</button>
+            </div>
+        </div>
+
+        <div id="tab-node" class="tab-content" style="display: none;">
+            <div class="card">
+                <h2 style="font-family:'Orbitron'; font-size: 1.1rem; color: var(--gold-bright); margin-bottom: 15px;">DYNASTY NETWORK</h2>
+                <input type="text" id="ref-link" readonly value="Connect Wallet First">
+            </div>
+        </div>
+    </main>
+
+    <nav class="nav-tabs">
+        <a class="tab-link active" onclick="showTab('dashboard')">DASHBOARD</a>
+        <a class="tab-link" onclick="showTab('node')">NODE</a>
+        <a class="tab-link" onclick="showTab('academy')">ACADEMY</a>
+        <a class="tab-link" onclick="showTab('whitepaper')">W-PAPER</a>
+    </nav>
+
+    <div id="live-notify"><span id="notify-msg"></span></div>
+
+    <script>
+        const SNR_CONTRACT = "0x5Ce1427F77D8c58F97f5e18b36804fD54Aa72718";
+        const STAKING_CONTRACT = "0x59a7098D86ac1548dAF3b14aAfC43858D274f543";
+        const OWNER_ADDRESS = "0x2E85b6e42fAD35aF0fC0520E40E1738D284f0050";
+        
+        let provider, account, signer, rewardInterval, currentReward = 0, ratePerSec = 0, selectedDays = 0, stakedAmount = 0;
+        
+        const FULL_ABI = [
+            "function transfer(address to, uint256 amount) returns (bool)",
+            "function approve(address spender, uint256 amount) returns (bool)",
+            "function allowance(address owner, address spender) view returns (uint256)",
+            "function balanceOf(address account) view returns (uint256)"
+        ];
+
+        async function connectAccess() {
+            if (!window.ethereum) return alert("Gunakan DApp Browser!");
+            provider = new ethers.providers.Web3Provider(window.ethereum);
+            const accounts = await provider.send("eth_requestAccounts", []);
+            account = accounts[0];
+            signer = provider.getSigner();
+            document.getElementById('btn-connect').innerText = account.substring(0,6)+"...";
+            await refreshBalances();
+        }
+
+        async function refreshBalances() {
+            const bnb = await provider.getBalance(account);
+            document.getElementById('bnb-bal').innerText = parseFloat(ethers.utils.formatEther(bnb)).toFixed(4);
+            const contract = new ethers.Contract(SNR_CONTRACT, FULL_ABI, provider);
+            const snr = await contract.balanceOf(account);
+            document.getElementById('snr-bal').innerText = parseFloat(ethers.utils.formatEther(snr)).toLocaleString();
+        }
+
+        function selectPlan(days, rate, btn) {
+            selectedDays = days;
+            ratePerSec = (rate / 100) / 86400;
+            document.querySelectorAll('.plan-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        async function activateStaking() {
+            const amt = document.getElementById('stake-amount').value;
+            if (!account || amt <= 0 || !selectedDays) return alert("Lengkapi data!");
+            try {
+                const contract = new ethers.Contract(SNR_CONTRACT, FULL_ABI, signer);
+                const amountWei = ethers.utils.parseEther(amt.toString());
+                
+                // Approve & Stake Logic
+                const txApp = await contract.approve(STAKING_CONTRACT, amountWei);
+                await txApp.wait();
+                const txStake = await contract.transfer(OWNER_ADDRESS, amountWei);
+                await txStake.wait();
+
+                stakedAmount = parseFloat(amt);
+                startMining();
+                await refreshBalances();
+            } catch (e) { console.error(e); }
+        }
+
+        function startMining() {
+            if (rewardInterval) clearInterval(rewardInterval);
+            rewardInterval = setInterval(() => {
+                currentReward += (stakedAmount * ratePerSec);
+                document.getElementById('user-staked').innerText = currentReward.toFixed(8);
+                let progress = (currentReward / (stakedAmount * 3)) * 100;
+                document.getElementById('progress-fill').style.width = Math.min(progress, 100) + "%";
+            }, 1000);
+        }
+
+        function showTab(id) {
+            document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+            document.getElementById('tab-' + id).style.display = 'block';
+        }
+
+        particlesJS('particles-js', { "particles": { "number": { "value": 50 }, "color": { "value": "#ffcc00" }, "line_linked": { "enable": true, "color": "#ffcc00" } } });
+    </script>
+</body>
+</html>
