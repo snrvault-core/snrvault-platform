@@ -1,0 +1,9 @@
+/* SNR-VAULT v2 main.css */ (base styles) */
+:root{
+  --snr-gold:#ffcc00;
+  --snr-cyan:00f2ff;
+  snr-bg:#000205;
+}
+html,body{ height:100%; }
+body{ margin:0;
+     background:var(--snr-bg); }
