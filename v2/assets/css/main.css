@@ -1,9 +1,120 @@
-/* SNR-VAULT v2 main.css */ (base styles) */
+/* ================================
+   SNR-VAULT v2 — main.css (GLOBAL)
+   Gold • Deep Space Black • Neon Cyan • White
+   ================================ */
+
 :root{
-  --snr-gold:#ffcc00;
-  --snr-cyan:00f2ff;
-  snr-bg:#000205;
+  /* Core palette */
+  --snr-gold: #ffcc00;
+  --snr-gold-soft: #ffd966;
+
+  --snr-neon: #00f2ff;     /* Neon Cyan / Electric Cyan */
+  --snr-blue: #0099ff;     /* Electric Blue */
+
+  --snr-bg: #000205;       /* Void */
+  --snr-black: #05070A;    /* Deep Space */
+
+  --snr-white: #ffffff;
+  --snr-soft-white: #f5f7fa;
+
+  /* Text */
+  --snr-text: rgba(245,247,250,0.92);
+  --snr-muted: rgba(245,247,250,0.72);
+
+  /* Surfaces */
+  --snr-surface: rgba(5,7,10,0.78);
+  --snr-surface-2: rgba(5,7,10,0.62);
+
+  /* Borders + glow */
+  --snr-border: rgba(0,242,255,0.22);
+  --snr-border-strong: rgba(0,242,255,0.45);
+
+  --snr-glow-blue: rgba(0,242,255,0.55);
+  --snr-glow-blue-strong: rgba(0,242,255,0.85);
+  --snr-glow-gold: rgba(255,204,0,0.55);
+
+  /* Background gradient (premium) */
+  --snr-grad-hero:
+    radial-gradient(1200px 700px at 70% 15%, rgba(0,242,255,0.12), transparent 60%),
+    radial-gradient(900px 600px at 15% 85%, rgba(255,204,0,0.10), transparent 55%),
+    linear-gradient(180deg, var(--snr-bg), var(--snr-black));
 }
-html,body{ height:100%; }
-body{ margin:0;
-     background:var(--snr-bg); }
+
+/* Base */
+html, body{ height: 100%; }
+
+body{
+  margin: 0;
+  background: var(--snr-grad-hero);
+  color: var(--snr-text);
+  overflow-x: hidden;
+}
+
+/* Selection */
+::selection{
+  background: rgba(255,204,0,0.25);
+  color: var(--snr-white);
+}
+
+/* Links */
+a{ color: var(--snr-neon); text-decoration: none; }
+a:hover{ color: var(--snr-gold); }
+
+/* SIMPLE GLOBAL COMPONENT DEFAULTS
+   (biar semua page langsung “SNR-VAULT feel”) */
+
+.vault-card, .card, .panel, .box{
+  background: var(--snr-surface);
+  border: 1px solid var(--snr-border);
+  box-shadow: 0 0 18px var(--snr-glow-blue);
+  backdrop-filter: blur(10px);
+}
+
+button, .btn, .button, .action-btn{
+  background: rgba(0,242,255,0.08);
+  border: 1px solid var(--snr-border-strong);
+  color: var(--snr-white);
+  box-shadow: 0 0 14px rgba(0,242,255,0.22);
+  transition: transform .15s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
+}
+
+button:hover, .btn:hover, .button:hover, .action-btn:hover{
+  background: rgba(255,204,0,0.10);
+  border-color: rgba(255,204,0,0.55);
+  box-shadow: 0 0 18px var(--snr-glow-gold), 0 0 28px var(--snr-glow-blue);
+  transform: translateY(-1px);
+}
+
+button:active, .btn:active, .button:active, .action-btn:active{
+  transform: translateY(0px) scale(0.99);
+  box-shadow: 0 0 10px rgba(0,242,255,0.18);
+}
+
+.btn-primary, .primary{
+  background: linear-gradient(135deg, var(--snr-gold), var(--snr-neon));
+  color: var(--snr-black);
+  border: 0;
+  box-shadow: 0 0 22px var(--snr-glow-blue-strong);
+}
+
+/* Ambient “hidup” */
+body::before{
+  content:"";
+  position: fixed;
+  inset: -30%;
+  background:
+    radial-gradient(600px 380px at 20% 20%, rgba(0,242,255,0.10), transparent 60%),
+    radial-gradient(520px 360px at 80% 65%, rgba(255,204,0,0.08), transparent 60%),
+    conic-gradient(from 180deg at 50% 50%, rgba(0,242,255,0.06), transparent 30%, rgba(255,204,0,0.05), transparent 70%);
+  filter: blur(18px);
+  opacity: .9;
+  animation: snrAmbient 9s linear infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes snrAmbient{
+  0%{ transform: translate3d(-1%, -1%, 0) rotate(0deg); }
+  50%{ transform: translate3d(1.5%, 1%, 0) rotate(180deg); }
+  100%{ transform: translate3d(-1%, -1%, 0) rotate(360deg); }
+}
