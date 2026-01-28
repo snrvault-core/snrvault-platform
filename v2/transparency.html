@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SNR-VAULT V2 | Transparency Panel (Read-Only)</title>
+
+  <!-- Orbitron -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --gold:#ffcc00;
+      --gold-glow: rgba(255,204,0,.45);
+      --cyan:#00f2ff;
+      --cyan-glow: rgba(0,242,255,.25);
+      --bg:#05070a;
+      --stroke: rgba(0,242,255,.22);
+      --text-dim: rgba(255,255,255,.72);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ margin:0; padding:0; }
+    a{ color:inherit; text-decoration:none; }
+
+    body{
+      font-family:'Orbitron', sans-serif;
+      background: radial-gradient(circle at top, #0b1220 0%, #05070a 55%, #020308 100%);
+      color:#fff;
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+
+    .wrap{
+      width: min(100%, 1100px);
+      margin: 0 auto;
+      padding: 18px 14px 34px;
+    }
+
+    .gold{ color: var(--gold); text-shadow: 0 0 12px var(--gold-glow); }
+    .white{ color:#fff; }
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      word-break: break-all;
+    }
+
+    /* ===== NAV ===== */
+    .header{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(5,7,10,.88), rgba(5,7,10,.58));
+      backdrop-filter: blur(10px);
+    }
+
+    .nav{
+      width: min(100%, 1100px);
+      margin: 0 auto;
+      padding: 12px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:baseline;
+      gap: 6px;
+      letter-spacing:2px;
+      font-weight:800;
+      font-size: 16px;
+    }
+    .ver{ font-size: 10px; opacity:.7; margin-left: 6px; }
+
+    .navlinks{
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .navlinks a{
+      font-size: 11px;
+      padding: 9px 11px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.06);
+      background: rgba(255,255,255,.03);
+      opacity: .9;
+    }
+    .navlinks a:hover{
+      border-color: var(--stroke);
+      background: rgba(255,255,255,.04);
+    }
+    .navlinks a.active{
+      border-color: rgba(255,204,0,.35);
+      background: linear-gradient(180deg, rgba(255,204,0,.12), rgba(255,204,0,.05));
+      box-shadow: 0 0 18px rgba(255,204,0,.12);
+    }
+
+    /* ===== TITLE ===== */
+    .title{
+      margin-top: 14px;
+      padding: 20px 18px;
+      border-radius: 18px;
+      border: 1px solid var(--stroke);
+      background: linear-gradient(145deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 26px rgba(0,242,255,.10);
+    }
+    .title h1{
+      margin:0;
+      line-height: 1.12;
+      font-size: 24px;
+      letter-spacing: 2px;
+    }
+    .subtitle{
+      margin: 10px 0 0;
+      font-size: 12px;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    .meta{
+      margin-top: 14px;
+      display:flex;
+      flex-wrap:wrap;
+      gap: 10px;
+    }
+    .pill{
+      font-size: 10px;
+      letter-spacing: .8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,242,255,.20);
+      background: rgba(0,242,255,.06);
+      color: rgba(255,255,255,.78);
+    }
+    .pill strong{ color: rgba(0,242,255,.95); }
+
+    /* ===== Wallet View ===== */
+    .wallet{
+      margin-top: 14px;
+      padding: 14px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,204,0,.22);
+      background: linear-gradient(145deg, rgba(255,204,0,.06), rgba(255,255,255,.02));
+      box-shadow: 0 0 22px rgba(255,204,0,.08);
+      display:none;
+    }
+    .wallet-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+    }
+    .wallet-title{ font-size: 12px; letter-spacing: 1px; }
+    .wallet-sub{ margin-top: 4px; font-size: 10px; opacity: .78; }
+    .btn{
+      border: 1px solid rgba(255,204,0,.35);
+      background: rgba(255,204,0,.08);
+      color: rgba(255,255,255,.92);
+      padding: 9px 11px;
+      border-radius: 12px;
+      font-size: 11px;
+      cursor:pointer;
+      transition: .18s ease;
+    }
+    .btn:hover{ transform: translateY(-1px); box-shadow: 0 0 18px rgba(255,204,0,.12); }
+    .kv{
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      display:flex;
+      justify-content:space-between;
+      gap: 10px;
+      font-size: 11px;
+    }
+    .kv span{ opacity:.7; }
+
+    /* ===== Cards ===== */
+    .grid{
+      margin-top: 14px;
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+    }
+
+    .card{
+      grid-column: span 4;
+      border-radius: 18px;
+      padding: 18px;
+      border: 1px solid rgba(0,242,255,.20);
+      background: linear-gradient(145deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 22px rgba(0,242,255,.08);
+      text-align:center;
+      position: relative;
+      overflow:hidden;
+    }
+    .card::after{
+      content:"";
+      position:absolute;
+      inset:-70px;
+      background: radial-gradient(circle at 25% 20%, rgba(255,204,0,.10), transparent 55%),
+                radial-gradient(circle at 80% 75%, rgba(0,242,255,.10), transparent 55%);
+      filter: blur(2px);
+      pointer-events:none;
+    }
+
+    .card h3{
+      margin: 0 0 8px;
+      font-size: 12px;
+      letter-spacing: 1px;
+      opacity: .9;
+    }
+
+    .value{
+      margin: 0;
+      font-size: 22px;
+      color: var(--gold);
+      text-shadow: 0 0 12px var(--gold-glow);
+    }
+
+    .note{
+      display:block;
+      margin-top: 8px;
+      font-size: 10px;
+      opacity: .65;
+    }
+
+    .full{ grid-column: span 12; text-align:left; }
+
+    .kvbox{
+      display:flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      margin-top: 10px;
+    }
+    .k{ font-size: 10px; opacity: .75; letter-spacing: 1px; }
+    .vrow{ display:flex; align-items:center; justify-content:space-between; gap: 12px; }
+    .v{ font-size: 11px; color: rgba(0,242,255,.92); }
+
+    .link{
+      font-size: 11px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,242,255,.20);
+      background: rgba(0,242,255,.06);
+      color: rgba(0,242,255,.92);
+      white-space:nowrap;
+    }
+
+    .footer{
+      margin-top: 18px;
+      padding: 14px 14px 4px;
+      text-align:center;
+      color: rgba(255,255,255,.72);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 920px){
+      .card{ grid-column: span 6; }
+      .full{ grid-column: span 12; }
+    }
+    @media (max-width: 560px){
+      .wrap{ padding: 16px 12px 28px; }
+      .title h1{ font-size: 20px; }
+      .card{ grid-column: span 12; }
+      .value{ font-size: 20px; }
+      .vrow{ flex-direction: column; align-items:flex-start; }
+    }
+    /* ===== ENV MODE BANNER ===== */
+.env-banner{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+
+  text-align: center;
+  padding: 6px 10px;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,.15);
+}
+
+/* STAGING */
+.env-staging{
+  background: linear-gradient(
+    90deg,
+    rgba(255,170,0,.35),
+    rgba(255,204,0,.25),
+    rgba(255,170,0,.35)
+  );
+  color: #ffcc00;
+  text-shadow: 0 0 6px rgba(255,204,0,.6);
+}
+
+/* PRODUCTION */
+.env-production{
+  background: linear-gradient(
+    90deg,
+    rgba(0,242,255,.35),
+    rgba(0,200,220,.25),
+    rgba(0,242,255,.35)
+  );
+  color: #00f2ff;
+  text-shadow: 0 0 6px rgba(0,242,255,.6);
+}
+
+/* Push content sedikit ke bawah */
+body{
+  padding-top: 28px;
+}
+
+  </style>
+<link rel="stylesheet" href="assets/ui-enhance.css">
+<link rel="stylesheet" href="assets/ui-level2.css">
+<link rel="stylesheet" href="assets/ui-level3.css">
+<link rel="stylesheet" href="assets/ui-level4.css">
+<link rel="stylesheet" href="assets/ui-level5.css">
+<link rel="stylesheet" href="assets/ui-level6.css">
+<link rel="stylesheet" href="assets/ui-level7.css">
+</head>
+
+<body>
+    <!-- ENV MODE BANNER -->
+<div id="envBanner" class="env-banner">MODE</div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="nav">
+      <div class="brand">
+        <span class="gold">SNR</span><span class="white">-VAULT</span>
+        <small class="ver">V2</small>
+      </div>
+      <div class="navlinks">
+        <a href="index.html">Dashboard</a>
+        <a class="active" href="transparency.html">Transparency</a>
+        <a href="#" style="opacity:.45; pointer-events:none;">Academy</a>
+        <a href="#" style="opacity:.45; pointer-events:none;">Whitepaper</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <!-- Title -->
+    <section class="title">
+      <h1><span class="gold">TRANSPARENCY</span> <span class="white">PANEL</span></h1>
+      <p class="subtitle">
+        Read-Only Monitoring • Direct RPC to BSC • No manual input • Verifiable
+      </p>
+
+      <div class="meta">
+        <div class="pill">MODE: <strong data-bind="env.mode">PRODUCTION</strong></div>
+        <div class="pill">CHAIN: <strong data-bind="env.chain">BSC Mainnet</strong></div>
+        <div class="pill">TOKEN: <strong data-bind="token.symbol">SNR</strong></div>
+        <div class="pill">STATUS: <strong data-bind="tp.status">INITIALIZING</strong></div>
+      </div>
+    </section>
+
+    <!-- Wallet View (optional) -->
+    <section class="wallet" data-show="wallet.box">
+      <div class="wallet-row">
+        <div>
+          <div class="wallet-title">WALLET VIEW</div>
+          <div class="wallet-sub">
+            <span data-bind="wallet.status">-</span> • <span data-bind="wallet.chain">-</span>
+          </div>
+        </div>
+        <button class="btn" data-action="wallet-connect">CONNECT (READ-ONLY)</button>
+      </div>
+      <div class="kv">
+        <span>Address</span>
+        <strong class="mono" data-bind="wallet.address">-</strong>
+      </div>
+    </section>
+
+    <!-- Cards -->
+    <section class="grid">
+
+      <div class="card">
+        <h3>TREASURY VAULT</h3>
+        <p class="value" data-bind="bal.treasury">-</p>
+        <span class="note">Balance SNR pada alamat treasury</span>
+      </div>
+
+      <div class="card">
+        <h3>VAULT / REWARD POOL</h3>
+        <p class="value" data-bind="bal.reward">-</p>
+        <span class="note">Balance SNR pada alamat vault/rewardPool</span>
+      </div>
+
+      <div class="card">
+        <h3>REFERRAL POOL</h3>
+        <p class="value" data-bind="bal.referral">-</p>
+        <span class="note">Balance SNR pada alamat referralPool</span>
+      </div>
+
+      <div class="card">
+        <h3>BURNED SUPPLY</h3>
+        <p class="value" data-bind="bal.burned">-</p>
+        <span class="note">dead + zero address</span>
+      </div>
+
+      <div class="card">
+        <h3>TOTAL SUPPLY</h3>
+        <p class="value" data-bind="token.supply">-</p>
+        <span class="note">ERC20 totalSupply() SNR</span>
+      </div>
+
+      <div class="card">
+        <h3>LAST UPDATE</h3>
+        <p class="value" style="font-size:16px" data-bind="tp.updated">-</p>
+        <span class="note">Timestamp update terakhir (client)</span>
+      </div>
+
+      <div class="card full">
+        <h3>SMART CONTRACT</h3>
+
+        <div class="kvbox">
+          <span class="k">SNR TOKEN</span>
+          <div class="vrow">
+            <span class="v mono" data-bind="addr.token">-</span>
+            <a class="link" data-href="link.token" target="_blank" rel="noopener">Explorer</a>
+          </div>
+        </div>
+
+        <div class="kvbox">
+          <span class="k">TREASURY</span>
+          <div class="vrow">
+            <span class="v mono" data-bind="addr.treasury">-</span>
+            <a class="link" data-href="link.treasury" target="_blank" rel="noopener">Explorer</a>
+          </div>
+        </div>
+
+        <div class="kvbox">
+          <span class="k">VAULT / REWARD POOL</span>
+          <div class="vrow">
+            <span class="v mono" data-bind="addr.reward">-</span>
+            <a class="link" data-href="link.reward" target="_blank" rel="noopener">Explorer</a>
+          </div>
+        </div>
+
+        <div class="kvbox">
+          <span class="k">REFERRAL POOL</span>
+          <div class="vrow">
+            <span class="v mono" data-bind="addr.referral">-</span>
+            <a class="link" data-href="link.referral" target="_blank" rel="noopener">Explorer</a>
+          </div>
+        </div>
+
+        <span class="note">Read-only • Public ledger • Verifiable</span>
+      </div>
+
+    </section>
+
+    <div class="footer">
+      Semua nilai diambil via <strong>RPC BSC (read-only)</strong> menggunakan <strong>ethers.js</strong>.<br>
+      Tidak ada input manual, tidak ada kontrol terpusat, tidak ada transaksi dari panel ini.
+    </div>
+
+  </div>
+
+  <!-- ============ ETHERS (WAJIB) ============ -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js"></script>
+
+  <script>
+    /*****************************************************************
+     * CONFIG — SNR-VAULT Transparency (READ-ONLY)
+     * Mas Dody tinggal isi 3 address di bawah (treasury/reward/referral)
+     *****************************************************************/
+    const CONFIG = {
+      MODE: "PRODUCTION", // ubah jadi "PRODUCTION" saat rilis
+
+      CHAIN: {
+        name: "BSC Mainnet",
+        chainId: 56,
+        rpc: "https://bsc-dataseed.binance.org/",
+        explorer: "https://bscscan.com"
+      },
+/***********************
+ * ENV MODE BANNER
+ ***********************/
+async function init() {
+  initEnvBanner(); // ⬅️ WAJIB
+  const banner = document.getElementById("envBanner");
+  if (!banner) return;
+
+  if (CONFIG.MODE === "PRODUCTION") {
+    banner.textContent = "🟢 PRODUCTION MODE — LIVE ON BSC MAINNET";
+    banner.classList.add("env-production");
+  } else {
+    banner.textContent = "🟡 STAGING MODE — TEST & MONITORING";
+    banner.classList.add("env-staging");
+  }
+}
+
+      CONTRACTS: {
+        // ✅ SNR Token (fixed)
+        token: "0x5Ce1427F77D8c58F97f5e18b36804fD54Aa72718",
+
+        // ✅ Mas Dody isi 3 address berikut:
+        treasury:  "0x7634a20873e7e63EC924333a1B9B87c1F9E5e8eB",
+        reward:    "0xb0F40aDf4C758A9662F95D80100E582876aBF36e",
+        referral:  "0xBFecB1451EcA81cE4DA83798958F11ab0638CC6c",
+
+        // burn references
+        burnDead: "0x000000000000000000000000000000000000dEaD",
+        burnZero: "0x0000000000000000000000000000000000000000"
+      },
+
+      // refresh interval (ms)
+      REFRESH_MS: 15000
+    };
+
+    /***********************
+     * DOM BINDING HELPERS
+     ***********************/
+    const $ = (sel) => document.querySelector(sel);
+    const bindText = (key, value) => {
+      const node = $(`[data-bind="${key}"]`);
+      if (node) node.textContent = value;
+    };
+    const bindHref = (key, href) => {
+      const node = $(`[data-href="${key}"]`);
+      if (node) node.setAttribute("href", href);
+    };
+    const show = (key, visible) => {
+      const node = $(`[data-show="${key}"]`);
+      if (node) node.style.display = visible ? "" : "none";
+    };
+
+    const monoShort = (a) => (a && a.length > 10) ? `${a.slice(0,6)}...${a.slice(-4)}` : (a || "-");
+    const fmt = (n, dp=2) => {
+      const num = Number(n);
+      if (!Number.isFinite(num)) return "-";
+      return num.toLocaleString(undefined, { maximumFractionDigits: dp });
+    };
+    const nowStamp = () => new Date().toLocaleString();
+
+    /***********************
+     * READ-ONLY ONCHAIN
+     ***********************/
+    const ERC20_ABI = [
+      "function name() view returns (string)",
+      "function symbol() view returns (string)",
+      "function decimals() view returns (uint8)",
+      "function totalSupply() view returns (uint256)",
+      "function balanceOf(address) view returns (uint256)"
+    ];
+
+    let provider, token, meta = { symbol: "SNR", decimals: 18 };
+
+    async function init() {
+      // Basic sanity
+      if (typeof ethers === "undefined") {
+        bindText("tp.status", "ETHERS NOT LOADED");
+        console.error("ethers is undefined. Check CDN load.");
+        return;
+      }
+
+      bindText("env.mode", CONFIG.MODE);
+      bindText("env.chain", CONFIG.CHAIN.name);
+      bindText("tp.status", "CONNECTING RPC...");
+
+      provider = new ethers.JsonRpcProvider(CONFIG.CHAIN.rpc, CONFIG.CHAIN.chainId);
+      token = new ethers.Contract(CONFIG.CONTRACTS.token, ERC20_ABI, provider);
+
+      // explorer links
+      const ex = CONFIG.CHAIN.explorer;
+      bindText("addr.token", CONFIG.CONTRACTS.token);
+      bindHref("link.token", `${ex}/address/${CONFIG.CONTRACTS.token}`);
+
+      bindText("addr.treasury", CONFIG.CONTRACTS.treasury);
+      bindHref("link.treasury", `${ex}/address/${CONFIG.CONTRACTS.treasury}`);
+
+      bindText("addr.reward", CONFIG.CONTRACTS.reward);
+      bindHref("link.reward", `${ex}/address/${CONFIG.CONTRACTS.reward}`);
+
+      bindText("addr.referral", CONFIG.CONTRACTS.referral);
+      bindHref("link.referral", `${ex}/address/${CONFIG.CONTRACTS.referral}`);
+
+      // token meta
+      try {
+        const [symbol, decimals] = await Promise.all([
+          token.symbol().catch(() => "SNR"),
+          token.decimals().catch(() => 18)
+        ]);
+        meta.symbol = symbol;
+        meta.decimals = Number(decimals);
+        bindText("token.symbol", meta.symbol);
+      } catch (e) {
+        // fallback
+        bindText("token.symbol", meta.symbol);
+      }
+
+      // wallet view detection
+      detectWallet();
+
+      // first fetch
+      await refresh();
+
+      // auto refresh
+      setInterval(refresh, CONFIG.REFRESH_MS);
+    }
+
+    async function refresh() {
+      try {
+        bindText("tp.status", "FETCHING ON-CHAIN...");
+        // total supply
+        const ts = await token.totalSupply();
+        const supply = Number(ethers.formatUnits(ts, meta.decimals));
+        bindText("token.supply", `${fmt(supply, 2)} ${meta.symbol}`);
+
+        // balances (only if address set)
+        const t = CONFIG.CONTRACTS.treasury;
+        const r = CONFIG.CONTRACTS.reward;
+        const f = CONFIG.CONTRACTS.referral;
+
+        const [bT, bR, bF, bDead, bZero] = await Promise.all([
+          readBalOrNull(t),
+          readBalOrNull(r),
+          readBalOrNull(f),
+          readBalOrZero(CONFIG.CONTRACTS.burnDead),
+          readBalOrZero(CONFIG.CONTRACTS.burnZero)
+        ]);
+
+        bindText("bal.treasury", bT === null ? "SET ADDRESS" : `${fmt(bT, 2)} ${meta.symbol}`);
+        bindText("bal.reward",   bR === null ? "SET ADDRESS" : `${fmt(bR, 2)} ${meta.symbol}`);
+        bindText("bal.referral", bF === null ? "SET ADDRESS" : `${fmt(bF, 2)} ${meta.symbol}`);
+
+        const burned = (bDead || 0) + (bZero || 0);
+        bindText("bal.burned", `${fmt(burned, 2)} ${meta.symbol}`);
+
+        bindText("tp.updated", nowStamp());
+        bindText("tp.status", "SECURE • READ-ONLY • VERIFIABLE");
+      } catch (e) {
+        console.error(e);
+        bindText("tp.status", "RPC ERROR (CHECK CONNECTION/RPC)");
+      }
+    }
+
+    async function readBalOrNull(addr) {
+      if (!addr || addr.toLowerCase() === "0x0000000000000000000000000000000000000000") return null;
+      const b = await token.balanceOf(addr);
+      return Number(ethers.formatUnits(b, meta.decimals));
+    }
+
+    async function readBalOrZero(addr) {
+      try{
+        const b = await token.balanceOf(addr);
+        return Number(ethers.formatUnits(b, meta.decimals));
+      } catch {
+        return 0;
+      }
+    }
+
+    /***********************
+     * WALLET VIEW (optional)
+     ***********************/
+    function detectWallet(){
+      const hasWallet = !!window.ethereum;
+      show("wallet.box", hasWallet);
+
+      bindText("wallet.status", hasWallet ? "WALLET DETECTED" : "NO WALLET");
+      bindText("wallet.chain", "-");
+      bindText("wallet.address", "-");
+
+      if (!hasWallet) return;
+
+      window.ethereum.request({ method: "eth_chainId" })
+        .then((hex) => {
+          const cid = parseInt(hex, 16);
+          bindText("wallet.chain", cid === CONFIG.CHAIN.chainId ? CONFIG.CHAIN.name : `Unknown Chain (${cid})`);
+        })
+        .catch(() => bindText("wallet.chain", "-"));
+    }
+
+    async function connectWallet(){
+      if (!window.ethereum) return;
+      try{
+        const accts = await window.ethereum.request({ method: "eth_requestAccounts" });
+        const addr = accts?.[0] || "-";
+        bindText("wallet.address", addr);
+        bindText("wallet.status", addr && addr !== "-" ? `CONNECTED (READ-ONLY) • ${monoShort(addr)}` : "WALLET DETECTED");
+      } catch {
+        bindText("wallet.status", "CONNECT REJECTED");
+      }
+    }
+
+    // button event
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-action='wallet-connect']");
+      if (btn) connectWallet();
+    });
+
+    // boot
+    document.addEventListener("DOMContentLoaded", init);
+  </script>
+<script src="assets/ui-enhance.js"></script>
+<script src="assets/ui-level2.js"></script>
+<script src="assets/ui-level3.js"></script>
+<script src="assets/ui-level4.js"></script>
+<script src="assets/ui-level5.js"></script>
+<script src="assets/ui-level6.js"></script>
+<script src="assets/ui-level7.js"></script>
+</body>
+</html>
