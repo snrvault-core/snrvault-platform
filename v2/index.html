@@ -1,139 +1,444 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-  <title>SNR-VAULT V2 | Master Control Dashboard</title>
+<title>SNR-VAULT | Member Dashboard</title>
 
-  <!-- GOOGLE FONT -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
 
-  <!-- GLOBAL STYLE -->
-  <link rel="stylesheet" href="assets/css/main.css?v=2">
-<link rel="stylesheet" href="assets/ui-enhance.css">
-<link rel="stylesheet" href="assets/ui-level2.css">
-<link rel="stylesheet" href="assets/ui-level3.css">
-<link rel="stylesheet" href="assets/ui-level4.css">
-<link rel="stylesheet" href="assets/ui-level5.css">
-<link rel="stylesheet" href="assets/ui-level6.css">
-<link rel="stylesheet" href="assets/ui-level7.css">
+<style>
+:root{
+  --gold:#ffcc00;
+  --neon:#00f2ff;
+  --bg:#000205;
+  --dark:#05070A;
+  --white:#ffffff;
+  --soft:#f5f7fa;
+  --panel:rgba(5,7,10,0.9);
+  --border:rgba(0,242,255,0.35);
+  --glow-blue:rgba(0,242,255,0.55);
+  --glow-gold:rgba(255,204,0,0.65);
+}
+
+/* ANDROID STABILITY */
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  position: relative;
+  touch-action: pan-y;
+}
+*{ box-sizing:border-box; max-width:100%; }
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(900px 600px at 20% 20%, rgba(0,242,255,.12), transparent 60%),
+    radial-gradient(800px 600px at 80% 80%, rgba(255,204,0,.12), transparent 60%),
+    linear-gradient(180deg,var(--bg),var(--dark));
+  color:var(--soft);
+  font-family:'Orbitron',sans-serif;
+}
+
+.wrapper{
+  width:100%;
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
+}
+
+.header{
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 20px;
+  margin-bottom:20px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:18px;
+  box-shadow:0 0 18px rgba(0,242,255,.18);
+}
+
+.logo-block{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  min-width:160px;
+}
+.logo{
+  font-size:1.3rem;
+  letter-spacing:2px;
+  line-height:1.1;
+  white-space:nowrap;
+}
+.logo span:first-child{color:var(--gold);}
+.logo span:last-child{color:var(--white);}
+
+/* PRICE WIDGET */
+.price-widget {
+  background: rgba(255, 204, 0, 0.1);
+  padding: 5px 12px;
+  border-radius: 50px;
+  border: 1px solid var(--gold);
+  font-size: 0.75rem;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 5px;
+}
+.price-up { color: #39ff14; font-weight: bold; }
+
+.wallet-status{ font-size:.8rem; }
+.wallet-status span{ color:var(--neon); }
+
+.grid{
+  width:100%;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:18px;
+}
+
+.card{
+  background:linear-gradient(180deg, rgba(5,7,10,.95), rgba(5,7,10,.75));
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 0 22px rgba(0,242,255,.15), inset 0 0 25px rgba(0,242,255,.04);
+  backdrop-filter:blur(12px);
+}
+
+.card h3{
+  margin:0 0 12px;
+  color:var(--gold);
+  font-size:1rem;
+}
+
+.stat{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  margin:8px 0;
+  font-size:.9rem;
+}
+.stat span{
+  color:var(--neon);
+  text-align:right;
+}
+
+.progress{
+  height:8px;
+  background:rgba(255,255,255,.08);
+  border-radius:6px;
+  overflow:hidden;
+  margin-top:10px;
+}
+.progress div{
+  height:100%;
+  width:45%;
+  background:linear-gradient(90deg,var(--gold),var(--neon));
+}
+
+.btn{
+  width:100%;
+  margin:8px 0;
+  padding:11px;
+  background:rgba(0,242,255,.06);
+  border:1px solid var(--border);
+  border-radius:14px;
+  color:var(--white);
+  font-family:inherit;
+  cursor:pointer;
+  box-shadow:0 0 12px rgba(0,242,255,.2);
+  transition:.2s;
+}
+.btn:hover{
+  border-color:var(--gold);
+  color:var(--gold);
+  box-shadow:0 0 18px var(--glow-gold), 0 0 28px var(--glow-blue);
+  transform:translateY(-1px);
+}
+.btn-primary{
+  background:linear-gradient(135deg,var(--gold),#ffe27a);
+  color:var(--dark);
+  border:none;
+  font-weight:600;
+}
+
+.log{
+  max-height:140px;
+  overflow-y:auto;
+  font-size:.75rem;
+}
+.log div{
+  margin:5px 0;
+  color:rgba(245,247,250,.7);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding-bottom: 2px;
+}
+
+.footer{
+  text-align:center;
+  margin:25px 0 5px;
+  font-size:.75rem;
+  color:rgba(245,247,250,.6);
+}
+
+@media(max-width:600px){
+  .header{ flex-direction:column; gap:10px; text-align:center; }
+  .logo-block{ align-items:center; }
+}
+
+/* MARQUEE: SATU BARIS HORIZONTAL CINEMATIC */
+.marquee{
+  width:min(280px, 100%);
+  overflow:hidden;
+  border-top:1px solid rgba(0,242,255,.18);
+  border-bottom:1px solid rgba(0,242,255,.18);
+  padding:6px 0;
+  white-space: nowrap; /* Memastikan satu baris */
+}
+.marquee .track{
+  display:inline-block;
+  padding-left: 100%;
+  animation: scroll-cinematic 12s linear infinite; /* Kecepatan ditingkatkan (12s) */
+}
+.marquee span{
+  display:inline-block;
+  padding-right:10px;
+  color:var(--neon);
+  font-size:.72rem;
+  letter-spacing:3px;
+  text-transform: uppercase;
+}
+
+@keyframes scroll-cinematic {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+.notify{
+  position:fixed;
+  left:16px;
+  bottom:16px;
+  background:rgba(5,7,10,.92);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:10px 12px;
+  font-size:.78rem;
+  color:rgba(245,247,250,.92);
+  box-shadow:0 0 18px rgba(0,242,255,.22);
+  opacity:0;
+  transform:translateY(14px);
+  transition:.35s;
+  z-index:9999;
+}
+.notify.show{ opacity:1; transform:translateY(0); }
+.notify b{ color:var(--gold); }
+
+.sound-toggle{
+  position:fixed;
+  right:16px;
+  bottom:16px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 10px;
+  border-radius:12px;
+  background:rgba(5,7,10,.92);
+  border:1px solid var(--border);
+  z-index:10000;
+}
+.sound-toggle button{
+  border:none;
+  cursor:pointer;
+  font-family:'Orbitron',sans-serif;
+  font-size:.72rem;
+  padding:6px 10px;
+  border-radius:10px;
+  background:rgba(0,242,255,.08);
+  color:var(--neon);
+  border:1px solid var(--border);
+}
+.sound-toggle button.off{ color:var(--gold); border-color:var(--gold); }
+</style>
 </head>
 
 <body>
 
-  <!-- ================= HEADER ================= -->
-  <header class="snr-header">
-  <div class="nav-wrap">
-    <div class="snr-brand">
-      <span class="gold">SNR</span><span class="white">-VAULT</span>
-      <small class="version">V2</small>
+<audio id="magicChime" src="https://www.soundjay.com/misc/sounds/magic-chime-01.mp3" preload="auto"></audio>
+<audio id="bgAmbient" loop preload="auto">
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
+</audio>
+
+<div class="wrapper">
+  <div class="header">
+    <div class="logo-block">
+      <div class="logo"><span>SNR</span>-<span>VAULT</span></div>
+      <div class="price-widget">
+        SNR: $0.1245 <span class="price-up">▲ 4.2%</span>
+      </div>
+      <div class="marquee">
+        <div class="track">
+          <span>GLOBAL PARTICIPATION • GLOBAL PARTICIPATION • GLOBAL PARTICIPATION • GLOBAL PARTICIPATION • GLOBAL PARTICIPATION</span>
+        </div>
+      </div>
+    </div>
+    <div class="wallet-status">
+      Wallet: <span id="wallet">Disconnected</span> | Network: <span id="network">BSC</span>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Wallet Info</h3>
+      <div class="stat"><div>Address</div><span id="address">-</span></div>
+      <div class="stat"><div>BNB Balance</div><span id="bnb">0.00</span></div>
+      <button class="btn btn-primary" onclick="connectWallet()">Connect Wallet</button>
     </div>
 
-    <div class="nav-actions">
-      <!-- Desktop Nav -->
-      <nav class="snr-nav" aria-label="Primary">
-        <a href="index.html" data-nav-link>Dashboard</a>
-        <a href="transparency.html" data-nav-link>Transparency</a>
-        <a href="#" class="is-disabled">Academy</a>
-        <a href="#" class="is-disabled">Whitepaper</a>
-      </nav>
+    <div class="card">
+      <h3>Asset Overview</h3>
+      <div class="stat"><div>SNR Balance</div><span id="snr">0.00</span></div>
+      <div class="stat"><div>Staked SNR</div><span id="staked">0.00</span></div>
+      <div class="stat"><div>Pending Reward</div><span id="reward">0.00</span></div>
+      <div class="progress"><div style="width: 65%;"></div></div>
+    </div>
 
-      <!-- Mobile Toggle -->
-      <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="navDrawer">
-        MENU
-      </button>
+    <div class="card">
+      <h3>ROI Performance</h3>
+      <div class="stat"><div>Daily ROI</div><span>1.2%</span></div>
+      <div class="stat"><div>Total ROI</div><span>38%</span></div>
+      <div class="stat"><div>Cap Progress</div><span>45%</span></div>
+      <div class="progress"><div style="width: 45%;"></div></div>
+    </div>
+
+    <div class="card">
+      <h3>Referral System</h3>
+      <div class="stat"><div>Your Link</div><span id="ref">-</span></div>
+      <button class="btn" onclick="copyRef()">Copy Referral Link</button>
+    </div>
+
+    <div class="card">
+      <h3>Action Panel</h3>
+      <button class="btn" id="btnStake">Stake SNR</button>
+      <button class="btn" id="btnClaim">Claim Reward</button>
+      <button class="btn" id="btnCompound">Compound</button>
+      <button class="btn btn-primary" id="btnWithdraw">Withdraw</button>
+    </div>
+
+    <div class="card">
+      <h3>System Log</h3>
+      <div class="log" id="log">
+        <div>System ready...</div>
+      </div>
     </div>
   </div>
 
-  <!-- Mobile Drawer -->
-  <div class="nav-drawer" id="navDrawer" data-nav-drawer>
-    <div class="drawer-inner">
-      <a href="index.html" data-nav-link>Dashboard <small>Master Control</small></a>
-      <a href="transparency.html" data-nav-link>Transparency <small>Proof & Metrics</small></a>
-      <a href="#" class="is-disabled">Academy <small>Locked</small></a>
-      <a href="#" class="is-disabled">Whitepaper <small>Locked</small></a>
-    </div>
-  </div>
-</header>
+  <div class="footer">© 2026 SNR-VAULT — Member Dashboard v1</div>
+</div>
 
+<div class="notify" id="notify"></div>
 
-  <!-- ================= MAIN ================= -->
-  <main class="dashboard">
+<div class="sound-toggle">
+  <div style="font-size: 0.6rem; letter-spacing: 1px; color: #888; margin-right: 5px;">SOUND</div>
+  <button id="soundBtn">ON</button>
+</div>
 
-    <!-- HERO / STATUS -->
-    <section class="hero">
-      <h1>
-        <span class="gold">MASTER CONTROL</span><br />
-        <span class="white">DASHBOARD</span>
-      </h1>
+<script>
+/* WEB3 ENGINE */
+const TOKEN_SNR = "0x5ce1427f77d8c58f97f5e18b36804fd54aa72718";
+const STAKING   = "0x59a7098D86ac1548dAF3b14aAfC43858D274f543";
 
-      <p class="hero-subtitle">
-        Decentralized Economic Civilization<br />
-        Transparency • Security • Sovereignty
-      </p>
+const BSC = {
+  chainId: "0x38",
+  chainName: "BNB Smart Chain (BSC)",
+  nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
+  rpcUrls: ["https://bsc-dataseed.binance.org/"],
+  blockExplorerUrls: ["https://bscscan.com/"]
+};
 
-      <div class="system-status">
-        <span class="dot active"></span>
-        SYSTEM STATUS: <strong>OPERATIONAL</strong>
-      </div>
-    </section>
+let provider, signer, userAddress;
 
-    <!-- QUICK PANELS -->
-    <section class="quick-panels">
+function log(msg){
+  const div=document.createElement("div");
+  div.innerText=new Date().toLocaleTimeString()+" - "+msg;
+  document.getElementById("log").prepend(div);
+}
 
-      <div class="panel">
-        <h3>TRANSPARENCY</h3>
-        <p>
-          View treasury flow, reward pools, burned supply,
-          and all on-chain metrics in real time.
-        </p>
-        <a href="transparency.html" class="btn">
-          Open Transparency Panel
-        </a>
-      </div>
+async function connectWallet(){
+  try{
+    if(!window.ethereum) return alert("Gunakan DApp Browser.");
+    unlockAudio();
+    provider = new ethers.BrowserProvider(window.ethereum);
+    await provider.send("eth_requestAccounts", []);
+    signer = await provider.getSigner();
+    userAddress = await signer.getAddress();
+    document.getElementById("wallet").innerText = "Connected";
+    document.getElementById("address").innerText = userAddress.slice(0,6)+"..."+userAddress.slice(-4);
+    log("Wallet Connected.");
+  }catch(e){ log("Connect Error"); }
+}
 
-      <div class="panel locked">
-        <h3>STAKING</h3>
-        <p>
-          Stake, claim, compound, and manage positions
-          directly via smart contract.
-        </p>
-        <span class="lock-note">Connected via Wallet</span>
-      </div>
+/* AUDIO ENGINE (REPAIRED) */
+let audioEnabled = true;
 
-      <div class="panel locked">
-        <h3>REFERRAL</h3>
-        <p>
-          3-Level immutable referral system
-          governed by protocol rules.
-        </p>
-        <span class="lock-note">Protocol Controlled</span>
-      </div>
+function unlockAudio() {
+    const ambient = document.getElementById("bgAmbient");
+    if (audioEnabled) {
+        ambient.play().catch(e => console.log("Waiting for user interaction"));
+    }
+}
 
-    </section>
+function playMagicChime() {
+    if (!audioEnabled) return;
+    const chime = document.getElementById("magicChime");
+    chime.currentTime = 0;
+    chime.play();
+}
 
-  </main>
+document.getElementById("soundBtn").onclick = (e) => {
+    e.stopPropagation();
+    audioEnabled = !audioEnabled;
+    const ambient = document.getElementById("bgAmbient");
+    const btn = document.getElementById("soundBtn");
+    
+    if (audioEnabled) {
+        btn.innerText = "ON";
+        btn.classList.remove("off");
+        ambient.play();
+    } else {
+        btn.innerText = "OFF";
+        btn.classList.add("off");
+        ambient.pause();
+    }
+};
 
-  <!-- ================= FOOTER ================= -->
-  <footer class="snr-footer">
-    <p>
-      SNR-VAULT is a decentralized protocol.<br />
-      No custodial control. No manual intervention.
-    </p>
-    <span class="copyright">
-      © 2026 SNR-VAULT PROTOCOL
-    </span>
-  </footer>
+// Pemicu Backsound pada klik pertama di mana saja
+document.addEventListener("click", () => {
+    unlockAudio();
+}, { once: true });
 
-<script src="assets/ui-enhance.js"></script>
-<script src="assets/ui-level2.js"></script>
-<script src="assets/ui-level3.js"></script>
-<script src="assets/ui-level4.js"></script>
-<script src="assets/ui-level5.js"></script>
-<script src="assets/ui-level6.js"></script>
-<script src="assets/ui-level7.js"></script>
+// Bind Magic Chime ke semua tombol
+document.querySelectorAll(".btn").forEach(btn => {
+    btn.addEventListener("click", playMagicChime);
+});
+
+/* NOTIF */
+setInterval(() => {
+  const names = ["Rizal","Andi","Budi","Sarah","Dimas","Kevin","Putri"];
+  const n = names[Math.floor(Math.random()*names.length)];
+  const el = document.getElementById("notify");
+  el.innerHTML = `✨ <b>${n}</b> joined SNR-VAULT`;
+  el.classList.add("show");
+  setTimeout(() => el.classList.remove("show"), 3000);
+}, 8000);
+
+</script>
 </body>
 </html>
