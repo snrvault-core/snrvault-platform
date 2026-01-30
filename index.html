@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>SNR-VAULT | Secure Souvereign</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+
+<style>
+:root{
+  --gold:#ffcc00;
+  --neon:#00f2ff;
+  --bg:#000205;
+  --dark:#05070A;
+  --white:#ffffff;
+  --soft:#f5f7fa;
+  --panel:rgba(5,7,10,0.9);
+  --border:rgba(0,242,255,0.35);
+  --glow-blue:rgba(0,242,255,0.55);
+  --glow-gold:rgba(255,204,0,0.65);
+}
+
+/* ANDROID STABILITY */
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  position: relative;
+  touch-action: pan-y;
+}
+*{ box-sizing:border-box; max-width:100%; }
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(900px 600px at 20% 20%, rgba(0,242,255,.12), transparent 60%),
+    radial-gradient(800px 600px at 80% 80%, rgba(255,204,0,.12), transparent 60%),
+    linear-gradient(180deg,var(--bg),var(--dark));
+  color:var(--soft);
+  font-family:'Orbitron',sans-serif;
+}
+
+.wrapper{
+  width:100%;
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
+}
+
+.header{
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 20px;
+  margin-bottom:14px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:18px;
+  box-shadow:0 0 18px rgba(0,242,255,.18);
+}
+
+.logo-block{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  min-width:160px;
+}
+
+/* LOGO SNR-VAULT STYLING */
+.logo{
+  font-size:1.5rem;
+  letter-spacing:2px;
+  line-height:1.1;
+  white-space:nowrap;
+  font-weight:800; /* Bold */
+  text-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+.snr-text { color: var(--gold); }
+.vault-text { color: var(--white); }
+
+/* PRICE WIDGET */
+.price-widget {
+  background: rgba(255, 204, 0, 0.1);
+  padding: 5px 12px;
+  border-radius: 50px;
+  border: 1px solid var(--gold);
+  font-size: 0.75rem;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 5px;
+}
+.price-up { color: #39ff14; font-weight: bold; }
+
+.wallet-status{ font-size:.8rem; }
+.wallet-status span{ color:var(--neon); }
+
+.grid{
+  width:100%;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:18px;
+}
+
+.card{
+  background:linear-gradient(180deg, rgba(5,7,10,.95), rgba(5,7,10,.75));
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 0 22px rgba(0,242,255,.15), inset 0 0 25px rgba(0,242,255,.04);
+  backdrop-filter:blur(12px);
+}
+
+.card h3{
+  margin:0 0 12px;
+  color:var(--gold);
+  font-size:1rem;
+}
+
+.stat{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  margin:8px 0;
+  font-size:.9rem;
+}
+.stat span{
+  color:var(--neon);
+  text-align:right;
+}
+
+.progress{
+  height:8px;
+  background:rgba(255,255,255,.08);
+  border-radius:6px;
+  overflow:hidden;
+  margin-top:10px;
+}
+.progress div{
+  height:100%;
+  width:45%;
+  background:linear-gradient(90deg,var(--gold),var(--neon));
+}
+
+.btn{
+  width:100%;
+  margin:8px 0;
+  padding:11px;
+  background:rgba(0,242,255,.06);
+  border:1px solid var(--border);
+  border-radius:14px;
+  color:var(--white);
+  font-family:inherit;
+  cursor:pointer;
+  box-shadow:0 0 12px rgba(0,242,255,.2);
+  transition:.2s;
+}
+.btn:hover{
+  border-color:var(--gold);
+  color:var(--gold);
+  box-shadow:0 0 18px var(--glow-gold), 0 0 28px var(--glow-blue);
+  transform:translateY(-1px);
+}
+.btn-primary{
+  background:linear-gradient(135deg,var(--gold),#ffe27a);
+  color:var(--dark);
+  border:none;
+  font-weight:600;
+}
+
+/* ---------- NEW: TAB BAR (UI ONLY) ---------- */
+.tabbar{
+  width:100%;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  padding:12px;
+  margin-bottom:18px;
+  background:rgba(5,7,10,.55);
+  border:1px solid rgba(0,242,255,0.22);
+  border-radius:16px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 18px rgba(0,242,255,.12);
+}
+.tab-btn{
+  width:auto;                /* override .btn width */
+  margin:0;                  /* override .btn margin */
+  padding:10px 12px;
+  border-radius:14px;
+  letter-spacing:1px;
+  font-size:.78rem;
+  position:relative;
+  overflow:hidden;
+}
+.tab-btn.active{
+  background:linear-gradient(135deg, rgba(255,204,0,0.18), rgba(0,242,255,0.10));
+  border:1px solid rgba(255,204,0,0.45);
+  box-shadow: 0 0 18px rgba(255,204,0,.22), 0 0 18px rgba(0,242,255,.16);
+  color:var(--gold);
+}
+.tab-btn .mini{
+  color:rgba(245,247,250,.72);
+  font-size:.62rem;
+  letter-spacing:2px;
+  margin-left:6px;
+}
+.tab-panel{ display:none; }
+.tab-panel.show{ display:block; }
+
+.section-title{
+  margin:0 0 10px;
+  font-size:1.05rem;
+  color:var(--gold);
+  letter-spacing:2px;
+}
+.section-sub{
+  margin:0 0 14px;
+  font-size:.82rem;
+  color:rgba(245,247,250,.78);
+  line-height:1.6;
+}
+.pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,204,0,.25);
+  background:rgba(255,204,0,.06);
+  color:rgba(255,255,255,.88);
+  font-size:.72rem;
+}
+.pill b{ color:var(--gold); }
+
+.kit-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:14px;
+  margin-top:12px;
+}
+.kit{
+  border-radius:18px;
+  padding:14px;
+  border:1px solid rgba(0,242,255,.20);
+  background:linear-gradient(180deg, rgba(5,7,10,.92), rgba(5,7,10,.70));
+  box-shadow: 0 0 18px rgba(0,242,255,.10);
+}
+.kit h4{
+  margin:0 0 8px;
+  color:var(--white);
+  font-size:.92rem;
+}
+.kit p{
+  margin:0;
+  color:rgba(245,247,250,.78);
+  font-size:.78rem;
+  line-height:1.55;
+}
+.kit .tag{
+  display:inline-block;
+  margin-top:10px;
+  font-size:.68rem;
+  color:rgba(0,242,255,.95);
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+
+/* -------------------------------------------- */
+
+.log{
+  max-height:140px;
+  overflow-y:auto;
+  font-size:.75rem;
+}
+.log div{
+  margin:5px 0;
+  color:rgba(245,247,250,.7);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding-bottom: 2px;
+}
+
+.footer{
+  text-align:center;
+  margin:25px 0 5px;
+  font-size:.75rem;
+  color:rgba(245,247,250,.6);
+}
+
+@media(max-width:600px){
+  .header{ flex-direction:column; gap:10px; text-align:center; }
+  .logo-block{ align-items:center; }
+}
+
+/* MARQUEE: ONE-TRACK INFINITY FLOW */
+.marquee {
+  width: 100%;
+  overflow: hidden;
+  border-top: 1px solid rgba(0,242,255,0.18);
+  border-bottom: 1px solid rgba(0,242,255,0.18);
+  padding: 8px 0;
+  white-space: nowrap;
+  position: relative;
+}
+
+.track {
+  display: inline-block;
+  padding-left: 0;
+  white-space: nowrap;
+  -webkit-animation: scroll-forward 10s linear infinite;
+  animation: scroll-forward 10s linear infinite;
+}
+
+.marquee span {
+  display: inline-block;
+  padding-right: 20px;
+  color: var(--neon);
+  font-size: .72rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+@keyframes scroll-forward {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@-webkit-keyframes scroll-forward {
+  from { -webkit-transform: translateX(0); }
+  to { -webkit-transform: translateX(-50%); }
+}
+
+.notify{
+  position:fixed;
+  left:16px;
+  bottom:16px;
+  background:rgba(5,7,10,.92);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:10px 12px;
+  font-size:.78rem;
+  color:rgba(245,247,250,.92);
+  box-shadow:0 0 18px rgba(0,242,255,.22);
+  opacity:0;
+  transform:translateY(14px);
+  transition:.35s;
+  z-index:9999;
+}
+.notify.show{ opacity:1; transform:translateY(0); }
+.notify b{ color:var(--gold); }
+
+.sound-toggle{
+  position:fixed;
+  right:16px;
+  bottom:16px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 10px;
+  border-radius:12px;
+  background:rgba(5,7,10,.92);
+  border:1px solid var(--border);
+  z-index:10000;
+}
+.sound-toggle button{
+  border:none;
+  cursor:pointer;
+  font-family:'Orbitron',sans-serif;
+  font-size:.72rem;
+  padding:6px 10px;
+  border-radius:10px;
+  background:rgba(0,242,255,.08);
+  color:var(--neon);
+  border:1px solid var(--border);
+}
+.sound-toggle button.off{ color:var(--gold); border-color:var(--gold); }
+</style>
+</head>
+<body>
+
+<audio id="magicChime" src="https://www.soundjay.com/misc/sounds/magic-chime-01.mp3" preload="auto"></audio>
+<audio id="ambient.mp3" loop preload="auto">
+  <source src="assets/audio/ambient.mp3">
+</audio>
+
+<div class="wrapper">
+  <div class="header">
+    <div class="logo-block">
+      <div class="logo"><span class="snr-text">SNR</span>-<span class="vault-text">VAULT</span></div>
+      <div class="price-widget">
+        SNR: $0.5245 <span class="price-up">▲ 4.2%</span>
+      </div>
+      <div class="marquee">
+        <div class="track">
+          <span>GLOBAL PARTICIPATION • GLOBAL PARTICIPATION • GLOBAL PARTICIPATION • GLOBAL PARTICIPATION • </span>
+          <span>GLOBAL PARTICIPATION • GLOBAL PARTICIPATION • GLOBAL PARTICIPATION • GLOBAL PARTICIPATION • </span>
+        </div>
+      </div>
+    </div>
+    <div class="wallet-status">
+      Wallet: <span id="wallet">Disconnected</span> | Network: <span id="network">BSC</span>
+    </div>
+  </div>
+
+  <!-- NEW: TAB BAR (UI ONLY) -->
+  <div class="tabbar" role="tablist" aria-label="SNR-VAULT Navigation">
+    <button class="btn tab-btn active" data-tab="dashboard" role="tab" aria-selected="true">
+      DASHBOARD <span class="mini">CORE</span>
+    </button>
+    <button class="btn tab-btn" data-tab="academy" role="tab" aria-selected="false">
+      ACADEMY <span class="mini">LEARN</span>
+    </button>
+    <button class="btn tab-btn" data-tab="node" role="tab" aria-selected="false">
+      NODE <span class="mini">STATUS</span>
+    </button>
+    <button class="btn tab-btn" data-tab="whitepaper" role="tab" aria-selected="false">
+      WHITEPAPER <span class="mini">DOCS</span>
+    </button>
+  </div>
+
+  <!-- TAB: DASHBOARD (existing content moved inside, no logic changed) -->
+  <section id="tab-dashboard" class="tab-panel show">
+    <div class="grid">
+      <div class="card">
+        <h3>Wallet Info</h3>
+        <div class="stat"><div>Address</div><span id="address">-</span></div>
+        <div class="stat"><div>BNB Balance</div><span id="bnb">0.00</span></div>
+        <button class="btn btn-primary" onclick="connectWallet()">Connect Wallet</button>
+      </div>
+
+      <div class="card">
+        <h3>Asset Overview</h3>
+        <div class="stat"><div>SNR Balance</div><span id="snr">0.00</span></div>
+        <div class="stat"><div>Staked SNR</div><span id="staked">0.00</span></div>
+        <div class="stat"><div>Pending Reward</div><span id="reward">0.00</span></div>
+        <div class="progress"><div style="width: 65%;"></div></div>
+      </div>
+
+      <div class="card">
+        <h3>ROI Performance</h3>
+        <div class="stat"><div>Daily ROI</div><span>1.5%</span></div>
+        <div class="stat"><div>Total ROI</div><span>300%</span></div>
+        <div class="stat"><div>Cap Progress</div><span>145%</span></div>
+        <div class="progress"><div style="width: 45%;"></div></div>
+      </div>
+
+      <div class="card">
+        <h3>Referral System</h3>
+        <div class="stat"><div>Your Link</div><span id="ref">-</span></div>
+        <button class="btn" onclick="copyRef()">Copy Referral Link</button>
+      </div>
+
+      <div class="card">
+        <h3>Action Panel</h3>
+        <button class="btn" id="btnStake">Stake SNR</button>
+        <button class="btn btn-primary" id="btnClaim">Claim Reward</button>
+        <button class="btn" id="btnCompound">Compound</button>
+        <button class="btn btn-primary" id="btnWithdraw">Withdraw</button>
+      </div>
+
+      <div class="card">
+        <h3>System Log</h3>
+        <div class="log" id="log">
+          <div>System ready...</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB: ACADEMY (NEW, UI ONLY) -->
+  <section id="tab-academy" class="tab-panel">
+    <div class="card">
+      <div class="pill">🛡️ <b>SNR ACADEMY</b> • Member Education Hub</div>
+      <h2 class="section-title" style="margin-top:14px;">ACADEMY PROTOCOL</h2>
+      <p class="section-sub">
+        Di sini member belajar agar <b>paham sistem</b>, <b>aman</b>, <b>nyaman</b>, dan tidak mudah menjadi korban di luar sana.
+        Tidak ada janji kosong. Hanya edukasi, disiplin, dan standar SNR-VAULT.
+      </p>
+
+      <div class="kit-grid">
+        <div class="kit">
+          <h4>Module A — Gerbang Akses</h4>
+          <p>Cara masuk via TokenPocket/TrustWallet/MetaMask, connect wallet, dan membaca status dashboard dengan benar.</p>
+          <div class="tag">ONBOARDING</div>
+        </div>
+        <div class="kit">
+          <h4>Module B — Security & Anti-Scam</h4>
+          <p>Aturan inti: seed phrase, anti phishing, ciri modus penipuan, dan SOP saat ada kejadian.</p>
+          <div class="tag">SECURITY</div>
+        </div>
+        <div class="kit">
+          <h4>Module C — System Mindset</h4>
+          <p>Profit adalah alat, bukan tujuan. Member SNR dibentuk menjadi tenang, sadar, dan tahan jangka panjang.</p>
+          <div class="tag">MENTALITY</div>
+        </div>
+        <div class="kit">
+          <h4>Module D — Member Handbook</h4>
+          <p>Etika komunitas, komunikasi sehat, anti drama, anti FUD, dan standar perilaku SNR-VAULT.</p>
+          <div class="tag">CULTURE</div>
+        </div>
+      </div>
+
+      <div style="margin-top:14px; font-size:.75rem; color:rgba(245,247,250,.72); line-height:1.7;">
+        <b style="color:var(--gold);">Catatan:</b> Konten video/poster akan dipasang bertahap. Member cukup mengikuti update resmi di kanal komunitas.
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB: NODE (NEW, UI ONLY) -->
+  <section id="tab-node" class="tab-panel">
+    <div class="card">
+      <div class="pill">🌌 <b>SNR NODE</b> • Stability & Trust Monitor</div>
+      <h2 class="section-title" style="margin-top:14px;">NODE STATUS</h2>
+      <p class="section-sub">
+        Halaman ini dibuat dengan: ringkas, jelas, dan fokus pada kepercayaan.
+        Status dapat diperluas ke monitoring real-time di versi berikutnya.
+      </p>
+
+      <div class="kit-grid">
+        <div class="kit">
+          <h4>Node Stability</h4>
+          <p><b style="color:rgba(0,242,255,.95);">Operational</b> • Monitoring aktif • Notifikasi muncul jika ada gangguan.</p>
+          <div class="tag">UPTIME</div>
+        </div>
+        <div class="kit">
+          <h4>Security Layer</h4>
+          <p>Fortress Protocol • Edukasi anti-scam • SOP respon saat kondisi tidak normal.</p>
+          <div class="tag">DEFENSE</div>
+        </div>
+        <div class="kit">
+          <h4>Transparency</h4>
+          <p>Info penting disampaikan tanpa ruang gelap. Semua update dibuat terstruktur dan mudah dipahami.</p>
+          <div class="tag">OPEN</div>
+        </div>
+        <div class="kit">
+          <h4>Community Discipline</h4>
+          <p>Anti FUD • Anti provokasi • Fokus edukasi. Komunitas sehat = sistem kuat.</p>
+          <div class="tag">CULTURE</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB: WHITEPAPER (NEW, UI ONLY) -->
+  <section id="tab-whitepaper" class="tab-panel">
+    <div class="card">
+      <div class="pill">📜 <b>SNR WHITEPAPER</b> • Official Documentation</div>
+      <h2 class="section-title" style="margin-top:14px;">WHITEPAPER ACCESS</h2>
+      <p class="section-sub">
+        Whitepaper adalah kompas. Member yang membaca akan lebih tenang, lebih percaya, dan tidak mudah terseret promosi luar.
+      </p>
+
+      <div class="kit-grid">
+        <div class="kit">
+          <h4>Whitepaper v1.0</h4>
+          <p>Link PDF akan dipasang di sini. (Pusat Informasi dan pengumuman Resmi.)</p>
+          <div class="tag">PDF</div>
+          <button class="btn" style="margin-top:10px;" onclick="alert('Link PDF belum dipasang. Upload whitepaper lalu ganti href/link di kode.');">Open Whitepaper</button>
+        </div>
+
+        <div class="kit">
+          <h4>Core Principles</h4>
+          <p>• Stabilitas mengalahkan hype.<br>• Transparansi membangun trust.<br>• Edukasi melindungi komunitas.</p>
+          <div class="tag">DNA</div>
+        </div>
+
+        <div class="kit">
+          <h4>Member Promise</h4>
+          <p>Member tidak dibawa pada ambisi berlebih. Fokus: aman, nyaman, dan bertumbuh dengan cara bermartabat.</p>
+          <div class="tag">ETHIC</div>
+        </div>
+
+        <div class="kit">
+          <h4>Verification</h4>
+          <p>Ke depan bisa dibuat halaman verifikasi (QR/ID) untuk sertifikasi member dan dokumen resmi.</p>
+          <div class="tag">VERIFY</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer">© 2026 SNR-VAULT — Transparency . Security . Souvereignty </div>
+</div>
+
+<div class="notify" id="notify"></div>
+
+<div class="sound-toggle">
+  <div style="font-size: 0.6rem; letter-spacing: 1px; color: #888; margin-right: 5px;">SOUND</div>
+  <button id="soundBtn">ON</button>
+</div>
+
+<script>
+/* WEB3 ENGINE */
+const TOKEN_SNR = "0x5ce1427f77d8c58f97f5e18b36804fd54aa72718";
+const STAKING = "0x59a7098D86ac1548dAF3b14aAfC43858D274f543";
+
+const BSC = {
+  chainId: "0x38",
+  chainName: "BNB Smart Chain (BSC)",
+  nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
+  rpcUrls: ["https://bsc-dataseed.binance.org/"],
+  blockExplorerUrls: ["https://bscscan.com/"]
+};
+
+let provider, signer, userAddress;
+
+function log(msg){
+  const div=document.getElementById("log");
+  const entry=document.createElement("div");
+  entry.innerText=new Date().toLocaleTimeString()+" - "+msg;
+  div.prepend(entry);
+}
+
+async function connectWallet(){
+  try{
+    if(!window.ethereum) return alert("Gunakan DApp Browser.");
+    unlockAudio();
+    provider = new ethers.BrowserProvider(window.ethereum);
+    await provider.send("eth_requestAccounts", []);
+    signer = await provider.getSigner();
+    userAddress = await signer.getAddress();
+    document.getElementById("wallet").innerText = "Connected";
+    document.getElementById("address").innerText = userAddress.slice(0,6)+"..."+userAddress.slice(-4);
+    log("Wallet Connected.");
+  }catch(e){ log("Connect Error"); }
+}
+
+/* ---------- NEW: TAB SWITCHER (UI ONLY) ---------- */
+(function(){
+  const btns = document.querySelectorAll('.tab-btn[data-tab]');
+  const panels = document.querySelectorAll('.tab-panel');
+
+  function showTab(name){
+    panels.forEach(p => p.classList.remove('show'));
+    const activePanel = document.getElementById('tab-' + name);
+    if(activePanel) activePanel.classList.add('show');
+
+    btns.forEach(b => {
+      b.classList.remove('active');
+      b.setAttribute('aria-selected','false');
+    });
+    const activeBtn = document.querySelector('.tab-btn[data-tab="'+name+'"]');
+    if(activeBtn){
+      activeBtn.classList.add('active');
+      activeBtn.setAttribute('aria-selected','true');
+    }
+  }
+
+  btns.forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
+
+  // default dashboard
+  showTab('dashboard');
+})();
+
+/* AUDIO ENGINE */
+let audioEnabled = true;
+
+function unlockAudio() {
+    const ambient = document.getElementById("bgAmbient");
+    if (audioEnabled) {
+        ambient.play().catch(e => console.log("Audio trigger required"));
+    }
+}
+
+function playMagicChime() {
+    if (!audioEnabled) return;
+    const chime = document.getElementById("magicChime");
+    chime.currentTime = 0;
+    chime.play();
+}
+
+document.getElementById("soundBtn").onclick = (e) => {
+    e.stopPropagation();
+    audioEnabled = !audioEnabled;
+    const ambient = document.getElementById("bgAmbient");
+    const btn = document.getElementById("soundBtn");
+
+    if (audioEnabled) {
+        btn.innerText = "ON";
+        btn.classList.remove("off");
+        ambient.play();
+    } else {
+        btn.innerText = "OFF";
+        btn.classList.add("off");
+        ambient.pause();
+    }
+};
+
+document.addEventListener("click", () => {
+    unlockAudio();
+}, { once: true });
+
+document.querySelectorAll(".btn").forEach(btn => {
+    btn.addEventListener("click", playMagicChime);
+});
+
+/* NOTIF SYSTEM */
+setInterval(() => {
+  const names = ["0x5Z6935***","0x4F87690***","0x5E26138***","0x5372C1***","0x5A3f4***","0x5Df3a5***","0x4DB378***"];
+  const n = names[Math.floor(Math.random()*names.length)];
+  const el = document.getElementById("notify");
+  if(el) {
+    el.innerHTML = `✨ <b>${n}</b> joined SNR-VAULT`;
+    el.classList.add("show");
+    setTimeout(() => el.classList.remove("show"), 3000);
+  }
+}, 8000);
+
+</script>
+</body>
+</html>
