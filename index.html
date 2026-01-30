@@ -674,22 +674,17 @@ function playMagicChime() {
     chime.play();
 }
 
-document.getElementById("soundBtn").onclick = (e) => {
-    e.stopPropagation();
-    audioEnabled = !audioEnabled;
-    const ambient = document.getElementById("bgAmbient");
-    const btn = document.getElementById("soundBtn");
+// FORCE FIRST TOUCH AUDIO UNLOCK (ANDROID FIX)
+document.addEventListener("click", function unlockAudioOnce() {
+  const ambient = document.getElementById("bgAmbient");
 
-    if (audioEnabled) {
-        btn.innerText = "ON";
-        btn.classList.remove("off");
-        ambient.play();
-    } else {
-        btn.innerText = "OFF";
-        btn.classList.add("off");
-        ambient.pause();
-    }
-};
+  if (ambient) {
+    ambient.volume = 0.35; // lembut & premium
+    ambient.play().catch(()=>{});
+  }
+
+  document.removeEventListener("click", unlockAudioOnce);
+});
 
 document.addEventListener("click", () => {
     unlockAudio();
