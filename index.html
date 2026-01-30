@@ -189,8 +189,8 @@ body{
   box-shadow: 0 0 18px rgba(0,242,255,.12);
 }
 .tab-btn{
-  width:auto;                /* override .btn width */
-  margin:0;                  /* override .btn margin */
+  width:auto;
+  margin:0;
   padding:10px 12px;
   border-radius:14px;
   letter-spacing:1px;
@@ -383,11 +383,16 @@ body{
 </head>
 <body>
 
+<!-- AUDIO TAGS -->
 <audio id="magicChime" preload="auto">
-  <source src="https://www.soundjay.com/misc/sounds/magic-chime-01.mp3" type="audio/mpeg"> </audio>
-<audio id="bgAmbient" loop preload="auto">
-  <source scr="v2/assets/audio/ambient.mp3" type="audio/mpeg">
+  <source src="https://www.soundjay.com/misc/sounds/magic-chime-01.mp3" type="audio/mpeg">
 </audio>
+
+<audio id="bgAmbient" loop preload="auto" playsinline>
+  <!-- IMPORTANT: src (NOT scr) + path relative to ROOT index.html -->
+  <source src="v2/assets/audio/ambient.mp3" type="audio/mpeg">
+</audio>
+
 <div class="wrapper">
   <div class="header">
     <div class="logo-block">
@@ -407,7 +412,7 @@ body{
     </div>
   </div>
 
-  <!-- NEW: TAB BAR (UI ONLY) -->
+  <!-- TAB BAR -->
   <div class="tabbar" role="tablist" aria-label="SNR-VAULT Navigation">
     <button class="btn tab-btn active" data-tab="dashboard" role="tab" aria-selected="true">
       DASHBOARD <span class="mini">CORE</span>
@@ -423,7 +428,7 @@ body{
     </button>
   </div>
 
-  <!-- TAB: DASHBOARD (existing content moved inside, no logic changed) -->
+  <!-- TAB: DASHBOARD -->
   <section id="tab-dashboard" class="tab-panel show">
     <div class="grid">
       <div class="card">
@@ -472,7 +477,7 @@ body{
     </div>
   </section>
 
-  <!-- TAB: ACADEMY (NEW, UI ONLY) -->
+  <!-- TAB: ACADEMY -->
   <section id="tab-academy" class="tab-panel">
     <div class="card">
       <div class="pill">🛡️ <b>SNR ACADEMY</b> • Member Education Hub</div>
@@ -511,7 +516,7 @@ body{
     </div>
   </section>
 
-  <!-- TAB: NODE (NEW, UI ONLY) -->
+  <!-- TAB: NODE -->
   <section id="tab-node" class="tab-panel">
     <div class="card">
       <div class="pill">🌌 <b>SNR NODE</b> • Stability & Trust Monitor</div>
@@ -546,7 +551,7 @@ body{
     </div>
   </section>
 
-  <!-- TAB: WHITEPAPER (NEW, UI ONLY) -->
+  <!-- TAB: WHITEPAPER -->
   <section id="tab-whitepaper" class="tab-panel">
     <div class="card">
       <div class="pill">📜 <b>SNR WHITEPAPER</b> • Official Documentation</div>
@@ -619,7 +624,7 @@ function log(msg){
 async function connectWallet(){
   try{
     if(!window.ethereum) return alert("Gunakan DApp Browser.");
-    unlockAudio();
+    unlockAudio(); // (tetap ada, hanya audio yang diperbaiki)
     provider = new ethers.BrowserProvider(window.ethereum);
     await provider.send("eth_requestAccounts", []);
     signer = await provider.getSigner();
@@ -630,7 +635,7 @@ async function connectWallet(){
   }catch(e){ log("Connect Error"); }
 }
 
-/* ---------- NEW: TAB SWITCHER (UI ONLY) ---------- */
+/* TAB SWITCHER (UI ONLY) */
 (function(){
   const btns = document.querySelectorAll('.tab-btn[data-tab]');
   const panels = document.querySelectorAll('.tab-panel');
@@ -652,47 +657,54 @@ async function connectWallet(){
   }
 
   btns.forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
-
-  // default dashboard
   showTab('dashboard');
 })();
 
-/* AUDIO ENGINE */
+/* AUDIO ENGINE (FIXED: no duplicates, correct src, Android unlock, toggle works) */
 let audioEnabled = true;
 
+const ambient = document.getElementById("bgAmbient");
+const chime = document.getElementById("magicChime");
+const soundBtn = document.getElementById("soundBtn");
+
+if (ambient) ambient.volume = 0.35;
+
 function unlockAudio() {
-    const ambient = document.getElementById("bgAmbient");
-    if (audioEnabled) {
-        ambient.play().catch(e => console.log("Audio trigger required"));
-    }
+  if (!audioEnabled || !ambient) return;
+  ambient.play().catch(() => {});
 }
 
-function playMagicChime() {
-    if (!audioEnabled) return;
-    const chime = document.getElementById("magicChime");
-    chime.currentTime = 0;
-    chime.play();
+function playChime() {
+  if (!audioEnabled || !chime) return;
+  chime.currentTime = 0;
+  chime.play().catch(()=>{});
 }
 
-// FORCE FIRST TOUCH AUDIO UNLOCK (ANDROID FIX)
-document.addEventListener("click", function unlockAudioOnce() {
-  const ambient = document.getElementById("bgAmbient");
+// First user interaction unlock (Android/iOS)
+document.addEventListener("touchstart", unlockAudio, { once: true });
+document.addEventListener("click", unlockAudio, { once: true });
 
-  if (ambient) {
-    ambient.volume = 0.35; // lembut & premium
-    ambient.play().catch(()=>{});
-  }
-
-  document.removeEventListener("click", unlockAudioOnce);
-});
-
-document.addEventListener("click", () => {
-    unlockAudio();
-}, { once: true });
-
+// Button click sound
 document.querySelectorAll(".btn").forEach(btn => {
-    btn.addEventListener("click", playMagicChime);
+  btn.addEventListener("click", playChime);
 });
+
+// Toggle ON/OFF
+if (soundBtn) {
+  soundBtn.addEventListener("click", () => {
+    audioEnabled = !audioEnabled;
+
+    if (audioEnabled) {
+      soundBtn.innerText = "ON";
+      soundBtn.classList.remove("off");
+      unlockAudio();
+    } else {
+      soundBtn.innerText = "OFF";
+      soundBtn.classList.add("off");
+      if (ambient) ambient.pause();
+    }
+  });
+}
 
 /* NOTIF SYSTEM */
 setInterval(() => {
@@ -705,7 +717,7 @@ setInterval(() => {
     setTimeout(() => el.classList.remove("show"), 3000);
   }
 }, 8000);
-
 </script>
+
 </body>
 </html>
