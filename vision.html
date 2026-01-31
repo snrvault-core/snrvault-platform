@@ -54,6 +54,7 @@ body{
   display:flex;
   justify-content:space-between;
   align-items:center;
+  gap:12px;
   padding:15px 20px;
   margin-bottom:14px;
   background:var(--panel);
@@ -83,6 +84,28 @@ body{
 .wallet-status{ font-size:.8rem; color:rgba(245,247,250,.75); }
 .wallet-status span{ color:var(--neon); }
 
+.langbar{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.langbtn{
+  padding:9px 12px;
+  border-radius:14px;
+  background:rgba(0,242,255,.06);
+  border:1px solid rgba(0,242,255,.22);
+  color:rgba(245,247,250,.9);
+  font-family:inherit;
+  cursor:pointer;
+  transition:.2s;
+  box-shadow:0 0 12px rgba(0,242,255,.14);
+}
+.langbtn.active{
+  border-color:rgba(255,204,0,.45);
+  color:var(--gold);
+  box-shadow:0 0 18px rgba(255,204,0,.18), 0 0 18px rgba(0,242,255,.12);
+}
+
 .card{
   background:linear-gradient(180deg, rgba(5,7,10,.95), rgba(5,7,10,.75));
   border:1px solid var(--border);
@@ -100,7 +123,7 @@ body{
 }
 
 @media(max-width:600px){
-  .header{ flex-direction:column; gap:10px; text-align:center; }
+  .header{ flex-direction:column; text-align:center; }
   .logo-block{ align-items:center; }
 }
 
@@ -345,189 +368,334 @@ body{
     <div class="logo-block">
       <div class="logo"><span class="snr-text">SNR</span>-<span class="vault-text">VAULT</span></div>
       <div class="pill" style="border-color:rgba(0,242,255,.24); background:rgba(0,242,255,.05);">
-        🧭 <b>VISION</b> • FUTURE FINANCE
+        🧭 <b data-i18n="pill_vision">VISION</b> • <span data-i18n="pill_future">FUTURE FINANCE</span>
       </div>
     </div>
+
+    <div class="langbar" aria-label="Language switcher">
+      <button class="langbtn" id="langID" type="button">ID</button>
+      <button class="langbtn" id="langEN" type="button">EN</button>
+    </div>
+
     <div class="wallet-status">
-      Status: <span>Preview Draft</span>
+      <span data-i18n="status_label">Status:</span> <span data-i18n="status_value">Preview Draft</span>
     </div>
   </div>
 
   <div class="card">
-    <div class="pill">🚀 <b>SNR FUTURE FINANCE</b> • Public Vision & Roadmap</div>
+    <div class="pill">🚀 <b data-i18n="section_title">SNR FUTURE FINANCE</b> • <span data-i18n="section_subtitle">Public Vision & Roadmap</span></div>
 
     <div class="hero-vision" style="margin-top:14px;">
-      <h2 class="section-title" style="margin:0;">TANPA BUNGA. TANPA SITA. DENGAN MARTABAT.</h2>
-      <p class="section-sub" style="margin:8px 0 0;">
+      <h2 class="section-title" style="margin:0;" data-i18n="headline">
+        TANPA BUNGA. TANPA SITA. DENGAN MARTABAT.
+      </h2>
+
+      <p class="section-sub" style="margin:8px 0 0;" data-i18n="hero_text">
         Ini adalah arah besar yang kami bangun bertahap. Bukan janji kosong — ini kompas publik agar semua orang memahami arah SNR-VAULT dengan jelas dan terbuka.
       </p>
 
       <div class="vision-kpi">
         <div class="kpi">
-          <div class="label">PRINSIP</div>
-          <div class="value">Human First</div>
-          <div class="sub">Jika member mengalami kendala, fokusnya solusi + pemulihan produktivitas, bukan tekanan.</div>
+          <div class="label" data-i18n="kpi1_label">PRINSIP</div>
+          <div class="value" data-i18n="kpi1_value">Human First</div>
+          <div class="sub" data-i18n="kpi1_sub">Jika member mengalami kendala, fokusnya solusi + pemulihan produktivitas, bukan tekanan.</div>
         </div>
         <div class="kpi">
-          <div class="label">TATA KELOLA</div>
-          <div class="value">Terukur</div>
-          <div class="sub">Aturan jelas, proses rapi, transparansi bertahap, dan dapat dipertanggungjawabkan.</div>
+          <div class="label" data-i18n="kpi2_label">TATA KELOLA</div>
+          <div class="value" data-i18n="kpi2_value">Terukur</div>
+          <div class="sub" data-i18n="kpi2_sub">Aturan jelas, proses rapi, transparansi bertahap, dan dapat dipertanggungjawabkan.</div>
         </div>
         <div class="kpi">
-          <div class="label">TARGET</div>
-          <div class="value">Long-Term</div>
-          <div class="sub">Ekonomi berputar: member produktif → setoran sehat → komunitas kuat.</div>
+          <div class="label" data-i18n="kpi3_label">TARGET</div>
+          <div class="value" data-i18n="kpi3_value">Long-Term</div>
+          <div class="sub" data-i18n="kpi3_sub">Ekonomi berputar: member produktif → setoran sehat → komunitas kuat.</div>
         </div>
       </div>
 
       <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
-        <button class="btn btn-ghost" id="openCharter">Read Vision Charter</button>
-<button class="btn btn-ghost" id="btnSupport">Saya Dukung Visi Ini</button>
+        <button class="btn btn-ghost" id="openCharter" type="button" data-i18n="btn_charter">Read Vision Charter</button>
+        <button class="btn btn-ghost" id="btnSupport" type="button" data-i18n="btn_support">Saya Dukung Visi Ini</button>
         <span class="pill" style="border-color:rgba(0,242,255,.25); background:rgba(0,242,255,.05);">
-          🔐 <b>Roadmap:</b> Rilis bertahap sesuai kesiapan teknis & legal.
+          🔐 <b data-i18n="roadmap_note_label">Roadmap:</b> <span data-i18n="roadmap_note">Rilis bertahap sesuai kesiapan teknis & legal.</span>
         </span>
       </div>
     </div>
 
-    <h3 style="margin:16px 0 8px; color:var(--gold); font-size:1rem;">HOW IT WORKS</h3>
+    <h3 style="margin:16px 0 8px; color:var(--gold); font-size:1rem;" data-i18n="how_title">HOW IT WORKS</h3>
     <div class="flow">
       <div class="flow-step">
         <div class="icon">1</div>
-        <h4>Support Check</h4>
-        <p>Jika ada kendala pembayaran, member dipanggil secara baik untuk memahami akar masalah dan kondisi keluarga/usaha.</p>
+        <h4 data-i18n="flow1_t">Support Check</h4>
+        <p data-i18n="flow1_d">Jika ada kendala pembayaran, member dipanggil secara baik untuk memahami akar masalah dan kondisi keluarga/usaha.</p>
       </div>
       <div class="flow-step">
         <div class="icon">2</div>
-        <h4>Restructure Plan</h4>
-        <p>Skema disesuaikan: penjadwalan ulang, penyesuaian tenor, dan rencana pemulihan yang realistis.</p>
+        <h4 data-i18n="flow2_t">Restructure Plan</h4>
+        <p data-i18n="flow2_d">Skema disesuaikan: penjadwalan ulang, penyesuaian tenor, dan rencana pemulihan yang realistis.</p>
       </div>
       <div class="flow-step">
         <div class="icon">3</div>
-        <h4>Recover & Grow</h4>
-        <p>Tujuan utama: member kembali produktif, setoran lancar, tanpa rasa takut aset disita.</p>
+        <h4 data-i18n="flow3_t">Recover & Grow</h4>
+        <p data-i18n="flow3_d">Tujuan utama: member kembali produktif, setoran lancar, tanpa rasa takut aset disita.</p>
       </div>
     </div>
 
-    <h3 style="margin:16px 0 8px; color:var(--gold); font-size:1rem;">ROADMAP (VISION 2030)</h3>
+    <h3 style="margin:16px 0 8px; color:var(--gold); font-size:1rem;" data-i18n="rm_title">ROADMAP (VISION 2030)</h3>
     <div class="roadmap">
       <div class="phase">
         <div class="badge">P1</div>
         <div class="meta">
-          <div class="t">Foundation & Transparency</div>
-          <div class="d">Bangun fondasi: edukasi, SOP komunitas, transparansi informasi inti, dan kesiapan platform.</div>
-          <div class="tagline">✅ Stabilitas • ✅ Kejelasan Arah</div>
+          <div class="t" data-i18n="p1_t">Foundation & Transparency</div>
+          <div class="d" data-i18n="p1_d">Bangun fondasi: edukasi, SOP komunitas, transparansi informasi inti, dan kesiapan platform.</div>
+          <div class="tagline" data-i18n="p1_tag">✅ Stabilitas • ✅ Kejelasan Arah</div>
         </div>
       </div>
 
       <div class="phase">
         <div class="badge">P2</div>
         <div class="meta">
-          <div class="t">Credit Prototype</div>
-          <div class="d">Uji model pembiayaan internal skala kecil: aturan seleksi, skema pembayaran fleksibel, dan proses pendampingan.</div>
-          <div class="tagline">🧪 Pilot • 🧩 Rule Engine</div>
+          <div class="t" data-i18n="p2_t">Credit Prototype</div>
+          <div class="d" data-i18n="p2_d">Uji model pembiayaan internal skala kecil: aturan seleksi, skema pembayaran fleksibel, dan proses pendampingan.</div>
+          <div class="tagline" data-i18n="p2_tag">🧪 Pilot • 🧩 Rule Engine</div>
         </div>
       </div>
 
       <div class="phase">
         <div class="badge">P3</div>
         <div class="meta">
-          <div class="t">Asset Protection Program</div>
-          <div class="d">Susun mekanisme perlindungan aset agar tetap dipakai untuk hidup & produktivitas. Fokus pada solusi, bukan penyitaan.</div>
-          <div class="tagline">🛡️ Protection • 🤝 Human Care</div>
+          <div class="t" data-i18n="p3_t">Asset Protection Program</div>
+          <div class="d" data-i18n="p3_d">Susun mekanisme perlindungan aset agar tetap dipakai untuk hidup & produktivitas. Fokus pada solusi, bukan penyitaan.</div>
+          <div class="tagline" data-i18n="p3_tag">🛡️ Protection • 🤝 Human Care</div>
         </div>
       </div>
 
       <div class="phase">
         <div class="badge">P4</div>
         <div class="meta">
-          <div class="t">Community Lending & Scaling</div>
-          <div class="d">Perluasan program berbasis komunitas dengan tata kelola rapi, audit proses, dan monitoring risiko.</div>
-          <div class="tagline">📈 Scale • 🔍 Risk Control</div>
+          <div class="t" data-i18n="p4_t">Community Lending & Scaling</div>
+          <div class="d" data-i18n="p4_d">Perluasan program berbasis komunitas dengan tata kelola rapi, audit proses, dan monitoring risiko.</div>
+          <div class="tagline" data-i18n="p4_tag">📈 Scale • 🔍 Risk Control</div>
         </div>
       </div>
 
       <div class="phase">
         <div class="badge">P5</div>
         <div class="meta">
-          <div class="t">Vision 2030 — Human Finance Network</div>
-          <div class="d">Ekosistem pembiayaan adil & manusiawi: struktur matang, legal siap, dan operasional berkelanjutan.</div>
-          <div class="tagline">🌍 Legacy • 🧭 Dignity</div>
+          <div class="t" data-i18n="p5_t">Vision 2030 — Human Finance Network</div>
+          <div class="d" data-i18n="p5_d">Ekosistem pembiayaan adil & manusiawi: struktur matang, legal siap, dan operasional berkelanjutan.</div>
+          <div class="tagline" data-i18n="p5_tag">🌍 Legacy • 🧭 Dignity</div>
         </div>
       </div>
     </div>
 
     <div style="margin-top:14px; font-size:.75rem; color:rgba(245,247,250,.72); line-height:1.7;">
-      <b style="color:var(--gold);">Catatan:</b> Ini adalah visi publik sebagai acuan arah. Implementasi akan mengikuti tahapan teknis & legal yang rapi dan dapat dipertanggungjawabkan.
+      <b style="color:var(--gold);" data-i18n="note_label">Catatan:</b>
+      <span data-i18n="note_text">Ini adalah visi publik sebagai acuan arah. Implementasi akan mengikuti tahapan teknis & legal yang rapi dan dapat dipertanggungjawabkan.</span>
     </div>
   </div>
 
-  <div class="footer">© 2026 SNR-VAULT — Future Finance Vision Draft</div>
+  <div class="footer" data-i18n="footer">© 2026 SNR-VAULT — Future Finance Vision Draft</div>
 </div>
 
 <!-- VISION CHARTER MODAL -->
 <div class="modal" id="charterModal" aria-hidden="true">
   <div class="modal-card" role="dialog" aria-modal="true" aria-label="Vision Charter">
     <div class="modal-head">
-      <div class="modal-title">SNR VISION CHARTER</div>
-      <button class="modal-close" id="closeCharter" aria-label="Close">✕</button>
+      <div class="modal-title" data-i18n="charter_title">SNR VISION CHARTER</div>
+      <button class="modal-close" id="closeCharter" aria-label="Close" type="button">✕</button>
     </div>
     <div class="modal-body">
-      <p><b>Tujuan:</b> membangun sistem pembiayaan yang adil, manusiawi, dan bermartabat — tanpa bunga yang menekan, tanpa penyitaan yang menghancurkan keluarga.</p>
+      <p data-i18n="charter_p1"><b>Tujuan:</b> membangun sistem pembiayaan yang adil, manusiawi, dan bermartabat — tanpa bunga yang menekan, tanpa penyitaan yang menghancurkan keluarga.</p>
       <ul class="charter-list">
-        <li><b>Human-First:</b> member adalah manusia, bukan objek likuidasi.</li>
-        <li><b>Recovery over Punishment:</b> saat ada kendala, fokus pada pemulihan produktivitas.</li>
-        <li><b>Asset for Living:</b> aset dipertahankan agar tetap dipakai bekerja & bertahan hidup.</li>
-        <li><b>Measured Governance:</b> aturan jelas, proses rapi, dan transparansi bertahap.</li>
-        <li><b>Long-Term Integrity:</b> sistem dibangun untuk tahan lama dan dapat dipertanggungjawabkan.</li>
+        <li data-i18n="charter_l1"><b>Human-First:</b> member adalah manusia, bukan objek likuidasi.</li>
+        <li data-i18n="charter_l2"><b>Recovery over Punishment:</b> saat ada kendala, fokus pada pemulihan produktivitas.</li>
+        <li data-i18n="charter_l3"><b>Asset for Living:</b> aset dipertahankan agar tetap dipakai bekerja & bertahan hidup.</li>
+        <li data-i18n="charter_l4"><b>Measured Governance:</b> aturan jelas, proses rapi, dan transparansi bertahap.</li>
+        <li data-i18n="charter_l5"><b>Long-Term Integrity:</b> sistem dibangun untuk tahan lama dan dapat dipertanggungjawabkan.</li>
       </ul>
-      <p style="margin-top:10px; color:rgba(245,247,250,.75);">
+      <p style="margin-top:10px; color:rgba(245,247,250,.75);" data-i18n="charter_p2">
         Charter ini adalah kompas. Roadmap implementasi akan dipublikasikan bertahap sesuai kesiapan teknis dan legal.
       </p>
-      <div class="modal" id="supportModal" aria-hidden="true">
-  <div class="modal-card" role="dialog" aria-modal="true" aria-label="Support Vision">
-    <div class="modal-head">
-      <div class="modal-title">TERIMA KASIH</div>
-      <button class="modal-close" id="closeSupport" aria-label="Close">✕</button>
-    </div>
-    <div class="modal-body">
-      <p><b>Dukunganmu diterima.</b></p>
-      <p>Visi ini sedang dibangun bertahap—dengan aturan yang rapi, langkah yang terukur, dan niat untuk menjaga martabat manusia.</p>
-      <p style="color:rgba(245,247,250,.75);">Kita bangun ini bersama.</p>
     </div>
   </div>
 </div>
-    
+
+<!-- SUPPORT MODAL (FIXED: not nested) -->
+<div class="modal" id="supportModal" aria-hidden="true">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-label="Support Vision">
+    <div class="modal-head">
+      <div class="modal-title" data-i18n="support_title">TERIMA KASIH</div>
+      <button class="modal-close" id="closeSupport" aria-label="Close" type="button">✕</button>
+    </div>
+    <div class="modal-body">
+      <p data-i18n="support_p1"><b>Dukunganmu diterima.</b></p>
+      <p data-i18n="support_p2">Visi ini sedang dibangun bertahap—dengan aturan yang rapi, langkah yang terukur, dan niat untuk menjaga martabat manusia.</p>
+      <p style="color:rgba(245,247,250,.75);" data-i18n="support_p3">Kita bangun ini bersama.</p>
+    </div>
+  </div>
+</div>
+
 <script>
-/* FUTURE FINANCE: MODAL (UI ONLY) */
+/* ===== i18n: ID / EN (small top buttons) ===== */
+const I18N = {
+  id: {
+    pill_vision: "VISION",
+    pill_future: "FUTURE FINANCE",
+    status_label: "Status:",
+    status_value: "Preview Draft",
+    section_title: "SNR FUTURE FINANCE",
+    section_subtitle: "Public Vision & Roadmap",
+    headline: "TANPA BUNGA. TANPA SITA. DENGAN MARTABAT.",
+    hero_text: "Ini adalah arah besar yang kami bangun bertahap. Bukan janji kosong — ini kompas publik agar semua orang memahami arah SNR-VAULT dengan jelas dan terbuka.",
+    kpi1_label: "PRINSIP",
+    kpi1_value: "Human First",
+    kpi1_sub: "Jika member mengalami kendala, fokusnya solusi + pemulihan produktivitas, bukan tekanan.",
+    kpi2_label: "TATA KELOLA",
+    kpi2_value: "Terukur",
+    kpi2_sub: "Aturan jelas, proses rapi, transparansi bertahap, dan dapat dipertanggungjawabkan.",
+    kpi3_label: "TARGET",
+    kpi3_value: "Long-Term",
+    kpi3_sub: "Ekonomi berputar: member produktif → setoran sehat → komunitas kuat.",
+    btn_charter: "Read Vision Charter",
+    btn_support: "Saya Dukung Visi Ini",
+    roadmap_note_label: "Roadmap:",
+    roadmap_note: "Rilis bertahap sesuai kesiapan teknis & legal.",
+    how_title: "HOW IT WORKS",
+    flow1_t: "Support Check",
+    flow1_d: "Jika ada kendala pembayaran, member dipanggil secara baik untuk memahami akar masalah dan kondisi keluarga/usaha.",
+    flow2_t: "Restructure Plan",
+    flow2_d: "Skema disesuaikan: penjadwalan ulang, penyesuaian tenor, dan rencana pemulihan yang realistis.",
+    flow3_t: "Recover & Grow",
+    flow3_d: "Tujuan utama: member kembali produktif, setoran lancar, tanpa rasa takut aset disita.",
+    rm_title: "ROADMAP (VISION 2030)",
+    p1_t: "Foundation & Transparency",
+    p1_d: "Bangun fondasi: edukasi, SOP komunitas, transparansi informasi inti, dan kesiapan platform.",
+    p1_tag: "✅ Stabilitas • ✅ Kejelasan Arah",
+    p2_t: "Credit Prototype",
+    p2_d: "Uji model pembiayaan internal skala kecil: aturan seleksi, skema pembayaran fleksibel, dan proses pendampingan.",
+    p2_tag: "🧪 Pilot • 🧩 Rule Engine",
+    p3_t: "Asset Protection Program",
+    p3_d: "Susun mekanisme perlindungan aset agar tetap dipakai untuk hidup & produktivitas. Fokus pada solusi, bukan penyitaan.",
+    p3_tag: "🛡️ Protection • 🤝 Human Care",
+    p4_t: "Community Lending & Scaling",
+    p4_d: "Perluasan program berbasis komunitas dengan tata kelola rapi, audit proses, dan monitoring risiko.",
+    p4_tag: "📈 Scale • 🔍 Risk Control",
+    p5_t: "Vision 2030 — Human Finance Network",
+    p5_d: "Ekosistem pembiayaan adil & manusiawi: struktur matang, legal siap, dan operasional berkelanjutan.",
+    p5_tag: "🌍 Legacy • 🧭 Dignity",
+    note_label: "Catatan:",
+    note_text: "Ini adalah visi publik sebagai acuan arah. Implementasi akan mengikuti tahapan teknis & legal yang rapi dan dapat dipertanggungjawabkan.",
+    footer: "© 2026 SNR-VAULT — Future Finance Vision Draft",
+    charter_title: "SNR VISION CHARTER",
+    charter_p1: "<b>Tujuan:</b> membangun sistem pembiayaan yang adil, manusiawi, dan bermartabat — tanpa bunga yang menekan, tanpa penyitaan yang menghancurkan keluarga.",
+    charter_l1: "<b>Human-First:</b> member adalah manusia, bukan objek likuidasi.",
+    charter_l2: "<b>Recovery over Punishment:</b> saat ada kendala, fokus pada pemulihan produktivitas.",
+    charter_l3: "<b>Asset for Living:</b> aset dipertahankan agar tetap dipakai bekerja & bertahan hidup.",
+    charter_l4: "<b>Measured Governance:</b> aturan jelas, proses rapi, dan transparansi bertahap.",
+    charter_l5: "<b>Long-Term Integrity:</b> sistem dibangun untuk tahan lama dan dapat dipertanggungjawabkan.",
+    charter_p2: "Charter ini adalah kompas. Roadmap implementasi akan dipublikasikan bertahap sesuai kesiapan teknis dan legal.",
+    support_title: "TERIMA KASIH",
+    support_p1: "<b>Dukunganmu diterima.</b>",
+    support_p2: "Visi ini sedang dibangun bertahap—dengan aturan yang rapi, langkah yang terukur, dan niat untuk menjaga martabat manusia.",
+    support_p3: "Kita bangun ini bersama."
+  },
+  en: {
+    pill_vision: "VISION",
+    pill_future: "FUTURE FINANCE",
+    status_label: "Status:",
+    status_value: "Preview Draft",
+    section_title: "SNR FUTURE FINANCE",
+    section_subtitle: "Public Vision & Roadmap",
+    headline: "NO INTEREST. NO SEIZURE. WITH DIGNITY.",
+    hero_text: "This is the long-term direction we are building step by step. Not empty promises—this is a public compass so everyone can understand SNR-VAULT’s path clearly and openly.",
+    kpi1_label: "PRINCIPLE",
+    kpi1_value: "Human First",
+    kpi1_sub: "When members face hardship, the focus is solutions and recovery—not pressure.",
+    kpi2_label: "GOVERNANCE",
+    kpi2_value: "Measured",
+    kpi2_sub: "Clear rules, disciplined process, gradual transparency, and full accountability.",
+    kpi3_label: "TARGET",
+    kpi3_value: "Long-Term",
+    kpi3_sub: "A healthy cycle: productive members → steady payments → stronger community.",
+    btn_charter: "Read Vision Charter",
+    btn_support: "I Support This Vision",
+    roadmap_note_label: "Roadmap:",
+    roadmap_note: "Released in phases based on technical & legal readiness.",
+    how_title: "HOW IT WORKS",
+    flow1_t: "Support Check",
+    flow1_d: "If payment issues arise, members are approached respectfully to understand root causes and family/business conditions.",
+    flow2_t: "Restructure Plan",
+    flow2_d: "A tailored plan: rescheduling, tenor adjustment, and a realistic recovery roadmap.",
+    flow3_t: "Recover & Grow",
+    flow3_d: "The main goal: members regain productivity, payments become healthy—without fear of asset seizure.",
+    rm_title: "ROADMAP (VISION 2030)",
+    p1_t: "Foundation & Transparency",
+    p1_d: "Build the foundation: education, community SOP, core transparency, and platform readiness.",
+    p1_tag: "✅ Stability • ✅ Clear Direction",
+    p2_t: "Credit Prototype",
+    p2_d: "Pilot a small-scale internal financing model: eligibility rules, flexible repayment, and mentoring.",
+    p2_tag: "🧪 Pilot • 🧩 Rule Engine",
+    p3_t: "Asset Protection Program",
+    p3_d: "Design protection mechanisms so assets remain usable for life and productivity—solutions over seizure.",
+    p3_tag: "🛡️ Protection • 🤝 Human Care",
+    p4_t: "Community Lending & Scaling",
+    p4_d: "Scale through governance, process audits, and risk monitoring.",
+    p4_tag: "📈 Scale • 🔍 Risk Control",
+    p5_t: "Vision 2030 — Human Finance Network",
+    p5_d: "A fair, human-centered financing ecosystem: mature structure, legal readiness, sustainable operations.",
+    p5_tag: "🌍 Legacy • 🧭 Dignity",
+    note_label: "Note:",
+    note_text: "This is a public vision as directional reference. Implementation will follow structured technical & legal phases with accountability.",
+    footer: "© 2026 SNR-VAULT — Future Finance Vision Draft",
+    charter_title: "SNR VISION CHARTER",
+    charter_p1: "<b>Purpose:</b> build a fair, human-centered, dignified financing system—without predatory pressure and without seizures that destroy families.",
+    charter_l1: "<b>Human-First:</b> members are people, not liquidation objects.",
+    charter_l2: "<b>Recovery over Punishment:</b> hardship triggers recovery support, not punishment.",
+    charter_l3: "<b>Asset for Living:</b> assets remain usable for work and survival.",
+    charter_l4: "<b>Measured Governance:</b> clear rules, disciplined process, gradual transparency.",
+    charter_l5: "<b>Long-Term Integrity:</b> built to last and be accountable.",
+    charter_p2: "This charter is the compass. Implementation roadmap will be published gradually as technical and legal readiness progresses.",
+    support_title: "THANK YOU",
+    support_p1: "<b>Your support is received.</b>",
+    support_p2: "This vision is being built step by step—with disciplined rules, measured execution, and the intention to protect human dignity.",
+    support_p3: "We build this together."
+  }
+};
+
+function setLang(lang){
+  const dict = I18N[lang] || I18N.id;
+  document.documentElement.lang = lang === "en" ? "en" : "id";
+
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    const key = el.getAttribute("data-i18n");
+    const val = dict[key];
+    if(typeof val === "string"){
+      el.innerHTML = val; // allow <b>...</b> in strings
+    }
+  });
+
+  localStorage.setItem("snr_lang", lang);
+  document.getElementById("langID").classList.toggle("active", lang==="id");
+  document.getElementById("langEN").classList.toggle("active", lang==="en");
+}
+
+/* ===== MODALS ===== */
 (function(){
   const openBtn = document.getElementById("openCharter");
   const modal = document.getElementById("charterModal");
   const closeBtn = document.getElementById("closeCharter");
-
   if(!openBtn || !modal || !closeBtn) return;
 
-  function open(){
-    modal.classList.add("show");
-    modal.setAttribute("aria-hidden","false");
-  }
-  function close(){
-    modal.classList.remove("show");
-    modal.setAttribute("aria-hidden","true");
-  }
+  function open(){ modal.classList.add("show"); modal.setAttribute("aria-hidden","false"); }
+  function close(){ modal.classList.remove("show"); modal.setAttribute("aria-hidden","true"); }
 
   openBtn.addEventListener("click", open);
   closeBtn.addEventListener("click", close);
-
-  modal.addEventListener("click", (e) => {
-    if(e.target === modal) close();
-  });
-
-  document.addEventListener("keydown", (e) => {
-    if(e.key === "Escape") close();
-  });
+  modal.addEventListener("click", (e)=>{ if(e.target===modal) close(); });
+  document.addEventListener("keydown", (e)=>{ if(e.key==="Escape") close(); });
 })();
 
-  (function(){
+(function(){
   const btn = document.getElementById("btnSupport");
   const modal = document.getElementById("supportModal");
   const closeBtn = document.getElementById("closeSupport");
@@ -539,7 +707,15 @@ body{
   btn.addEventListener("click", open);
   closeBtn.addEventListener("click", close);
   modal.addEventListener("click", (e)=>{ if(e.target===modal) close(); });
+  document.addEventListener("keydown", (e)=>{ if(e.key==="Escape") close(); });
 })();
+
+/* ===== INIT ===== */
+document.getElementById("langID").addEventListener("click", ()=>setLang("id"));
+document.getElementById("langEN").addEventListener("click", ()=>setLang("en"));
+
+const saved = localStorage.getItem("snr_lang") || "id";
+setLang(saved);
 </script>
 
 </body>
