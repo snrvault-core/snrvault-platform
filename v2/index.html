@@ -662,12 +662,24 @@ async function connectWallet(){
 let audioEnabled = true;
 
 function unlockAudio() {
-    const ambient = document.getElementById("bgAmbient");
-    if (audioEnabled) {
-        ambient.play().catch(e => console.log("Audio trigger required"));
-    }
+  const ambient = document.getElementById("bgAmbient");
+  if (audioEnabled) {
+    ambient.play().catch(e => console.log("Audio trigger required"));
+  }
 }
 
+function playMagicChime() {
+  if (!audioEnabled) return;
+  const chime = document.getElementById("magicChime");
+  if (!chime) return;
+  chime.currentTime = 0;
+  chime.play().catch(()=>{});
+}
+
+document.querySelectorAll(".btn").forEach(btn => {
+  btn.addEventListener("click", playMagicChime);
+});
+  
 function playMagicChime() {
     if (!audioEnabled) return;
     const chime = document.getElementById("magicChime");
