@@ -382,6 +382,7 @@ body{
 
       <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
         <button class="btn btn-ghost" id="openCharter">Read Vision Charter</button>
+<button class="btn btn-ghost" id="btnSupport">Saya Dukung Visi Ini</button>
         <span class="pill" style="border-color:rgba(0,242,255,.25); background:rgba(0,242,255,.05);">
           🔐 <b>Roadmap:</b> Rilis bertahap sesuai kesiapan teknis & legal.
         </span>
@@ -482,10 +483,20 @@ body{
       <p style="margin-top:10px; color:rgba(245,247,250,.75);">
         Charter ini adalah kompas. Roadmap implementasi akan dipublikasikan bertahap sesuai kesiapan teknis dan legal.
       </p>
+      <div class="modal" id="supportModal" aria-hidden="true">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-label="Support Vision">
+    <div class="modal-head">
+      <div class="modal-title">TERIMA KASIH</div>
+      <button class="modal-close" id="closeSupport" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p><b>Dukunganmu diterima.</b></p>
+      <p>Visi ini sedang dibangun bertahap—dengan aturan yang rapi, langkah yang terukur, dan niat untuk menjaga martabat manusia.</p>
+      <p style="color:rgba(245,247,250,.75);">Kita bangun ini bersama.</p>
     </div>
   </div>
 </div>
-
+    
 <script>
 /* FUTURE FINANCE: MODAL (UI ONLY) */
 (function(){
@@ -514,6 +525,20 @@ body{
   document.addEventListener("keydown", (e) => {
     if(e.key === "Escape") close();
   });
+})();
+
+  (function(){
+  const btn = document.getElementById("btnSupport");
+  const modal = document.getElementById("supportModal");
+  const closeBtn = document.getElementById("closeSupport");
+  if(!btn || !modal || !closeBtn) return;
+
+  function open(){ modal.classList.add("show"); modal.setAttribute("aria-hidden","false"); }
+  function close(){ modal.classList.remove("show"); modal.setAttribute("aria-hidden","true"); }
+
+  btn.addEventListener("click", open);
+  closeBtn.addEventListener("click", close);
+  modal.addEventListener("click", (e)=>{ if(e.target===modal) close(); });
 })();
 </script>
 
