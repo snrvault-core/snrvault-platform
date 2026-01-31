@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SNR-VAULT | Future Finance Vision</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --gold:#ffcc00;
+  --neon:#00f2ff;
+  --bg:#000205;
+  --dark:#05070A;
+  --white:#ffffff;
+  --soft:#f5f7fa;
+  --panel:rgba(5,7,10,0.9);
+  --border:rgba(0,242,255,0.35);
+  --glow-blue:rgba(0,242,255,0.55);
+  --glow-gold:rgba(255,204,0,0.65);
+}
+
+/* ANDROID STABILITY */
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  position: relative;
+  touch-action: pan-y;
+}
+*{ box-sizing:border-box; max-width:100%; }
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(900px 600px at 20% 20%, rgba(0,242,255,.12), transparent 60%),
+    radial-gradient(800px 600px at 80% 80%, rgba(255,204,0,.12), transparent 60%),
+    linear-gradient(180deg,var(--bg),var(--dark));
+  color:var(--soft);
+  font-family:'Orbitron',sans-serif;
+}
+
+.wrapper{
+  width:100%;
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
+}
+
+.header{
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 20px;
+  margin-bottom:14px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:18px;
+  box-shadow:0 0 18px rgba(0,242,255,.18);
+}
+
+.logo-block{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  min-width:160px;
+}
+
+.logo{
+  font-size:1.5rem;
+  letter-spacing:2px;
+  line-height:1.1;
+  white-space:nowrap;
+  font-weight:800;
+  text-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+.snr-text { color: var(--gold); }
+.vault-text { color: var(--white); }
+
+.wallet-status{ font-size:.8rem; color:rgba(245,247,250,.75); }
+.wallet-status span{ color:var(--neon); }
+
+.card{
+  background:linear-gradient(180deg, rgba(5,7,10,.95), rgba(5,7,10,.75));
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 0 22px rgba(0,242,255,.15), inset 0 0 25px rgba(0,242,255,.04);
+  backdrop-filter:blur(12px);
+}
+
+.footer{
+  text-align:center;
+  margin:25px 0 5px;
+  font-size:.75rem;
+  color:rgba(245,247,250,.6);
+}
+
+@media(max-width:600px){
+  .header{ flex-direction:column; gap:10px; text-align:center; }
+  .logo-block{ align-items:center; }
+}
+
+/* buttons */
+.btn{
+  width:100%;
+  margin:8px 0;
+  padding:11px;
+  background:rgba(0,242,255,.06);
+  border:1px solid rgba(0,242,255,.22);
+  border-radius:14px;
+  color:var(--white);
+  font-family:inherit;
+  cursor:pointer;
+  box-shadow:0 0 12px rgba(0,242,255,.2);
+  transition:.2s;
+}
+.btn:hover{
+  border-color:var(--gold);
+  color:var(--gold);
+  box-shadow:0 0 18px var(--glow-gold), 0 0 28px var(--glow-blue);
+  transform:translateY(-1px);
+}
+.btn-ghost{
+  width:auto;
+  padding:10px 12px;
+  border-radius:14px;
+  background:rgba(0,242,255,.06);
+  border:1px solid rgba(0,242,255,.22);
+  color:var(--neon);
+}
+.pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,204,0,.25);
+  background:rgba(255,204,0,.06);
+  color:rgba(255,255,255,.88);
+  font-size:.72rem;
+}
+.pill b{ color:var(--gold); }
+
+.section-title{
+  margin:0 0 10px;
+  font-size:1.05rem;
+  color:var(--gold);
+  letter-spacing:2px;
+}
+.section-sub{
+  margin:0 0 14px;
+  font-size:.82rem;
+  color:rgba(245,247,250,.78);
+  line-height:1.6;
+}
+
+/* ===== FUTURE FINANCE (PREMIUM) ===== */
+.hero-vision{
+  border-radius:22px;
+  padding:18px 16px;
+  border:1px solid rgba(255,204,0,.22);
+  background:
+    radial-gradient(900px 300px at 20% 0%, rgba(255,204,0,.12), transparent 60%),
+    radial-gradient(800px 320px at 80% 10%, rgba(0,242,255,.12), transparent 60%),
+    linear-gradient(180deg, rgba(5,7,10,.92), rgba(5,7,10,.74));
+  box-shadow: 0 0 26px rgba(0,242,255,.10), 0 0 22px rgba(255,204,0,.10);
+  position:relative;
+  overflow:hidden;
+}
+.hero-vision:before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  background: linear-gradient(120deg, transparent 35%, rgba(0,242,255,.10) 50%, transparent 65%);
+  transform: translateX(-60%);
+  animation: scanline 6.5s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes scanline{
+  0%{ transform:translateX(-60%); opacity:.2;}
+  50%{ transform:translateX(60%); opacity:.35;}
+  100%{ transform:translateX(-60%); opacity:.2;}
+}
+
+.vision-kpi{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  gap:10px;
+  margin-top:12px;
+}
+.kpi{
+  border-radius:16px;
+  padding:12px;
+  border:1px solid rgba(0,242,255,.18);
+  background:rgba(0,242,255,.05);
+}
+.kpi .label{ font-size:.62rem; letter-spacing:2px; color:rgba(245,247,250,.70); text-transform:uppercase; }
+.kpi .value{ margin-top:6px; color:var(--gold); font-weight:800; font-size:.95rem; }
+.kpi .sub{ margin-top:4px; font-size:.72rem; color:rgba(245,247,250,.75); line-height:1.45; }
+
+.flow{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:12px;
+  margin-top:14px;
+}
+.flow-step{
+  border-radius:18px;
+  padding:14px;
+  border:1px solid rgba(0,242,255,.20);
+  background:linear-gradient(180deg, rgba(5,7,10,.92), rgba(5,7,10,.72));
+  box-shadow: 0 0 16px rgba(0,242,255,.08);
+  position:relative;
+}
+.flow-step .icon{
+  width:38px; height:38px;
+  border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  border:1px solid rgba(255,204,0,.25);
+  background:rgba(255,204,0,.07);
+  color:var(--gold);
+  font-weight:800;
+}
+.flow-step h4{ margin:10px 0 6px; color:var(--white); font-size:.92rem; }
+.flow-step p{ margin:0; color:rgba(245,247,250,.78); font-size:.78rem; line-height:1.55; }
+.flow-step:after{
+  content:"";
+  position:absolute;
+  right:-10px;
+  top:50%;
+  width:20px; height:2px;
+  background:linear-gradient(90deg, rgba(0,242,255,.0), rgba(0,242,255,.45), rgba(255,204,0,.45), rgba(0,242,255,.0));
+  transform:translateY(-50%);
+}
+.flow-step:last-child:after{ display:none; }
+
+.roadmap{
+  margin-top:14px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.phase{
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+  border-radius:18px;
+  padding:14px;
+  border:1px solid rgba(0,242,255,.18);
+  background:rgba(0,242,255,.04);
+}
+.phase .badge{
+  min-width:54px;
+  height:54px;
+  border-radius:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg, rgba(255,204,0,.22), rgba(0,242,255,.10));
+  border:1px solid rgba(255,204,0,.30);
+  color:var(--gold);
+  font-weight:800;
+}
+.phase .meta{ flex:1; }
+.phase .meta .t{ color:var(--gold); font-weight:800; letter-spacing:1px; }
+.phase .meta .d{ margin-top:4px; color:rgba(245,247,250,.78); font-size:.78rem; line-height:1.55; }
+.phase .meta .tagline{
+  margin-top:8px;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,204,0,.22);
+  background:rgba(255,204,0,.06);
+  font-size:.70rem;
+  color:rgba(245,247,250,.85);
+}
+
+/* modal */
+.modal{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,.62);
+  z-index:20000;
+  padding:18px;
+}
+.modal.show{ display:flex; }
+.modal-card{
+  width:min(720px, 100%);
+  border-radius:22px;
+  border:1px solid rgba(0,242,255,.28);
+  background:linear-gradient(180deg, rgba(5,7,10,.96), rgba(5,7,10,.78));
+  box-shadow:0 0 26px rgba(0,242,255,.14), 0 0 22px rgba(255,204,0,.08);
+  padding:16px;
+  position:relative;
+}
+.modal-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  padding:6px 4px 10px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.modal-title{
+  color:var(--gold);
+  font-weight:800;
+  letter-spacing:2px;
+  font-size:.95rem;
+}
+.modal-close{
+  width:38px;height:38px;
+  border-radius:12px;
+  border:1px solid rgba(0,242,255,.22);
+  background:rgba(0,242,255,.06);
+  color:var(--neon);
+  cursor:pointer;
+  font-family:inherit;
+}
+.modal-close:hover{ border-color:var(--gold); color:var(--gold); }
+.modal-body{
+  padding:12px 4px 4px;
+  color:rgba(245,247,250,.82);
+  font-size:.80rem;
+  line-height:1.7;
+}
+.modal-body b{ color:var(--gold); }
+.charter-list{ margin:10px 0 0; padding-left:18px; }
+.charter-list li{ margin:6px 0; }
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+  <div class="header">
+    <div class="logo-block">
+      <div class="logo"><span class="snr-text">SNR</span>-<span class="vault-text">VAULT</span></div>
+      <div class="pill" style="border-color:rgba(0,242,255,.24); background:rgba(0,242,255,.05);">
+        🧭 <b>VISION</b> • FUTURE FINANCE
+      </div>
+    </div>
+    <div class="wallet-status">
+      Status: <span>Preview Draft</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="pill">🚀 <b>SNR FUTURE FINANCE</b> • Public Vision & Roadmap</div>
+
+    <div class="hero-vision" style="margin-top:14px;">
+      <h2 class="section-title" style="margin:0;">TANPA BUNGA. TANPA SITA. DENGAN MARTABAT.</h2>
+      <p class="section-sub" style="margin:8px 0 0;">
+        Ini adalah arah besar yang kami bangun bertahap. Bukan janji kosong — ini kompas publik agar semua orang memahami arah SNR-VAULT dengan jelas dan terbuka.
+      </p>
+
+      <div class="vision-kpi">
+        <div class="kpi">
+          <div class="label">PRINSIP</div>
+          <div class="value">Human First</div>
+          <div class="sub">Jika member mengalami kendala, fokusnya solusi + pemulihan produktivitas, bukan tekanan.</div>
+        </div>
+        <div class="kpi">
+          <div class="label">TATA KELOLA</div>
+          <div class="value">Terukur</div>
+          <div class="sub">Aturan jelas, proses rapi, transparansi bertahap, dan dapat dipertanggungjawabkan.</div>
+        </div>
+        <div class="kpi">
+          <div class="label">TARGET</div>
+          <div class="value">Long-Term</div>
+          <div class="sub">Ekonomi berputar: member produktif → setoran sehat → komunitas kuat.</div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
+        <button class="btn btn-ghost" id="openCharter">Read Vision Charter</button>
+        <span class="pill" style="border-color:rgba(0,242,255,.25); background:rgba(0,242,255,.05);">
+          🔐 <b>Roadmap:</b> Rilis bertahap sesuai kesiapan teknis & legal.
+        </span>
+      </div>
+    </div>
+
+    <h3 style="margin:16px 0 8px; color:var(--gold); font-size:1rem;">HOW IT WORKS</h3>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="icon">1</div>
+        <h4>Support Check</h4>
+        <p>Jika ada kendala pembayaran, member dipanggil secara baik untuk memahami akar masalah dan kondisi keluarga/usaha.</p>
+      </div>
+      <div class="flow-step">
+        <div class="icon">2</div>
+        <h4>Restructure Plan</h4>
+        <p>Skema disesuaikan: penjadwalan ulang, penyesuaian tenor, dan rencana pemulihan yang realistis.</p>
+      </div>
+      <div class="flow-step">
+        <div class="icon">3</div>
+        <h4>Recover & Grow</h4>
+        <p>Tujuan utama: member kembali produktif, setoran lancar, tanpa rasa takut aset disita.</p>
+      </div>
+    </div>
+
+    <h3 style="margin:16px 0 8px; color:var(--gold); font-size:1rem;">ROADMAP (VISION 2030)</h3>
+    <div class="roadmap">
+      <div class="phase">
+        <div class="badge">P1</div>
+        <div class="meta">
+          <div class="t">Foundation & Transparency</div>
+          <div class="d">Bangun fondasi: edukasi, SOP komunitas, transparansi informasi inti, dan kesiapan platform.</div>
+          <div class="tagline">✅ Stabilitas • ✅ Kejelasan Arah</div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="badge">P2</div>
+        <div class="meta">
+          <div class="t">Credit Prototype</div>
+          <div class="d">Uji model pembiayaan internal skala kecil: aturan seleksi, skema pembayaran fleksibel, dan proses pendampingan.</div>
+          <div class="tagline">🧪 Pilot • 🧩 Rule Engine</div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="badge">P3</div>
+        <div class="meta">
+          <div class="t">Asset Protection Program</div>
+          <div class="d">Susun mekanisme perlindungan aset agar tetap dipakai untuk hidup & produktivitas. Fokus pada solusi, bukan penyitaan.</div>
+          <div class="tagline">🛡️ Protection • 🤝 Human Care</div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="badge">P4</div>
+        <div class="meta">
+          <div class="t">Community Lending & Scaling</div>
+          <div class="d">Perluasan program berbasis komunitas dengan tata kelola rapi, audit proses, dan monitoring risiko.</div>
+          <div class="tagline">📈 Scale • 🔍 Risk Control</div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="badge">P5</div>
+        <div class="meta">
+          <div class="t">Vision 2030 — Human Finance Network</div>
+          <div class="d">Ekosistem pembiayaan adil & manusiawi: struktur matang, legal siap, dan operasional berkelanjutan.</div>
+          <div class="tagline">🌍 Legacy • 🧭 Dignity</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:14px; font-size:.75rem; color:rgba(245,247,250,.72); line-height:1.7;">
+      <b style="color:var(--gold);">Catatan:</b> Ini adalah visi publik sebagai acuan arah. Implementasi akan mengikuti tahapan teknis & legal yang rapi dan dapat dipertanggungjawabkan.
+    </div>
+  </div>
+
+  <div class="footer">© 2026 SNR-VAULT — Future Finance Vision Draft</div>
+</div>
+
+<!-- VISION CHARTER MODAL -->
+<div class="modal" id="charterModal" aria-hidden="true">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-label="Vision Charter">
+    <div class="modal-head">
+      <div class="modal-title">SNR VISION CHARTER</div>
+      <button class="modal-close" id="closeCharter" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p><b>Tujuan:</b> membangun sistem pembiayaan yang adil, manusiawi, dan bermartabat — tanpa bunga yang menekan, tanpa penyitaan yang menghancurkan keluarga.</p>
+      <ul class="charter-list">
+        <li><b>Human-First:</b> member adalah manusia, bukan objek likuidasi.</li>
+        <li><b>Recovery over Punishment:</b> saat ada kendala, fokus pada pemulihan produktivitas.</li>
+        <li><b>Asset for Living:</b> aset dipertahankan agar tetap dipakai bekerja & bertahan hidup.</li>
+        <li><b>Measured Governance:</b> aturan jelas, proses rapi, dan transparansi bertahap.</li>
+        <li><b>Long-Term Integrity:</b> sistem dibangun untuk tahan lama dan dapat dipertanggungjawabkan.</li>
+      </ul>
+      <p style="margin-top:10px; color:rgba(245,247,250,.75);">
+        Charter ini adalah kompas. Roadmap implementasi akan dipublikasikan bertahap sesuai kesiapan teknis dan legal.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+/* FUTURE FINANCE: MODAL (UI ONLY) */
+(function(){
+  const openBtn = document.getElementById("openCharter");
+  const modal = document.getElementById("charterModal");
+  const closeBtn = document.getElementById("closeCharter");
+
+  if(!openBtn || !modal || !closeBtn) return;
+
+  function open(){
+    modal.classList.add("show");
+    modal.setAttribute("aria-hidden","false");
+  }
+  function close(){
+    modal.classList.remove("show");
+    modal.setAttribute("aria-hidden","true");
+  }
+
+  openBtn.addEventListener("click", open);
+  closeBtn.addEventListener("click", close);
+
+  modal.addEventListener("click", (e) => {
+    if(e.target === modal) close();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if(e.key === "Escape") close();
+  });
+})();
+</script>
+
+</body>
+</html>
