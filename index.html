@@ -1,11 +1,26 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-<title>SNR-VAULT | Secure Souvereign</title>
+<title>SNR-VAULT | Secure Sovereign</title>
 
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://snrvault.space/">
+<meta property="og:title" content="SNR-VAULT | The Deep Financial Fortress">
+<meta property="og:description" content="Transparency • Security • Sovereignty — Official Portal of SNR-VAULT.">
+<meta property="og:site_name" content="SNR-VAULT">
+<meta property="og:image" content="https://snrvault.space/og-banner.jpeg?v=1">
+<meta property="og:image:secure_url" content="https://snrvault.space/og-banner.jpeg?v=1">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1536">
+<meta property="og:image:height" content="1024">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://snrvault.space/og-banner.jpeg?v=1">
+
+<link rel="icon" href="https://snrvault.space/og-banner.jpeg" type="image/jpeg">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
 
@@ -18,7 +33,10 @@
   --white:#ffffff;
   --soft:#f5f7fa;
   --panel:rgba(5,7,10,0.9);
-  --border:rgba(0,242,255,0.35);
+
+  --border-line: rgba(0,242,255,0.90);
+  --border-soft: rgba(0,242,255,0.22);
+
   --glow-blue:rgba(0,242,255,0.55);
   --glow-gold:rgba(255,204,0,0.65);
 }
@@ -51,6 +69,16 @@ body{
   padding:20px;
 }
 
+.t-neon{ color: var(--neon) !important; }
+.t-gold{ color: var(--gold) !important; }
+.t-white{ color: var(--white) !important; }
+
+.neon-line{
+  border:1px solid var(--border-line) !important;
+  box-shadow:none !important;
+}
+
+/* ===================== HEADER ===================== */
 .header{
   width:100%;
   display:flex;
@@ -59,9 +87,9 @@ body{
   padding:15px 20px;
   margin-bottom:14px;
   background:var(--panel);
-  border:1px solid var(--border);
+  border:1px solid var(--border-line);
   border-radius:18px;
-  box-shadow:0 0 18px rgba(0,242,255,.18);
+  box-shadow:none;
 }
 
 .logo-block{
@@ -71,13 +99,12 @@ body{
   min-width:160px;
 }
 
-/* LOGO SNR-VAULT STYLING */
 .logo{
   font-size:1.5rem;
   letter-spacing:2px;
   line-height:1.1;
   white-space:nowrap;
-  font-weight:800; /* Bold */
+  font-weight:800;
   text-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 .snr-text { color: var(--gold); }
@@ -91,16 +118,18 @@ body{
   border: 1px solid var(--gold);
   font-size: 0.75rem;
   color: var(--gold);
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
   margin-top: 5px;
+  width: fit-content;
 }
 .price-up { color: #39ff14; font-weight: bold; }
 
 .wallet-status{ font-size:.8rem; }
-.wallet-status span{ color:var(--neon); }
+.wallet-status span{ color:var(--neon); margin-left:8px; }
 
+/* ===================== GRID/CARDS ===================== */
 .grid{
   width:100%;
   display:grid;
@@ -110,10 +139,10 @@ body{
 
 .card{
   background:linear-gradient(180deg, rgba(5,7,10,.95), rgba(5,7,10,.75));
-  border:1px solid var(--border);
+  border:1px solid var(--border-line);
   border-radius:20px;
   padding:20px;
-  box-shadow:0 0 22px rgba(0,242,255,.15), inset 0 0 25px rgba(0,242,255,.04);
+  box-shadow:none;
   backdrop-filter:blur(12px);
 }
 
@@ -148,18 +177,20 @@ body{
   background:linear-gradient(90deg,var(--gold),var(--neon));
 }
 
+/* ===================== BUTTONS ===================== */
 .btn{
   width:100%;
   margin:8px 0;
   padding:11px;
   background:rgba(0,242,255,.06);
-  border:1px solid var(--border);
+  border:1px solid var(--border-soft);
   border-radius:14px;
   color:var(--white);
   font-family:inherit;
   cursor:pointer;
-  box-shadow:0 0 12px rgba(0,242,255,.2);
+  box-shadow:none;
   transition:.2s;
+  -webkit-tap-highlight-color: transparent;
 }
 .btn:hover{
   border-color:var(--gold);
@@ -167,14 +198,37 @@ body{
   box-shadow:0 0 18px var(--glow-gold), 0 0 28px var(--glow-blue);
   transform:translateY(-1px);
 }
+.btn:active{ transform:scale(0.99); }
+
 .btn-primary{
-  background:linear-gradient(135deg,var(--gold),#ffe27a);
-  color:var(--dark);
-  border:none;
-  font-weight:600;
+  background:linear-gradient(135deg,#ffcc00,#f5b800);
+  color:#000 !important;
+  font-weight:900;
+  letter-spacing:.5px;
+  border:1px solid rgba(255,204,0,0.7);
+  box-shadow: 0 0 6px rgba(255,204,0,.28), inset 0 0 3px rgba(255,255,255,.12);
+  text-shadow: 0 1px 0 rgba(255,255,255,.30), 0 0 2px rgba(0,0,0,.70);
+  position:relative;
+  isolation:isolate;
+}
+.btn-primary:hover{
+  color:#000 !important;
+  box-shadow: 0 0 18px rgba(255,204,0,.75), 0 0 18px rgba(0,242,255,.18), inset 0 0 6px rgba(255,255,255,.18);
+}
+.btn-primary:active{
+  color:#000 !important;
+  background:linear-gradient(135deg,#f5b800,#ffcc00);
+  box-shadow: inset 0 0 10px rgba(0,0,0,.25);
+  transform:scale(0.985);
+  filter:brightness(.95) contrast(1.10);
+}
+.btn-primary:disabled,
+.btn-primary[disabled]{
+  opacity:1 !important;
+  filter:none !important;
 }
 
-/* ---------- NEW: TAB BAR (UI ONLY) ---------- */
+/* ---------- TAB BAR ---------- */
 .tabbar{
   width:100%;
   display:flex;
@@ -183,10 +237,10 @@ body{
   padding:12px;
   margin-bottom:18px;
   background:rgba(5,7,10,.55);
-  border:1px solid rgba(0,242,255,0.22);
+  border:1px solid var(--border-line);
   border-radius:16px;
   backdrop-filter: blur(10px);
-  box-shadow: 0 0 18px rgba(0,242,255,.12);
+  box-shadow:none;
 }
 .tab-btn{
   width:auto;
@@ -200,8 +254,8 @@ body{
 }
 .tab-btn.active{
   background:linear-gradient(135deg, rgba(255,204,0,0.18), rgba(0,242,255,0.10));
-  border:1px solid rgba(255,204,0,0.45);
-  box-shadow: 0 0 18px rgba(255,204,0,.22), 0 0 18px rgba(0,242,255,.16);
+  border:1px solid rgba(255,204,0,0.55);
+  box-shadow:none;
   color:var(--gold);
 }
 .tab-btn .mini{
@@ -245,11 +299,11 @@ body{
   margin-top:12px;
 }
 .kit{
-  border-radius:18px;
+  border-radius:16px;
   padding:14px;
-  border:1px solid rgba(0,242,255,.20);
+  border:1px solid var(--border-line);
   background:linear-gradient(180deg, rgba(5,7,10,.92), rgba(5,7,10,.70));
-  box-shadow: 0 0 18px rgba(0,242,255,.10);
+  box-shadow:none;
 }
 .kit h4{
   margin:0 0 8px;
@@ -271,18 +325,17 @@ body{
   text-transform:uppercase;
 }
 
-/* -------------------------------------------- */
-
+/* LOG */
 .log{
   max-height:140px;
   overflow-y:auto;
   font-size:.75rem;
 }
 .log div{
-  margin:5px 0;
-  color:rgba(245,247,250,.7);
+  margin:6px 0;
+  color:rgba(245,247,250,.78);
   border-bottom: 1px solid rgba(255,255,255,0.05);
-  padding-bottom: 2px;
+  padding-bottom: 4px;
 }
 
 .footer{
@@ -297,55 +350,69 @@ body{
   .logo-block{ align-items:center; }
 }
 
-/* MARQUEE: ONE-TRACK INFINITY FLOW */
-.marquee {
-  width: 100%;
-  overflow: hidden;
-  border-top: 1px solid rgba(0,242,255,0.18);
-  border-bottom: 1px solid rgba(0,242,255,0.18);
-  padding: 8px 0;
-  white-space: nowrap;
-  position: relative;
+/* === TICKER === */
+.ticker-wrap{
+  width:100%;
+  overflow:hidden;
+  margin-top:10px;
+  border-top:1px solid rgba(0,242,255,.18);
+  border-bottom:1px solid rgba(0,242,255,.18);
+  background:rgba(0,0,0,.18);
+  border-radius:14px;
+  padding:8px 0;
+  position:relative;
+  transform:translateZ(0);
+  -webkit-transform:translateZ(0);
+}
+.ticker-track{
+  display:flex;
+  min-width: max-content;
+  gap:18px;
+  animation:ticker-marquee var(--ticker-speed, 22s) linear infinite;
+  will-change:transform;
+}
+.ticker{
+  display:inline-flex;
+  align-items:center;
+  gap:18px;
+  white-space:nowrap;
+}
+.ticker-item{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  font-size:.72rem;
+  letter-spacing:3px;
+  color:rgba(245,247,250,.86);
+  text-transform:uppercase;
+}
+.ticker-item b{
+  color:var(--gold);
+  font-weight:800;
+  text-shadow:0 0 12px rgba(255,204,0,.25);
+}
+.ticker-sep{
+  color:rgba(0,242,255,.75);
+  text-shadow:0 0 12px rgba(0,242,255,.25);
+  letter-spacing:6px;
+}
+@keyframes ticker-marquee{
+  from{ transform:translate3d(0,0,0); }
+  to  { transform:translate3d(-50%,0,0); }
 }
 
-.track {
-  display: inline-block;
-  padding-left: 0;
-  white-space: nowrap;
-  -webkit-animation: scroll-forward 10s linear infinite;
-  animation: scroll-forward 10s linear infinite;
-}
-
-.marquee span {
-  display: inline-block;
-  padding-right: 20px;
-  color: var(--neon);
-  font-size: .72rem;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-}
-
-@keyframes scroll-forward {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
-@-webkit-keyframes scroll-forward {
-  from { -webkit-transform: translateX(0); }
-  to { -webkit-transform: translateX(-50%); }
-}
-
+/* NOTIF */
 .notify{
   position:fixed;
   left:16px;
   bottom:16px;
   background:rgba(5,7,10,.92);
-  border:1px solid var(--border);
+  border:1px solid var(--border-line);
   border-radius:12px;
   padding:10px 12px;
   font-size:.78rem;
   color:rgba(245,247,250,.92);
-  box-shadow:0 0 18px rgba(0,242,255,.22);
+  box-shadow:none;
   opacity:0;
   transform:translateY(14px);
   transition:.35s;
@@ -353,6 +420,62 @@ body{
 }
 .notify.show{ opacity:1; transform:translateY(0); }
 .notify b{ color:var(--gold); }
+
+/* ===== Anti-Fake-Site Guard Overlay ===== */
+.snr-guard{
+  position:fixed;
+  inset:0;
+  z-index:20000;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  background:rgba(0,0,0,.72);
+  backdrop-filter: blur(10px);
+}
+.snr-guard-card{
+  width:min(560px, 100%);
+  border-radius:20px;
+  border:1px solid rgba(255,204,0,.55);
+  background:linear-gradient(180deg, rgba(5,7,10,.96), rgba(5,7,10,.78));
+  box-shadow: 0 0 24px rgba(255,204,0,.25), 0 0 44px rgba(0,242,255,.12);
+  padding:18px;
+}
+.snr-guard-title{
+  font-size:.95rem;
+  letter-spacing:2px;
+  color:var(--gold);
+  margin:0 0 8px;
+  text-transform:uppercase;
+}
+.snr-guard-text{
+  margin:0 0 12px;
+  font-size:.78rem;
+  line-height:1.7;
+  color:rgba(245,247,250,.82);
+}
+.snr-guard-kv{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap:10px;
+  font-size:.75rem;
+  margin-bottom:12px;
+}
+.snr-guard-kv .row{
+  border:1px solid rgba(0,242,255,.18);
+  border-radius:14px;
+  padding:10px 12px;
+  background:rgba(0,0,0,.18);
+}
+.snr-guard-kv b{ color:var(--neon); }
+.snr-guard-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.snr-guard-actions .btn{ margin:0; flex:1; }
+.snr-guard-actions .btn-primary{ flex:1; }
 
 .sound-toggle{
   position:fixed;
@@ -364,8 +487,9 @@ body{
   padding:8px 10px;
   border-radius:12px;
   background:rgba(5,7,10,.92);
-  border:1px solid var(--border);
+  border:1px solid var(--border-line);
   z-index:10000;
+  box-shadow:none;
 }
 .sound-toggle button{
   border:none;
@@ -376,39 +500,377 @@ body{
   border-radius:10px;
   background:rgba(0,242,255,.08);
   color:var(--neon);
-  border:1px solid var(--border);
+  border:1px solid var(--border-soft);
 }
 .sound-toggle button.off{ color:var(--gold); border-color:var(--gold); }
+
+/* Floating POLICY */
+.snr-policy-fab{
+  position:fixed;
+  right:16px;
+  bottom:74px;
+  z-index:10001;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 14px;
+  border-radius:999px;
+  text-decoration:none;
+  font-family:'Orbitron',sans-serif;
+  font-size:.74rem;
+  font-weight:800;
+  letter-spacing:2px;
+  color:#000;
+  background:linear-gradient(135deg, var(--gold), #ffea80);
+  border:1px solid rgba(255,204,0,0.55);
+  box-shadow:0 0 14px rgba(255,204,0,0.55), 0 0 26px rgba(0,242,255,0.14);
+  transition:transform .22s ease, box-shadow .22s ease, filter .22s ease;
+}
+.snr-policy-fab .dot{
+  width:9px; height:9px; border-radius:99px;
+  background:var(--neon);
+  box-shadow:0 0 12px rgba(0,242,255,0.8);
+}
+.snr-policy-fab:hover{
+  transform:translateY(-2px) scale(1.03);
+  box-shadow:0 0 22px rgba(255,204,0,0.85), 0 0 38px rgba(0,242,255,0.22);
+  filter:brightness(1.02);
+}
+.snr-policy-fab:active{ transform:translateY(0) scale(0.99); }
+
+/* ===================== SNR LOADER ===================== */
+#snrLoader{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,2,5,0.88);
+  backdrop-filter: blur(10px);
+  z-index:999999;
+  opacity:1;
+  transition:opacity .45s ease;
+}
+.snr-boot{
+  width:min(520px, 92vw);
+  border-radius:18px;
+  border:1px solid rgba(0,242,255,0.55);
+  background:linear-gradient(180deg, rgba(5,7,10,.92), rgba(5,7,10,.70));
+  box-shadow:0 0 30px rgba(0,242,255,0.12);
+  padding:18px 18px 16px;
+}
+.snr-boot-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:10px;
+}
+.snr-boot-title{
+  font-weight:800;
+  letter-spacing:2px;
+  font-size:.95rem;
+  color:#e9f3ff;
+}
+.snr-boot-sub{
+  margin-top:6px;
+  font-size:.72rem;
+  letter-spacing:3px;
+  color:rgba(0,242,255,0.85);
+  text-transform:uppercase;
+}
+.snr-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid rgba(0,242,255,0.35);
+  background:rgba(0,242,255,0.06);
+  font-size:.72rem;
+  letter-spacing:2px;
+  color:rgba(245,247,250,.9);
+  text-transform:uppercase;
+}
+.snr-chip .dot{
+  width:8px;height:8px;border-radius:99px;
+  background:rgba(0,242,255,1);
+  box-shadow:0 0 12px rgba(0,242,255,.9);
+}
+.snr-boot-logo{
+  text-align:center;
+  margin:12px 0 10px;
+  font-size:1.4rem;
+  letter-spacing:2px;
+  font-weight:900;
+}
+.snr-boot-logo .snr{ color:#ffcc00; }
+.snr-boot-logo .vault{ color:#ffffff; }
+.snr-boot-lines{
+  margin-top:8px;
+  border-top:1px solid rgba(0,242,255,0.18);
+  border-bottom:1px solid rgba(0,242,255,0.18);
+  padding:10px 0;
+}
+.snr-boot-lines > div{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:6px 0;
+  font-size:.78rem;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:rgba(245,247,250,.78);
+}
+.snr-boot-lines b{
+  color:#ffcc00;
+  font-weight:900;
+  letter-spacing:3px;
+}
+.snr-progress-wrap{
+  height:12px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.08);
+  overflow:hidden;
+  margin:12px 0 8px;
+  border:1px solid rgba(0,242,255,0.18);
+}
+#snrProgressBar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#ffcc00,#00f2ff);
+  transition:width .18s ease;
+}
+#snrProgressText{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:.78rem;
+  letter-spacing:2px;
+  color:rgba(245,247,250,.75);
+  text-transform:uppercase;
+}
+#snrPct{
+  color:rgba(0,242,255,.95);
+  font-weight:800;
+}
+
+/* ================= ROADMAP ================= */
+.snr-roadmap{
+  margin:60px auto;
+  padding:0 15px;
+  max-width:1200px;
+  text-align:center;
+}
+.roadmap-slider{
+  display:flex;
+  gap:18px;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  padding-bottom:15px;
+}
+.roadmap-slider::-webkit-scrollbar{ height:6px; }
+.roadmap-slider::-webkit-scrollbar-thumb{ background:#00f2ff55; border-radius:10px; }
+
+.roadmap-card{
+  min-width:220px;
+  background:rgba(0,20,30,.7);
+  border:1px solid #00f2ff55;
+  border-radius:14px;
+  padding:10px;
+  scroll-snap-align:center;
+  transition:.3s;
+  position:relative;
+}
+.roadmap-card:hover{
+  transform:translateY(-6px) scale(1.03);
+  box-shadow:0 0 25px #00f2ff55;
+}
+.roadmap-card img{ width:100%; border-radius:10px; }
+.roadmap-card span{
+  display:block;
+  margin-top:8px;
+  font-size:.75rem;
+  color:var(--gold);
+  letter-spacing:1px;
+}
+
+.roadmap-wrap{ display:flex; flex-direction:column; gap:14px; }
+.roadmap-side{
+  display:flex;
+  flex-wrap:nowrap;
+  gap:10px;
+  justify-content:flex-start;
+  align-items:center;
+  width:100%;
+  padding:10px 12px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  border:1px solid rgba(0,242,255,.25);
+  background: rgba(0,0,0,.28);
+  backdrop-filter: blur(10px);
+  border-radius:16px;
+  box-shadow: 0 0 18px rgba(0,242,255,.12);
+}
+.roadmap-side::-webkit-scrollbar{ display:none; }
+.roadmap-side .btn{
+  flex:0 0 auto;
+  white-space:nowrap;
+  padding:10px 14px;
+  font-size:.72rem;
+  border-radius:999px;
+  margin:0;
+}
+.rm-filter.active{
+  border-color: rgba(255,204,0,.65) !important;
+  box-shadow:0 0 16px rgba(255,204,0,.16), 0 0 16px rgba(0,242,255,.08);
+}
+
+/* ROADMAP MODAL */
+.roadmap-modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.8);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+.roadmap-box{
+  background:#05070a;
+  border:2px solid #00f2ff;
+  padding:25px;
+  border-radius:16px;
+  width:280px;
+  text-align:center;
+  box-shadow:0 0 25px rgba(0,242,255,.4);
+}
+.roadmap-box h3{ color:#ffcc00; margin-bottom:15px; }
+.roadmap-box button{
+  width:100%;
+  margin:6px 0;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  background:#0a1c22;
+  color:#fff;
+  cursor:pointer;
+  font-weight:600;
+}
+.roadmap-box button:hover{ background:#00f2ff; color:#000; }
+.close-btn{ background:#ff4444!important; margin-top:12px; }
 </style>
 </head>
+
 <body>
 
-<!-- AUDIO TAGS -->
-<audio id="magicChime" preload="auto">
-  <source src="https://www.soundjay.com/misc/sounds/magic-chime-01.mp3" type="audio/mpeg">
-</audio>
+<!-- ===== ROADMAP MODAL ===== -->
+<div id="roadmapModal" class="roadmap-modal">
+  <div class="roadmap-box">
+    <h3>📊 OPEN ROADMAP</h3>
+    <button type="button" onclick="openPhase('all')">📌 Master Roadmap</button>
+    <button type="button" onclick="openPhase('active')">🚀 Active Pilot</button>
+    <button type="button" onclick="openPhase('prepare')">🛠 Prepare Phase</button>
+    <button type="button" class="close-btn" onclick="closeRoadmap()">✖ Close</button>
+  </div>
+</div>
 
-<audio id="bgAmbient" loop preload="auto" playsinline>
-  <!-- IMPORTANT: src (NOT scr) + path relative to ROOT index.html -->
-  <source src="v2/assets/audio/ambient.mp3" type="audio/mpeg">
+<!-- ===== Anti-Fake-Site Guard ===== -->
+<div id="snrDomainGuard" class="snr-guard" aria-hidden="true">
+  <div class="snr-guard-card">
+    <h3 class="snr-guard-title">SECURITY WARNING</h3>
+
+    <p class="snr-guard-text">
+      Sistem mendeteksi Anda <b>tidak berada</b> di domain resmi SNR-VAULT.
+      Demi keamanan, fitur aksi (Stake / Claim / Withdraw) akan dikunci.
+    </p>
+
+    <div class="snr-guard-kv">
+      <div class="row">Domain saat ini: <b id="snrCurrentHost">-</b></div>
+      <div class="row">Domain resmi: <b>snrvault.space</b></div>
+    </div>
+
+    <div class="snr-guard-actions">
+      <a class="btn btn-primary" href="https://snrvault.space/">Buka Domain Resmi</a>
+      <button class="btn" type="button" onclick="snrCloseGuard()">Saya Mengerti</button>
+    </div>
+
+    <p class="snr-guard-text" style="margin-top:12px; opacity:.8;">
+      Tips: Jika link datang dari orang lain, <b>jangan connect wallet</b> sebelum memastikan domain.
+    </p>
+  </div>
+</div>
+
+<!-- ===================== SNR LOADER ===================== -->
+<div id="snrLoader" aria-hidden="true">
+  <div class="snr-boot">
+    <div class="snr-boot-top">
+      <div>
+        <div class="snr-boot-title">SNR-VAULT BOOT SEQUENCE</div>
+        <div class="snr-boot-sub">Tech • Modern • Powerful</div>
+      </div>
+      <div class="snr-chip"><span class="dot"></span> SYSTEM ONLINE</div>
+    </div>
+
+    <div class="snr-boot-logo">
+      <span class="snr">SNR</span>-<span class="vault">VAULT</span>
+    </div>
+
+    <div class="snr-boot-lines">
+      <div><span>Initializing Core</span><b>OK</b></div>
+      <div><span>Securing Vault Layer</span><b>OK</b></div>
+      <div><span>Syncing Network</span><b>OK</b></div>
+    </div>
+
+    <div class="snr-progress-wrap">
+      <div id="snrProgressBar"></div>
+    </div>
+
+    <div id="snrProgressText">
+      <span>Loading</span>
+      <span id="snrPct">0%</span>
+    </div>
+  </div>
+</div>
+
+<audio id="magicChime" src="https://www.soundjay.com/misc/sounds/magic-chime-01.mp3" preload="auto"></audio>
+<audio id="bgAmbient" loop preload="auto">
+  <source src="https://snrvault.space/ambient.mp3" type="audio/mpeg">
 </audio>
 
 <div class="wrapper">
   <div class="header">
     <div class="logo-block">
       <div class="logo"><span class="snr-text">SNR</span>-<span class="vault-text">VAULT</span></div>
+
       <div class="price-widget">
         SNR: $0.5245 <span class="price-up">▲ 4.2%</span>
       </div>
-      <div class="marquee">
-        <div class="track">
-          <span>GLOBAL PARTICIPATION • GLOBAL PARTICIPATION • GLOBAL PARTICIPATION • GLOBAL PARTICIPATION • </span>
-          <span>GLOBAL PARTICIPATION • GLOBAL PARTICIPATION • GLOBAL PARTICIPATION • GLOBAL PARTICIPATION • </span>
+
+      <div class="ticker-wrap" style="--ticker-speed: 40s;">
+        <div class="ticker-track">
+          <div class="ticker">
+            <span class="ticker-item">🌐 GLOBAL PARTICIPATION: <b>$248,510,200+</b></span>
+            <span class="ticker-item">🚀 ACTIVE NODES: <b>12,405</b></span>
+            <span class="ticker-item">💎 TOTAL VAULT: <b>85,200 SNR</b></span>
+            <span class="ticker-sep">•</span>
+          </div>
+          <div class="ticker" aria-hidden="true">
+            <span class="ticker-item">🌐 GLOBAL PARTICIPATION: <b>$248,510,200+</b></span>
+            <span class="ticker-item">🚀 ACTIVE NODES: <b>12,405</b></span>
+            <span class="ticker-item">💎 TOTAL VAULT: <b>85,200 SNR</b></span>
+            <span class="ticker-sep">•</span>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="wallet-status">
-      Wallet: <span id="wallet">Disconnected</span> | Network: <span id="network">BSC</span>
+
+      <div class="wallet-status">
+        Wallet: <span id="walletAddress">Disconnected</span>
+        <span title="BNB">BNB: <b id="bnbBalance">0.0000</b></span>
+        <span title="SNR">SNR: <b id="snrBalance">0.00</b></span>
+      </div>
     </div>
   </div>
 
@@ -426,6 +888,16 @@ body{
     <button class="btn tab-btn" data-tab="whitepaper" role="tab" aria-selected="false">
       WHITEPAPER <span class="mini">DOCS</span>
     </button>
+
+    <button class="btn tab-btn" type="button" onclick="snrGo('legacy-charter.html','LEGACY CHARTER')">
+      LEGACY <span class="mini">CHARTER</span>
+    </button>
+    <button class="btn tab-btn" type="button" onclick="snrGo('vision.html','VISION 2030')">
+      VISION <span class="mini">2030</span>
+    </button>
+    <button class="btn tab-btn" type="button" onclick="snrGo('policy.html','POLICY v1.0')">
+      POLICY <span class="mini">v1.0</span>
+    </button>
   </div>
 
   <!-- TAB: DASHBOARD -->
@@ -434,8 +906,8 @@ body{
       <div class="card">
         <h3>Wallet Info</h3>
         <div class="stat"><div>Address</div><span id="address">-</span></div>
-        <div class="stat"><div>BNB Balance</div><span id="bnb">0.00</span></div>
-        <button class="btn btn-primary" onclick="connectWallet()">Connect Wallet</button>
+        <div class="stat"><div>BNB Balance</div><span id="bnb">0.0000</span></div>
+        <button class="btn btn-primary" onclick="connectWallet();">Connect Wallet</button>
       </div>
 
       <div class="card">
@@ -529,7 +1001,7 @@ body{
       <div class="kit-grid">
         <div class="kit">
           <h4>Node Stability</h4>
-          <p><b style="color:rgba(0,242,255,.95);">Operational</b> • Monitoring aktif • Notifikasi muncul jika ada gangguan.</p>
+          <p><b class="t-neon">Operational</b> • Monitoring aktif • Notifikasi muncul jika ada gangguan.</p>
           <div class="tag">UPTIME</div>
         </div>
         <div class="kit">
@@ -589,53 +1061,300 @@ body{
     </div>
   </section>
 
-  <div class="footer">© 2026 SNR-VAULT — Transparency . Security . Souvereignty </div>
+  <!-- ROADMAP -->
+  <section class="snr-roadmap">
+    <div class="roadmap-wrap">
+
+      <div class="roadmap-topbar">
+        <div class="roadmap-side">
+          <button class="btn rm-filter active" data-filter="all" type="button">ALL</button>
+          <button class="btn rm-filter" data-filter="active" type="button">ACTIVE</button>
+          <button class="btn rm-filter" data-filter="prepare" type="button">PREPARE</button>
+
+          <a class="btn btn-primary rm-cta" href="https://wa.me/6289528533262" target="_blank">JOIN PILOT</a>
+
+          <button class="btn rm-open" type="button" onclick="showRoadmap()">OPEN ROADMAP</button>
+        </div>
+      </div>
+
+      <div class="roadmap-slider">
+        <div class="roadmap-card" data-phase="master">
+          <img src="assets/roadmap.jpeg" alt="MASTER ROADMAP">
+          <span>MASTER ROADMAP</span>
+        </div>
+
+        <div class="roadmap-card" data-phase="active">
+          <img src="assets/motor.jpeg" alt="PILOT MOTOR">
+          <span>PILOT MOTOR</span>
+        </div>
+
+        <div class="roadmap-card" data-phase="active">
+          <img src="assets/mobil.jpeg" alt="PILOT MOBIL">
+          <span>PILOT MOBIL</span>
+        </div>
+
+        <div class="roadmap-card" data-phase="prepare">
+          <img src="assets/rumah.jpeg" alt="PROPERTY">
+          <span>PROPERTY</span>
+        </div>
+
+        <div class="roadmap-card" data-phase="active">
+          <img src="assets/usaha.jpeg" alt="UMKM PILOT">
+          <span>UMKM PILOT</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer">© 2026 SNR-VAULT — <span class="t-neon">Transparency</span> . <span class="t-neon">Security</span> . <span class="t-neon">Sovereignty</span></div>
 </div>
 
 <div class="notify" id="notify"></div>
 
+<a class="snr-policy-fab" href="policy.html" onclick="try{playMagicChime();}catch(e){}; try{log('Navigate: POLICY v1.0');}catch(e){}">
+  <span class="dot"></span> POLICY
+</a>
+
 <div class="sound-toggle">
   <div style="font-size: 0.6rem; letter-spacing: 1px; color: #888; margin-right: 5px;">SOUND</div>
-  <button id="soundBtn">ON</button>
+  <button id="soundBtn" type="button">ON</button>
 </div>
 
 <script>
-/* WEB3 ENGINE */
+/* WEB3 ENGINE (FIXED) */
 const TOKEN_SNR = "0x5ce1427f77d8c58f97f5e18b36804fd54aa72718";
-const STAKING = "0x59a7098D86ac1548dAF3b14aAfC43858D274f543";
+const STAKING   = "0x59a7098D86ac1548dAF3b14aAfC43858D274f543";
 
-const BSC = {
-  chainId: "0x38",
-  chainName: "BNB Smart Chain (BSC)",
-  nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
-  rpcUrls: ["https://bsc-dataseed.binance.org/"],
-  blockExplorerUrls: ["https://bscscan.com/"]
-};
-
-let provider, signer, userAddress;
+// ===== Anti-Fake-Site Canonical =====
+const SNR_CANONICAL_HOSTS = ["snrvault.space","www.snrvault.space"];
 
 function log(msg){
-  const div=document.getElementById("log");
-  const entry=document.createElement("div");
-  entry.innerText=new Date().toLocaleTimeString()+" - "+msg;
-  div.prepend(entry);
+  const box = document.getElementById("log");
+  if(!box) return;
+  const line = document.createElement("div");
+  const t = new Date();
+  const hh = String(t.getHours()).padStart(2,"0");
+  const mm = String(t.getMinutes()).padStart(2,"0");
+  line.textContent = `[${hh}:${mm}] ${msg}`;
+  box.appendChild(line);
+  box.scrollTop = box.scrollHeight;
 }
 
-async function connectWallet(){
-  try{
-    if(!window.ethereum) return alert("Gunakan DApp Browser.");
-    unlockAudio(); // (tetap ada, hanya audio yang diperbaiki)
+function snrIsCanonicalHost(){
+  const host = (location.hostname || "").toLowerCase();
+  return SNR_CANONICAL_HOSTS.includes(host);
+}
+
+function snrShowGuard(){
+  const guard = document.getElementById("snrDomainGuard");
+  const hostEl = document.getElementById("snrCurrentHost");
+  if(hostEl) hostEl.textContent = location.hostname || "(unknown)";
+  if(guard){
+    guard.style.display = "flex";
+    guard.setAttribute("aria-hidden","false");
+  }
+}
+function snrCloseGuard(){
+  const guard = document.getElementById("snrDomainGuard");
+  if(guard){
+    guard.style.display = "none";
+    guard.setAttribute("aria-hidden","true");
+  }
+}
+
+function snrLockActions(lock=true){
+  const ids = ["btnStake","btnClaim","btnCompound","btnWithdraw"];
+  ids.forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.disabled = lock;
+    el.style.opacity = lock ? "0.45" : "1";
+    el.style.pointerEvents = lock ? "none" : "auto";
+    el.style.filter = lock ? "grayscale(0.25)" : "none";
+  });
+}
+
+/* ROADMAP AUTO SLIDE */
+(function(){
+  const slider = document.querySelector('.roadmap-slider');
+  if(!slider) return;
+  let pos = 0;
+  setInterval(()=>{
+    pos += 240;
+    if(pos >= slider.scrollWidth) pos = 0;
+    slider.scrollTo({ left:pos, behavior:"smooth" });
+  }, 3500);
+})();
+
+/* ROADMAP MODAL */
+function showRoadmap(){ document.getElementById("roadmapModal").style.display="flex"; }
+function closeRoadmap(){ document.getElementById("roadmapModal").style.display="none"; }
+function openPhase(type){
+  closeRoadmap();
+  // type: all | active | prepare
+  const btn = document.querySelector('.rm-filter[data-filter="'+type+'"]');
+  if(btn) btn.click();
+}
+
+/* ROADMAP FILTER */
+document.addEventListener("DOMContentLoaded", () => {
+  const slider = document.querySelector(".roadmap-slider");
+  const cards  = Array.from(document.querySelectorAll(".roadmap-card[data-phase]"));
+  const btns   = document.querySelectorAll(".rm-filter[data-filter]");
+  if(!slider || !cards.length || !btns.length) return;
+
+  function applyFilter(mode){
+    const m = (mode || "all").toLowerCase();
+    btns.forEach(b => b.classList.toggle("active", b.dataset.filter === m));
+
+    cards.forEach(card => {
+      const phase = (card.dataset.phase || "").toLowerCase();
+      const show =
+        m === "all" ||
+        (m === "active" && phase === "active") ||
+        (m === "prepare" && phase === "prepare") ||
+        (m === "all" && phase === "master") ||
+        (m === "all" && phase === "active") ||
+        (m === "all" && phase === "prepare") ||
+        (m === "active" && phase === "active");
+
+      // master tampil hanya di ALL (biar rapi)
+      const finalShow = (m === "all") ? true : (phase === m);
+      card.style.display = finalShow ? "" : "none";
+    });
+
+    slider.scrollTo({ left: 0, behavior: "smooth" });
+    try{ playMagicChime(); }catch(e){}
+    log("Roadmap Filter: " + m.toUpperCase());
+  }
+
+  btns.forEach(btn => btn.addEventListener("click", () => applyFilter(btn.dataset.filter)));
+  applyFilter("all");
+});
+
+// ===== Web3 =====
+let provider, signer, userAddress;
+const BSC_RPC = "https://rpc.ankr.com/bsc";
+const BSC_CHAIN_ID = "0x38";
+
+async function initProvider() {
+  if (window.ethereum) {
     provider = new ethers.BrowserProvider(window.ethereum);
+    return true;
+  }
+  provider = new ethers.JsonRpcProvider(BSC_RPC);
+  alert("⚠️ Wallet tidak terdeteksi. Buka lewat TokenPocket / TrustWallet / MetaMask Browser.");
+  return false;
+}
+
+async function switchToBSC() {
+  try {
+    await provider.send("wallet_switchEthereumChain", [{ chainId: BSC_CHAIN_ID }]);
+  } catch (e) {
+    if (e && e.code === 4902) {
+      await provider.send("wallet_addEthereumChain", [{
+        chainId: BSC_CHAIN_ID,
+        chainName: "Binance Smart Chain",
+        rpcUrls: [BSC_RPC],
+        nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
+        blockExplorerUrls: ["https://bscscan.com"]
+      }]);
+    }
+  }
+}
+
+function shorten(addr){ return addr.slice(0,6) + "..." + addr.slice(-4); }
+
+async function updateBalances(){
+  if (!provider || !userAddress) return;
+
+  const balWei = await provider.getBalance(userAddress);
+  const bnb = Number(ethers.formatEther(balWei));
+
+  const elBnbHeader = document.getElementById("bnbBalance");
+  if (elBnbHeader) elBnbHeader.innerText = bnb.toFixed(4);
+
+  const elBnbCard = document.getElementById("bnb");
+  if (elBnbCard) elBnbCard.innerText = bnb.toFixed(4);
+
+  const elAddrCard = document.getElementById("address");
+  if (elAddrCard) elAddrCard.innerText = shorten(userAddress);
+
+  const ABI = [
+    "function balanceOf(address) view returns (uint256)",
+    "function decimals() view returns (uint8)"
+  ];
+
+  const token = new ethers.Contract(TOKEN_SNR, ABI, provider);
+  const [raw, dec] = await Promise.all([ token.balanceOf(userAddress), token.decimals() ]);
+  const snr = Number(ethers.formatUnits(raw, dec));
+
+  const elSnrHeader = document.getElementById("snrBalance");
+  if (elSnrHeader) elSnrHeader.innerText = snr.toFixed(2);
+
+  const elSnrCard = document.getElementById("snr");
+  if (elSnrCard) elSnrCard.innerText = snr.toFixed(2);
+
+  log("Balances Updated: BNB " + bnb.toFixed(4) + " | SNR " + snr.toFixed(2));
+}
+
+async function connectWallet() {
+  const ok = await initProvider();
+  if (!ok) return;
+
+  try {
     await provider.send("eth_requestAccounts", []);
+    await switchToBSC();
+
     signer = await provider.getSigner();
     userAddress = await signer.getAddress();
-    document.getElementById("wallet").innerText = "Connected";
-    document.getElementById("address").innerText = userAddress.slice(0,6)+"..."+userAddress.slice(-4);
-    log("Wallet Connected.");
-  }catch(e){ log("Connect Error"); }
+    try{ localStorage.setItem("snr_wallet_autoconnect","1"); }catch(e){}
+
+    const elWallet = document.getElementById("walletAddress");
+    if (elWallet) elWallet.innerText = shorten(userAddress);
+
+    await updateBalances();
+    log("Wallet Connected: " + shorten(userAddress));
+  } catch (err) {
+    console.error(err);
+    alert("❌ Gagal connect wallet.");
+    log("Connect failed.");
+  }
 }
 
-/* TAB SWITCHER (UI ONLY) */
+async function snrAutoReconnect(){
+  let want = "0";
+  try{ want = localStorage.getItem("snr_wallet_autoconnect") || "0"; }catch(e){}
+  if(want !== "1") return;
+
+  const ok = await initProvider();
+  if(!ok) return;
+
+  try{
+    const accounts = await provider.send("eth_accounts", []);
+    if(!accounts || !accounts.length) return;
+
+    try{ await switchToBSC(); }catch(e){}
+
+    signer = await provider.getSigner();
+    userAddress = await signer.getAddress();
+
+    const elWallet = document.getElementById("walletAddress");
+    if (elWallet) elWallet.innerText = shorten(userAddress);
+
+    await updateBalances();
+    log("Auto Reconnect: OK");
+  }catch(e){
+    log("Auto Reconnect: skipped");
+  }
+}
+
+if (window.ethereum) {
+  window.ethereum.on("accountsChanged", async () => { try{ await snrAutoReconnect(); }catch(e){} });
+  window.ethereum.on("chainChanged", async () => { try{ await snrAutoReconnect(); }catch(e){} });
+}
+
+/* TAB SWITCHER */
 (function(){
   const btns = document.querySelectorAll('.tab-btn[data-tab]');
   const panels = document.querySelectorAll('.tab-panel');
@@ -660,51 +1379,87 @@ async function connectWallet(){
   showTab('dashboard');
 })();
 
-/* AUDIO ENGINE (FIXED: no duplicates, correct src, Android unlock, toggle works) */
+/* NAV Toast */
+function snrToast(msg){
+  const el = document.getElementById("notify");
+  if(!el) return;
+  el.innerHTML = `🧭 <b>NAV</b> — ${msg}`;
+  el.classList.add("show");
+  setTimeout(() => el.classList.remove("show"), 2600);
+}
+function snrGo(url,label){
+  try{
+    localStorage.setItem("snr_nav_ping", JSON.stringify({
+      t: Date.now(),
+      from: (location.pathname || "index.html"),
+      to: url,
+      label: label || url
+    }));
+  }catch(e){}
+  snrToast(`Menuju <b>${label || url}</b>`);
+  setTimeout(() => { window.location.href = url; }, 320);
+}
+(function(){
+  try{
+    const raw = localStorage.getItem("snr_nav_ping");
+    if(!raw) return;
+    const ping = JSON.parse(raw);
+    if(!ping || !ping.t) return;
+    if(Date.now() - ping.t < 8000){
+      snrToast(`Masuk: <b>${(ping.label || "Halaman")}</b> ✅`);
+    }
+    localStorage.removeItem("snr_nav_ping");
+  }catch(e){}
+})();
+
+/* AUDIO ENGINE */
 let audioEnabled = true;
 
-const ambient = document.getElementById("bgAmbient");
-const chime = document.getElementById("magicChime");
-const soundBtn = document.getElementById("soundBtn");
-
-if (ambient) ambient.volume = 0.35;
-
 function unlockAudio() {
-  if (!audioEnabled || !ambient) return;
-  ambient.play().catch(() => {});
+  const ambient = document.getElementById("bgAmbient");
+  if (audioEnabled) ambient.play().catch(()=>{});
 }
-
-function playChime() {
-  if (!audioEnabled || !chime) return;
+function playMagicChime() {
+  if (!audioEnabled) return;
+  const chime = document.getElementById("magicChime");
+  if(!chime) return;
   chime.currentTime = 0;
   chime.play().catch(()=>{});
 }
 
-// First user interaction unlock (Android/iOS)
-document.addEventListener("touchstart", unlockAudio, { once: true });
-document.addEventListener("click", unlockAudio, { once: true });
+document.getElementById("soundBtn").onclick = (e) => {
+  e.stopPropagation();
+  audioEnabled = !audioEnabled;
+  const ambient = document.getElementById("bgAmbient");
+  const btn = document.getElementById("soundBtn");
 
-// Button click sound
-document.querySelectorAll(".btn").forEach(btn => {
-  btn.addEventListener("click", playChime);
-});
+  if (audioEnabled) {
+    btn.innerText = "ON";
+    btn.classList.remove("off");
+    ambient.play().catch(()=>{});
+    log("Sound: ON");
+  } else {
+    btn.innerText = "OFF";
+    btn.classList.add("off");
+    ambient.pause();
+    log("Sound: OFF");
+  }
+};
 
-// Toggle ON/OFF
-if (soundBtn) {
-  soundBtn.addEventListener("click", () => {
-    audioEnabled = !audioEnabled;
+document.addEventListener("click", () => unlockAudio(), { once: true });
+document.querySelectorAll(".btn").forEach(btn => btn.addEventListener("click", () => { try{ playMagicChime(); }catch(e){} }));
 
-    if (audioEnabled) {
-      soundBtn.innerText = "ON";
-      soundBtn.classList.remove("off");
-      unlockAudio();
-    } else {
-      soundBtn.innerText = "OFF";
-      soundBtn.classList.add("off");
-      if (ambient) ambient.pause();
-    }
-  });
-}
+/* DOMAIN GUARD BOOT */
+(function(){
+  if(!snrIsCanonicalHost()){
+    snrShowGuard();
+    snrLockActions(true);
+    log("Security: Unverified domain detected.");
+  }else{
+    snrLockActions(false);
+    log("Security: Canonical domain OK.");
+  }
+})();
 
 /* NOTIF SYSTEM */
 setInterval(() => {
@@ -717,7 +1472,53 @@ setInterval(() => {
     setTimeout(() => el.classList.remove("show"), 3000);
   }
 }, 8000);
-</script>
 
+/* LOADER ENGINE */
+(function () {
+  var loader = document.getElementById("snrLoader");
+  var bar = document.getElementById("snrProgressBar");
+  var pct = document.getElementById("snrPct");
+  if (!loader || !bar || !pct) return;
+
+  var p = 0, done = false;
+  function setProgress(val) {
+    p = Math.max(0, Math.min(100, val));
+    bar.style.width = p + "%";
+    pct.innerHTML = Math.round(p) + "%";
+  }
+  function hideLoader() {
+    if (done) return;
+    done = true;
+    setProgress(100);
+    loader.style.transition = "opacity .35s ease, transform .35s ease";
+    loader.style.opacity = "0";
+    loader.style.transform = "scale(1.01)";
+    setTimeout(function () { loader.style.display = "none"; }, 380);
+  }
+
+  loader.style.display = "flex";
+  loader.style.opacity = "1";
+  loader.style.transform = "none";
+  setProgress(0);
+
+  var timer = setInterval(function () {
+    if (done) { clearInterval(timer); return; }
+    var step = (p < 70) ? (4 + Math.random()*2) : (p < 92 ? (0.8 + Math.random()*1.6) : 0.4);
+    setProgress(Math.min(95, p + step));
+  }, 140);
+
+  document.addEventListener("DOMContentLoaded", function () {
+    if (!done) setProgress(Math.max(p, 96));
+  });
+
+  window.addEventListener("load", function () {
+    setProgress(98);
+    setTimeout(hideLoader, 220);
+  });
+
+  setTimeout(function () { try{ snrAutoReconnect(); }catch(e){} }, 600);
+  setTimeout(function () { if (!done) hideLoader(); }, 12000);
+})();
+</script>
 </body>
 </html>
