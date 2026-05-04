@@ -693,9 +693,11 @@
             "function pendingReward(address user) view returns (uint256)" // Fungsi contoh untuk cek rewards withdraw
         ];
 
-        // ABI standar ERC20 untuk cek saldo SNR
+        // ABI standar ERC20 untuk cek saldo SNR dan Approval
         const erc20ABI = [
-            "function balanceOf(address owner) view returns (uint256)"
+            "function balanceOf(address owner) view returns (uint256)",
+            "function approve(address spender, uint256 amount) returns (bool)",
+            "function allowance(address owner, address spender) view returns (uint256)"
         ];
 
         let provider, signer, userAddress, stakingContract, tokenContract;
@@ -765,13 +767,13 @@
 
         // Fungsi Eksekusi Protokol (Staking)
         async function executeProtocol() {
-            if (!stakingContract) {
+            if (!stakingContract || !tokenContract) {
                 alert('Silakan connect wallet terlebih dahulu!');
                 return;
             }
 
             try {
-                // Ambil nilai dari input (Pastikan ID input disesuaikan jika perlu)
+                // Ambil nilai dari input
                 const amountInput = document.querySelector('#tab-staking input[type="number"]').value;
                 const referrerInput = document.querySelector('#tab-staking input[type="text"]').value;
 
@@ -784,7 +786,19 @@
                 const amountToStake = ethers.utils.parseUnits(amountInput.toString(), 18);
                 const referrer = referrerInput ? referrerInput : ethers.constants.AddressZero; // Gunakan address zero jika tidak ada referrer
 
-                // Panggil fungsi smart contract
+                // 1. Cek Allowance dan Approve Token jika diperlukan
+                const currentAllowance = await tokenContract.allowance(userAddress, stakingContractAddress);
+                if (currentAllowance.lt(amountToStake)) {
+                    console.log('Meminta approval token...');
+                    alert('Mohon setujui transaksi (Approve) token SNR Anda di Wallet.');
+                    const approveTx = await tokenContract.approve(stakingContractAddress, ethers.constants.MaxUint256); // Approve maksimal agar tidak perlu approve terus
+                    await approveTx.wait();
+                    console.log('Approval berhasil!');
+                    alert('Approval berhasil! Lanjut ke proses Eksekusi Protokol (Staking)...');
+                }
+
+                // 2. Panggil fungsi smart contract Staking (PASTIKAN NAMA FUNGSI "stake" SESUAI DENGAN SMART CONTRACT ASLI ANDA)
+                alert('Mohon setujui transaksi Staking di Wallet Anda.');
                 const tx = await stakingContract.stake(amountToStake, referrer);
                 console.log('Transaksi dikirim:', tx.hash);
                 alert('Transaksi dikirim. Menunggu konfirmasi... Hash: ' + tx.hash);
@@ -792,7 +806,10 @@
                 // Tunggu konfirmasi
                 const receipt = await tx.wait();
                 console.log('Transaksi dikonfirmasi:', receipt);
-                alert('Protokol berhasil dieksekusi!');
+                alert('Protokol berhasil dieksekusi! Selamat!');
+                
+                // Update Saldo kembali
+                await updateBalances();
 
             } catch (error) {
                 console.error("Error executing protocol:", error);
