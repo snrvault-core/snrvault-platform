@@ -142,9 +142,9 @@
                         Kembali
                     </button>
                     <button id="connect-wallet-btn" onclick="connectWallet()"
-                        class="px-6 py-2.5 rounded-lg bg-card border border-accent text-accent font-semibold hover:bg-accent/10 transition-all flex items-center gap-2">
-                        <i data-lucide="wallet" class="w-5 h-5"></i>
-                        <span>Connect Wallet</span>
+                        class="px-3 py-2 md:px-6 md:py-2.5 rounded-lg bg-card border border-accent text-accent font-semibold hover:bg-accent/10 transition-all flex items-center gap-2 max-w-[150px] md:max-w-none overflow-hidden shrink-0">
+                        <i data-lucide="wallet" class="w-5 h-5 shrink-0"></i>
+                        <span class="truncate text-sm md:text-base">Connect Wallet</span>
                     </button>
                 </div>
             </div>
@@ -376,12 +376,12 @@
                                 <input type="text" id="stake-mentor" placeholder="0x..."
                                     class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
                             </div>
-                            <div>
+                            <div class="relative z-50">
                                 <label class="block text-sm text-secondary mb-2">Durasi Staking</label>
-                                <select id="stake-duration" class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
-                                    <option value="30">30 Hari (Yield 100 BP)</option>
-                                    <option value="60">60 Hari (Yield 120 BP)</option>
-                                    <option value="90">90 Hari (Yield 150 BP)</option>
+                                <select id="stake-duration" class="w-full bg-card border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary cursor-pointer relative z-50 appearance-auto">
+                                    <option value="30" class="bg-card text-white py-2">30 Hari (Yield 100 BP)</option>
+                                    <option value="60" class="bg-card text-white py-2">60 Hari (Yield 120 BP)</option>
+                                    <option value="90" class="bg-card text-white py-2">90 Hari (Yield 150 BP)</option>
                                 </select>
                             </div>
                             <button onclick="executeProtocol()"
