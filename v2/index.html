@@ -360,29 +360,23 @@
                             <div>
                                 <label class="block text-sm text-secondary mb-2">Jumlah SNR (Min 100)</label>
                                 <div class="relative">
-                                    <input type="number" placeholder="0.0"
+                                    <input type="number" id="stake-amount" placeholder="0.0"
                                         class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
                                     <span class="absolute right-4 top-3 text-primary font-bold">SNR</span>
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-sm text-secondary mb-2">Alamat Mentor / Upline</label>
-                                <input type="text" placeholder="0x..."
+                                <input type="text" id="stake-mentor" placeholder="0x..."
                                     class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
                             </div>
                             <div>
                                 <label class="block text-sm text-secondary mb-2">Durasi Staking</label>
-                                <div class="grid grid-cols-3 gap-4">
-                                    <button
-                                        class="border border-cardBorder bg-background py-3 rounded-lg hover:border-primary focus:border-primary focus:bg-primary/10 transition-colors">30
-                                        Hari</button>
-                                    <button
-                                        class="border border-cardBorder bg-background py-3 rounded-lg hover:border-primary focus:border-primary focus:bg-primary/10 transition-colors">60
-                                        Hari</button>
-                                    <button
-                                        class="border border-cardBorder bg-background py-3 rounded-lg hover:border-primary focus:border-primary focus:bg-primary/10 transition-colors">90
-                                        Hari</button>
-                                </div>
+                                <select id="stake-duration" class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
+                                    <option value="30">30 Hari (Yield 100 BP)</option>
+                                    <option value="60">60 Hari (Yield 120 BP)</option>
+                                    <option value="90">90 Hari (Yield 150 BP)</option>
+                                </select>
                             </div>
                             <button onclick="executeProtocol()"
                                 class="w-full py-4 mt-4 bg-primary text-black font-bold rounded-lg hover:bg-yellow-400 hover:shadow-[0_0_20px_rgba(255,204,0,0.3)] transition-all">
@@ -680,17 +674,15 @@
         }
 
         // Web3 & Metamask Integration
-        const stakingContractAddress = "0x59a7098D86ac1548dAF3b14aAfC43858D274f543";
-        // Ganti dengan alamat token SNR asli Anda jika berbeda dengan contract staking
-        const tokenAddress = "0x5ce1427f77d8c58f97f5e18b36804fd54aa72718";
+        const stakingContractAddress = "0x59a7098D86ac1548dAF3b14aAfC43858D274f543"; 
+        const tokenAddress = "0x5ce1427f77d8c58f97f5e18b36804fd54aa72718"; 
 
-        // ABI Smart Contract (PASTIKAN UNTUK MENGGANTI DENGAN ABI ASLI DARI SMART CONTRACT ANDA)
+        // ABI Smart Contract Staking V4 Titan Fortress
         const stakingABI = [
-            "function stake(uint256 amount, address referrer) external",
-            "function withdraw() external",
-            "function claimRewards() external",
-            "function userInfo(address user) view returns (uint256 amount, uint256 rewardDebt)",
-            "function pendingReward(address user) view returns (uint256)" // Fungsi contoh untuk cek rewards withdraw
+            "function joinProtocol(uint256 _amount, address _mentor, uint256 _days) external",
+            "function withdrawReadyBalance(uint256 _amount) external",
+            "function claimLeaderRewards() external",
+            "function users(address) view returns (uint256 participation, uint256 originalGrant, uint256 totalRewardClaimed, uint256 durationEnd, uint256 lastUpdate, uint256 dailyYieldBP, bool isActive, bool isBlacklisted, uint8 activeProgram, uint256 supportValue, uint256 supportSettled, address mentor, uint256 directActiveCount, uint256 groupVolume, uint256 currentRank, uint256 principalDeposit, bool isFundLockedByAdmin, uint256 readyToWithdraw)"
         ];
 
         // ABI standar ERC20 untuk cek saldo SNR dan Approval
@@ -713,7 +705,7 @@
 
                     // Inisialisasi Contract
                     stakingContract = new ethers.Contract(stakingContractAddress, stakingABI, signer);
-                    tokenContract = new ethers.Contract(tokenAddress, erc20ABI, provider);
+                    tokenContract = new ethers.Contract(tokenAddress, erc20ABI, signer);
 
                     // Update UI Button
                     const shortAddress = userAddress.substring(0, 6) + '...' + userAddress.substring(38);
@@ -749,14 +741,14 @@
                 const snrBalance = ethers.utils.formatUnits(snrBalanceRaw, 18); // Asumsi 18 desimal
                 document.getElementById('ui-snr-balance').innerText = parseFloat(snrBalance).toFixed(2);
 
-                // 3. (Opsional) Ambil Data "Ready to Withdraw" dari Smart Contract Staking
-                // Jika contract punya fungsi pendingReward, contoh penerapannya:
+                // 3. Ambil Data "Ready to Withdraw" dari Smart Contract Staking V4
                 try {
-                    const withdrawableRaw = await stakingContract.pendingReward(userAddress);
+                    const userData = await stakingContract.users(userAddress);
+                    const withdrawableRaw = userData.readyToWithdraw;
                     const withdrawable = ethers.utils.formatUnits(withdrawableRaw, 18);
                     document.getElementById('ui-withdraw-balance').innerText = parseFloat(withdrawable).toFixed(2);
-                } catch (e) {
-                    console.log("Fungsi pendingReward mungkin belum ada di ABI/Contract:", e);
+                } catch(e) {
+                    console.log("Gagal membaca struct users:", e);
                     document.getElementById('ui-withdraw-balance').innerText = "0.00";
                 }
 
@@ -765,7 +757,7 @@
             }
         }
 
-        // Fungsi Eksekusi Protokol (Staking)
+        // Fungsi Eksekusi Protokol (Staking V4)
         async function executeProtocol() {
             if (!stakingContract || !tokenContract) {
                 alert('Silakan connect wallet terlebih dahulu!');
@@ -774,46 +766,87 @@
 
             try {
                 // Ambil nilai dari input
-                const amountInput = document.querySelector('#tab-staking input[type="number"]').value;
-                const referrerInput = document.querySelector('#tab-staking input[type="text"]').value;
+                const amountInput = document.getElementById('stake-amount').value;
+                const referrerInput = document.getElementById('stake-mentor').value;
+                const durationInput = document.getElementById('stake-duration').value;
 
-                if (!amountInput || amountInput <= 0) {
-                    alert('Masukkan jumlah SNR yang valid.');
+                if (!amountInput || amountInput < 100) {
+                    alert('Masukkan jumlah SNR minimal 100.');
                     return;
                 }
 
-                // Parsing jumlah token menggunakan ethers.js (asumsi token memiliki 18 desimal)
                 const amountToStake = ethers.utils.parseUnits(amountInput.toString(), 18);
-                const referrer = referrerInput ? referrerInput : ethers.constants.AddressZero; // Gunakan address zero jika tidak ada referrer
+                const referrer = referrerInput && referrerInput.trim() !== "" ? referrerInput : ethers.constants.AddressZero; 
+                const daysToStake = parseInt(durationInput);
 
-                // 1. Cek Allowance dan Approve Token jika diperlukan
+                // 1. Cek Allowance dan Approve Token
                 const currentAllowance = await tokenContract.allowance(userAddress, stakingContractAddress);
                 if (currentAllowance.lt(amountToStake)) {
                     console.log('Meminta approval token...');
                     alert('Mohon setujui transaksi (Approve) token SNR Anda di Wallet.');
-                    const approveTx = await tokenContract.approve(stakingContractAddress, ethers.constants.MaxUint256); // Approve maksimal agar tidak perlu approve terus
+                    const approveTx = await tokenContract.approve(stakingContractAddress, ethers.constants.MaxUint256);
                     await approveTx.wait();
-                    console.log('Approval berhasil!');
                     alert('Approval berhasil! Lanjut ke proses Eksekusi Protokol (Staking)...');
                 }
 
-                // 2. Panggil fungsi smart contract Staking (PASTIKAN NAMA FUNGSI "stake" SESUAI DENGAN SMART CONTRACT ASLI ANDA)
+                // 2. Panggil joinProtocol
                 alert('Mohon setujui transaksi Staking di Wallet Anda.');
-                const tx = await stakingContract.stake(amountToStake, referrer);
+                const tx = await stakingContract.joinProtocol(amountToStake, referrer, daysToStake);
                 console.log('Transaksi dikirim:', tx.hash);
                 alert('Transaksi dikirim. Menunggu konfirmasi... Hash: ' + tx.hash);
 
-                // Tunggu konfirmasi
-                const receipt = await tx.wait();
-                console.log('Transaksi dikonfirmasi:', receipt);
-                alert('Protokol berhasil dieksekusi! Selamat!');
+                await tx.wait();
+                alert('Protokol berhasil dieksekusi! Selamat bergabung di Titan Fortress.');
                 
-                // Update Saldo kembali
                 await updateBalances();
-
             } catch (error) {
                 console.error("Error executing protocol:", error);
                 alert('Terjadi kesalahan saat eksekusi: ' + (error.data?.message || error.message));
+            }
+        }
+
+        // Fungsi Withdraw Ready Balance
+        async function withdrawFunds() {
+            if (!stakingContract) {
+                alert('Silakan connect wallet terlebih dahulu!');
+                return;
+            }
+            try {
+                // Mengambil jumlah readyToWithdraw dari blockchain
+                const userData = await stakingContract.users(userAddress);
+                const readyToWd = userData.readyToWithdraw;
+                
+                if (readyToWd.eq(0)) {
+                    alert('Saldo Ready to Withdraw Anda kosong.');
+                    return;
+                }
+
+                alert('Mohon setujui transaksi penarikan di Wallet Anda.');
+                const tx = await stakingContract.withdrawReadyBalance(readyToWd);
+                await tx.wait();
+                alert('Withdraw berhasil!');
+                await updateBalances();
+            } catch (error) {
+                console.error("Withdraw error:", error);
+                alert('Gagal withdraw: ' + (error.data?.message || error.message));
+            }
+        }
+
+        // Fungsi Claim Leader Rewards
+        async function claimRewards() {
+            if (!stakingContract) {
+                alert('Silakan connect wallet terlebih dahulu!');
+                return;
+            }
+            try {
+                alert('Mohon setujui transaksi claim reward di Wallet Anda.');
+                const tx = await stakingContract.claimLeaderRewards();
+                await tx.wait();
+                alert('Claim rewards berhasil!');
+                await updateBalances();
+            } catch (error) {
+                console.error("Claim error:", error);
+                alert('Gagal claim: ' + (error.data?.message || error.message));
             }
         }
 
