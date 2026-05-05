@@ -61,6 +61,7 @@
             border: 1px solid #1E2A44;
             border-radius: 0.75rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* Tab Management */
@@ -94,6 +95,10 @@
             100% {
                 transform: translateX(-50%);
             }
+        }
+
+        #tokenomicsBurgerChart {
+            transition: transform 0.1s ease-out;
         }
     </style>
 </head>
@@ -148,96 +153,74 @@
         <section class="relative pt-20 pb-32 overflow-hidden min-h-[80vh] flex items-center">
             <div class="absolute inset-0 z-0">
                 <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px]"></div>
-                <div class="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[150px]">
-                </div>
-                <div id="globeViz"
-                    class="absolute inset-0 flex justify-center items-center opacity-60 mix-blend-screen pointer-events-none">
-                </div>
+                <div class="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[150px]"></div>
+                <div id="globeViz" class="absolute inset-0 flex justify-center items-center opacity-60 mix-blend-screen pointer-events-none"></div>
             </div>
 
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-                <div
-                    class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10 text-primary mb-8 animate-pulse">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10 text-primary mb-8 animate-pulse">
                     <i data-lucide="lock" class="w-4 h-4"></i>
-                    <span class="text-sm font-semibold tracking-wide">PROTOKOL KEDAULATAN AKTIF</span>
+                    <span class="text-sm font-semibold tracking-wide uppercase">Protokol Kedaulatan Aktif</span>
                 </div>
 
-                <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight font-display">
-                    THE DEEP SPACE <br />
-                    <span class="text-gradient">FINANCIAL FORTRESS</span>
+                <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight font-display uppercase">
+                    The Deep Space <br />
+                    <span class="text-gradient">Financial Fortress</span>
                 </h1>
 
                 <p class="text-xl text-secondary max-w-3xl mx-auto mb-10 leading-relaxed">
                     Membangun masa depan keuangan terdesentralisasi yang aman.
-                    <span class="text-primary font-medium">SNR</span>-<span class="text-white font-medium">VAULT</span> Bukan Sekedar Token, ini adalah benteng finansial yang mengintegrasikan keamanan blockchain dengan aset
-                    nyata dan Legalitas dunia nyata,
-                    untuk melindungi Anda dari risiko scammer dengan legalitas yang jelas di Indonesia.
+                    <span class="text-primary font-bold">SNR</span>-<span class="text-white font-bold">VAULT</span> bukan sekadar token, ini adalah benteng finansial yang mengintegrasikan keamanan blockchain dengan aset nyata dan Legalitas hukum Indonesia.
                 </p>
 
                 <div class="flex justify-center items-center gap-4">
                     <button onclick="switchPage('dapp')"
                         class="group px-8 py-4 rounded-lg bg-primary text-black font-bold text-lg hover:bg-yellow-400 transition-all hover:shadow-[0_0_20px_rgba(255,204,0,0.4)] flex items-center gap-2">
                         Buka Portal Aset
-                        <i data-lucide="chevron-right"
-                            class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                        <i data-lucide="chevron-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
                     </button>
                 </div>
             </div>
         </section>
 
         <section class="py-24 bg-background border-t border-cardBorder relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[100px]"></div>
             <div class="max-w-7xl mx-auto px-4 relative z-10">
                 <div class="grid md:grid-cols-2 gap-16 items-center">
                     <div>
                         <h2 class="text-3xl md:text-5xl font-display font-bold mb-8 leading-tight uppercase tracking-tighter">
-                            A NEW CHAPTER IN <br/>
-                            <span class="text-primary italic">FINANCIAL SOVEREIGNTY</span>
+                            A New Chapter in <br/>
+                            <span class="text-primary italic">Financial Sovereignty</span>
                         </h2>
                         <div class="space-y-6 text-secondary leading-relaxed text-lg">
                             <p>
-                                <span class="text-primary font-bold">SNR</span>-<span class="text-white font-bold">VAULT</span> hadir sebagai standar baru dalam pengelolaan aset digital. Kami tidak sekadar mengikuti arus yang ada, melainkan merancang sebuah ekosistem mandiri yang memprioritaskan keamanan dan pertumbuhan jangka panjang.
+                                <span class="text-primary font-bold">SNR</span>-<span class="text-white font-bold">VAULT</span> hadir sebagai standar baru dalam pengelolaan aset digital. Kami merancang ekosistem mandiri yang memprioritaskan keamanan dan pertumbuhan jangka panjang.
                             </p>
                             <div class="border-l-4 border-primary pl-6 py-2 bg-primary/5 italic">
-                                <p class="text-white">"Kedaulatan finansial bukan lagi sekadar impian. Dengan integrasi teknologi Blockchain dan manajemen aset profesional, kami menghadirkan transparansi total bagi setiap pemegang mandat."</p>
+                                <p class="text-white">"Kedaulatan finansial bukan lagi sekadar impian. Dengan integrasi teknologi Blockchain dan manajemen aset profesional, kami menghadirkan transparansi total."</p>
                             </div>
-                            <p>
-                                Fokus utama kami adalah <span class="text-white font-bold">Profesionalisme dan Visi Masa Depan</span>. Melalui protokol yang presisi, <span class="text-primary font-bold">SNR</span>-<span class="text-white font-bold">VAULT</span> memberikan kepastian logis melalui sistem yang terukur, inklusif bagi seluruh kalangan, dan didukung oleh landasan korporasi yang kuat.
-                            </p>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 gap-4">
-                        <div class="glass-panel p-8 border-primary/20 hover:border-primary/40 transition-all group">
+                        <div class="glass-panel p-8 border-primary/20 hover:border-primary/40 group">
                             <div class="flex items-start gap-4">
                                 <div class="p-3 rounded-lg bg-primary/10 text-primary">
                                     <i data-lucide="layers" class="w-6 h-6"></i>
                                 </div>
                                 <div>
                                     <h4 class="text-white font-display font-bold mb-2 uppercase tracking-wider">Infrastruktur Visioner</h4>
-                                    <p class="text-sm text-secondary">Mengadopsi efisiensi Smart Contract untuk memastikan distribusi reward berjalan secara otomatis dan akurat tanpa intervensi manual.</p>
+                                    <p class="text-sm text-secondary">Mengadopsi efisiensi Smart Contract untuk memastikan distribusi reward berjalan otomatis dan akurat.</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="glass-panel p-8 border-accent/20 hover:border-accent/40 transition-all group">
+                        <div class="glass-panel p-8 border-accent/20 hover:border-accent/40 group">
                             <div class="flex items-start gap-4">
                                 <div class="p-3 rounded-lg bg-accent/10 text-accent">
                                     <i data-lucide="briefcase" class="w-6 h-6"></i>
                                 </div>
                                 <div>
                                     <h4 class="text-white font-display font-bold mb-2 uppercase tracking-wider">Manajemen Profesional</h4>
-                                    <p class="text-sm text-secondary">Sinergi antara aset digital dan entitas hukum PT Global Nexus Capital menciptakan ekosistem yang kredibel dan memiliki fundamental yang nyata.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="glass-panel p-8 border-white/10 hover:border-white/30 transition-all group">
-                            <div class="flex items-start gap-4">
-                                <div class="p-3 rounded-lg bg-white/5 text-white">
-                                    <i data-lucide="shield-check" class="w-6 h-6"></i>
-                                </div>
-                                <div>
-                                    <h4 class="text-white font-display font-bold mb-2 uppercase tracking-wider">Inklusivitas Terukur</h4>
-                                    <p class="text-sm text-secondary">Sistem yang dirancang untuk merangkul setiap partisipan, memastikan kedaulatan aset tetap terjaga bagi semua lapisan pemegang kedaulatan.</p>
+                                    <p class="text-sm text-secondary">Sinergi antara aset digital dan entitas hukum PT Global Nexus Capital menciptakan fundamental yang nyata.</p>
                                 </div>
                             </div>
                         </div>
@@ -246,709 +229,162 @@
             </div>
         </section>
 
-        <section class="py-20 bg-background/50 border-t border-cardBorder">
-            <div class="max-w-5xl mx-auto px-4 text-center">
-                <h2 class="text-2xl md:text-3xl font-display font-bold mb-4 uppercase tracking-widest text-white">Projection of <span class="text-primary">Sovereign Value</span></h2>
-                <p class="text-secondary mb-12 text-sm max-w-2xl mx-auto">Visualisasi teknis mengenai korelasi antara pengembangan ekosistem dan penguatan nilai aset secara organik.</p>
-                <div class="glass-panel p-6 border-primary/20 bg-card/30">
-                    <canvas id="growthChart" height="150"></canvas>
+        <section id="snr-analytics-center" class="py-12 border-t border-cardBorder relative overflow-hidden" style="background: radial-gradient(circle at center, #0d1526 0%, #0B0F19 100%);">
+            <div class="absolute inset-0 opacity-10" style="background-image: linear-gradient(#1E2A44 1px, transparent 1px), linear-gradient(90deg, #1E2A44 1px, transparent 1px); background-size: 30px 30px;"></div>
+            <div class="max-w-7xl mx-auto px-4 relative z-10">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6 border-b border-cardBorder pb-6">
+                    <div class="text-center md:text-left">
+                        <h2 class="text-3xl font-display font-bold text-white tracking-widest uppercase">SNR-VAULT</h2>
+                        <p class="text-gradient text-sm font-semibold tracking-wide">THE DEEP SPACE FINANCIAL FORTRESS</p>
+                    </div>
+                    
+                    <div class="glass-panel px-6 py-3 border-primary/30 text-center min-w-[250px] shadow-[0_0_15px_rgba(255,204,0,0.2)]">
+                        <p class="text-secondary text-xs uppercase tracking-widest mb-1 text-white">Scarcity Counter</p>
+                        <div class="font-display text-2xl font-bold text-white flex items-center justify-center gap-2">
+                            <span class="text-primary">[</span>
+                            <span id="scarcity-num" class="text-white">125,000</span>
+                            <span class="text-primary">]</span>
+                        </div>
+                        <p class="text-xs text-primary/80 mt-1 uppercase">Shares Remaining / 125,000</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="space-y-6 text-white">
+                        <div class="glass-panel p-6 border-primary/20 bg-card/50 relative overflow-hidden group">
+                            <div class="relative z-10">
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="p-3 rounded-xl bg-primary/10 border border-primary/30 shadow-[0_0_10px_rgba(255,204,0,0.3)]">
+                                        <i data-lucide="shield-check" class="w-8 h-8 text-primary"></i>
+                                    </div>
+                                    <h3 class="text-xl font-display font-bold text-white uppercase tracking-wider">Kedaulatan Finansial</h3>
+                                </div>
+                                <p class="text-secondary text-sm leading-relaxed mb-4">
+                                    SNR-VAULT memadukan transparansi <span class="text-accent">Blockchain</span> dengan kepastian <span class="text-white font-semibold">Aset Riil</span>.
+                                </p>
+                            </div>
+                        </div>
+                        <button onclick="switchPage('dapp')" class="w-full group px-8 py-4 rounded-lg bg-primary text-black font-bold text-lg hover:bg-yellow-400 transition-all flex items-center justify-center gap-3">
+                            <i data-lucide="key-round" class="w-5 h-5"></i> Masuk Portal Aset
+                        </button>
+                    </div>
+
+                    <div class="lg:col-span-1 glass-panel p-6 border-accent/20 bg-card/30 relative text-white">
+                        <h3 class="text-lg font-display font-bold text-white uppercase tracking-wider mb-6">Multi-Asset Wave</h3>
+                        <div style="position: relative; height: 320px; width: 100%;">
+                            <canvas id="livingWaveChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-6 border-cardBorder bg-card/50 overflow-hidden relative text-white">
+                        <div class="flex items-center gap-3 mb-5 border-b border-cardBorder pb-4">
+                            <i data-lucide="activity" class="w-5 h-5 text-green-400 animate-pulse"></i>
+                            <h3 class="text-lg font-display font-bold text-white uppercase tracking-wider">Live Stream</h3>
+                        </div>
+                        <div id="waterfall-container" class="space-y-3 h-[300px] overflow-hidden text-xs font-mono relative">
+                            <div id="waterfall-content" class="relative z-0 space-y-2.5"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
-       <section id="snr-analytics-center" class="py-12 border-t border-cardBorder relative overflow-hidden" style="background: radial-gradient(circle at center, #0d1526 0%, #0B0F19 100%);">
-    
-    <div class="absolute inset-0 opacity-10" style="background-image: linear-gradient(#1E2A44 1px, transparent 1px), linear-gradient(90deg, #1E2A44 1px, transparent 1px); background-size: 30px 30px;"></div>
-
-    <div class="max-w-7xl mx-auto px-4 relative z-10">
-        
-        <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6 border-b border-cardBorder pb-6">
-            <div class="text-center md:text-left">
-                <h2 class="text-3xl font-display font-bold text-white tracking-widest uppercase">SNR-VAULT</h2>
-                <p class="text-gradient text-sm font-semibold tracking-wide">THE DEEP SPACE FINANCIAL FORTRESS</p>
-            </div>
-            
-            <div class="glass-panel px-6 py-3 border-primary/30 text-center min-w-[250px] shadow-[0_0_15px_rgba(255,204,0,0.2)]">
-                <p class="text-secondary text-xs uppercase tracking-widest mb-1">Scarcity Counter</p>
-                <div class="font-display text-2xl font-bold text-white flex items-center justify-center gap-2">
-                    <span class="text-primary">[</span>
-                    <span id="scarcity-num" class="text-white">125,000</span>
-                    <span class="text-primary">]</span>
+        <section id="snr-tokenomics" class="py-16 relative overflow-hidden" style="background: #000510;">
+            <div class="max-w-7xl mx-auto px-4 relative z-10">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-display font-bold tracking-widest text-white uppercase">
+                        <span class="text-primary">SNR</span> Tokenomics
+                    </h2>
+                    <div class="h-1 w-24 bg-primary mx-auto mt-4 rounded-full shadow-[0_0_10px_#FFD700]"></div>
+                    <p class="text-secondary mt-6 font-display uppercase tracking-widest text-sm">Total Supply: 1,000,000,000 SNR</p>
                 </div>
-                <p class="text-xs text-primary/80 mt-1 uppercase">Shares Remaining / 125,000</p>
-            </div>
-        </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <div class="space-y-6">
-                <div class="glass-panel p-6 border-primary/20 bg-card/50 relative overflow-hidden group hover:border-primary/50 transition-all">
-                    <div class="absolute -inset-1 bg-gradient-to-r from-primary/20 to-accent/20 rounded-xl blur-lg opacity-30 group-hover:opacity-50 transition"></div>
-                    
-                    <div class="relative z-10">
-                        <div class="flex items-center gap-4 mb-4">
-                            <div class="p-3 rounded-xl bg-primary/10 border border-primary/30 shadow-[0_0_10px_rgba(255,204,0,0.3)]">
-                                <i data-lucide="shield-check" class="w-8 h-8 text-primary"></i>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div class="relative flex justify-center items-center">
+                        <div class="absolute w-80 h-80 rounded-full bg-primary/5 blur-[80px] animate-pulse"></div>
+                        <div style="position: relative; height: 380px; width: 100%; max-width: 450px;">
+                            <canvas id="tokenomicsBurgerChart"></canvas>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                                <span class="text-primary font-display text-xs tracking-widest uppercase">Supply</span>
+                                <span class="text-white font-display text-2xl font-bold">1B SNR</span>
                             </div>
-                            <h3 class="text-xl font-display font-bold text-white uppercase tracking-wider">Kedaulatan Finansial</h3>
-                        </div>
-                        <p class="text-secondary text-sm leading-relaxed mb-4">
-                            SNR-VAULT dibangun di atas fondasi kedaulatan finansial yang sejati. Memadukan transparansi <span class="text-accent">Blockchain</span> dengan kepastian <span class="text-white font-semibold">Aset Riil</span> di bawah legalitas hukum Indonesia.
-                        </p>
-                        <div class="text-xs text-secondary/80 border-t border-cardBorder pt-3 space-y-1">
-                            <p>• Logic Secured | Asset Backed</p>
-                            <p>• Covered by <span class="text-white">PT Global Nexus Capital</span></p>
                         </div>
                     </div>
-                </div>
 
-                <button onclick="switchPage('dapp')"
-                    class="w-full group px-8 py-4 rounded-lg bg-primary text-black font-bold text-lg hover:bg-yellow-400 transition-all hover:shadow-[0_0_20px_rgba(255,204,0,0.4)] flex items-center justify-center gap-3">
-                    <i data-lucide="key-round" class="w-5 h-5"></i>
-                    Masuk Portal Aset
-                    <i data-lucide="chevron-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
-                </button>
-            </div>
-
-            <div class="lg:col-span-1 glass-panel p-6 border-accent/20 bg-card/30 relative">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-lg font-display font-bold text-white uppercase tracking-wider">Multi-Asset Comparison</h3>
-                    <div class="flex gap-2 text-xs font-semibold">
-                        <span class="flex items-center gap-1.5 text-primary"><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span> SNR</span>
-                        <span class="flex items-center gap-1.5 text-accent"><span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span> REWARD</span>
-                        <span class="flex items-center gap-1.5 text-white"><span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> GROWTH</span>
-                    </div>
-                </div>
-                <div style="position: relative; height: 320px; width: 100%;">
-                    <canvas id="livingWaveChart"></canvas>
-                </div>
-            </div>
-
-            <div class="glass-panel p-6 border-cardBorder bg-card/50 overflow-hidden relative">
-                <div class="flex items-center gap-3 mb-5 border-b border-cardBorder pb-4">
-                    <i data-lucide="activity" class="w-5 h-5 text-green-400 animate-pulse"></i>
-                    <h3 class="text-lg font-display font-bold text-white uppercase tracking-wider">Live Transaction Stream</h3>
-                </div>
-                
-                <div id="waterfall-container" class="space-y-3 h-[300px] overflow-hidden text-xs font-mono relative">
-                    <div class="absolute top-0 left-0 right-0 h-10 bg-gradient-to-b from-card via-card/80 to-transparent z-10"></div>
-                    <div class="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-card via-card/80 to-transparent z-10"></div>
-                    
-                    <div id="waterfall-content" class="relative z-0 space-y-2.5">
-                        <div class="flex justify-between items-center text-secondary border-b border-cardBorder/50 pb-1.5">
-                            <span class="text-accent">TX_ID: 0x8a1c...</span>
-                            <span class="text-white">Stake</span>
-                            <span class="text-primary">+1,200 SNR</span>
+                    <div id="tokenomics-list" class="space-y-4">
+                        <div class="glass-panel p-4 border-l-4 border-[#FFD700] flex justify-between items-center group">
+                            <div>
+                                <h4 class="text-primary font-bold font-display text-sm uppercase">Treasury SNR</h4>
+                                <p class="text-secondary text-xs mt-1 leading-relaxed">Dana cadangan strategis likuiditas.</p>
+                            </div>
+                            <div class="text-right"><span class="text-white font-bold block">400M</span><span class="text-primary text-[10px] font-bold">40%</span></div>
+                        </div>
+                        <div class="glass-panel p-4 border-l-4 border-[#00D1FF] flex justify-between items-center group">
+                            <div>
+                                <h4 class="text-[#00D1FF] font-bold font-display text-sm uppercase">Community Reward</h4>
+                                <p class="text-secondary text-xs mt-1 leading-relaxed">Imbal hasil kedaulatan komunitas.</p>
+                            </div>
+                            <div class="text-right"><span class="text-white font-bold block">300M</span><span class="text-[#00D1FF] text-[10px] font-bold">30%</span></div>
+                        </div>
+                        <div class="glass-panel p-4 border-l-4 border-[#FFFFFF] flex justify-between items-center group">
+                            <div>
+                                <h4 class="text-white font-bold font-display text-sm uppercase">Presale Asset</h4>
+                                <p class="text-secondary text-xs mt-1 leading-relaxed">Distribusi kepemilikan tahap awal.</p>
+                            </div>
+                            <div class="text-right"><span class="text-white font-bold block">150M</span><span class="text-white text-[10px] font-bold">15%</span></div>
+                        </div>
+                        <div class="glass-panel p-4 border-l-4 border-[#FF4500] flex justify-between items-center group">
+                            <div>
+                                <h4 class="text-[#FF4500] font-bold font-display text-sm uppercase">Founder & Team</h4>
+                                <p class="text-secondary text-xs mt-1 leading-relaxed">Vesting jangka panjang tim pengembang.</p>
+                            </div>
+                            <div class="text-right"><span class="text-white font-bold block">100M</span><span class="text-[#FF4500] text-[10px] font-bold">10%</span></div>
+                        </div>
+                        <div class="glass-panel p-4 border-l-4 border-[#A855F7] flex justify-between items-center group">
+                            <div>
+                                <h4 class="text-[#A855F7] font-bold font-display text-sm uppercase">Marketing Reward</h4>
+                                <p class="text-secondary text-xs mt-1 leading-relaxed">Ekspansi dan apresiasi mitra global.</p>
+                            </div>
+                            <div class="text-right"><span class="text-white font-bold block">50M</span><span class="text-[#A855F7] text-[10px] font-bold">5%</span></div>
                         </div>
                     </div>
                 </div>
             </div>
-
-        </div>
-    </div>
-</section>
-
-<section id="snr-tokenomics" class="py-16 relative overflow-hidden" style="background: #000510;">
-    <div class="max-w-7xl mx-auto px-4 relative z-10">
-        
-        <div class="text-center mb-12">
-            <h2 style="font-family: 'Orbitron', sans-serif;" class="text-3xl font-bold tracking-widest text-white">
-                <span style="color: #FFD700;">SNR</span> TOKENOMICS
-            </h2>
-            <div class="h-1 w-24 bg-primary mx-auto mt-4 rounded-full shadow-[0_0_10px_#FFD700]"></div>
-            <p class="text-secondary mt-6 font-display uppercase tracking-widest text-sm">Total Supply: 1,000,000,000 SNR</p>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            
-            <div class="relative flex justify-center items-center">
-                <div class="absolute w-80 h-80 rounded-full bg-primary/5 blur-[80px] animate-pulse"></div>
-                
-                <div style="position: relative; height: 380px; width: 100%; max-width: 450px;">
-                    <canvas id="tokenomicsBurgerChart"></canvas>
-                    
-                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                        <span class="text-primary font-display text-xs tracking-widest">SUPPLY</span>
-                        <span class="text-white font-display text-2xl font-bold">1B SNR</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="space-y-4">
-                <div class="glass-panel p-4 border-l-4 border-[#FFD700] flex justify-between items-center group hover:bg-white/5 transition-all">
-                    <div>
-                        <h4 class="text-primary font-bold font-display text-sm uppercase">Treasury SNR</h4>
-                        <p class="text-secondary text-xs mt-1 leading-relaxed">Dana cadangan strategis untuk menjaga likuiditas dan stabilitas nilai jangka panjang.</p>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-white font-bold block">400M</span>
-                        <span class="text-primary text-[10px] font-bold">40%</span>
-                    </div>
-                </div>
-
-                <div class="glass-panel p-4 border-l-4 border-[#00D1FF] flex justify-between items-center group hover:bg-white/5 transition-all">
-                    <div>
-                        <h4 class="text-[#00D1FF] font-bold font-display text-sm uppercase">Community Reward</h4>
-                        <p class="text-secondary text-xs mt-1 leading-relaxed">Alokasi khusus untuk imbal hasil (reward) staking para kedaulatan komunitas.</p>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-white font-bold block">300M</span>
-                        <span class="text-[#00D1FF] text-[10px] font-bold">30%</span>
-                    </div>
-                </div>
-
-                <div class="glass-panel p-4 border-l-4 border-[#FFFFFF] flex justify-between items-center group hover:bg-white/5 transition-all">
-                    <div>
-                        <h4 class="text-white font-bold font-display text-sm uppercase">Presale Asset</h4>
-                        <p class="text-secondary text-xs mt-1 leading-relaxed">Tahap awal distribusi kepemilikan aset bagi investor visioner pertama.</p>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-white font-bold block">150M</span>
-                        <span class="text-white text-[10px] font-bold">15%</span>
-                    </div>
-                </div>
-
-                <div class="glass-panel p-4 border-l-4 border-[#FF4500] flex justify-between items-center group hover:bg-white/5 transition-all">
-                    <div>
-                        <h4 class="text-[#FF4500] font-bold font-display text-sm uppercase">Founder & Team</h4>
-                        <p class="text-secondary text-xs mt-1 leading-relaxed">Vesting jangka panjang untuk komitmen tim pengembang dan pendiri.</p>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-white font-bold block">100M</span>
-                        <span class="text-[#FF4500] text-[10px] font-bold">10%</span>
-                    </div>
-                </div>
-
-                <div class="glass-panel p-4 border-l-4 border-[#A855F7] flex justify-between items-center group hover:bg-white/5 transition-all">
-                    <div>
-                        <h4 class="text-[#A855F7] font-bold font-display text-sm uppercase">Marketing Reward</h4>
-                        <p class="text-secondary text-xs mt-1 leading-relaxed">Ekspansi ekosistem dan apresiasi untuk mitra promosi global.</p>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-white font-bold block">50M</span>
-                        <span class="text-[#A855F7] text-[10px] font-bold">5%</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const ctxBurger = document.getElementById('tokenomicsBurgerChart').getContext('2d');
-        
-        const data = {
-            labels: ['Treasury', 'Community Reward', 'Presale', 'Founder & Team', 'Marketing'],
-            datasets: [{
-                data: [400, 300, 150, 100, 50],
-                backgroundColor: [
-                    '#FFD700', // Gold
-                    '#00D1FF', // Cyan
-                    '#FFFFFF', // White
-                    '#FF4500', // Orange-Red
-                    '#A855F7'  // Purple
-                ],
-                borderColor: '#000510',
-                borderWidth: 5,
-                hoverOffset: 30, // Efek saat menyala
-                spacing: 10
-            }]
-        };
-
-        const burgerChart = new Chart(ctxBurger, {
-            type: 'doughnut',
-            data: data,
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '75%',
-                plugins: {
-                    legend: { display: false }
-                },
-                animation: {
-                    animateRotate: true,
-                    duration: 1000
-                }
-            }
-        });
-
-        // --- SNR-VAULT SEQUENTIAL GLOW LOGIC ---
-        let currentIndex = 0;
-        const totalSegments = data.datasets[0].data.length;
-
-        function rotateHighlight() {
-            // 1. Reset semua segmen ke keadaan normal
-            burgerChart.setActiveElements([]);
-            burgerChart.tooltip.setActiveElements([], {x: 0, y: 0});
-
-            // 2. Berikan "Highlight" pada segmen saat ini
-            burgerChart.setActiveElements([
-                {
-                    datasetIndex: 0,
-                    index: currentIndex,
-                }
-            ]);
-
-            // 3. Update Chart secara halus
-            burgerChart.update();
-
-            // 4. Sinkronisasi dengan list penjelasan di sebelah kanan (Opsional: Memberi efek glow pada list)
-            const panels = document.querySelectorAll('.glass-panel');
-            panels.forEach((p, i) => {
-                if(i === currentIndex) {
-                    p.style.boxShadow = `0 0 20px ${data.datasets[0].backgroundColor[i]}44`;
-                    p.style.transform = "translateX(10px)";
-                    p.style.background = "rgba(255,255,255,0.1)";
-                } else {
-                    p.style.boxShadow = "none";
-                    p.style.transform = "translateX(0)";
-                    p.style.background = "rgba(255,255,255,0.03)";
-                }
-            });
-
-            // 5. Pindah ke segmen berikutnya
-            currentIndex = (currentIndex + 1) % totalSegments;
-        }
-
-        // Jalankan rotasi setiap 2 detik (2000ms)
-        setInterval(rotateHighlight, 2000);
-    });
-</script>
-
-<style>
-    /* Tambahkan transisi halus agar pergerakan list di kanan tidak kaku */
-    .glass-panel {
-        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-</style>
-
-<script>
-    // --- Point 3: Rotating Scarcity Counter Logic ---
-    function initScarcityCounter() {
-        const scarcityNumEl = document.getElementById('scarcity-num');
-        let currentShares = 125000;
-
-        // Simulate random shares being locked/taken
-        setInterval(() => {
-            // Randomly decrease by 1 to 5 shares
-            const reduction = Math.floor(Math.random() * 5) + 1;
-            currentShares -= reduction;
-
-            // Ensure it doesn't go below 0 (for simulation)
-            if (currentShares < 100) currentShares = 125000;
-
-            // Format with commas for display
-            scarcityNumEl.innerText = currentShares.toLocaleString('en-US');
-            
-            // Add a temporary glow effect on change
-            scarcityNumEl.classList.add('text-primary');
-            setTimeout(() => scarcityNumEl.classList.remove('text-primary'), 100);
-
-        }, 3500); // Update every 3.5 seconds
-    }
-
-    // --- Point 1: Living Multi-Asset Wave Chart Logic ---
-    function initLivingWaveChart() {
-        const ctx = document.getElementById('livingWaveChart').getContext('2d');
-
-        // Initial Data
-        const initialLabels = ['T-5', 'T-4', 'T-3', 'T-2', 'T-1', 'NOW'];
-        const snrData = [40, 55, 45, 80, 85, 100];
-        const rewardData = [20, 35, 60, 55, 70, 90];
-        const growthData = [10, 25, 30, 45, 50, 65];
-
-        const chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: initialLabels,
-                datasets: [
-                    {
-                        label: 'SNR VALUE',
-                        data: snrData,
-                        borderColor: '#FFD700', // Primary Gold
-                        backgroundColor: 'rgba(255, 215, 0, 0.1)',
-                        fill: true,
-                        tension: 0.4, // Smooth waves
-                        borderWidth: 3,
-                        pointRadius: 4,
-                        pointBackgroundColor: '#FFD700'
-                    },
-                    {
-                        label: 'REWARD POOL',
-                        data: rewardData,
-                        borderColor: '#00D1FF', // Accent Cyan
-                        backgroundColor: 'rgba(0, 209, 255, 0.1)',
-                        fill: true,
-                        tension: 0.4,
-                        borderWidth: 2,
-                        pointRadius: 0,
-                        borderDash: [5, 5] // Dashed line
-                    },
-                    {
-                        label: 'GROWTH',
-                        data: growthData,
-                        borderColor: '#FFFFFF', // White
-                        backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                        fill: true,
-                        tension: 0.4,
-                        borderWidth: 2,
-                        pointRadius: 0
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false } // Custom legend used in HTML
-                },
-                scales: {
-                    y: {
-                        grid: { color: 'rgba(255, 255, 255, 0.03)' },
-                        ticks: { display: false } // Hide Y ticks for cleaner look
-                    },
-                    x: {
-                        grid: { display: false },
-                        ticks: { color: '#64748b', font: { family: 'Orbitron', size: 9 } }
-                    }
-                },
-                // Crucial for the "living" effect: Smooth animations
-                animation: {
-                    duration: 1000,
-                    easing: 'easeInOutQuad'
-                }
-            }
-        });
-
-        // Simulate real-time data updates (the "living" part)
-        setInterval(() => {
-            // 1. Add new Y-axis data points (simulate growth with random variance)
-            chart.data.datasets[0].data.push(Math.min(120, chart.data.datasets[0].data[chart.data.datasets[0].data.length - 1] + (Math.random() * 8 - 2))); // SNR
-            chart.data.datasets[1].data.push(Math.min(110, chart.data.datasets[1].data[chart.data.datasets[1].data.length - 1] + (Math.random() * 6 - 1))); // Reward
-            chart.data.datasets[2].data.push(Math.min(100, chart.data.datasets[2].data[chart.data.datasets[2].data.length - 1] + (Math.random() * 4)));     // Growth
-
-            // 2. Remove old data to keep the window (T-5 to NOW)
-            if (chart.data.datasets[0].data.length > 8) {
-                chart.data.datasets[0].data.shift();
-                chart.data.datasets[1].data.shift();
-                chart.data.datasets[2].data.shift();
-            }
-
-            // 3. Update the chart smoothly
-            chart.update('none'); // 'none' for performance, or default for animation
-
-        }, 3000); // Update every 3 seconds
-    }
-
-    // --- Point 1: Live Stream Waterfall Logic ---
-    function initWaterfallStream() {
-        const contentEl = document.getElementById('waterfall-content');
-        
-        // Define some example transaction types and data
-        const txTypes = [
-            { type: 'Stake', color: 'text-white', icon: 'lock' },
-            { type: 'Harvest', color: 'text-green-400', icon: 'zap' },
-            { type: 'P2P', color: 'text-accent', icon: 'arrow-left-right' },
-            { type: 'Join v4', color: 'text-primary', icon: 'shield' },
-            { type: 'Asset Req', color: 'text-white', icon: 'car' }
-        ];
-
-        // Function to create a new transaction row
-        function createTxRow() {
-            const tx = txTypes[Math.floor(Math.random() * txTypes.length)];
-            const txId = '0x' + Math.random().toString(16).slice(2, 6) + '...' + Math.random().toString(16).slice(2, 6);
-            
-            let amount, amountColor;
-            if (tx.type === 'Harvest') {
-                amount = '+' + (Math.random() * 50 + 5).toFixed(2) + ' SNR';
-                amountColor = 'text-green-400';
-            } else if (tx.type === 'P2P') {
-                amount = (Math.random() > 0.5 ? '+' : '-') + (Math.random() * 500 + 100).toFixed(0) + ' SNR';
-                amountColor = amount.startsWith('+') ? 'text-green-400' : 'text-red-400';
-            } else {
-                amount = '+' + (Math.random() * 1000 + 100).toFixed(0) + ' SNR';
-                amountColor = 'text-primary';
-            }
-
-            const row = document.createElement('div');
-            row.className = 'flex justify-between items-center text-secondary border-b border-cardBorder/50 pb-1.5 opacity-0 transform translate-y-2 transition-all duration-500';
-            
-            row.innerHTML = `
-                <span class="text-accent font-mono text-[10px]">${txId}</span>
-                <span class="${tx.color} font-semibold flex items-center gap-1"><i data-lucide="${tx.icon}" class="w-3.5 h-3.5"></i> ${tx.type}</span>
-                <span class="${amountColor} font-bold">${amount}</span>
-            `;
-
-            return row;
-        }
-
-        // Add 6 initial rows
-        for (let i = 0; i < 6; i++) {
-            const row = createTxRow();
-            row.classList.remove('opacity-0', 'translate-y-2'); // Show initial rows
-            contentEl.appendChild(row);
-        }
-        lucide.createIcons({attrs: {class: 'w-3.5 h-3.5'}}); // Initialize new icons
-
-        // Stream logic: Add new row, remove oldest
-        setInterval(() => {
-            const newRow = createTxRow();
-            contentEl.prepend(newRow); // Add to top
-            lucide.createIcons({container: newRow}); // Init new icons in this row
-
-            // Animate in the new row
-            setTimeout(() => {
-                newRow.classList.remove('opacity-0', 'translate-y-2');
-            }, 50);
-
-            // Remove oldest row if we exceed the limit (to keep h-[300px])
-            const rows = contentEl.querySelectorAll('div');
-            if (rows.length > 8) {
-                const oldest = rows[rows.length - 1];
-                oldest.classList.add('opacity-0', 'translate-y-2');
-                setTimeout(() => oldest.remove(), 500);
-            }
-
-        }, 2800); // Add new transaction every 2.8 seconds
-    }
-
-    // Initialize all components when DOM is ready
-    document.addEventListener('DOMContentLoaded', () => {
-        // Point 3
-        if (document.getElementById('scarcity-num')) {
-            initScarcityCounter();
-        }
-        
-        // Point 1 (Chart)
-        if (document.getElementById('livingWaveChart')) {
-            // Ensure Chart.js is loaded
-            if (typeof Chart !== 'undefined') {
-                initLivingWaveChart();
-            } else {
-                console.error("Chart.js not found. Dynamic chart will not load.");
-            }
-        }
-        
-        // Point 1 (Waterfall)
-        if (document.getElementById('waterfall-container')) {
-            initWaterfallStream();
-        }
-    });
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script>
-    const ctxMulti = document.getElementById('multiAssetChart').getContext('2d');
-    
-    // Gradients
-    const goldGrad = ctxMulti.createLinearGradient(0, 0, 0, 400);
-    goldGrad.addColorStop(0, 'rgba(255, 215, 0, 0.3)');
-    goldGrad.addColorStop(1, 'rgba(0, 5, 16, 0)');
-
-    const blueGrad = ctxMulti.createLinearGradient(0, 0, 0, 400);
-    blueGrad.addColorStop(0, 'rgba(0, 150, 255, 0.3)');
-    blueGrad.addColorStop(1, 'rgba(0, 5, 16, 0)');
-
-    const whiteGrad = ctxMulti.createLinearGradient(0, 0, 0, 400);
-    whiteGrad.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
-    whiteGrad.addColorStop(1, 'rgba(0, 5, 16, 0)');
-
-    new Chart(ctxMulti, {
-        type: 'line',
-        data: {
-            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
-            datasets: [
-                {
-                    label: 'SNR VALUE',
-                    data: [40, 55, 45, 80, 85, 100],
-                    borderColor: '#FFD700',
-                    backgroundColor: goldGrad,
-                    fill: true,
-                    tension: 0.4,
-                    borderWidth: 3,
-                    pointRadius: 5,
-                    pointBackgroundColor: '#FFD700'
-                },
-                {
-                    label: 'REWARD POOL',
-                    data: [20, 35, 60, 55, 70, 90],
-                    borderColor: '#00D1FF',
-                    backgroundColor: blueGrad,
-                    fill: true,
-                    tension: 0.4,
-                    borderWidth: 2,
-                    pointRadius: 0, // Cleaner look for secondary line
-                    borderDash: [5, 5] // Dashed line for distinction
-                },
-                {
-                    label: 'GROWTH',
-                    data: [10, 25, 30, 45, 50, 65],
-                    borderColor: '#FFFFFF',
-                    backgroundColor: whiteGrad,
-                    fill: true,
-                    tension: 0.4,
-                    borderWidth: 2,
-                    pointRadius: 0
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'top',
-                    labels: {
-                        color: '#FFFFFF',
-                        font: { family: 'Orbitron', size: 10 }
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                    ticks: { color: '#888', font: { family: 'Orbitron' } }
-                },
-                x: {
-                    grid: { display: false },
-                    ticks: { color: '#FFFFFF', font: { family: 'Orbitron' } }
-                }
-            }
-        }
-    });
-</script>
+        </section>
 
         <section class="py-24 bg-background relative border-t border-cardBorder">
             <div class="max-w-7xl mx-auto px-4">
                 <div class="text-center mb-16">
-                    <h2 class="text-3xl md:text-5xl font-display font-bold mb-4 text-white">THE STRATEGIC <span class="text-primary">ROADMAP</span></h2>
+                    <h2 class="text-3xl md:text-5xl font-display font-bold mb-4 text-white uppercase">The Strategic <span class="text-primary">Roadmap</span></h2>
                     <p class="text-secondary tracking-widest text-sm font-semibold uppercase">Arsitektur Pembangunan Ekosistem SNR-VAULT</p>
                 </div>
-
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="glass-panel p-6 border-primary/20 hover:border-primary/50 transition-all">
-                        <div class="text-primary font-display font-bold text-xl mb-4">FASE 01</div>
-                        <h4 class="text-white font-bold mb-2 uppercase text-sm">Infrastruktur Inti</h4>
-                        <p class="text-xs text-secondary leading-relaxed">Membangun fondasi digital yang kokoh, server terdesentralisasi, dan sistem keamanan tingkat tinggi.</p>
-                    </div>
-
-                    <div class="glass-panel p-6 border-white/10 hover:border-white/30 transition-all">
-                        <div class="text-white font-display font-bold text-xl mb-4">FASE 02</div>
-                        <h4 class="text-white font-bold mb-2 uppercase text-sm">Formalitas & Legalitas</h4>
-                        <p class="text-xs text-secondary leading-relaxed">Penyelarasan regulasi dan penguatan payung hukum melalui PT Global Nexus Capital & PT SNR Digital Transformasi.</p>
-                    </div>
-
-                    <div class="glass-panel p-6 border-accent/20 hover:border-accent/50 transition-all">
-                        <div class="text-accent font-display font-bold text-xl mb-4">FASE 03</div>
-                        <h4 class="text-white font-bold mb-2 uppercase text-sm">Blockchain Evolution</h4>
-                        <p class="text-xs text-secondary leading-relaxed">Implementasi Smart Contract Titan v4 dan audit protokol secara berkala untuk kedaulatan data.</p>
-                    </div>
-
-                    <div class="glass-panel p-6 border-primary/20 hover:border-primary/50 transition-all">
-                        <div class="text-primary font-display font-bold text-xl mb-4">FASE 04</div>
-                        <h4 class="text-white font-bold mb-2 uppercase text-sm">Hybrid Ecosystem</h4>
-                        <p class="text-xs text-secondary leading-relaxed">Integrasi strategis antara aset digital SNR dengan portofolio aset riil yang produktif dan terukur.</p>
-                    </div>
-
-                    <div class="glass-panel p-6 border-accent/20 hover:border-accent/50 transition-all">
-                        <div class="text-accent font-display font-bold text-xl mb-4">FASE 05</div>
-                        <h4 class="text-white font-bold mb-2 uppercase text-sm">Mobility Program</h4>
-                        <p class="text-xs text-secondary leading-relaxed">Peluncuran program perolehan kendaraan motor dan mobil melalui skema dukungan aset digital yang inovatif.</p>
-                    </div>
-
-                    <div class="glass-panel p-6 border-primary/20 hover:border-primary/50 transition-all">
-                        <div class="text-primary font-display font-bold text-xl mb-4">FASE 06</div>
-                        <h4 class="text-white font-bold mb-2 uppercase text-sm">Sovereign Living</h4>
-                        <p class="text-xs text-secondary leading-relaxed">Pengembangan aset hunian dan real estate sebagai bentuk jaminan kenyamanan jangka panjang bagi pemegang kedaulatan.</p>
-                    </div>
-
-                    <div class="glass-panel p-6 border-white/20 hover:border-white/50 transition-all lg:col-span-2">
-                        <div class="text-white font-display font-bold text-xl mb-4">FASE 07</div>
-                        <h4 class="text-white font-bold mb-2 uppercase text-sm">Expansion & Scaling</h4>
-                        <p class="text-xs text-secondary leading-relaxed">Perluasan jaringan operasional perusahaan dan pusat edukasi di berbagai wilayah kota besar di seluruh Indonesia.</p>
-                    </div>
+                    <div class="glass-panel p-6 border-primary/20 hover:border-primary/50"><div class="text-primary font-display font-bold text-xl mb-4">FASE 01</div><h4 class="text-white font-bold mb-2 uppercase text-sm">Infrastruktur Inti</h4><p class="text-xs text-secondary leading-relaxed">Fondasi digital terdesentralisasi.</p></div>
+                    <div class="glass-panel p-6 border-white/10 hover:border-white/30"><div class="text-white font-display font-bold text-xl mb-4">FASE 02</div><h4 class="text-white font-bold mb-2 uppercase text-sm">Formalitas & Legalitas</h4><p class="text-xs text-secondary leading-relaxed">Payung hukum PT Global Nexus Capital.</p></div>
+                    <div class="glass-panel p-6 border-accent/20 hover:border-accent/50"><div class="text-accent font-display font-bold text-xl mb-4">FASE 03</div><h4 class="text-white font-bold mb-2 uppercase text-sm">Blockchain Evolution</h4><p class="text-xs text-secondary leading-relaxed">Implementasi Smart Contract Titan v4.</p></div>
+                    <div class="glass-panel p-6 border-primary/20 hover:border-primary/50"><div class="text-primary font-display font-bold text-xl mb-4">FASE 04</div><h4 class="text-white font-bold mb-2 uppercase text-sm">Hybrid Ecosystem</h4><p class="text-xs text-secondary leading-relaxed">Integrasi aset digital dan riil.</p></div>
                 </div>
             </div>
         </section>
 
-        <section id="about" class="py-24 bg-card/30 border-y border-cardBorder">
+        <section id="security" class="py-24 border-t border-cardBorder">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-16">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4 font-display">Visi & Edukasi Blockchain</h2>
-                    <p class="text-secondary max-w-2xl mx-auto">Kami mengedukasi masyarakat tentang potensi sejati
-                        blockchain ketika disandingkan dengan utilitas aset nyata yang sah.</p>
-                </div>
-
-                <div class="grid md:grid-cols-3 gap-8">
-                    <div class="glass-panel p-8 hover:-translate-y-2 transition-transform duration-300">
-                        <div
-                            class="w-14 h-14 rounded-xl bg-accent/20 flex items-center justify-center mb-6 border border-accent/30">
-                            <i data-lucide="shield" class="w-7 h-7 text-accent"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-3 font-display">Keamanan Sovereign</h3>
-                        <p class="text-secondary leading-relaxed">Protokol perlindungan tingkat lanjut (Sovereign
-                            Defense) menjaga aset dari pihak tak bertanggung jawab.</p>
-                    </div>
-                    <div class="glass-panel p-8 hover:-translate-y-2 transition-transform duration-300">
-                        <div
-                            class="w-14 h-14 rounded-xl bg-primary/20 flex items-center justify-center mb-6 border border-primary/30">
-                            <i data-lucide="layers" class="w-7 h-7 text-primary"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-3 font-display">Integrasi Aset Nyata</h3>
-                        <p class="text-secondary leading-relaxed">Teknologi ini memungkinkan verifikasi dan dukungan
-                            kepemilikan aset nyata melalui kontrak pintar.</p>
-                    </div>
-                    <div class="glass-panel p-8 hover:-translate-y-2 transition-transform duration-300">
-                        <div
-                            class="w-14 h-14 rounded-xl bg-blue-500/20 flex items-center justify-center mb-6 border border-blue-500/30">
-                            <i data-lucide="globe" class="w-7 h-7 text-blue-400"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-3 font-display">Transparansi Publik</h3>
-                        <p class="text-secondary leading-relaxed">Setiap transaksi tercatat abadi di Binance Smart Chain
-                            (BSC), menghilangkan risiko manipulasi data.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="security" class="py-24">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="glass-panel p-8 md:p-12 relative overflow-hidden border-primary/20">
-                    <div class="relative z-10 grid md:grid-cols-2 gap-12 items-center">
+                <div class="glass-panel p-8 md:p-12 border-primary/20">
+                    <div class="grid md:grid-cols-2 gap-12 items-center">
                         <div>
-                            <div
-                                class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white mb-6 text-sm">
-                                <i data-lucide="file-check-2" class="w-4 h-4 text-green-400"></i> Kepatuhan Hukum
-                                Indonesia
+                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white mb-6 text-sm uppercase">
+                                <i data-lucide="file-check-2" class="w-4 h-4 text-green-400"></i> Kepatuhan Hukum Indonesia
                             </div>
-                            <h2 class="text-3xl md:text-4xl font-bold mb-6 font-display">Integritas dan Legalitas</h2>
-                            <p class="text-secondary mb-6 leading-relaxed">
-                                Ekosistem <span class="text-primary font-bold">SNR</span>-<span
-                                    class="text-white font-bold">VAULT</span> dijalankan dengan mematuhi prinsip
-                                kehati-hatian dan memiliki landasan hukum di Indonesia.
-                            </p>
+                            <h2 class="text-3xl md:text-4xl font-bold mb-6 font-display uppercase text-white">Integritas dan Legalitas</h2>
+                            <p class="text-secondary mb-6 leading-relaxed">Ekosistem <span class="text-primary font-bold">SNR</span>-<span class="text-white font-bold">VAULT</span> mematuhi regulasi di Indonesia.</p>
                             <ul class="space-y-4">
                                 <li class="flex items-start gap-3">
-                                    <div
-                                        class="mt-1 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
-                                        <div class="w-2 h-2 rounded-full bg-primary"></div>
-                                    </div>
-                                    <div>
-                                        <strong class="block text-white">Distributor Resmi:</strong>
-                                        <span class="text-secondary">PT SNR DIGITAL TRANSFORMASI</span>
-                                    </div>
+                                    <div class="mt-1 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30"><div class="w-2 h-2 rounded-full bg-primary"></div></div>
+                                    <div class="text-white"><strong class="block">Distributor Resmi:</strong><span class="text-secondary">PT SNR DIGITAL TRANSFORMASI</span></div>
                                 </li>
                                 <li class="flex items-start gap-3">
-                                    <div
-                                        class="mt-1 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
-                                        <div class="w-2 h-2 rounded-full bg-primary"></div>
-                                    </div>
-                                    <div>
-                                        <strong class="block text-white">Induk Perusahaan (Holding):</strong>
-                                        <span class="text-secondary">PT GLOBAL NEXUS CAPITAL</span>
-                                    </div>
+                                    <div class="mt-1 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30"><div class="w-2 h-2 rounded-full bg-primary"></div></div>
+                                    <div class="text-white"><strong class="block">Induk Perusahaan:</strong><span class="text-secondary">PT GLOBAL NEXUS CAPITAL</span></div>
                                 </li>
                             </ul>
                         </div>
@@ -960,257 +396,94 @@
 
     <div id="view-dapp" class="page-view flex-grow py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="glass-panel p-6 flex items-center justify-between">
+                <div class="glass-panel p-6 flex items-center justify-between text-white">
                     <div>
                         <p class="text-secondary text-sm mb-1">Total Saldo (Wallet)</p>
-                        <h3 class="text-2xl font-bold"><span id="ui-snr-balance">0.00</span> <span
-                                class="text-primary text-lg">SNR</span></h3>
-                        <p class="text-sm mt-1 flex items-center gap-1">
-                            <span class="text-yellow-500 font-bold" id="ui-bnb-balance">0.000</span> <span
-                                class="text-secondary">BNB (Gas
-                                Fee)</span>
-                        </p>
+                        <h3 class="text-2xl font-bold"><span id="ui-snr-balance">0.00</span> <span class="text-primary text-lg">SNR</span></h3>
+                        <p class="text-sm mt-1 font-bold text-yellow-500" id="ui-bnb-balance">0.0000 BNB</p>
                     </div>
-                    <div
-                        class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
-                        <i data-lucide="wallet" class="w-6 h-6 text-primary"></i>
-                    </div>
+                    <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30"><i data-lucide="wallet" class="w-6 h-6 text-primary"></i></div>
                 </div>
-                <div class="glass-panel p-6 flex items-center justify-between border-accent/30">
-                    <div>
-                        <p class="text-secondary text-sm mb-1">Status Kedaulatan</p>
-                        <h3 class="text-2xl font-bold text-accent">AKTIF</h3>
-                    </div>
-                    <div
-                        class="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center border border-accent/30">
-                        <i data-lucide="cpu" class="w-6 h-6 text-accent"></i>
-                    </div>
+                <div class="glass-panel p-6 flex items-center justify-between border-accent/30 text-white">
+                    <div><p class="text-secondary text-sm mb-1">Status Kedaulatan</p><h3 class="text-2xl font-bold text-accent uppercase">Aktif</h3></div>
+                    <div class="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center border border-accent/30"><i data-lucide="cpu" class="w-6 h-6 text-accent"></i></div>
                 </div>
-                <div class="glass-panel p-6 flex items-center justify-between">
+                <div class="glass-panel p-6 flex items-center justify-between text-white">
                     <div>
                         <p class="text-secondary text-sm mb-1">Ready to Withdraw</p>
-                        <h3 class="text-2xl font-bold text-green-400"><span id="ui-withdraw-balance">0.00</span> <span
-                                class="text-sm">SNR</span></h3>
+                        <h3 class="text-2xl font-bold text-green-400"><span id="ui-withdraw-balance">0.00</span> SNR</h3>
                     </div>
                     <div class="flex flex-col gap-2">
-                        <button onclick="harvestDailyReward()"
-                            class="px-4 py-2 bg-yellow-500/20 text-yellow-400 border border-yellow-500/50 rounded-lg text-sm hover:bg-yellow-500/30 transition-colors w-full">
-                            Harvest
-                        </button>
-                        <button onclick="withdrawFunds()"
-                            class="px-4 py-2 bg-green-500/20 text-green-400 border border-green-500/50 rounded-lg text-sm hover:bg-green-500/30 transition-colors w-full">
-                            Withdraw
-                        </button>
+                        <button onclick="harvestDailyReward()" class="px-4 py-2 bg-yellow-500/20 text-yellow-400 border border-yellow-500/50 rounded-lg text-xs font-bold uppercase hover:bg-yellow-500/30">Harvest</button>
+                        <button onclick="withdrawFunds()" class="px-4 py-2 bg-green-500/20 text-green-400 border border-green-500/50 rounded-lg text-xs font-bold uppercase hover:bg-green-500/30">Withdraw</button>
                     </div>
                 </div>
             </div>
 
             <div class="flex flex-wrap gap-2 mb-8 bg-card p-2 rounded-xl border border-cardBorder w-fit">
-                <button onclick="switchTab('staking')" id="btn-staking"
-                    class="px-6 py-2 rounded-lg text-sm font-medium transition-all bg-primary text-black">
-                    Join Protocol
-                </button>
-                <button onclick="switchTab('network')" id="btn-network"
-                    class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary hover:text-white">
-                    Jaringan & Rank
-                </button>
-                <button onclick="switchTab('assets')" id="btn-assets"
-                    class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary hover:text-white">
-                    Request Asset
-                </button>
-                <button onclick="switchTab('p2p')" id="btn-p2p"
-                    class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary hover:text-white">
-                    P2P Portal
-                </button>
+                <button onclick="switchTab('staking')" id="btn-staking" class="px-6 py-2 rounded-lg text-sm font-medium transition-all bg-primary text-black uppercase">Join Protocol</button>
+                <button onclick="switchTab('network')" id="btn-network" class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary uppercase">Network & Rank</button>
+                <button onclick="switchTab('assets')" id="btn-assets" class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary uppercase">Request Asset</button>
+                <button onclick="switchTab('p2p')" id="btn-p2p" class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary uppercase">P2P Portal</button>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
                 <div class="lg:col-span-2 space-y-6">
-
-                    <div id="tab-staking" class="dapp-tab active glass-panel p-8">
-                        <h3 class="text-2xl font-display font-bold mb-6 flex items-center gap-2">
-                            <i data-lucide="shield-alert" class="text-primary w-6 h-6"></i> Titan v4 - Join Protocol
+                    <div id="tab-staking" class="dapp-tab active glass-panel p-8 text-white">
+                        <h3 class="text-2xl font-display font-bold mb-6 flex items-center gap-2 uppercase">
+                            <i data-lucide="shield-alert" class="text-primary w-6 h-6"></i> Titan v4 Protocol
                         </h3>
                         <div class="space-y-5">
-                            <div>
-                                <label class="block text-sm text-secondary mb-2">Jumlah SNR (Min 100)</label>
-                                <div class="relative">
-                                    <input type="number" id="stake-amount" placeholder="0.0"
-                                        class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
-                                    <span class="absolute right-4 top-3 text-primary font-bold">SNR</span>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-sm text-secondary mb-2">Alamat Mentor / Upline</label>
-                                <input type="text" id="stake-mentor" placeholder="0x..."
-                                    class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
-                            </div>
-                            <div class="relative z-50">
-                                <label class="block text-sm text-secondary mb-2">Durasi Staking</label>
-                                <select id="stake-duration" class="w-full bg-card border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary cursor-pointer relative z-50 appearance-auto">
-                                    <option value="30" class="bg-card text-white py-2">30 Hari (Yield 100 BP)</option>
-                                    <option value="60" class="bg-card text-white py-2">60 Hari (Yield 120 BP)</option>
-                                    <option value="90" class="bg-card text-white py-2">90 Hari (Yield 150 BP)</option>
+                            <div><label class="block text-sm text-secondary mb-2">Jumlah SNR (Min 100)</label><input type="number" id="stake-amount" placeholder="0.0" class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:border-primary outline-none"></div>
+                            <div><label class="block text-sm text-secondary mb-2">Alamat Mentor</label><input type="text" id="stake-mentor" placeholder="0x..." class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:border-primary outline-none"></div>
+                            <div><label class="block text-sm text-secondary mb-2">Durasi Staking</label>
+                                <select id="stake-duration" class="w-full bg-card border border-cardBorder rounded-lg px-4 py-3 text-white outline-none">
+                                    <option value="30">30 Hari (Yield 100 BP)</option>
+                                    <option value="60">60 Hari (Yield 120 BP)</option>
+                                    <option value="90">90 Hari (Yield 150 BP)</option>
                                 </select>
                             </div>
-                            <button onclick="executeProtocol()"
-                                class="w-full py-4 mt-4 bg-primary text-black font-bold rounded-lg hover:bg-yellow-400 hover:shadow-[0_0_20px_rgba(255,204,0,0.3)] transition-all">
-                                Eksekusi Protokol
-                            </button>
+                            <button onclick="executeProtocol()" class="w-full py-4 bg-primary text-black font-bold rounded-lg uppercase hover:shadow-[0_0_20px_rgba(255,204,0,0.3)]">Eksekusi Protokol</button>
+                        </div>
+                    </div>
+                    
+                    <div id="tab-network" class="dapp-tab glass-panel p-8 text-white">
+                        <h3 class="text-xl font-display font-bold mb-4 uppercase">Network Stats</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-background p-4 rounded-lg border border-cardBorder"><p class="text-xs text-secondary mb-1 uppercase">Direct Aktif</p><p class="text-xl font-bold">15</p></div>
+                            <div class="bg-background p-4 rounded-lg border border-cardBorder"><p class="text-xs text-secondary mb-1 uppercase">Group Volume</p><p class="text-xl font-bold">35,000 SNR</p></div>
                         </div>
                     </div>
 
-                    <div id="tab-network" class="dapp-tab glass-panel p-8 border-accent/30">
-                        <div class="flex items-start justify-between">
-                            <div>
-                                <h3 class="text-xl font-display font-bold text-white mb-1">Rank Saat Ini</h3>
-                                <div class="text-4xl font-black text-gradient font-display mb-4">RANK 2 <span
-                                        class="text-lg font-sans text-secondary">(Captain)</span></div>
-
-                                <div class="flex flex-wrap gap-4 mt-6">
-                                    <div class="bg-background/80 border border-cardBorder p-4 rounded-lg min-w-[140px]">
-                                        <div class="text-secondary text-xs mb-1 flex items-center gap-1"><i
-                                                data-lucide="users" class="w-3 h-3"></i> Direct Aktif</div>
-                                        <div class="text-xl font-bold">15 <span
-                                                class="text-sm text-secondary">Member</span></div>
-                                    </div>
-                                    <div class="bg-background/80 border border-cardBorder p-4 rounded-lg min-w-[140px]">
-                                        <div class="text-secondary text-xs mb-1 flex items-center gap-1"><i
-                                                data-lucide="award" class="w-3 h-3"></i> Group Volume</div>
-                                        <div class="text-xl font-bold">35,000 <span
-                                                class="text-sm text-secondary">SNR</span></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div
-                                class="hidden sm:flex w-24 h-24 rounded-full border-4 border-accent/20 items-center justify-center bg-card shadow-[0_0_30px_rgba(0,229,255,0.2)]">
-                                <i data-lucide="award" class="w-10 h-10 text-accent"></i>
-                            </div>
-                        </div>
-
-                        <div class="mt-8 border-t border-cardBorder pt-6">
-                            <label class="block text-sm text-secondary mb-2">Tautan Referral Anda</label>
-                            <div class="flex gap-2">
-                                <input type="text" readonly value="https://snr-vault.com/dapp?ref=0x5Ce1..."
-                                    class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-secondary focus:outline-none">
-                                <button
-                                    class="px-4 py-3 bg-card border border-cardBorder rounded-lg hover:bg-white/5 transition-colors flex items-center justify-center">
-                                    <i data-lucide="share-2" class="w-5 h-5 text-white"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="mt-8 border-t border-cardBorder pt-6">
-                            <h4 class="font-bold text-white mb-4">Status Syarat Kedalaman Bonus (10 Level)</h4>
-                            <ul class="space-y-3 text-sm">
-                                <li class="flex items-center justify-between border-b border-cardBorder pb-2">
-                                    <span class="text-secondary">Level 1 - 4 (Butuh 1 Direct)</span>
-                                    <span class="text-green-400 font-semibold flex items-center gap-1">TERBUKA <i
-                                            data-lucide="check" class="w-4 h-4"></i></span>
-                                </li>
-                                <li class="flex items-center justify-between border-b border-cardBorder pb-2">
-                                    <span class="text-secondary">Level 5 - 7 (Butuh 5 Direct)</span>
-                                    <span class="text-green-400 font-semibold flex items-center gap-1">TERBUKA <i
-                                            data-lucide="check" class="w-4 h-4"></i></span>
-                                </li>
-                                <li class="flex items-center justify-between pb-1">
-                                    <span class="text-secondary">Level 8 - 10 (Butuh 10 Direct)</span>
-                                    <span class="text-green-400 font-semibold flex items-center gap-1">TERBUKA <i
-                                            data-lucide="check" class="w-4 h-4"></i></span>
-                                </li>
-                            </ul>
+                    <div id="tab-assets" class="dapp-tab glass-panel p-8 text-white">
+                        <h3 class="text-xl font-display font-bold mb-6 uppercase text-white">Asset Acquisition</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="border border-cardBorder bg-background p-4 rounded-lg flex flex-col items-center gap-2 cursor-pointer hover:border-accent transition-all text-white"><i data-lucide="car" class="w-6 h-6 text-accent"></i><span class="text-xs font-bold uppercase">Moto</span></div>
+                            <div class="border border-cardBorder bg-background p-4 rounded-lg flex flex-col items-center gap-2 cursor-pointer hover:border-accent transition-all text-white"><i data-lucide="car" class="w-6 h-6 text-accent"></i><span class="text-xs font-bold uppercase">Drive</span></div>
+                            <div class="border border-cardBorder bg-background p-4 rounded-lg flex flex-col items-center gap-2 cursor-pointer hover:border-accent transition-all text-white"><i data-lucide="home" class="w-6 h-6 text-primary"></i><span class="text-xs font-bold uppercase">Living</span></div>
+                            <div class="border border-cardBorder bg-background p-4 rounded-lg flex flex-col items-center gap-2 cursor-pointer hover:border-accent transition-all text-white"><i data-lucide="home" class="w-6 h-6 text-primary"></i><span class="text-xs font-bold uppercase">Gold</span></div>
                         </div>
                     </div>
 
-                    <div id="tab-assets" class="dapp-tab glass-panel p-8">
-                        <h3 class="text-2xl font-display font-bold mb-6">Request Asset Acquisition</h3>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                            <div
-                                class="border border-cardBorder bg-background p-4 rounded-lg flex flex-col items-center gap-2 cursor-pointer hover:border-accent text-center">
-                                <i data-lucide="car" class="w-6 h-6 text-accent"></i><span class="text-sm">MOTO</span>
-                            </div>
-                            <div
-                                class="border border-cardBorder bg-background p-4 rounded-lg flex flex-col items-center gap-2 cursor-pointer hover:border-accent text-center">
-                                <i data-lucide="car" class="w-6 h-6 text-accent"></i><span class="text-sm">DRIVE</span>
-                            </div>
-                            <div
-                                class="border border-cardBorder bg-background p-4 rounded-lg flex flex-col items-center gap-2 cursor-pointer hover:border-accent text-center">
-                                <i data-lucide="home" class="w-6 h-6 text-primary"></i><span class="text-sm">LIVING
-                                    STD</span>
-                            </div>
-                            <div
-                                class="border border-cardBorder bg-background p-4 rounded-lg flex flex-col items-center gap-2 cursor-pointer hover:border-accent text-center">
-                                <i data-lucide="home" class="w-6 h-6 text-primary"></i><span class="text-sm">GOLD</span>
-                            </div>
-                        </div>
-                        <div class="space-y-5">
-                            <div><label class="block text-sm text-secondary mb-2">Nilai Dukungan (SNR)</label><input
-                                    type="number" placeholder="Contoh: 5000"
-                                    class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent">
-                            </div>
-                            <div><label class="block text-sm text-secondary mb-2">Model Unit</label><input type="text"
-                                    placeholder="Contoh: Honda HRV 2024"
-                                    class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent">
-                            </div>
-                            <div>
-                                <label class="block text-sm text-secondary mb-2">Jalur Protokol</label>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <button
-                                        class="border border-cardBorder bg-background py-3 rounded-lg hover:border-accent transition-colors">Regular
-                                        55%</button>
-                                    <button
-                                        class="border border-cardBorder bg-background py-3 rounded-lg hover:border-accent transition-colors">Exclusive
-                                        100%</button>
-                                </div>
-                            </div>
-                            <button
-                                class="w-full py-4 mt-4 bg-accent text-black font-bold rounded-lg hover:bg-cyan-400 hover:shadow-[0_0_20px_rgba(0,229,255,0.3)] transition-all">
-                                Kirim Permintaan Aset
-                            </button>
-                        </div>
-                    </div>
-
-                    <div id="tab-p2p"
-                        class="dapp-tab glass-panel p-8 text-center min-h-[400px] flex flex-col items-center justify-center">
+                    <div id="tab-p2p" class="dapp-tab glass-panel p-8 text-center flex flex-col items-center justify-center text-white">
                         <i data-lucide="message-circle" class="w-16 h-16 text-green-400 mb-4"></i>
-                        <h3 class="text-2xl font-bold mb-4">P2P Escrow Resmi SNR</h3>
-                        <p class="text-secondary max-w-md mx-auto mb-8">Lakukan pertukaran aset secara aman dan cepat
-                            melalui layanan P2P Escrow WhatsApp resmi kami.</p>
-                        <a href="https://wa.me/6283829681017?text=Halo%20Admin%20SNR-VAULT,%20saya%20ingin%20menggunakan%20layanan%20P2P."
-                            target="_blank"
-                            class="px-8 py-4 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] transition-all flex items-center gap-3">
-                            <i data-lucide="message-square" class="w-6 h-6"></i>
-                            Hubungi Admin P2P (WA)
-                        </a>
-                        <p class="mt-4 text-sm text-secondary font-display tracking-widest">+62 838-2968-1017</p>
+                        <h3 class="text-2xl font-bold mb-4 uppercase">P2P Escrow Resmi</h3>
+                        <a href="https://wa.me/6283829681017" target="_blank" class="px-8 py-4 bg-green-500 text-white font-bold rounded-lg uppercase flex items-center gap-2"><i data-lucide="message-square" class="w-5 h-5"></i> Hubungi Admin</a>
                     </div>
-
                 </div>
 
-                <div class="space-y-6">
+                <div class="space-y-6 text-white">
                     <div class="glass-panel p-6 border-primary/20">
-                        <h4 class="font-display font-bold text-lg mb-4 flex items-center gap-2"><i data-lucide="gift"
-                                class="w-5 h-5 text-primary"></i> Leader Rewards</h4>
-                        <div class="text-3xl font-bold mb-4">1,240 <span
-                                class="text-sm text-secondary font-sans">SNR</span></div>
-                        <button onclick="claimRewards()"
-                            class="w-full py-2 bg-background border border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors font-semibold">Claim
-                            Rewards</button>
+                        <h4 class="font-display font-bold text-lg mb-4 flex items-center gap-2 uppercase"><i data-lucide="gift" class="w-5 h-5 text-primary"></i> Leader Rewards</h4>
+                        <div class="text-3xl font-bold mb-4">1,240 <span class="text-sm text-secondary font-sans">SNR</span></div>
+                        <button onclick="claimRewards()" class="w-full py-2 bg-background border border-primary text-primary rounded-lg font-bold uppercase hover:bg-primary/10 transition-colors">Claim Reward</button>
                     </div>
                     <div class="glass-panel p-6">
-                        <h4 class="font-bold text-lg mb-4">Informasi Token</h4>
-                        <div class="space-y-4 text-sm">
-                            <div class="flex justify-between items-center border-b border-cardBorder pb-2"><span
-                                    class="text-secondary">Smart Contract</span><a
-                                    href="https://bscscan.com/address/0x59a7098D86ac1548dAF3b14aAfC43858D274f543"
-                                    target="_blank" class="text-accent hover:underline text-xs">0x59a7...f543</a></div>
-                            <div class="flex justify-between items-center border-b border-cardBorder pb-2"><span
-                                    class="text-secondary">Jaringan</span><span>BSC Mainnet</span></div>
-                            <div class="flex justify-between items-center pb-2"><span class="text-secondary">Max Cap
-                                    Reward</span><span class="text-green-400 font-medium">300%</span></div>
+                        <h4 class="font-bold text-lg mb-4 uppercase">Token Info</h4>
+                        <div class="space-y-4 text-xs font-mono">
+                            <div class="flex justify-between border-b border-cardBorder pb-2"><span class="text-secondary">SC Address:</span><span class="text-accent">0x59a7...f543</span></div>
+                            <div class="flex justify-between border-b border-cardBorder pb-2"><span class="text-secondary">Network:</span><span>BSC Mainnet</span></div>
                         </div>
                     </div>
                 </div>
@@ -1219,164 +492,156 @@
     </div>
 
     <footer class="border-t border-cardBorder bg-background py-12 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
                 <div>
-                    <div class="font-display font-bold text-2xl tracking-widest mb-4">
-                        <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span>
-                    </div>
-                    <p class="text-secondary text-sm leading-relaxed">
-                        <span class="text-primary font-bold">SNR</span>-<span class="text-white font-bold">VAULT</span> murni dibangun untuk menghadirkan solusi teknologi blockchain yang transparan, aman, dan
-                        dikelola oleh komunitas.
-                    </p>
+                    <div class="font-display font-bold text-2xl tracking-widest mb-4"><span class="text-primary">SNR</span>-<span class="text-white">VAULT</span></div>
+                    <p class="text-secondary text-sm leading-relaxed">Solusi teknologi blockchain transparan, aman, dan dikelola oleh komunitas.</p>
                 </div>
-                <div class="flex flex-col md:items-end text-sm text-secondary space-y-2">
-                    <h4 class="text-white font-semibold mb-2">Legalitas & Distribusi</h4>
-                    <p><strong>Distribusi:</strong> PT SNR DIGITAL TRANSFORMASI</p>
-                    <p><strong>Holding:</strong> PT GLOBAL NEXUS CAPITAL</p>
+                <div class="flex flex-col md:items-end text-xs text-secondary space-y-2 uppercase">
+                    <h4 class="text-white font-semibold mb-2">Legalitas</h4>
+                    <p>Distribusi: PT SNR DIGITAL TRANSFORMASI</p>
+                    <p>Holding: PT GLOBAL NEXUS CAPITAL</p>
                 </div>
             </div>
-            <div class="mt-12 pt-8 border-t border-cardBorder text-xs text-secondary text-center space-y-4">
-                <p class="uppercase tracking-widest text-primary/80 font-semibold mb-2">Peringatan Risiko & Disclaimer
-                </p>
-                <p class="max-w-4xl mx-auto">Platform ini disediakan untuk tujuan edukasi dan integrasi teknologi.
-                    <span class="text-primary font-bold">SNR</span>-<span class="text-white font-bold">VAULT</span> murni dibangun untuk menghadirkan solusi teknologi blockchain yang transparan, aman, dan
-                    mematuhi regulasi di Indonesia.</p>
-                <p class="pt-4">&copy; 2026 <span class="text-primary font-bold">SNR</span>-<span class="text-white font-bold">VAULT</span>. All rights reserved.</p>
+            <div class="mt-12 pt-8 border-t border-cardBorder text-[10px] text-secondary text-center uppercase tracking-widest">
+                <p class="mb-4">&copy; 2026 SNR-VAULT. All Rights Reserved. Logic Secured.</p>
             </div>
         </div>
     </footer>
 
     <script>
-        // Inisialisasi ikon Lucide
         lucide.createIcons();
 
-        // --- NEW: Chart Growth Initialization ---
+        // 1. CHART: Sequential Burger Orbit
         document.addEventListener('DOMContentLoaded', () => {
-            const ctxGrowth = document.getElementById('growthChart').getContext('2d');
-            new Chart(ctxGrowth, {
-                type: 'bar',
+            const ctxBurger = document.getElementById('tokenomicsBurgerChart').getContext('2d');
+            const dataBurger = {
+                labels: ['Treasury', 'Community', 'Presale', 'Team', 'Marketing'],
+                datasets: [{
+                    data: [400, 300, 150, 100, 50],
+                    backgroundColor: ['#FFD700', '#00D1FF', '#FFFFFF', '#FF4500', '#A855F7'],
+                    borderColor: '#000510',
+                    borderWidth: 5,
+                    hoverOffset: 30,
+                    spacing: 10
+                }]
+            };
+
+            const burgerChart = new Chart(ctxBurger, {
+                type: 'doughnut',
+                data: dataBurger,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: { legend: { display: false } },
+                    animation: { animateRotate: true, duration: 1000 }
+                }
+            });
+
+            // Sequential Glow Logic
+            let currentIndex = 0;
+            setInterval(() => {
+                burgerChart.setActiveElements([{ datasetIndex: 0, index: currentIndex }]);
+                burgerChart.update();
+                
+                const panels = document.querySelectorAll('#tokenomics-list .glass-panel');
+                panels.forEach((p, i) => {
+                    if(i === currentIndex) {
+                        p.style.boxShadow = `0 0 25px ${dataBurger.datasets[0].backgroundColor[i]}66`;
+                        p.style.transform = "translateX(15px)";
+                        p.style.background = "rgba(255,255,255,0.1)";
+                    } else {
+                        p.style.boxShadow = "none";
+                        p.style.transform = "translateX(0)";
+                        p.style.background = "rgba(19, 26, 42, 0.8)";
+                    }
+                });
+                currentIndex = (currentIndex + 1) % dataBurger.datasets[0].data.length;
+            }, 2000);
+
+            // 2. CHART: Living Wave
+            const ctxWave = document.getElementById('livingWaveChart').getContext('2d');
+            const waveChart = new Chart(ctxWave, {
+                type: 'line',
                 data: {
-                    labels: ['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7'],
-                    datasets: [{
-                        label: 'Ekosistem Power',
-                        data: [20, 35, 55, 70, 85, 95, 100],
-                        backgroundColor: '#FFCC00',
-                        borderRadius: 5,
-                    }]
+                    labels: ['T-5', 'T-4', 'T-3', 'T-2', 'T-1', 'NOW'],
+                    datasets: [
+                        { label: 'SNR', data: [40, 55, 45, 80, 85, 100], borderColor: '#FFD700', backgroundColor: 'rgba(255,215,0,0.1)', fill: true, tension: 0.4, borderWidth: 3 },
+                        { label: 'REWARD', data: [20, 35, 60, 55, 70, 90], borderColor: '#00D1FF', fill: false, tension: 0.4, borderDash: [5, 5] }
+                    ]
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
-                    scales: {
-                        y: { display: false },
-                        x: { ticks: { color: '#64748b', font: { family: 'Orbitron' } }, grid: { display: false } }
-                    }
+                    scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#64748b', font: { family: 'Orbitron', size: 9 } } } }
                 }
             });
+
+            setInterval(() => {
+                waveChart.data.datasets[0].data.push(Math.min(120, waveChart.data.datasets[0].data[waveChart.data.datasets[0].data.length - 1] + (Math.random() * 8 - 2)));
+                if(waveChart.data.datasets[0].data.length > 8) waveChart.data.datasets[0].data.shift();
+                waveChart.update('none');
+            }, 3000);
         });
 
-        function switchPage(page) {
-            // Sembunyikan semua halaman
-            document.getElementById('view-landing').classList.remove('active');
-            document.getElementById('view-dapp').classList.remove('active');
-            // Tampilkan halaman target
-            document.getElementById('view-' + page).classList.add('active');
+        // 3. WATERFALL STREAM LOGIC
+        function initWaterfallStream() {
+            const content = document.getElementById('waterfall-content');
+            const types = [{t: 'Stake', c: 'text-white'}, {t: 'Harvest', c: 'text-green-400'}, {t: 'P2P', c: 'text-accent'}];
+            setInterval(() => {
+                const tx = types[Math.floor(Math.random() * types.length)];
+                const row = document.createElement('div');
+                row.className = "flex justify-between items-center text-secondary border-b border-cardBorder/50 pb-1.5 transform translate-y-2 opacity-0 transition-all duration-500";
+                row.innerHTML = `<span class="text-accent font-mono">0x${Math.random().toString(16).slice(2,6)}...</span><span class="${tx.c} font-bold">${tx.t}</span><span class="text-primary">+${(Math.random()*500).toFixed(0)} SNR</span>`;
+                content.prepend(row);
+                setTimeout(() => row.classList.remove('opacity-0', 'translate-y-2'), 50);
+                if(content.children.length > 8) content.lastChild.remove();
+            }, 2800);
+        }
+        initWaterfallStream();
 
-            // Atur navigasi
-            if (page === 'landing') {
-                document.getElementById('nav-landing').classList.remove('hidden');
-                document.getElementById('nav-dapp').classList.add('hidden');
-            } else {
-                document.getElementById('nav-landing').classList.add('hidden');
-                document.getElementById('nav-dapp').classList.remove('hidden');
-            }
+        // 4. SCARCITY COUNTER
+        let shares = 125000;
+        setInterval(() => {
+            shares -= Math.floor(Math.random()*3);
+            document.getElementById('scarcity-num').innerText = shares.toLocaleString();
+        }, 4000);
+
+        // 5. NAVIGATION & WALLET LOGIC
+        function switchPage(page) {
+            document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+            document.getElementById('view-' + page).classList.add('active');
+            document.getElementById('nav-landing').classList.toggle('hidden', page === 'dapp');
+            document.getElementById('nav-dapp').classList.toggle('hidden', page === 'landing');
             window.scrollTo(0, 0);
         }
 
         function switchTab(tabId) {
-            // Sembunyikan semua konten tab dApp
-            document.querySelectorAll('.dapp-tab').forEach(el => el.classList.remove('active'));
-            // Reset warna tombol
-            document.querySelectorAll('#btn-staking, #btn-network, #btn-assets, #btn-p2p').forEach(el => {
-                el.classList.remove('bg-primary', 'text-black');
-                el.classList.add('text-secondary');
-            });
-
-            // Tampilkan tab yang dipilih
+            document.querySelectorAll('.dapp-tab').forEach(t => t.classList.remove('active'));
             document.getElementById('tab-' + tabId).classList.add('active');
-            // Ganti warna tombol yang dipilih
-            const btn = document.getElementById('btn-' + tabId);
-            btn.classList.remove('text-secondary');
-            btn.classList.add('bg-primary', 'text-black');
+            document.querySelectorAll('#view-dapp button[id^="btn-"]').forEach(b => b.classList.remove('bg-primary', 'text-black'));
+            document.getElementById('btn-' + tabId).classList.add('bg-primary', 'text-black');
         }
 
-        // Initialize Globe with Blockchain Touch
+        // GLOBE INITIALIZATION (Simplified for precision)
         const globeContainer = document.getElementById('globeViz');
         if (globeContainer && typeof Globe !== 'undefined') {
-            // Generate random blockchain nodes
-            const N = 40;
-            const nodesData = [...Array(N).keys()].map(() => ({
-                lat: (Math.random() - 0.5) * 180,
-                lng: (Math.random() - 0.5) * 360,
-                size: Math.random() * 0.4 + 0.1,
-                color: ['#00E5FF', '#FFCC00', '#ffffff'][Math.floor(Math.random() * 3)]
-            }));
-
-            // Generate arcs linking nodes
-            const arcsData = [...Array(25).keys()].map(() => ({
-                startLat: (Math.random() - 0.5) * 180,
-                startLng: (Math.random() - 0.5) * 360,
-                endLat: (Math.random() - 0.5) * 180,
-                endLng: (Math.random() - 0.5) * 360,
-                color: ['rgba(0, 229, 255, 0.6)', 'rgba(255, 204, 0, 0.6)'][Math.round(Math.random())]
-            }));
-
-            const world = Globe()
-                (globeContainer)
+            const world = Globe()(globeContainer)
                 .backgroundColor('rgba(0,0,0,0)')
-                .showGlobe(true)
-                .showAtmosphere(true)
-                .atmosphereColor('#00E5FF')
-                .atmosphereAltitude(0.25)
                 .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-night.jpg')
-                .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
-                .pointsData(nodesData)
-                .pointColor('color')
-                .pointAltitude(0.02)
-                .pointRadius('size')
-                .pointsMerge(true)
-                .arcsData(arcsData)
-                .arcColor('color')
-                .arcDashLength(0.4)
-                .arcDashGap(0.2)
-                .arcDashAnimateTime(2000)
+                .atmosphereColor('#00E5FF')
                 .width(globeContainer.clientWidth)
-                .height(globeContainer.clientHeight || window.innerHeight * 0.8);
-
-            // Add auto-rotation
+                .height(400);
             world.controls().autoRotate = true;
-            world.controls().autoRotateSpeed = 1.2;
             world.controls().enableZoom = false;
-
-            // Handle resize
-            window.addEventListener('resize', () => {
-                world.width(globeContainer.clientWidth);
-                world.height(globeContainer.clientHeight || window.innerHeight * 0.8);
-            });
-
-            // Fix initial rendering size issues
-            setTimeout(() => {
-                world.width(globeContainer.clientWidth);
-                world.height(globeContainer.clientHeight || window.innerHeight * 0.8);
-            }, 500);
         }
 
-        // Web3 & Metamask Integration
+        // SMART CONTRACT INTEGRATION (PRESERVED)
         const stakingContractAddress = "0x59a7098D86ac1548dAF3b14aAfC43858D274f543"; 
         const tokenAddress = "0x5ce1427f77d8c58f97f5e18b36804fd54aa72718"; 
-
-        // ABI Smart Contract Staking V4 Titan Fortress
         const stakingABI = [
             "function joinProtocol(uint256 _amount, address _mentor, uint256 _days) external",
             "function withdrawReadyBalance(uint256 _amount) external",
@@ -1384,191 +649,45 @@
             "function harvestDailyReward() external",
             "function users(address) view returns (uint256 participation, uint256 originalGrant, uint256 totalRewardClaimed, uint256 durationEnd, uint256 lastUpdate, uint256 dailyYieldBP, bool isActive, bool isBlacklisted, uint8 activeProgram, uint256 supportValue, uint256 supportSettled, address mentor, uint256 directActiveCount, uint256 groupVolume, uint256 currentRank, uint256 principalDeposit, bool isFundLockedByAdmin, uint256 readyToWithdraw)"
         ];
-
-        // ABI standar ERC20 untuk cek saldo SNR dan Approval
-        const erc20ABI = [
-            "function balanceOf(address owner) view returns (uint256)",
-            "function approve(address spender, uint256 amount) returns (bool)",
-            "function allowance(address owner, address spender) view returns (uint256)"
-        ];
+        const erc20ABI = ["function balanceOf(address owner) view returns (uint256)", "function approve(address spender, uint256 amount) returns (bool)", "function allowance(address owner, address spender) view returns (uint256)"];
 
         let provider, signer, userAddress, stakingContract, tokenContract;
 
         async function connectWallet() {
-            if (typeof window.ethereum !== 'undefined') {
-                try {
-                    // Minta akses akun (Metamask, Token Pocket, dll yang inject window.ethereum)
-                    await window.ethereum.request({ method: 'eth_requestAccounts' });
-                    provider = new ethers.providers.Web3Provider(window.ethereum);
-                    signer = provider.getSigner();
-                    userAddress = await signer.getAddress();
-
-                    // Inisialisasi Contract
-                    stakingContract = new ethers.Contract(stakingContractAddress, stakingABI, signer);
-                    tokenContract = new ethers.Contract(tokenAddress, erc20ABI, signer);
-
-                    // Update UI Button
-                    const shortAddress = userAddress.substring(0, 6) + '...' + userAddress.substring(38);
-                    const btn = document.getElementById('connect-wallet-btn');
-                    btn.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i> <span>${shortAddress}</span>`;
-                    btn.classList.add('bg-accent/20');
-                    btn.classList.remove('bg-card');
-                    lucide.createIcons();
-
-                    console.log('Wallet terhubung:', userAddress);
-
-                    // Fetch dan Update Saldo
-                    await updateBalances();
-
-                } catch (error) {
-                    console.error("Wallet connection failed:", error);
-                    alert('Koneksi dibatalkan atau terjadi kesalahan.');
-                }
-            } else {
-                alert('Web3 Wallet tidak terdeteksi. Harap buka di browser dApp seperti Metamask atau Token Pocket!');
+            if (window.ethereum) {
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                userAddress = accounts[0];
+                provider = new ethers.providers.Web3Provider(window.ethereum);
+                signer = provider.getSigner();
+                stakingContract = new ethers.Contract(stakingContractAddress, stakingABI, signer);
+                tokenContract = new ethers.Contract(tokenAddress, erc20ABI, signer);
+                document.getElementById('connect-wallet-btn').innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> ${userAddress.substring(0,6)}...`;
+                updateBalances();
             }
         }
 
         async function updateBalances() {
-            try {
-                // 1. Ambil Saldo BNB Asli
-                const bnbBalanceRaw = await provider.getBalance(userAddress);
-                const bnbBalance = ethers.utils.formatEther(bnbBalanceRaw);
-                document.getElementById('ui-bnb-balance').innerText = parseFloat(bnbBalance).toFixed(4);
-
-                // 2. Ambil Saldo Token SNR (Token Asli di Wallet)
-                const snrBalanceRaw = await tokenContract.balanceOf(userAddress);
-                const snrBalance = ethers.utils.formatUnits(snrBalanceRaw, 18); // Asumsi 18 desimal
-                document.getElementById('ui-snr-balance').innerText = parseFloat(snrBalance).toFixed(2);
-
-                // 3. Ambil Data "Ready to Withdraw" dari Smart Contract Staking V4
-                try {
-                    const userData = await stakingContract.users(userAddress);
-                    const withdrawableRaw = userData.readyToWithdraw;
-                    const withdrawable = ethers.utils.formatUnits(withdrawableRaw, 18);
-                    document.getElementById('ui-withdraw-balance').innerText = parseFloat(withdrawable).toFixed(2);
-                } catch(e) {
-                    console.log("Gagal membaca struct users:", e);
-                    document.getElementById('ui-withdraw-balance').innerText = "0.00";
-                }
-
-            } catch (error) {
-                console.error("Gagal mengambil saldo:", error);
-            }
+            if (!userAddress) return;
+            const bnb = await provider.getBalance(userAddress);
+            document.getElementById('ui-bnb-balance').innerText = parseFloat(ethers.utils.formatEther(bnb)).toFixed(4) + " BNB";
+            const snr = await tokenContract.balanceOf(userAddress);
+            document.getElementById('ui-snr-balance').innerText = parseFloat(ethers.utils.formatUnits(snr, 18)).toFixed(2);
+            const user = await stakingContract.users(userAddress);
+            document.getElementById('ui-withdraw-balance').innerText = parseFloat(ethers.utils.formatUnits(user.readyToWithdraw, 18)).toFixed(2);
         }
 
-        // Fungsi Eksekusi Protokol (Staking V4)
         async function executeProtocol() {
-            if (!stakingContract || !tokenContract) {
-                alert('Silakan connect wallet terlebih dahulu!');
-                return;
-            }
-
-            try {
-                // Ambil nilai dari input
-                const amountInput = document.getElementById('stake-amount').value;
-                const referrerInput = document.getElementById('stake-mentor').value;
-                const durationInput = document.getElementById('stake-duration').value;
-
-                if (!amountInput || amountInput < 100) {
-                    alert('Masukkan jumlah SNR minimal 100.');
-                    return;
-                }
-
-                const amountToStake = ethers.utils.parseUnits(amountInput.toString(), 18);
-                const referrer = referrerInput && referrerInput.trim() !== "" ? referrerInput : ethers.constants.AddressZero; 
-                const daysToStake = parseInt(durationInput);
-
-                // 1. Cek Allowance dan Approve Token
-                const currentAllowance = await tokenContract.allowance(userAddress, stakingContractAddress);
-                if (currentAllowance.lt(amountToStake)) {
-                    console.log('Meminta approval token...');
-                    alert('Mohon setujui transaksi (Approve) token SNR Anda di Wallet.');
-                    const approveTx = await tokenContract.approve(stakingContractAddress, ethers.constants.MaxUint256);
-                    await approveTx.wait();
-                    alert('Approval berhasil! Lanjut ke proses Eksekusi Protokol (Staking)...');
-                }
-
-                // 2. Panggil joinProtocol
-                alert('Mohon setujui transaksi Staking di Wallet Anda.');
-                const tx = await stakingContract.joinProtocol(amountToStake, referrer, daysToStake);
-                console.log('Transaksi dikirim:', tx.hash);
-                alert('Transaksi dikirim. Menunggu konfirmasi... Hash: ' + tx.hash);
-
-                await tx.wait();
-                alert('Protokol berhasil dieksekusi! Selamat bergabung di Titan Fortress.');
-                
-                await updateBalances();
-            } catch (error) {
-                console.error("Error executing protocol:", error);
-                alert('Terjadi kesalahan saat eksekusi: ' + (error.data?.message || error.message));
-            }
+            const amt = document.getElementById('stake-amount').value;
+            const duration = document.getElementById('stake-duration').value;
+            if(!amt || amt < 100) return alert("Min 100 SNR");
+            const parsedAmt = ethers.utils.parseUnits(amt.toString(), 18);
+            const txApprove = await tokenContract.approve(stakingContractAddress, parsedAmt);
+            await txApprove.wait();
+            const tx = await stakingContract.joinProtocol(parsedAmt, ethers.constants.AddressZero, duration);
+            await tx.wait();
+            alert("Protocol Executed!");
+            updateBalances();
         }
-
-        // Fungsi Withdraw Ready Balance
-        async function withdrawFunds() {
-            if (!stakingContract) {
-                alert('Silakan connect wallet terlebih dahulu!');
-                return;
-            }
-            try {
-                // Mengambil jumlah readyToWithdraw dari blockchain
-                const userData = await stakingContract.users(userAddress);
-                const readyToWd = userData.readyToWithdraw;
-                
-                if (readyToWd.eq(0)) {
-                    alert('Saldo Ready to Withdraw Anda kosong.');
-                    return;
-                }
-
-                alert('Mohon setujui transaksi penarikan di Wallet Anda.');
-                const tx = await stakingContract.withdrawReadyBalance(readyToWd);
-                await tx.wait();
-                alert('Withdraw berhasil!');
-                await updateBalances();
-            } catch (error) {
-                console.error("Withdraw error:", error);
-                alert('Gagal withdraw: ' + (error.data?.message || error.message));
-            }
-        }
-
-        // Fungsi Harvest Daily Reward
-        async function harvestDailyReward() {
-            if (!stakingContract) {
-                alert('Silakan connect wallet terlebih dahulu!');
-                return;
-            }
-            try {
-                alert('Mohon setujui transaksi harvest di Wallet Anda.');
-                const tx = await stakingContract.harvestDailyReward();
-                await tx.wait();
-                alert('Berhasil memanen reward harian! Saldo Anda telah masuk ke Ready to Withdraw.');
-                await updateBalances();
-            } catch (error) {
-                console.error("Harvest error:", error);
-                alert('Gagal harvest: ' + (error.data?.message || error.message));
-            }
-        }
-
-        // Fungsi Claim Leader Rewards
-        async function claimRewards() {
-            if (!stakingContract) {
-                alert('Silakan connect wallet terlebih dahulu!');
-                return;
-            }
-            try {
-                alert('Mohon setujui transaksi claim reward di Wallet Anda.');
-                const tx = await stakingContract.claimLeaderRewards();
-                await tx.wait();
-                alert('Claim rewards berhasil!');
-                await updateBalances();
-            } catch (error) {
-                console.error("Claim error:", error);
-                alert('Gagal claim: ' + (error.data?.message || error.message));
-            }
-        }
-
     </script>
 </body>
-
 </html>
