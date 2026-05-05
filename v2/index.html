@@ -5,18 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SNR-VAULT | Deep Space Financial Fortress</title>
-    <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700;900&display=swap"
         rel="stylesheet">
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Globe.gl -->
     <script src="https://unpkg.com/globe.gl"></script>
-    <!-- Ethers.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
         tailwind.config = {
@@ -104,7 +100,6 @@
 
 <body class="min-h-screen flex flex-col">
 
-    <!-- Marquee -->
     <div class="bg-primary/10 border-b border-primary/20 py-2 relative z-[60] overflow-hidden">
         <div class="marquee-content text-primary text-sm font-display tracking-widest font-semibold w-max">
             <span>&#9888; <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> THE DEEP SPACE PROTOCOL ONLINE /// SOVEREIGN DEFENSE ACTIVE /// <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> :LOGIC SECURED /// 125.000 SHARES SCARCITY PROTOCOL /// </span>
@@ -113,7 +108,6 @@
         </div>
     </div>
 
-    <!-- Navbar -->
     <nav class="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-cardBorder">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
@@ -150,9 +144,7 @@
         </div>
     </nav>
 
-    <!-- LANDING PAGE VIEW -->
     <div id="view-landing" class="page-view active flex-grow">
-        <!-- Hero Section -->
         <section class="relative pt-20 pb-32 overflow-hidden min-h-[80vh] flex items-center">
             <div class="absolute inset-0 z-0">
                 <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px]"></div>
@@ -176,7 +168,7 @@
                 </h1>
 
                 <p class="text-xl text-secondary max-w-3xl mx-auto mb-10 leading-relaxed">
-                    Membangun masa depan keuangan desentralisasi yang aman.
+                    Membangun masa depan keuangan terdesentralisasi yang aman.
                     <span class="text-primary font-medium">SNR</span>-<span class="text-white font-medium">VAULT</span> Bukan Sekedar Token, ini adalah benteng finansial yang mengintegrasikan keamanan blockchain dengan aset
                     nyata dan Legalitas dunia nyata,
                     untuk melindungi Anda dari risiko scammer dengan legalitas yang jelas di Indonesia.
@@ -193,7 +185,519 @@
             </div>
         </section>
 
-        <!-- About Section -->
+        <section class="py-24 bg-background border-t border-cardBorder relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[100px]"></div>
+            <div class="max-w-7xl mx-auto px-4 relative z-10">
+                <div class="grid md:grid-cols-2 gap-16 items-center">
+                    <div>
+                        <h2 class="text-3xl md:text-5xl font-display font-bold mb-8 leading-tight uppercase tracking-tighter">
+                            A NEW CHAPTER IN <br/>
+                            <span class="text-primary italic">FINANCIAL SOVEREIGNTY</span>
+                        </h2>
+                        <div class="space-y-6 text-secondary leading-relaxed text-lg">
+                            <p>
+                                <span class="text-primary font-bold">SNR</span>-<span class="text-white font-bold">VAULT</span> hadir sebagai standar baru dalam pengelolaan aset digital. Kami tidak sekadar mengikuti arus yang ada, melainkan merancang sebuah ekosistem mandiri yang memprioritaskan keamanan dan pertumbuhan jangka panjang.
+                            </p>
+                            <div class="border-l-4 border-primary pl-6 py-2 bg-primary/5 italic">
+                                <p class="text-white">"Kedaulatan finansial bukan lagi sekadar impian. Dengan integrasi teknologi Blockchain dan manajemen aset profesional, kami menghadirkan transparansi total bagi setiap pemegang mandat."</p>
+                            </div>
+                            <p>
+                                Fokus utama kami adalah <span class="text-white font-bold">Profesionalisme dan Visi Masa Depan</span>. Melalui protokol yang presisi, <span class="text-primary font-bold">SNR</span>-<span class="text-white font-bold">VAULT</span> memberikan kepastian logis melalui sistem yang terukur, inklusif bagi seluruh kalangan, dan didukung oleh landasan korporasi yang kuat.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-4">
+                        <div class="glass-panel p-8 border-primary/20 hover:border-primary/40 transition-all group">
+                            <div class="flex items-start gap-4">
+                                <div class="p-3 rounded-lg bg-primary/10 text-primary">
+                                    <i data-lucide="layers" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-display font-bold mb-2 uppercase tracking-wider">Infrastruktur Visioner</h4>
+                                    <p class="text-sm text-secondary">Mengadopsi efisiensi Smart Contract untuk memastikan distribusi reward berjalan secara otomatis dan akurat tanpa intervensi manual.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-panel p-8 border-accent/20 hover:border-accent/40 transition-all group">
+                            <div class="flex items-start gap-4">
+                                <div class="p-3 rounded-lg bg-accent/10 text-accent">
+                                    <i data-lucide="briefcase" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-display font-bold mb-2 uppercase tracking-wider">Manajemen Profesional</h4>
+                                    <p class="text-sm text-secondary">Sinergi antara aset digital dan entitas hukum PT Global Nexus Capital menciptakan ekosistem yang kredibel dan memiliki fundamental yang nyata.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-panel p-8 border-white/10 hover:border-white/30 transition-all group">
+                            <div class="flex items-start gap-4">
+                                <div class="p-3 rounded-lg bg-white/5 text-white">
+                                    <i data-lucide="shield-check" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-display font-bold mb-2 uppercase tracking-wider">Inklusivitas Terukur</h4>
+                                    <p class="text-sm text-secondary">Sistem yang dirancang untuk merangkul setiap partisipan, memastikan kedaulatan aset tetap terjaga bagi semua lapisan pemegang kedaulatan.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 bg-background/50 border-t border-cardBorder">
+            <div class="max-w-5xl mx-auto px-4 text-center">
+                <h2 class="text-2xl md:text-3xl font-display font-bold mb-4 uppercase tracking-widest text-white">Projection of <span class="text-primary">Sovereign Value</span></h2>
+                <p class="text-secondary mb-12 text-sm max-w-2xl mx-auto">Visualisasi teknis mengenai korelasi antara pengembangan ekosistem dan penguatan nilai aset secara organik.</p>
+                <div class="glass-panel p-6 border-primary/20 bg-card/30">
+                    <canvas id="growthChart" height="150"></canvas>
+                </div>
+            </div>
+        </section>
+
+       <section id="snr-analytics-center" class="py-12 border-t border-cardBorder relative overflow-hidden" style="background: radial-gradient(circle at center, #0d1526 0%, #0B0F19 100%);">
+    
+    <div class="absolute inset-0 opacity-10" style="background-image: linear-gradient(#1E2A44 1px, transparent 1px), linear-gradient(90deg, #1E2A44 1px, transparent 1px); background-size: 30px 30px;"></div>
+
+    <div class="max-w-7xl mx-auto px-4 relative z-10">
+        
+        <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6 border-b border-cardBorder pb-6">
+            <div class="text-center md:text-left">
+                <h2 class="text-3xl font-display font-bold text-white tracking-widest uppercase">SNR-VAULT</h2>
+                <p class="text-gradient text-sm font-semibold tracking-wide">THE DEEP SPACE FINANCIAL FORTRESS</p>
+            </div>
+            
+            <div class="glass-panel px-6 py-3 border-primary/30 text-center min-w-[250px] shadow-[0_0_15px_rgba(255,204,0,0.2)]">
+                <p class="text-secondary text-xs uppercase tracking-widest mb-1">Scarcity Counter</p>
+                <div class="font-display text-2xl font-bold text-white flex items-center justify-center gap-2">
+                    <span class="text-primary">[</span>
+                    <span id="scarcity-num" class="text-white">125,000</span>
+                    <span class="text-primary">]</span>
+                </div>
+                <p class="text-xs text-primary/80 mt-1 uppercase">Shares Remaining / 125,000</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <div class="space-y-6">
+                <div class="glass-panel p-6 border-primary/20 bg-card/50 relative overflow-hidden group hover:border-primary/50 transition-all">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-primary/20 to-accent/20 rounded-xl blur-lg opacity-30 group-hover:opacity-50 transition"></div>
+                    
+                    <div class="relative z-10">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="p-3 rounded-xl bg-primary/10 border border-primary/30 shadow-[0_0_10px_rgba(255,204,0,0.3)]">
+                                <i data-lucide="shield-check" class="w-8 h-8 text-primary"></i>
+                            </div>
+                            <h3 class="text-xl font-display font-bold text-white uppercase tracking-wider">Kedaulatan Finansial</h3>
+                        </div>
+                        <p class="text-secondary text-sm leading-relaxed mb-4">
+                            SNR-VAULT dibangun di atas fondasi kedaulatan finansial yang sejati. Memadukan transparansi <span class="text-accent">Blockchain</span> dengan kepastian <span class="text-white font-semibold">Aset Riil</span> di bawah legalitas hukum Indonesia.
+                        </p>
+                        <div class="text-xs text-secondary/80 border-t border-cardBorder pt-3 space-y-1">
+                            <p>• Logic Secured | Asset Backed</p>
+                            <p>• Covered by <span class="text-white">PT Global Nexus Capital</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="switchPage('dapp')"
+                    class="w-full group px-8 py-4 rounded-lg bg-primary text-black font-bold text-lg hover:bg-yellow-400 transition-all hover:shadow-[0_0_20px_rgba(255,204,0,0.4)] flex items-center justify-center gap-3">
+                    <i data-lucide="key-round" class="w-5 h-5"></i>
+                    Masuk Portal Aset
+                    <i data-lucide="chevron-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                </button>
+            </div>
+
+            <div class="lg:col-span-1 glass-panel p-6 border-accent/20 bg-card/30 relative">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-display font-bold text-white uppercase tracking-wider">Multi-Asset Comparison</h3>
+                    <div class="flex gap-2 text-xs font-semibold">
+                        <span class="flex items-center gap-1.5 text-primary"><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span> SNR</span>
+                        <span class="flex items-center gap-1.5 text-accent"><span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span> REWARD</span>
+                        <span class="flex items-center gap-1.5 text-white"><span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> GROWTH</span>
+                    </div>
+                </div>
+                <div style="position: relative; height: 320px; width: 100%;">
+                    <canvas id="livingWaveChart"></canvas>
+                </div>
+            </div>
+
+            <div class="glass-panel p-6 border-cardBorder bg-card/50 overflow-hidden relative">
+                <div class="flex items-center gap-3 mb-5 border-b border-cardBorder pb-4">
+                    <i data-lucide="activity" class="w-5 h-5 text-green-400 animate-pulse"></i>
+                    <h3 class="text-lg font-display font-bold text-white uppercase tracking-wider">Live Transaction Stream</h3>
+                </div>
+                
+                <div id="waterfall-container" class="space-y-3 h-[300px] overflow-hidden text-xs font-mono relative">
+                    <div class="absolute top-0 left-0 right-0 h-10 bg-gradient-to-b from-card via-card/80 to-transparent z-10"></div>
+                    <div class="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-card via-card/80 to-transparent z-10"></div>
+                    
+                    <div id="waterfall-content" class="relative z-0 space-y-2.5">
+                        <div class="flex justify-between items-center text-secondary border-b border-cardBorder/50 pb-1.5">
+                            <span class="text-accent">TX_ID: 0x8a1c...</span>
+                            <span class="text-white">Stake</span>
+                            <span class="text-primary">+1,200 SNR</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<script>
+    // --- Point 3: Rotating Scarcity Counter Logic ---
+    function initScarcityCounter() {
+        const scarcityNumEl = document.getElementById('scarcity-num');
+        let currentShares = 125000;
+
+        // Simulate random shares being locked/taken
+        setInterval(() => {
+            // Randomly decrease by 1 to 5 shares
+            const reduction = Math.floor(Math.random() * 5) + 1;
+            currentShares -= reduction;
+
+            // Ensure it doesn't go below 0 (for simulation)
+            if (currentShares < 100) currentShares = 125000;
+
+            // Format with commas for display
+            scarcityNumEl.innerText = currentShares.toLocaleString('en-US');
+            
+            // Add a temporary glow effect on change
+            scarcityNumEl.classList.add('text-primary');
+            setTimeout(() => scarcityNumEl.classList.remove('text-primary'), 100);
+
+        }, 3500); // Update every 3.5 seconds
+    }
+
+    // --- Point 1: Living Multi-Asset Wave Chart Logic ---
+    function initLivingWaveChart() {
+        const ctx = document.getElementById('livingWaveChart').getContext('2d');
+
+        // Initial Data
+        const initialLabels = ['T-5', 'T-4', 'T-3', 'T-2', 'T-1', 'NOW'];
+        const snrData = [40, 55, 45, 80, 85, 100];
+        const rewardData = [20, 35, 60, 55, 70, 90];
+        const growthData = [10, 25, 30, 45, 50, 65];
+
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: initialLabels,
+                datasets: [
+                    {
+                        label: 'SNR VALUE',
+                        data: snrData,
+                        borderColor: '#FFD700', // Primary Gold
+                        backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                        fill: true,
+                        tension: 0.4, // Smooth waves
+                        borderWidth: 3,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#FFD700'
+                    },
+                    {
+                        label: 'REWARD POOL',
+                        data: rewardData,
+                        borderColor: '#00D1FF', // Accent Cyan
+                        backgroundColor: 'rgba(0, 209, 255, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        borderDash: [5, 5] // Dashed line
+                    },
+                    {
+                        label: 'GROWTH',
+                        data: growthData,
+                        borderColor: '#FFFFFF', // White
+                        backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 2,
+                        pointRadius: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false } // Custom legend used in HTML
+                },
+                scales: {
+                    y: {
+                        grid: { color: 'rgba(255, 255, 255, 0.03)' },
+                        ticks: { display: false } // Hide Y ticks for cleaner look
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#64748b', font: { family: 'Orbitron', size: 9 } }
+                    }
+                },
+                // Crucial for the "living" effect: Smooth animations
+                animation: {
+                    duration: 1000,
+                    easing: 'easeInOutQuad'
+                }
+            }
+        });
+
+        // Simulate real-time data updates (the "living" part)
+        setInterval(() => {
+            // 1. Add new Y-axis data points (simulate growth with random variance)
+            chart.data.datasets[0].data.push(Math.min(120, chart.data.datasets[0].data[chart.data.datasets[0].data.length - 1] + (Math.random() * 8 - 2))); // SNR
+            chart.data.datasets[1].data.push(Math.min(110, chart.data.datasets[1].data[chart.data.datasets[1].data.length - 1] + (Math.random() * 6 - 1))); // Reward
+            chart.data.datasets[2].data.push(Math.min(100, chart.data.datasets[2].data[chart.data.datasets[2].data.length - 1] + (Math.random() * 4)));     // Growth
+
+            // 2. Remove old data to keep the window (T-5 to NOW)
+            if (chart.data.datasets[0].data.length > 8) {
+                chart.data.datasets[0].data.shift();
+                chart.data.datasets[1].data.shift();
+                chart.data.datasets[2].data.shift();
+            }
+
+            // 3. Update the chart smoothly
+            chart.update('none'); // 'none' for performance, or default for animation
+
+        }, 3000); // Update every 3 seconds
+    }
+
+    // --- Point 1: Live Stream Waterfall Logic ---
+    function initWaterfallStream() {
+        const contentEl = document.getElementById('waterfall-content');
+        
+        // Define some example transaction types and data
+        const txTypes = [
+            { type: 'Stake', color: 'text-white', icon: 'lock' },
+            { type: 'Harvest', color: 'text-green-400', icon: 'zap' },
+            { type: 'P2P', color: 'text-accent', icon: 'arrow-left-right' },
+            { type: 'Join v4', color: 'text-primary', icon: 'shield' },
+            { type: 'Asset Req', color: 'text-white', icon: 'car' }
+        ];
+
+        // Function to create a new transaction row
+        function createTxRow() {
+            const tx = txTypes[Math.floor(Math.random() * txTypes.length)];
+            const txId = '0x' + Math.random().toString(16).slice(2, 6) + '...' + Math.random().toString(16).slice(2, 6);
+            
+            let amount, amountColor;
+            if (tx.type === 'Harvest') {
+                amount = '+' + (Math.random() * 50 + 5).toFixed(2) + ' SNR';
+                amountColor = 'text-green-400';
+            } else if (tx.type === 'P2P') {
+                amount = (Math.random() > 0.5 ? '+' : '-') + (Math.random() * 500 + 100).toFixed(0) + ' SNR';
+                amountColor = amount.startsWith('+') ? 'text-green-400' : 'text-red-400';
+            } else {
+                amount = '+' + (Math.random() * 1000 + 100).toFixed(0) + ' SNR';
+                amountColor = 'text-primary';
+            }
+
+            const row = document.createElement('div');
+            row.className = 'flex justify-between items-center text-secondary border-b border-cardBorder/50 pb-1.5 opacity-0 transform translate-y-2 transition-all duration-500';
+            
+            row.innerHTML = `
+                <span class="text-accent font-mono text-[10px]">${txId}</span>
+                <span class="${tx.color} font-semibold flex items-center gap-1"><i data-lucide="${tx.icon}" class="w-3.5 h-3.5"></i> ${tx.type}</span>
+                <span class="${amountColor} font-bold">${amount}</span>
+            `;
+
+            return row;
+        }
+
+        // Add 6 initial rows
+        for (let i = 0; i < 6; i++) {
+            const row = createTxRow();
+            row.classList.remove('opacity-0', 'translate-y-2'); // Show initial rows
+            contentEl.appendChild(row);
+        }
+        lucide.createIcons({attrs: {class: 'w-3.5 h-3.5'}}); // Initialize new icons
+
+        // Stream logic: Add new row, remove oldest
+        setInterval(() => {
+            const newRow = createTxRow();
+            contentEl.prepend(newRow); // Add to top
+            lucide.createIcons({container: newRow}); // Init new icons in this row
+
+            // Animate in the new row
+            setTimeout(() => {
+                newRow.classList.remove('opacity-0', 'translate-y-2');
+            }, 50);
+
+            // Remove oldest row if we exceed the limit (to keep h-[300px])
+            const rows = contentEl.querySelectorAll('div');
+            if (rows.length > 8) {
+                const oldest = rows[rows.length - 1];
+                oldest.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => oldest.remove(), 500);
+            }
+
+        }, 2800); // Add new transaction every 2.8 seconds
+    }
+
+    // Initialize all components when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+        // Point 3
+        if (document.getElementById('scarcity-num')) {
+            initScarcityCounter();
+        }
+        
+        // Point 1 (Chart)
+        if (document.getElementById('livingWaveChart')) {
+            // Ensure Chart.js is loaded
+            if (typeof Chart !== 'undefined') {
+                initLivingWaveChart();
+            } else {
+                console.error("Chart.js not found. Dynamic chart will not load.");
+            }
+        }
+        
+        // Point 1 (Waterfall)
+        if (document.getElementById('waterfall-container')) {
+            initWaterfallStream();
+        }
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const ctxMulti = document.getElementById('multiAssetChart').getContext('2d');
+    
+    // Gradients
+    const goldGrad = ctxMulti.createLinearGradient(0, 0, 0, 400);
+    goldGrad.addColorStop(0, 'rgba(255, 215, 0, 0.3)');
+    goldGrad.addColorStop(1, 'rgba(0, 5, 16, 0)');
+
+    const blueGrad = ctxMulti.createLinearGradient(0, 0, 0, 400);
+    blueGrad.addColorStop(0, 'rgba(0, 150, 255, 0.3)');
+    blueGrad.addColorStop(1, 'rgba(0, 5, 16, 0)');
+
+    const whiteGrad = ctxMulti.createLinearGradient(0, 0, 0, 400);
+    whiteGrad.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
+    whiteGrad.addColorStop(1, 'rgba(0, 5, 16, 0)');
+
+    new Chart(ctxMulti, {
+        type: 'line',
+        data: {
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
+            datasets: [
+                {
+                    label: 'SNR VALUE',
+                    data: [40, 55, 45, 80, 85, 100],
+                    borderColor: '#FFD700',
+                    backgroundColor: goldGrad,
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 3,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#FFD700'
+                },
+                {
+                    label: 'REWARD POOL',
+                    data: [20, 35, 60, 55, 70, 90],
+                    borderColor: '#00D1FF',
+                    backgroundColor: blueGrad,
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 2,
+                    pointRadius: 0, // Cleaner look for secondary line
+                    borderDash: [5, 5] // Dashed line for distinction
+                },
+                {
+                    label: 'GROWTH',
+                    data: [10, 25, 30, 45, 50, 65],
+                    borderColor: '#FFFFFF',
+                    backgroundColor: whiteGrad,
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 2,
+                    pointRadius: 0
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        color: '#FFFFFF',
+                        font: { family: 'Orbitron', size: 10 }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                    ticks: { color: '#888', font: { family: 'Orbitron' } }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#FFFFFF', font: { family: 'Orbitron' } }
+                }
+            }
+        }
+    });
+</script>
+
+        <section class="py-24 bg-background relative border-t border-cardBorder">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-5xl font-display font-bold mb-4 text-white">THE STRATEGIC <span class="text-primary">ROADMAP</span></h2>
+                    <p class="text-secondary tracking-widest text-sm font-semibold uppercase">Arsitektur Pembangunan Ekosistem SNR-VAULT</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="glass-panel p-6 border-primary/20 hover:border-primary/50 transition-all">
+                        <div class="text-primary font-display font-bold text-xl mb-4">FASE 01</div>
+                        <h4 class="text-white font-bold mb-2 uppercase text-sm">Infrastruktur Inti</h4>
+                        <p class="text-xs text-secondary leading-relaxed">Membangun fondasi digital yang kokoh, server terdesentralisasi, dan sistem keamanan tingkat tinggi.</p>
+                    </div>
+
+                    <div class="glass-panel p-6 border-white/10 hover:border-white/30 transition-all">
+                        <div class="text-white font-display font-bold text-xl mb-4">FASE 02</div>
+                        <h4 class="text-white font-bold mb-2 uppercase text-sm">Formalitas & Legalitas</h4>
+                        <p class="text-xs text-secondary leading-relaxed">Penyelarasan regulasi dan penguatan payung hukum melalui PT Global Nexus Capital & PT SNR Digital Transformasi.</p>
+                    </div>
+
+                    <div class="glass-panel p-6 border-accent/20 hover:border-accent/50 transition-all">
+                        <div class="text-accent font-display font-bold text-xl mb-4">FASE 03</div>
+                        <h4 class="text-white font-bold mb-2 uppercase text-sm">Blockchain Evolution</h4>
+                        <p class="text-xs text-secondary leading-relaxed">Implementasi Smart Contract Titan v4 dan audit protokol secara berkala untuk kedaulatan data.</p>
+                    </div>
+
+                    <div class="glass-panel p-6 border-primary/20 hover:border-primary/50 transition-all">
+                        <div class="text-primary font-display font-bold text-xl mb-4">FASE 04</div>
+                        <h4 class="text-white font-bold mb-2 uppercase text-sm">Hybrid Ecosystem</h4>
+                        <p class="text-xs text-secondary leading-relaxed">Integrasi strategis antara aset digital SNR dengan portofolio aset riil yang produktif dan terukur.</p>
+                    </div>
+
+                    <div class="glass-panel p-6 border-accent/20 hover:border-accent/50 transition-all">
+                        <div class="text-accent font-display font-bold text-xl mb-4">FASE 05</div>
+                        <h4 class="text-white font-bold mb-2 uppercase text-sm">Mobility Program</h4>
+                        <p class="text-xs text-secondary leading-relaxed">Peluncuran program perolehan kendaraan motor dan mobil melalui skema dukungan aset digital yang inovatif.</p>
+                    </div>
+
+                    <div class="glass-panel p-6 border-primary/20 hover:border-primary/50 transition-all">
+                        <div class="text-primary font-display font-bold text-xl mb-4">FASE 06</div>
+                        <h4 class="text-white font-bold mb-2 uppercase text-sm">Sovereign Living</h4>
+                        <p class="text-xs text-secondary leading-relaxed">Pengembangan aset hunian dan real estate sebagai bentuk jaminan kenyamanan jangka panjang bagi pemegang kedaulatan.</p>
+                    </div>
+
+                    <div class="glass-panel p-6 border-white/20 hover:border-white/50 transition-all lg:col-span-2">
+                        <div class="text-white font-display font-bold text-xl mb-4">FASE 07</div>
+                        <h4 class="text-white font-bold mb-2 uppercase text-sm">Expansion & Scaling</h4>
+                        <p class="text-xs text-secondary leading-relaxed">Perluasan jaringan operasional perusahaan dan pusat edukasi di berbagai wilayah kota besar di seluruh Indonesia.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section id="about" class="py-24 bg-card/30 border-y border-cardBorder">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-16">
@@ -234,7 +738,6 @@
             </div>
         </section>
 
-        <!-- Legality Section -->
         <section id="security" class="py-24">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="glass-panel p-8 md:p-12 relative overflow-hidden border-primary/20">
@@ -280,11 +783,9 @@
         </section>
     </div>
 
-    <!-- DAPP PORTAL VIEW -->
     <div id="view-dapp" class="page-view flex-grow py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            <!-- Token Info & Status -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div class="glass-panel p-6 flex items-center justify-between">
                     <div>
@@ -331,7 +832,6 @@
                 </div>
             </div>
 
-            <!-- Navigation Tabs -->
             <div class="flex flex-wrap gap-2 mb-8 bg-card p-2 rounded-xl border border-cardBorder w-fit">
                 <button onclick="switchTab('staking')" id="btn-staking"
                     class="px-6 py-2 rounded-lg text-sm font-medium transition-all bg-primary text-black">
@@ -351,12 +851,10 @@
                 </button>
             </div>
 
-            <!-- Tab Contents -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
                 <div class="lg:col-span-2 space-y-6">
 
-                    <!-- Staking Tab -->
                     <div id="tab-staking" class="dapp-tab active glass-panel p-8">
                         <h3 class="text-2xl font-display font-bold mb-6 flex items-center gap-2">
                             <i data-lucide="shield-alert" class="text-primary w-6 h-6"></i> Titan v4 - Join Protocol
@@ -390,7 +888,6 @@
                         </div>
                     </div>
 
-                    <!-- Network & Rank Tab -->
                     <div id="tab-network" class="dapp-tab glass-panel p-8 border-accent/30">
                         <div class="flex items-start justify-between">
                             <div>
@@ -453,7 +950,6 @@
                         </div>
                     </div>
 
-                    <!-- Assets Tab -->
                     <div id="tab-assets" class="dapp-tab glass-panel p-8">
                         <h3 class="text-2xl font-display font-bold mb-6">Request Asset Acquisition</h3>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
@@ -502,7 +998,6 @@
                         </div>
                     </div>
 
-                    <!-- P2P Tab -->
                     <div id="tab-p2p"
                         class="dapp-tab glass-panel p-8 text-center min-h-[400px] flex flex-col items-center justify-center">
                         <i data-lucide="message-circle" class="w-16 h-16 text-green-400 mb-4"></i>
@@ -520,7 +1015,6 @@
 
                 </div>
 
-                <!-- Sidebar -->
                 <div class="space-y-6">
                     <div class="glass-panel p-6 border-primary/20">
                         <h4 class="font-display font-bold text-lg mb-4 flex items-center gap-2"><i data-lucide="gift"
@@ -549,7 +1043,6 @@
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="border-t border-cardBorder bg-background py-12 mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -579,10 +1072,34 @@
         </div>
     </footer>
 
-    <!-- Logic Script -->
     <script>
         // Inisialisasi ikon Lucide
         lucide.createIcons();
+
+        // --- NEW: Chart Growth Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctxGrowth = document.getElementById('growthChart').getContext('2d');
+            new Chart(ctxGrowth, {
+                type: 'bar',
+                data: {
+                    labels: ['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7'],
+                    datasets: [{
+                        label: 'Ekosistem Power',
+                        data: [20, 35, 55, 70, 85, 95, 100],
+                        backgroundColor: '#FFCC00',
+                        borderRadius: 5,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { display: false },
+                        x: { ticks: { color: '#64748b', font: { family: 'Orbitron' } }, grid: { display: false } }
+                    }
+                }
+            });
+        });
 
         function switchPage(page) {
             // Sembunyikan semua halaman
@@ -876,39 +1393,6 @@
             }
         }
 
-        // Fungsi Withdraw
-        async function withdrawFunds() {
-            if (!stakingContract) {
-                alert('Silakan connect wallet terlebih dahulu!');
-                return;
-            }
-            try {
-                const tx = await stakingContract.withdraw();
-                alert('Transaksi withdraw dikirim... Hash: ' + tx.hash);
-                await tx.wait();
-                alert('Withdraw berhasil!');
-            } catch (error) {
-                console.error("Withdraw error:", error);
-                alert('Gagal withdraw: ' + error.message);
-            }
-        }
-
-        // Fungsi Claim Rewards
-        async function claimRewards() {
-            if (!stakingContract) {
-                alert('Silakan connect wallet terlebih dahulu!');
-                return;
-            }
-            try {
-                const tx = await stakingContract.claimRewards();
-                alert('Transaksi claim dikirim... Hash: ' + tx.hash);
-                await tx.wait();
-                alert('Claim rewards berhasil!');
-            } catch (error) {
-                console.error("Claim error:", error);
-                alert('Gagal claim: ' + error.message);
-            }
-        }
     </script>
 </body>
 
