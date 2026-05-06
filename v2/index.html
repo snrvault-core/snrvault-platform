@@ -95,6 +95,31 @@
                 transform: translateX(-50%);
             }
         }
+
+        /* PROTOKOL MARQUEE: TERTIB & BERURUTAN */
+.marquee-content {
+    display: inline-flex; /* Mengatur elemen berjejer ke samping */
+    white-space: nowrap;  /* Memaksa teks tetap satu baris panjang */
+    will-change: transform;
+    animation: marquee 30s linear infinite; /* Pastikan nama animasi sesuai */
+}
+
+.marquee-content span {
+    display: inline-block;
+    padding-right: 50px; /* Memberi jarak antar kalimat agar tidak tabrakan */
+}
+
+/* Animasi Jalannya Ticker */
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+/* Gembok Layar (Tetap dipertahankan agar tidak geser kanan-kiri) */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
     </style>
 </head>
 
@@ -139,11 +164,12 @@
         </div>
 
         <div class="bg-primary/10 border-t border-b border-primary/20 py-2 overflow-hidden">
-            <div class="marquee-content text-primary text-[10px] sm:text-sm font-display tracking-widest font-semibold w-max flex">
-                <span>&#9888; <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> THE DEEP SPACE PROTOCOL ONLINE /// SOVEREIGN DEFENSE ACTIVE /// <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> : LOGIC SECURED /// 125.000 SHARES SCARCITY PROTOCOL /// </span>
-                <span>&nbsp;&#9888; <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> NO INFLATION /// BEYOND SPECULATION /// ASSETS BACKED BY PT GLOBAL NEXUS CAPITAL /// TOTAL SECURED: 2,450,000 SNR /// </span>
-            </div>
-        </div>
+    <div class="marquee-content text-primary text-[10px] sm:text-sm font-display tracking-widest font-semibold">
+        <span>&#9888; <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> THE DEEP SPACE PROTOCOL ONLINE /// SOVEREIGN DEFENSE ACTIVE /// LOGIC SECURED ///</span>
+        <span>&#9888; <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> NO INFLATION /// ASSETS BACKED BY PT GLOBAL NEXUS CAPITAL ///</span>
+        <span>&#9888; <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> THE DEEP SPACE PROTOCOL ONLINE /// SOVEREIGN DEFENSE ACTIVE /// LOGIC SECURED ///</span>
+    </div>
+</div>
     </nav>
 
     <div id="view-landing" class="page-view active flex-grow">
