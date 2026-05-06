@@ -135,17 +135,18 @@
     </button>
 </div>
 
-                <div id="nav-dapp" class="flex items-center gap-6 hidden">
-                    <button onclick="switchPage('landing')"
-                        class="text-secondary hover:text-white transition-colors mr-4">
-                        Kembali
-                    </button>
-                    <button id="connect-wallet-btn" onclick="connectWallet()"
-                        class="px-3 py-2 md:px-6 md:py-2.5 rounded-lg bg-card border border-accent text-accent font-semibold hover:bg-accent/10 transition-all flex items-center gap-2 max-w-[150px] md:max-w-none overflow-hidden shrink-0">
-                        <i data-lucide="wallet" class="w-5 h-5 shrink-0"></i>
-                        <span class="truncate text-sm md:text-base">Connect Wallet</span>
-                    </button>
-                </div>
+                <div id="nav-dapp" class="flex items-center gap-2 sm:gap-4 hidden">
+    <button onclick="switchPage('landing')"
+        class="text-secondary hover:text-white transition-colors text-sm sm:text-base whitespace-nowrap">
+        Kembali
+    </button>
+    
+    <button id="connect-wallet-btn" onclick="connectWallet()"
+        class="px-2 py-1.5 sm:px-4 sm:py-2 rounded-lg bg-card border border-accent text-accent font-semibold hover:bg-accent/10 transition-all flex items-center gap-1.5 min-w-0 shrink-0">
+        <i data-lucide="wallet" class="w-4 h-4 sm:w-5 sm:h-5 shrink-0"></i>
+        <span class="truncate text-[10px] sm:text-sm md:text-base uppercase tracking-wider">Connect Wallet</span>
+    </button>
+</div>
             </div>
         </div>
 
