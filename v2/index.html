@@ -4,934 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SNR-VAULT | Deep Space Financial Fortress</title>
-    <!-- Tailwind CSS (CDN) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700;900&display=swap"
-        rel="stylesheet">
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Globe.gl -->
-    <script src="https://unpkg.com/globe.gl"></script>
-    <!-- Ethers.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        background: '#0B0F19',
-                        primary: '#FFCC00',
-                        accent: '#00E5FF',
-                        secondary: '#C0C0C0',
-                        card: '#131A2A',
-                        cardBorder: '#1E2A44',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['Orbitron', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body {
-            background-color: #0B0F19;
-            color: white;
-            font-family: 'Inter', sans-serif;
-            background-image: radial-gradient(circle at 50% -20%, #1a2744 0%, #0B0F19 50%);
-            background-attachment: fixed;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        .font-display {
-            font-family: 'Orbitron', sans-serif;
-        }
-
-        .text-gradient {
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-image: linear-gradient(to right, #FFCC00, #00E5FF);
-        }
-
-        .glass-panel {
-            background-color: rgba(19, 26, 42, 0.8);
-            backdrop-filter: blur(12px);
-            border: 1px solid #1E2A44;
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-
-        /* Tab Management */
-        .page-view {
-            display: none;
-        }
-
-        .page-view.active {
-            display: block;
-        }
-
-        .dapp-tab {
-            display: none;
-        }
-
-        .dapp-tab.active {
-            display: block;
-        }
-
-        /* Marquee */
-        .marquee-content {
-            display: flex;
-            animation: scroll 20s linear infinite;
-        }
-
-        @keyframes scroll {
-            0% {
-                transform: translateX(0);
-            }
-
-            100% {
-                transform: translateX(-50%);
-            }
-        }
-    </style>
-</head>
-
-<body class="min-h-screen flex flex-col">
-
-    <!-- Marquee -->
-    <div class="bg-primary/10 border-b border-primary/20 py-2 relative z-[60] overflow-hidden">
-        <div class="marquee-content text-primary text-sm font-display tracking-widest font-semibold w-max">
-            <span>&#9888; <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> DEEP SPACE PROTOCOL ONLINE /// SOVEREIGN DEFENSE ACTIVE /// NO IMPERMANENT LOSS ///
-                TOTAL SECURED: 2,450,000 SNR /// </span>
-            <span>&#9888; <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> DEEP SPACE PROTOCOL ONLINE /// SOVEREIGN DEFENSE ACTIVE /// NO IMPERMANENT LOSS ///
-                TOTAL SECURED: 2,450,000 SNR /// </span>
-        </div>
-    </div>
-
-    <!-- Navbar -->
-    <nav class="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-cardBorder">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <div class="flex items-center gap-3 cursor-pointer" onclick="switchPage('landing')">
-                    <i data-lucide="shield" class="h-8 w-8 text-primary"></i>
-                    <div class="font-display font-bold text-2xl tracking-widest">
-                        <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span>
-                    </div>
-                </div>
-
-                <div id="nav-landing" class="flex items-center gap-6">
-                    <div class="hidden md:flex space-x-8">
-                        <a href="#about" class="text-secondary hover:text-white transition-colors">Visi & Edukasi</a>
-                        <a href="#security" class="text-secondary hover:text-white transition-colors">Legalitas</a>
-                    </div>
-                    <button onclick="switchPage('dapp')"
-                        class="px-6 py-2.5 rounded-lg bg-primary text-black font-semibold hover:bg-yellow-400 transition-all hover:shadow-[0_0_15px_rgba(255,204,0,0.5)] flex items-center gap-2">
-                        Masuk Portal <span class="hidden sm:inline">Aset</span>
-                    </button>
-                </div>
-
-                <div id="nav-dapp" class="flex items-center gap-6 hidden">
-                    <button onclick="switchPage('landing')"
-                        class="text-secondary hover:text-white transition-colors mr-4">
-                        Kembali
-                    </button>
-                    <button id="connect-wallet-btn" onclick="connectWallet()"
-                        class="px-3 py-2 md:px-6 md:py-2.5 rounded-lg bg-card border border-accent text-accent font-semibold hover:bg-accent/10 transition-all flex items-center gap-2 max-w-[150px] md:max-w-none overflow-hidden shrink-0">
-                        <i data-lucide="wallet" class="w-5 h-5 shrink-0"></i>
-                        <span class="truncate text-sm md:text-base">Connect Wallet</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- LANDING PAGE VIEW -->
-    <div id="view-landing" class="page-view active flex-grow">
-        <!-- Hero Section -->
-        <section class="relative pt-20 pb-32 overflow-hidden min-h-[80vh] flex items-center">
-            <div class="absolute inset-0 z-0">
-                <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px]"></div>
-                <div class="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[150px]">
-                </div>
-                <div id="globeViz"
-                    class="absolute inset-0 flex justify-center items-center opacity-60 mix-blend-screen pointer-events-none transform scale-75 md:scale-100 mt-20 md:mt-0">
-                </div>
-            </div>
-
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-                <div
-                    class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10 text-primary mb-8 animate-pulse">
-                    <i data-lucide="lock" class="w-4 h-4"></i>
-                    <span class="text-sm font-semibold tracking-wide">PROTOKOL KEDAULATAN AKTIF</span>
-                </div>
-
-                <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight font-display">
-                    THE DEEP SPACE <br />
-                    <span class="text-gradient">FINANCIAL FORTRESS</span>
-                </h1>
-
-                <p class="text-xl text-secondary max-w-3xl mx-auto mb-10 leading-relaxed">
-                    Membangun masa depan keuangan desentralisasi yang aman.
-                    <span class="text-primary font-medium">SNR</span>-<span class="text-white font-medium">VAULT</span> mengintegrasikan blockchain dengan aset
-                    nyata
-                    untuk melindungi Anda dari risiko scammer dengan legalitas yang jelas di Indonesia.
-                </p>
-
-                <div class="flex justify-center items-center gap-4">
-                    <button onclick="switchPage('dapp')"
-                        class="group px-8 py-4 rounded-lg bg-primary text-black font-bold text-lg hover:bg-yellow-400 transition-all hover:shadow-[0_0_20px_rgba(255,204,0,0.4)] flex items-center gap-2">
-                        Buka Portal Aset
-                        <i data-lucide="chevron-right"
-                            class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- About Section -->
-        <section id="about" class="py-24 bg-card/30 border-y border-cardBorder">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-16">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4 font-display">Visi & Edukasi Blockchain</h2>
-                    <p class="text-secondary max-w-2xl mx-auto">Kami mengedukasi masyarakat tentang potensi sejati
-                        blockchain ketika disandingkan dengan utilitas aset nyata yang sah.</p>
-                </div>
-
-                <div class="grid md:grid-cols-3 gap-8">
-                    <div class="glass-panel p-8 hover:-translate-y-2 transition-transform duration-300">
-                        <div
-                            class="w-14 h-14 rounded-xl bg-accent/20 flex items-center justify-center mb-6 border border-accent/30">
-                            <i data-lucide="shield" class="w-7 h-7 text-accent"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-3 font-display">Keamanan Sovereign</h3>
-                        <p class="text-secondary leading-relaxed">Protokol perlindungan tingkat lanjut (Sovereign
-                            Defense) menjaga aset dari pihak tak bertanggung jawab.</p>
-                    </div>
-                    <div class="glass-panel p-8 hover:-translate-y-2 transition-transform duration-300">
-                        <div
-                            class="w-14 h-14 rounded-xl bg-primary/20 flex items-center justify-center mb-6 border border-primary/30">
-                            <i data-lucide="layers" class="w-7 h-7 text-primary"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-3 font-display">Integrasi Aset Nyata</h3>
-                        <p class="text-secondary leading-relaxed">Teknologi ini memungkinkan verifikasi dan dukungan
-                            kepemilikan aset nyata melalui kontrak pintar.</p>
-                    </div>
-                    <div class="glass-panel p-8 hover:-translate-y-2 transition-transform duration-300">
-                        <div
-                            class="w-14 h-14 rounded-xl bg-blue-500/20 flex items-center justify-center mb-6 border border-blue-500/30">
-                            <i data-lucide="globe" class="w-7 h-7 text-blue-400"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-3 font-display">Transparansi Publik</h3>
-                        <p class="text-secondary leading-relaxed">Setiap transaksi tercatat abadi di Binance Smart Chain
-                            (BSC), menghilangkan risiko manipulasi data.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Legality Section -->
-        <section id="security" class="py-24">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="glass-panel p-8 md:p-12 relative overflow-hidden border-primary/20">
-                    <div class="relative z-10 grid md:grid-cols-2 gap-12 items-center">
-                        <div>
-                            <div
-                                class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white mb-6 text-sm">
-                                <i data-lucide="file-check-2" class="w-4 h-4 text-green-400"></i> Kepatuhan Hukum
-                                Indonesia
-                            </div>
-                            <h2 class="text-3xl md:text-4xl font-bold mb-6 font-display">Integritas dan Legalitas</h2>
-                            <p class="text-secondary mb-6 leading-relaxed">
-                                Ekosistem <span class="text-primary font-bold">SNR</span>-<span
-                                    class="text-white font-bold">VAULT</span> dijalankan dengan mematuhi prinsip
-                                kehati-hatian.
-                            </p>
-                            <ul class="space-y-4">
-                                <li class="flex items-start gap-3">
-                                    <div
-                                        class="mt-1 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
-                                        <div class="w-2 h-2 rounded-full bg-primary"></div>
-                                    </div>
-                                    <div>
-                                        <strong class="block text-white">Distributor Resmi:</strong>
-                                        <span class="text-secondary">PT SNR DIGITAL TRANSFORMASI</span>
-                                    </div>
-                                </li>
-                                <li class="flex items-start gap-3">
-                                    <div
-                                        class="mt-1 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
-                                        <div class="w-2 h-2 rounded-full bg-primary"></div>
-                                    </div>
-                                    <div>
-                                        <strong class="block text-white">Induk Perusahaan (Holding):</strong>
-                                        <span class="text-secondary">PT GLOBAL NEXUS CAPITAL</span>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- DAPP PORTAL VIEW -->
-    <div id="view-dapp" class="page-view flex-grow py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-            <!-- Token Info & Status -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="glass-panel p-6 flex items-center justify-between">
-                    <div>
-                        <p class="text-secondary text-sm mb-1">Total Saldo (Wallet)</p>
-                        <h3 class="text-2xl font-bold"><span id="ui-snr-balance">0.00</span> <span
-                                class="text-primary text-lg">SNR</span></h3>
-                        <p class="text-sm mt-1 flex items-center gap-1">
-                            <span class="text-yellow-500 font-bold" id="ui-bnb-balance">0.000</span> <span
-                                class="text-secondary">BNB (Gas
-                                Fee)</span>
-                        </p>
-                    </div>
-                    <div
-                        class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
-                        <i data-lucide="wallet" class="w-6 h-6 text-primary"></i>
-                    </div>
-                </div>
-                <div class="glass-panel p-6 flex items-center justify-between border-accent/30">
-                    <div>
-                        <p class="text-secondary text-sm mb-1">Status Kedaulatan</p>
-                        <h3 class="text-2xl font-bold text-accent">AKTIF</h3>
-                    </div>
-                    <div
-                        class="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center border border-accent/30">
-                        <i data-lucide="cpu" class="w-6 h-6 text-accent"></i>
-                    </div>
-                </div>
-                <div class="glass-panel p-6 flex items-center justify-between">
-                    <div>
-                        <p class="text-secondary text-sm mb-1">Ready to Withdraw</p>
-                        <h3 class="text-2xl font-bold text-green-400"><span id="ui-withdraw-balance">0.00</span> <span
-                                class="text-sm">SNR</span></h3>
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <button onclick="harvestDailyReward()"
-                            class="px-4 py-2 bg-yellow-500/20 text-yellow-400 border border-yellow-500/50 rounded-lg text-sm hover:bg-yellow-500/30 transition-colors w-full">
-                            Harvest
-                        </button>
-                        <button onclick="withdrawFunds()"
-                            class="px-4 py-2 bg-green-500/20 text-green-400 border border-green-500/50 rounded-lg text-sm hover:bg-green-500/30 transition-colors w-full">
-                            Withdraw
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Navigation Tabs -->
-            <div class="flex flex-wrap gap-2 mb-8 bg-card p-2 rounded-xl border border-cardBorder w-fit">
-                <button onclick="switchTab('staking')" id="btn-staking"
-                    class="px-6 py-2 rounded-lg text-sm font-medium transition-all bg-primary text-black">
-                    Join Protocol
-                </button>
-                <button onclick="switchTab('network')" id="btn-network"
-                    class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary hover:text-white">
-                    Jaringan & Rank
-                </button>
-                <button onclick="switchTab('assets')" id="btn-assets"
-                    class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary hover:text-white">
-                    Request Asset
-                </button>
-                <button onclick="switchTab('p2p')" id="btn-p2p"
-                    class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary hover:text-white">
-                    P2P Portal
-                </button>
-            </div>
-
-            <!-- Tab Contents -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-                <div class="lg:col-span-2 space-y-6">
-
-                    <!-- Staking Tab -->
-                    <div id="tab-staking" class="dapp-tab active glass-panel p-8">
-                        <h3 class="text-2xl font-display font-bold mb-6 flex items-center gap-2">
-                            <i data-lucide="shield-alert" class="text-primary w-6 h-6"></i> Titan v4 - Join Protocol
-                        </h3>
-                        <div class="space-y-5">
-                            <div>
-                                <label class="block text-sm text-secondary mb-2">Jumlah SNR (Min 100)</label>
-                                <div class="relative">
-                                    <input type="number" id="stake-amount" placeholder="0.0"
-                                        class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
-                                    <span class="absolute right-4 top-3 text-primary font-bold">SNR</span>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-sm text-secondary mb-2">Alamat Mentor / Upline</label>
-                                <input type="text" id="stake-mentor" placeholder="0x..."
-                                    class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
-                            </div>
-                            <div>
-                                <label class="block text-sm text-secondary mb-2">Durasi Staking</label>
-                                <input type="hidden" id="stake-duration" value="30">
-                                <div class="grid grid-cols-3 gap-2 sm:gap-4">
-                                    <button id="btn-dur-30" onclick="selectDuration(30)" class="duration-btn border-primary bg-primary/10 border py-3 rounded-lg hover:border-primary transition-colors text-sm sm:text-base">30 Hari</button>
-                                    <button id="btn-dur-60" onclick="selectDuration(60)" class="duration-btn border-cardBorder bg-background border py-3 rounded-lg hover:border-primary transition-colors text-sm sm:text-base">60 Hari</button>
-                                    <button id="btn-dur-90" onclick="selectDuration(90)" class="duration-btn border-cardBorder bg-background border py-3 rounded-lg hover:border-primary transition-colors text-sm sm:text-base">90 Hari</button>
-                                </div>
-                            </div>
-                            <button onclick="executeProtocol()"
-                                class="w-full py-4 mt-4 bg-primary text-black font-bold rounded-lg hover:bg-yellow-400 hover:shadow-[0_0_20px_rgba(255,204,0,0.3)] transition-all">
-                                Eksekusi Protokol
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Network & Rank Tab -->
-                    <div id="tab-network" class="dapp-tab glass-panel p-8 border-accent/30">
-                        <div class="flex items-start justify-between">
-                            <div>
-                                <h3 class="text-xl font-display font-bold text-white mb-1">Rank Saat Ini</h3>
-                                <div class="text-4xl font-black text-gradient font-display mb-4">RANK 2 <span
-                                        class="text-lg font-sans text-secondary">(Captain)</span></div>
-
-                                <div class="flex flex-wrap gap-4 mt-6">
-                                    <div class="bg-background/80 border border-cardBorder p-4 rounded-lg min-w-[140px]">
-                                        <div class="text-secondary text-xs mb-1 flex items-center gap-1"><i
-                                                data-lucide="users" class="w-3 h-3"></i> Direct Aktif</div>
-                                        <div class="text-xl font-bold">15 <span
-                                                class="text-sm text-secondary">Member</span></div>
-                                    </div>
-                                    <div class="bg-background/80 border border-cardBorder p-4 rounded-lg min-w-[140px]">
-                                        <div class="text-secondary text-xs mb-1 flex items-center gap-1"><i
-                                                data-lucide="award" class="w-3 h-3"></i> Group Volume</div>
-                                        <div class="text-xl font-bold">35,000 <span
-                                                class="text-sm text-secondary">SNR</span></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div
-                                class="hidden sm:flex w-24 h-24 rounded-full border-4 border-accent/20 items-center justify-center bg-card shadow-[0_0_30px_rgba(0,229,255,0.2)]">
-                                <i data-lucide="award" class="w-10 h-10 text-accent"></i>
-                            </div>
-                        </div>
-
-                        <div class="mt-8 border-t border-cardBorder pt-6">
-                            <label class="block text-sm text-secondary mb-2">Tautan Referral Anda</label>
-                            <div class="flex gap-2">
-                                <input type="text" readonly value="https://snr-vault.com/dapp?ref=0x5Ce1..."
-                                    class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-secondary focus:outline-none">
-                                <button
-                                    class="px-4 py-3 bg-card border border-cardBorder rounded-lg hover:bg-white/5 transition-colors flex items-center justify-center">
-                                    <i data-lucide="share-2" class="w-5 h-5 text-white"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="mt-8 border-t border-cardBorder pt-6">
-                            <h4 class="font-bold text-white mb-4">Status Syarat Kedalaman Bonus (10 Level)</h4>
-                            <ul class="space-y-3 text-sm">
-                                <li class="flex items-center justify-between border-b border-cardBorder pb-2">
-                                    <span class="text-secondary">Level 1 - 4 (Butuh 1 Direct)</span>
-                                    <span class="text-green-400 font-semibold flex items-center gap-1">TERBUKA <i
-                                            data-lucide="check" class="w-4 h-4"></i></span>
-                                </li>
-                                <li class="flex items-center justify-between border-b border-cardBorder pb-2">
-                                    <span class="text-secondary">Level 5 - 7 (Butuh 5 Direct)</span>
-                                    <span class="text-green-400 font-semibold flex items-center gap-1">TERBUKA <i
-                                            data-lucide="check" class="w-4 h-4"></i></span>
-                                </li>
-                                <li class="flex items-center justify-between pb-1">
-                                    <span class="text-secondary">Level 8 - 10 (Butuh 10 Direct)</span>
-                                    <span class="text-green-400 font-semibold flex items-center gap-1">TERBUKA <i
-                                            data-lucide="check" class="w-4 h-4"></i></span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Assets Tab -->
-                    <div id="tab-assets" class="dapp-tab glass-panel p-8">
-                        <h3 class="text-2xl font-display font-bold mb-6">Request Asset Acquisition</h3>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                            <div
-                                class="border border-cardBorder bg-background p-4 rounded-lg flex flex-col items-center gap-2 cursor-pointer hover:border-accent text-center">
-                                <i data-lucide="car" class="w-6 h-6 text-accent"></i><span class="text-sm">MOTO</span>
-                            </div>
-                            <div
-                                class="border border-cardBorder bg-background p-4 rounded-lg flex flex-col items-center gap-2 cursor-pointer hover:border-accent text-center">
-                                <i data-lucide="car" class="w-6 h-6 text-accent"></i><span class="text-sm">DRIVE</span>
-                            </div>
-                            <div
-                                class="border border-cardBorder bg-background p-4 rounded-lg flex flex-col items-center gap-2 cursor-pointer hover:border-accent text-center">
-                                <i data-lucide="home" class="w-6 h-6 text-primary"></i><span class="text-sm">LIVING
-                                    STD</span>
-                            </div>
-                            <div
-                                class="border border-cardBorder bg-background p-4 rounded-lg flex flex-col items-center gap-2 cursor-pointer hover:border-accent text-center">
-                                <i data-lucide="home" class="w-6 h-6 text-primary"></i><span class="text-sm">GOLD</span>
-                            </div>
-                        </div>
-                        <div class="space-y-5">
-                            <div><label class="block text-sm text-secondary mb-2">Nilai Dukungan (SNR)</label><input
-                                    type="number" placeholder="Contoh: 5000"
-                                    class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent">
-                            </div>
-                            <div><label class="block text-sm text-secondary mb-2">Model Unit</label><input type="text"
-                                    placeholder="Contoh: Honda HRV 2024"
-                                    class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent">
-                            </div>
-                            <div>
-                                <label class="block text-sm text-secondary mb-2">Jalur Protokol</label>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <button
-                                        class="border border-cardBorder bg-background py-3 rounded-lg hover:border-accent transition-colors">Regular
-                                        55%</button>
-                                    <button
-                                        class="border border-cardBorder bg-background py-3 rounded-lg hover:border-accent transition-colors">Exclusive
-                                        100%</button>
-                                </div>
-                            </div>
-                            <button
-                                class="w-full py-4 mt-4 bg-accent text-black font-bold rounded-lg hover:bg-cyan-400 hover:shadow-[0_0_20px_rgba(0,229,255,0.3)] transition-all">
-                                Kirim Permintaan Aset
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- P2P Tab -->
-                    <div id="tab-p2p"
-                        class="dapp-tab glass-panel p-8 text-center min-h-[400px] flex flex-col items-center justify-center">
-                        <i data-lucide="message-circle" class="w-16 h-16 text-green-400 mb-4"></i>
-                        <h3 class="text-2xl font-bold mb-4">P2P Escrow Resmi SNR</h3>
-                        <p class="text-secondary max-w-md mx-auto mb-8">Lakukan pertukaran aset secara aman dan cepat
-                            melalui layanan P2P Escrow WhatsApp resmi kami.</p>
-                        <a href="https://wa.me/6283829681017?text=Halo%20Admin%20SNR-VAULT,%20saya%20ingin%20menggunakan%20layanan%20P2P."
-                            target="_blank"
-                            class="px-8 py-4 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] transition-all flex items-center gap-3">
-                            <i data-lucide="message-square" class="w-6 h-6"></i>
-                            Hubungi Admin P2P (WA)
-                        </a>
-                        <p class="mt-4 text-sm text-secondary font-display tracking-widest">+62 838-2968-1017</p>
-                    </div>
-
-                </div>
-
-                <!-- Sidebar -->
-                <div class="space-y-6">
-                    <div class="glass-panel p-6 border-primary/20">
-                        <h4 class="font-display font-bold text-lg mb-4 flex items-center gap-2"><i data-lucide="gift"
-                                class="w-5 h-5 text-primary"></i> Leader Rewards</h4>
-                        <div class="text-3xl font-bold mb-4">1,240 <span
-                                class="text-sm text-secondary font-sans">SNR</span></div>
-                        <button onclick="claimRewards()"
-                            class="w-full py-2 bg-background border border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors font-semibold">Claim
-                            Rewards</button>
-                    </div>
-                    <div class="glass-panel p-6">
-                        <h4 class="font-bold text-lg mb-4">Informasi Token</h4>
-                        <div class="space-y-4 text-sm">
-                            <div class="flex justify-between items-center border-b border-cardBorder pb-2"><span
-                                    class="text-secondary">Smart Contract</span><a
-                                    href="https://bscscan.com/address/0x59a7098D86ac1548dAF3b14aAfC43858D274f543"
-                                    target="_blank" class="text-accent hover:underline text-xs">0x59a7...f543</a></div>
-                            <div class="flex justify-between items-center border-b border-cardBorder pb-2"><span
-                                    class="text-secondary">Jaringan</span><span>BSC Mainnet</span></div>
-                            <div class="flex justify-between items-center pb-2"><span class="text-secondary">Max Cap
-                                    Reward</span><span class="text-green-400 font-medium">300%</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="border-t border-cardBorder bg-background py-12 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                <div>
-                    <div class="font-display font-bold text-2xl tracking-widest mb-4">
-                        <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span>
-                    </div>
-                    <p class="text-secondary text-sm leading-relaxed">
-                        <span class="text-primary font-bold">SNR</span>-<span class="text-white font-bold">VAULT</span> murni dibangun untuk menghadirkan solusi teknologi blockchain yang transparan, aman, dan
-                        dikelola oleh komunitas.
-                    </p>
-                </div>
-                <div class="flex flex-col md:items-end text-sm text-secondary space-y-2">
-                    <h4 class="text-white font-semibold mb-2">Legalitas & Distribusi</h4>
-                    <p><strong>Distribusi:</strong> PT SNR DIGITAL TRANSFORMASI</p>
-                    <p><strong>Holding:</strong> PT GLOBAL NEXUS CAPITAL</p>
-                </div>
-            </div>
-            <div class="mt-12 pt-8 border-t border-cardBorder text-xs text-secondary text-center space-y-4">
-                <p class="uppercase tracking-widest text-primary/80 font-semibold mb-2">Peringatan Risiko & Disclaimer
-                </p>
-                <p class="max-w-4xl mx-auto">Platform ini disediakan untuk tujuan edukasi dan integrasi teknologi.
-                    <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> murni dibangun untuk menghadirkan solusi teknologi blockchain yang transparan, aman, dan
-                    mematuhi regulasi di Indonesia.</p>
-                <p class="pt-4">&copy; 2026 <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span>. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Logic Script -->
-    <script>
-        // Inisialisasi ikon Lucide
-        lucide.createIcons();
-
-        function switchPage(page) {
-            // Sembunyikan semua halaman
-            document.getElementById('view-landing').classList.remove('active');
-            document.getElementById('view-dapp').classList.remove('active');
-            // Tampilkan halaman target
-            document.getElementById('view-' + page).classList.add('active');
-
-            // Atur navigasi
-            if (page === 'landing') {
-                document.getElementById('nav-landing').classList.remove('hidden');
-                document.getElementById('nav-dapp').classList.add('hidden');
-            } else {
-                document.getElementById('nav-landing').classList.add('hidden');
-                document.getElementById('nav-dapp').classList.remove('hidden');
-            }
-            window.scrollTo(0, 0);
-        }
-
-        function switchTab(tabId) {
-            // Sembunyikan semua konten tab dApp
-            document.querySelectorAll('.dapp-tab').forEach(el => el.classList.remove('active'));
-            // Reset warna tombol
-            document.querySelectorAll('#btn-staking, #btn-network, #btn-assets, #btn-p2p').forEach(el => {
-                el.classList.remove('bg-primary', 'text-black');
-                el.classList.add('text-secondary');
-            });
-
-            // Tampilkan tab yang dipilih
-            document.getElementById('tab-' + tabId).classList.add('active');
-            // Ganti warna tombol yang dipilih
-            const btn = document.getElementById('btn-' + tabId);
-            btn.classList.remove('text-secondary');
-            btn.classList.add('bg-primary', 'text-black');
-        }
-
-        // Fungsi Memilih Durasi Staking
-        function selectDuration(days) {
-            document.getElementById('stake-duration').value = days;
-            document.querySelectorAll('.duration-btn').forEach(btn => {
-                btn.classList.remove('border-primary', 'bg-primary/10');
-                btn.classList.add('border-cardBorder', 'bg-background');
-            });
-            const selected = document.getElementById('btn-dur-' + days);
-            selected.classList.remove('border-cardBorder', 'bg-background');
-            selected.classList.add('border-primary', 'bg-primary/10');
-        }
-
-        // Initialize Globe with Blockchain Touch
-        const globeContainer = document.getElementById('globeViz');
-        if (globeContainer && typeof Globe !== 'undefined') {
-            // Generate random blockchain nodes
-            const N = 40;
-            const nodesData = [...Array(N).keys()].map(() => ({
-                lat: (Math.random() - 0.5) * 180,
-                lng: (Math.random() - 0.5) * 360,
-                size: Math.random() * 0.4 + 0.1,
-                color: ['#00E5FF', '#FFCC00', '#ffffff'][Math.floor(Math.random() * 3)]
-            }));
-
-            // Generate arcs linking nodes
-            const arcsData = [...Array(25).keys()].map(() => ({
-                startLat: (Math.random() - 0.5) * 180,
-                startLng: (Math.random() - 0.5) * 360,
-                endLat: (Math.random() - 0.5) * 180,
-                endLng: (Math.random() - 0.5) * 360,
-                color: ['rgba(0, 229, 255, 0.6)', 'rgba(255, 204, 0, 0.6)'][Math.round(Math.random())]
-            }));
-
-            const world = Globe()
-                (globeContainer)
-                .backgroundColor('rgba(0,0,0,0)')
-                .showGlobe(true)
-                .showAtmosphere(true)
-                .atmosphereColor('#00E5FF')
-                .atmosphereAltitude(0.25)
-                .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-night.jpg')
-                .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
-                .pointsData(nodesData)
-                .pointColor('color')
-                .pointAltitude(0.02)
-                .pointRadius('size')
-                .pointsMerge(true)
-                .arcsData(arcsData)
-                .arcColor('color')
-                .arcDashLength(0.4)
-                .arcDashGap(0.2)
-                .arcDashAnimateTime(2000)
-                .width(globeContainer.clientWidth)
-                .height(globeContainer.clientHeight || window.innerHeight * 0.8);
-
-            // Add auto-rotation
-            world.controls().autoRotate = true;
-            world.controls().autoRotateSpeed = 1.2;
-            world.controls().enableZoom = false;
-
-            // Handle resize
-            window.addEventListener('resize', () => {
-                world.width(globeContainer.clientWidth);
-                world.height(globeContainer.clientHeight || window.innerHeight * 0.8);
-            });
-
-            // Fix initial rendering size issues
-            setTimeout(() => {
-                world.width(globeContainer.clientWidth);
-                world.height(globeContainer.clientHeight || window.innerHeight * 0.8);
-            }, 500);
-        }
-
-        // Web3 & Metamask Integration
-        const stakingContractAddress = "0x59a7098D86ac1548dAF3b14aAfC43858D274f543"; 
-        const tokenAddress = "0x5ce1427f77d8c58f97f5e18b36804fd54aa72718"; 
-
-        // ABI Smart Contract Staking V4 Titan Fortress
-        const stakingABI = [
-            "function joinProtocol(uint256 _amount, address _mentor, uint256 _days) external",
-            "function withdrawReadyBalance(uint256 _amount) external",
-            "function claimLeaderRewards() external",
-            "function harvestDailyReward() external",
-            "function users(address) view returns (uint256 participation, uint256 originalGrant, uint256 totalRewardClaimed, uint256 durationEnd, uint256 lastUpdate, uint256 dailyYieldBP, bool isActive, bool isBlacklisted, uint8 activeProgram, uint256 supportValue, uint256 supportSettled, address mentor, uint256 directActiveCount, uint256 groupVolume, uint256 currentRank, uint256 principalDeposit, bool isFundLockedByAdmin, uint256 readyToWithdraw)"
-        ];
-
-        // ABI standar ERC20 untuk cek saldo SNR dan Approval
-        const erc20ABI = [
-            "function balanceOf(address owner) view returns (uint256)",
-            "function approve(address spender, uint256 amount) returns (bool)",
-            "function allowance(address owner, address spender) view returns (uint256)"
-        ];
-
-        let provider, signer, userAddress, stakingContract, tokenContract;
-
-        async function connectWallet() {
-            if (typeof window.ethereum !== 'undefined') {
-                try {
-                    // Minta akses akun (Metamask, Token Pocket, dll yang inject window.ethereum)
-                    await window.ethereum.request({ method: 'eth_requestAccounts' });
-                    provider = new ethers.providers.Web3Provider(window.ethereum);
-                    signer = provider.getSigner();
-                    userAddress = await signer.getAddress();
-
-                    // Inisialisasi Contract
-                    stakingContract = new ethers.Contract(stakingContractAddress, stakingABI, signer);
-                    tokenContract = new ethers.Contract(tokenAddress, erc20ABI, signer);
-
-                    // Update UI Button
-                    const shortAddress = userAddress.substring(0, 6) + '...' + userAddress.substring(38);
-                    const btn = document.getElementById('connect-wallet-btn');
-                    btn.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i> <span>${shortAddress}</span>`;
-                    btn.classList.add('bg-accent/20');
-                    btn.classList.remove('bg-card');
-                    lucide.createIcons();
-
-                    console.log('Wallet terhubung:', userAddress);
-
-                    // Fetch dan Update Saldo
-                    await updateBalances();
-
-                } catch (error) {
-                    console.error("Wallet connection failed:", error);
-                    alert('Koneksi dibatalkan atau terjadi kesalahan.');
-                }
-            } else {
-                alert('Web3 Wallet tidak terdeteksi. Harap buka di browser dApp seperti Metamask atau Token Pocket!');
-            }
-        }
-
-        async function updateBalances() {
-            try {
-                // 1. Ambil Saldo BNB Asli
-                const bnbBalanceRaw = await provider.getBalance(userAddress);
-                const bnbBalance = ethers.utils.formatEther(bnbBalanceRaw);
-                document.getElementById('ui-bnb-balance').innerText = parseFloat(bnbBalance).toFixed(4);
-
-                // 2. Ambil Saldo Token SNR (Token Asli di Wallet)
-                const snrBalanceRaw = await tokenContract.balanceOf(userAddress);
-                const snrBalance = ethers.utils.formatUnits(snrBalanceRaw, 18); // Asumsi 18 desimal
-                document.getElementById('ui-snr-balance').innerText = parseFloat(snrBalance).toFixed(2);
-
-                // 3. Ambil Data "Ready to Withdraw" dari Smart Contract Staking V4
-                try {
-                    const userData = await stakingContract.users(userAddress);
-                    const withdrawableRaw = userData.readyToWithdraw;
-                    const withdrawable = ethers.utils.formatUnits(withdrawableRaw, 18);
-                    document.getElementById('ui-withdraw-balance').innerText = parseFloat(withdrawable).toFixed(2);
-                } catch(e) {
-                    console.log("Gagal membaca struct users:", e);
-                    document.getElementById('ui-withdraw-balance').innerText = "0.00";
-                }
-
-            } catch (error) {
-                console.error("Gagal mengambil saldo:", error);
-            }
-        }
-
-        // Fungsi Eksekusi Protokol (Staking V4)
-        async function executeProtocol() {
-            if (!stakingContract || !tokenContract) {
-                alert('Silakan connect wallet terlebih dahulu!');
-                return;
-            }
-
-            try {
-                // Ambil nilai dari input
-                const amountInput = document.getElementById('stake-amount').value;
-                const referrerInput = document.getElementById('stake-mentor').value;
-                const durationInput = document.getElementById('stake-duration').value;
-
-                if (!amountInput || amountInput < 100) {
-                    alert('Masukkan jumlah SNR minimal 100.');
-                    return;
-                }
-
-                const amountToStake = ethers.utils.parseUnits(amountInput.toString(), 18);
-                const referrer = referrerInput && referrerInput.trim() !== "" ? referrerInput : ethers.constants.AddressZero; 
-                const daysToStake = parseInt(durationInput);
-
-                // 1. Cek Allowance dan Approve Token
-                const currentAllowance = await tokenContract.allowance(userAddress, stakingContractAddress);
-                if (currentAllowance.lt(amountToStake)) {
-                    console.log('Meminta approval token...');
-                    alert('Mohon setujui transaksi (Approve) token SNR Anda di Wallet.');
-                    const approveTx = await tokenContract.approve(stakingContractAddress, ethers.constants.MaxUint256);
-                    await approveTx.wait();
-                    alert('Approval berhasil! Lanjut ke proses Eksekusi Protokol (Staking)...');
-                }
-
-                // 2. Panggil joinProtocol
-                alert('Mohon setujui transaksi Staking di Wallet Anda.');
-                const tx = await stakingContract.joinProtocol(amountToStake, referrer, daysToStake);
-                console.log('Transaksi dikirim:', tx.hash);
-                alert('Transaksi dikirim. Menunggu konfirmasi... Hash: ' + tx.hash);
-
-                await tx.wait();
-                alert('Protokol berhasil dieksekusi! Selamat bergabung di Titan Fortress.');
-                
-                await updateBalances();
-            } catch (error) {
-                console.error("Error executing protocol:", error);
-                alert('Terjadi kesalahan saat eksekusi: ' + (error.data?.message || error.message));
-            }
-        }
-
-        // Fungsi Withdraw Ready Balance
-        async function withdrawFunds() {
-            if (!stakingContract) {
-                alert('Silakan connect wallet terlebih dahulu!');
-                return;
-            }
-            try {
-                // Mengambil jumlah readyToWithdraw dari blockchain
-                const userData = await stakingContract.users(userAddress);
-                const readyToWd = userData.readyToWithdraw;
-                
-                if (readyToWd.eq(0)) {
-                    alert('Saldo Ready to Withdraw Anda kosong.');
-                    return;
-                }
-
-                alert('Mohon setujui transaksi penarikan di Wallet Anda.');
-                const tx = await stakingContract.withdrawReadyBalance(readyToWd);
-                await tx.wait();
-                alert('Withdraw berhasil!');
-                await updateBalances();
-            } catch (error) {
-                console.error("Withdraw error:", error);
-                alert('Gagal withdraw: ' + (error.data?.message || error.message));
-            }
-        }
-
-        // Fungsi Harvest Daily Reward
-        async function harvestDailyReward() {
-            if (!stakingContract) {
-                alert('Silakan connect wallet terlebih dahulu!');
-                return;
-            }
-            try {
-                alert('Mohon setujui transaksi harvest di Wallet Anda.');
-                const tx = await stakingContract.harvestDailyReward();
-                await tx.wait();
-                alert('Berhasil memanen reward harian! Saldo Anda telah masuk ke Ready to Withdraw.');
-                await updateBalances();
-            } catch (error) {
-                console.error("Harvest error:", error);
-                alert('Gagal harvest: ' + (error.data?.message || error.message));
-            }
-        }
-
-        // Fungsi Claim Leader Rewards
-        async function claimRewards() {
-            if (!stakingContract) {
-                alert('Silakan connect wallet terlebih dahulu!');
-                return;
-            }
-            try {
-                alert('Mohon setujui transaksi claim reward di Wallet Anda.');
-                const tx = await stakingContract.claimLeaderRewards();
-                await tx.wait();
-                alert('Claim rewards berhasil!');
-                await updateBalances();
-            } catch (error) {
-                console.error("Claim error:", error);
-                alert('Gagal claim: ' + (error.data?.message || error.message));
-            }
-        }
-
-        // Fungsi Withdraw
-        async function withdrawFunds() {
-            if (!stakingContract) {
-                alert('Silakan connect wallet terlebih dahulu!');
-                return;
-            }
-            try {
-                const tx = await stakingContract.withdraw();
-                alert('Transaksi withdraw dikirim... Hash: ' + tx.hash);
-                await tx.wait();
-                alert('Withdraw berhasil!');
-            } catch (error) {
-                console.error("Withdraw error:", error);
-                alert('Gagal withdraw: ' + error.message);
-            }
-        }
-
-        // Fungsi Claim Rewards
-        async function claimRewards() {
-            if (!stakingContract) {
-                alert('Silakan connect wallet terlebih dahulu!');
-                return;
-            }
-            try {
-                const tx = await stakingContract.claimRewards();
-                alert('Transaksi claim dikirim... Hash: ' + tx.hash);
-                await tx.wait();
-                alert('Claim rewards berhasil!');
-            } catch (error) {
-                console.error("Claim error:", error);
-                alert('Gagal claim: ' + error.message);
-            }
-        }
-    </script>
-</body>
-
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SNR-VAULT | The Deep-Space Financial Fortress</title>
+    <title><span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> | The Deep-Space Financial Fortress</title>
     <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
@@ -940,6 +13,9 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Globe.gl -->
     <script src="https://unpkg.com/globe.gl"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -961,6 +37,14 @@
         }
     </script>
     <style>
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             background-color: #050816;
             color: #FFFFFF;
@@ -970,15 +54,18 @@
             -webkit-font-smoothing: antialiased;
             scroll-behavior: smooth;
         }
+
         .font-display {
             font-family: 'Orbitron', sans-serif;
         }
+
         .text-gradient {
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-image: linear-gradient(to right, #FFCC00, #00E5FF);
         }
+
         .glass-panel {
             background-color: rgba(5, 8, 22, 0.7);
             backdrop-filter: blur(12px);
@@ -992,6 +79,7 @@
             border-color: rgba(0, 229, 255, 0.3);
             box-shadow: 0 8px 32px 0 rgba(0, 229, 255, 0.1);
         }
+
         /* Subtle Glow Borders */
         .glow-border {
             position: relative;
@@ -1008,6 +96,7 @@
             mask-composite: exclude;
             pointer-events: none;
         }
+
         /* Grid Background overlay */
         .cyan-grid {
             background-size: 40px 40px;
@@ -1015,6 +104,7 @@
                               linear-gradient(to bottom, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
             mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
         }
+
         .nav-link {
             position: relative;
             color: #C0C0C0;
@@ -1036,30 +126,50 @@
         .nav-link:hover::after {
             width: 100%;
         }
+
+        /* Marquee Animation */
+        .marquee-content {
+            animation: scroll 20s linear infinite;
+        }
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
     </style>
 </head>
+
 <body class="min-h-screen flex flex-col relative overflow-x-hidden">
+
     <!-- Background Elements -->
     <div class="fixed inset-0 z-[-1] pointer-events-none cyan-grid"></div>
     <div class="fixed top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px] pointer-events-none z-[-1]"></div>
     <div class="fixed top-2/3 right-1/4 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[150px] pointer-events-none z-[-1]"></div>
-    <!-- Security Banner -->
-    <div class="bg-[#050816] border-b border-red-500/30 py-2 relative z-[60] flex justify-center items-center">
-        <div class="text-xs md:text-sm text-secondary font-display tracking-wide flex items-center gap-2">
-            <i data-lucide="shield-alert" class="w-4 h-4 text-red-500"></i>
-            <span><strong class="text-white">SECURITY NOTICE:</strong> <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> never requests Private Keys, Seed Phrases, or Recovery Codes. All transactions require direct wallet owner approval.</span>
+
+    <!-- Security Banner Marquee -->
+    <div class="fixed bottom-0 left-0 w-full bg-[#050816]/95 backdrop-blur-md border-t border-red-500/30 py-2 z-[60] overflow-hidden">
+        <div class="marquee-content flex w-max text-xs md:text-sm text-secondary font-display tracking-wide gap-8">
+            <div class="flex items-center gap-2">
+                <i data-lucide="shield-alert" class="w-4 h-4 text-red-500"></i>
+                <span><strong class="text-white">SECURITY NOTICE:</strong> <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> never requests Private Keys, Seed Phrases, or Recovery Codes. All transactions require direct wallet owner approval.</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <i data-lucide="shield-alert" class="w-4 h-4 text-red-500"></i>
+                <span><strong class="text-white">SECURITY NOTICE:</strong> <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> never requests Private Keys, Seed Phrases, or Recovery Codes. All transactions require direct wallet owner approval.</span>
+            </div>
         </div>
     </div>
+
     <!-- Navbar -->
     <nav class="sticky top-0 z-50 bg-[#050816]/80 backdrop-blur-md border-b border-cardBorder">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
-                <div class="flex items-center gap-3 cursor-pointer">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="toggleDapp(false)">
                     <i data-lucide="hexagon" class="h-8 w-8 text-primary"></i>
-                    <div class="font-display font-bold text-xl md:text-2xl tracking-widest">
+                    <div class="font-display font-bold text-xl md:text-2xl tracking-widest whitespace-nowrap">
                         <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span>
                     </div>
                 </div>
+
                 <div class="hidden lg:flex items-center gap-8 text-sm font-display tracking-wide">
                     <a href="#trust" class="nav-link">TRUST</a>
                     <a href="#community" class="nav-link">COMMUNITY</a>
@@ -1067,36 +177,42 @@
                     <a href="#utility" class="nav-link">UTILITY</a>
                     <a href="#transparency" class="nav-link">TRANSPARENCY</a>
                 </div>
+
                 <div class="flex items-center">
-                    <a href="#portal" class="px-5 py-2.5 rounded border border-primary text-primary font-display font-bold text-sm hover:bg-primary hover:text-[#050816] transition-all duration-300 shadow-[0_0_15px_rgba(255,204,0,0.2)] hover:shadow-[0_0_25px_rgba(255,204,0,0.5)] flex items-center gap-2">
+                    <a href="#" onclick="toggleDapp(true); return false;" class="px-5 py-2.5 rounded border border-primary text-primary font-display font-bold text-sm hover:bg-primary hover:text-[#050816] transition-all duration-300 shadow-[0_0_15px_rgba(255,204,0,0.2)] hover:shadow-[0_0_25px_rgba(255,204,0,0.5)] flex items-center gap-2">
                         ENTER FORTRESS
                     </a>
                 </div>
             </div>
         </div>
     </nav>
+
     <!-- Main Content -->
     <main class="flex-grow">
-        
+        <div id="view-landing" class="page-view flex-grow transition-opacity duration-500">
         <!-- Hero Section -->
         <section class="relative pt-24 pb-32 min-h-[90vh] flex items-center border-b border-cardBorder/50">
             <!-- Globe Container -->
-            <div class="absolute inset-0 z-0 overflow-hidden">
-                <div id="globeViz" class="absolute right-[-20%] top-1/2 transform -translate-y-1/2 opacity-40 mix-blend-screen pointer-events-none scale-150 md:scale-100"></div>
+            <div class="absolute inset-0 z-0 flex items-center justify-center overflow-hidden">
+                <div id="globeViz" class="w-full h-full opacity-40 mix-blend-screen pointer-events-none flex items-center justify-center"></div>
             </div>
+
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
                 <div class="max-w-3xl">
                     <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-accent/30 bg-accent/5 text-accent mb-6 font-display text-xs tracking-widest uppercase">
                         <i data-lucide="cpu" class="w-4 h-4"></i>
                         <span>Sovereign Economic Infrastructure</span>
                     </div>
+
                     <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight font-display tracking-tight">
                         THE DEEP-SPACE <br />
                         <span class="text-gradient">FINANCIAL FORTRESS</span>
                     </h1>
+
                     <p class="text-lg md:text-xl text-secondary mb-10 leading-relaxed font-light max-w-2xl">
                         A community-centered digital economic infrastructure connecting people, commerce, distribution, assets, and transparent technology.
                     </p>
+
                     <div class="flex flex-wrap items-center gap-4">
                         <a href="#trust" class="px-8 py-4 bg-transparent border border-secondary text-white font-display text-sm tracking-widest hover:border-white hover:bg-white/5 transition-all">
                             EXPLORE ARCHITECTURE
@@ -1105,6 +221,7 @@
                 </div>
             </div>
         </section>
+
         <!-- SECTION 1: TRUST FIRST -->
         <section id="trust" class="py-24 relative">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -1112,6 +229,7 @@
                     <h2 class="text-sm font-display text-accent tracking-widest mb-2 uppercase">Trust First</h2>
                     <h3 class="text-3xl md:text-4xl font-bold font-display">Building Digital Economic Trust Through Transparency and Responsible Technology.</h3>
                 </div>
+
                 <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div class="glass-panel p-8 glow-border flex flex-col items-center text-center">
                         <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-6 border border-primary/20">
@@ -1128,6 +246,7 @@
                         <h4 class="text-lg font-bold font-display mb-3">User-Controlled</h4>
                         <p class="text-sm text-secondary">Every action within the ecosystem requires your explicit cryptographic authorization.</p>
                     </div>
+
                     <div class="glass-panel p-8 glow-border flex flex-col items-center text-center">
                         <div class="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center mb-6 border border-blue-500/20">
                             <i data-lucide="eye" class="w-6 h-6 text-blue-400"></i>
@@ -1135,6 +254,7 @@
                         <h4 class="text-lg font-bold font-display mb-3">Transparent Tech</h4>
                         <p class="text-sm text-secondary">Infrastructure logic is publicly verifiable, ensuring trust through absolute clarity.</p>
                     </div>
+
                     <div class="glass-panel p-8 glow-border flex flex-col items-center text-center">
                         <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-6 border border-white/20">
                             <i data-lucide="building-2" class="w-6 h-6 text-white"></i>
@@ -1143,6 +263,7 @@
                         <p class="text-sm text-secondary">Backed by clear corporate structures focused on sustainable economic support.</p>
                     </div>
                 </div>
+
                 <div class="mt-12 glass-panel p-6 border-l-4 border-l-primary flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div>
                         <h5 class="font-display font-bold text-white mb-1">Corporate Presence</h5>
@@ -1159,6 +280,7 @@
                 </div>
             </div>
         </section>
+
         <!-- SECTION 2: COMMUNITY FIRST -->
         <section id="community" class="py-24 bg-gradient-to-b from-transparent to-card/30 border-y border-cardBorder/50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1221,6 +343,7 @@
                 </div>
             </div>
         </section>
+
         <!-- SECTION 3: REAL ECONOMY FIRST -->
         <section id="economy" class="py-32 relative">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1231,6 +354,7 @@
                         Economic value is generated by productive activity, coordination, and commerce. Our infrastructure serves to support this flow.
                     </p>
                 </div>
+
                 <!-- Economic Flow Diagram -->
                 <div class="relative flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0 mt-16 px-4">
                     <!-- Flow Line Background (Desktop) -->
@@ -1243,32 +367,40 @@
                         </div>
                         <span class="text-xs font-display tracking-widest text-secondary">AGRICULTURE</span>
                     </div>
+
                     <div class="hidden md:block text-accent"><i data-lucide="arrow-right"></i></div>
                     <div class="md:hidden text-accent"><i data-lucide="arrow-down"></i></div>
+
                     <div class="flex flex-col items-center relative z-10 gap-3 group">
                         <div class="w-16 h-16 rounded-full glass-panel flex items-center justify-center border-primary/30 group-hover:border-primary transition-colors">
                             <i data-lucide="factory" class="w-6 h-6 text-secondary group-hover:text-primary transition-colors"></i>
                         </div>
                         <span class="text-xs font-display tracking-widest text-secondary">PRODUCTION</span>
                     </div>
+
                     <div class="hidden md:block text-accent"><i data-lucide="arrow-right"></i></div>
                     <div class="md:hidden text-accent"><i data-lucide="arrow-down"></i></div>
+
                     <div class="flex flex-col items-center relative z-10 gap-3 group">
                         <div class="w-16 h-16 rounded-full glass-panel flex items-center justify-center border-primary/30 group-hover:border-primary transition-colors">
                             <i data-lucide="route" class="w-6 h-6 text-secondary group-hover:text-primary transition-colors"></i>
                         </div>
                         <span class="text-xs font-display tracking-widest text-secondary">DISTRIBUTION</span>
                     </div>
+
                     <div class="hidden md:block text-accent"><i data-lucide="arrow-right"></i></div>
                     <div class="md:hidden text-accent"><i data-lucide="arrow-down"></i></div>
+
                     <div class="flex flex-col items-center relative z-10 gap-3 group">
                         <div class="w-16 h-16 rounded-full glass-panel flex items-center justify-center border-primary/30 group-hover:border-primary transition-colors">
                             <i data-lucide="shopping-bag" class="w-6 h-6 text-secondary group-hover:text-primary transition-colors"></i>
                         </div>
                         <span class="text-xs font-display tracking-widest text-secondary">MERCHANT</span>
                     </div>
+
                     <div class="hidden md:block text-accent"><i data-lucide="arrow-right"></i></div>
                     <div class="md:hidden text-accent"><i data-lucide="arrow-down"></i></div>
+
                     <div class="flex flex-col items-center relative z-10 gap-3 group">
                         <div class="w-20 h-20 rounded-full glass-panel glow-border flex items-center justify-center bg-accent/5">
                             <i data-lucide="network" class="w-8 h-8 text-accent"></i>
@@ -1278,6 +410,7 @@
                 </div>
             </div>
         </section>
+
         <!-- SECTION 4: UTILITY FIRST -->
         <section id="utility" class="py-24 bg-card/20 border-y border-cardBorder">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1285,6 +418,7 @@
                     <h2 class="text-sm font-display text-primary tracking-widest mb-2 uppercase">Utility First</h2>
                     <h3 class="text-3xl md:text-4xl font-bold font-display">Technology Supporting Everyday Economic Activity.</h3>
                 </div>
+
                 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <div class="glass-panel p-8 border-t-2 border-t-primary/50">
                         <h4 class="text-xl font-bold font-display mb-4">Community Commerce</h4>
@@ -1313,6 +447,7 @@
                 </div>
             </div>
         </section>
+
         <!-- SECTION 6: BLOCKCHAIN INFRASTRUCTURE -->
         <section class="py-32 relative overflow-hidden">
             <!-- Background element -->
@@ -1328,6 +463,7 @@
                     Blockchain is used to improve transparency, traceability, accountability, and coordination. <br/>
                     <strong class="text-white">Blockchain is not the product. Blockchain is the infrastructure.</strong>
                 </p>
+
                 <div class="inline-flex flex-col md:flex-row items-center gap-4 p-4 glass-panel border-accent/20">
                     <div class="flex items-center gap-2 px-4 py-2 bg-background rounded border border-cardBorder">
                         <div class="w-2 h-2 rounded-full bg-accent animate-pulse"></div>
@@ -1344,6 +480,7 @@
                 </div>
             </div>
         </section>
+
         <!-- SECTION 7: PORTAL ACCESS -->
         <section id="portal" class="py-24 border-t border-cardBorder/50 relative">
             <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -1354,7 +491,7 @@
                     <h3 class="text-3xl font-display font-bold mb-4">PORTAL ACCESS</h3>
                     <p class="text-secondary mb-10">Access ecosystem tools and community infrastructure. Requires active Web3 identification.</p>
                     
-                    <button class="px-8 py-4 bg-primary text-[#050816] font-display font-bold tracking-widest text-lg hover:bg-yellow-400 hover:shadow-[0_0_30px_rgba(255,204,0,0.4)] transition-all flex items-center justify-center gap-3 w-full sm:w-auto mx-auto group">
+                    <button onclick="toggleDapp(true)" class="px-8 py-4 bg-primary text-[#050816] font-display font-bold tracking-widest text-lg hover:bg-yellow-400 hover:shadow-[0_0_30px_rgba(255,204,0,0.4)] transition-all flex items-center justify-center gap-3 w-full sm:w-auto mx-auto group">
                         ENTER THE FORTRESS
                         <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
                     </button>
@@ -1362,6 +499,71 @@
                 </div>
             </div>
         </section>
+
+        <!-- SECTION: TOKENOMICS -->
+        <section id="snr-tokenomics" class="py-16 relative overflow-hidden" style="background: #000510;">
+            <div class="max-w-7xl mx-auto px-4 relative z-10">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-display font-bold tracking-widest text-white uppercase">
+                        <span class="text-primary" style="color: #FFCC00;">SNR</span>-VAULT Tokenomics
+                    </h2>
+                    <div class="h-1 w-24 bg-primary mx-auto mt-4 rounded-full shadow-[0_0_10px_#FFD700]" style="background-color: #FFCC00;"></div>
+                    <p class="text-secondary mt-6 font-display uppercase tracking-widest text-sm" style="color: #8fa0dd;">Total Supply: 1,000,000,000 SNR</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div class="relative flex justify-center items-center">
+                        <div class="absolute w-80 h-80 rounded-full bg-primary/5 blur-[80px] animate-pulse" style="background-color: rgba(255, 204, 0, 0.05);"></div>
+                        <div style="position: relative; height: 380px; width: 100%; max-width: 450px;">
+                            <canvas id="tokenomicsBurgerChart"></canvas>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                <span class="font-display text-xs tracking-widest uppercase" style="color: #FFCC00; font-family: 'Orbitron', sans-serif;">Supply</span>
+                                <span class="text-white font-display text-2xl font-bold" style="font-family: 'Orbitron', sans-serif;">1B SNR</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tokenomics-list" class="space-y-4">
+                        <div class="glass-panel p-4 border-l-4 border-[#FFD700] flex justify-between items-center group" style="background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h4 class="text-primary font-bold font-display text-sm uppercase" style="color: #FFCC00; font-family: 'Orbitron', sans-serif;">Treasury SNR</h4>
+                                <p class="text-secondary text-xs mt-1 leading-relaxed" style="color: #a0aec0;">Dana cadangan strategis likuiditas.</p>
+                            </div>
+                            <div class="text-right" style="text-align: right;"><span class="text-white font-bold block" style="display: block; color: #fff;">400M</span><span class="text-primary text-[10px] font-bold" style="color: #FFCC00;">40%</span></div>
+                        </div>
+                        <div class="glass-panel p-4 border-l-4 border-[#00D1FF] flex justify-between items-center group" style="background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h4 class="text-[#00D1FF] font-bold font-display text-sm uppercase" style="color: #00D1FF; font-family: 'Orbitron', sans-serif;">Community Reward</h4>
+                                <p class="text-secondary text-xs mt-1 leading-relaxed" style="color: #a0aec0;">Imbal hasil kedaulatan komunitas.</p>
+                            </div>
+                            <div class="text-right" style="text-align: right;"><span class="text-white font-bold block" style="display: block; color: #fff;">300M</span><span class="text-[#00D1FF] text-[10px] font-bold">30%</span></div>
+                        </div>
+                        <div class="glass-panel p-4 border-l-4 border-[#FFFFFF] flex justify-between items-center group" style="background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h4 class="text-white font-bold font-display text-sm uppercase" style="font-family: 'Orbitron', sans-serif;">Presale Asset</h4>
+                                <p class="text-secondary text-xs mt-1 leading-relaxed" style="color: #a0aec0;">Distribusi kepemilikan tahap awal.</p>
+                            </div>
+                            <div class="text-right" style="text-align: right;"><span class="text-white font-bold block" style="display: block; color: #fff;">150M</span><span class="text-white text-[10px] font-bold" style="color: #fff;">15%</span></div>
+                        </div>
+                        <div class="glass-panel p-4 border-l-4 border-[#FF4500] flex justify-between items-center group" style="background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h4 class="text-[#FF4500] font-bold font-display text-sm uppercase" style="color: #FF4500; font-family: 'Orbitron', sans-serif;">Founder & Team</h4>
+                                <p class="text-secondary text-xs mt-1 leading-relaxed" style="color: #a0aec0;">Vesting jangka panjang tim pengembang.</p>
+                            </div>
+                            <div class="text-right" style="text-align: right;"><span class="text-white font-bold block" style="display: block; color: #fff;">100M</span><span class="text-[#FF4500] text-[10px] font-bold">10%</span></div>
+                        </div>
+                        <div class="glass-panel p-4 border-l-4 border-[#A855F7] flex justify-between items-center group" style="background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h4 class="text-[#A855F7] font-bold font-display text-sm uppercase" style="color: #A855F7; font-family: 'Orbitron', sans-serif;">Marketing Reward</h4>
+                                <p class="text-secondary text-xs mt-1 leading-relaxed" style="color: #a0aec0;">Ekspansi dan apresiasi mitra global.</p>
+                            </div>
+                            <div class="text-right" style="text-align: right;"><span class="text-white font-bold block" style="display: block; color: #fff;">50M</span><span class="text-[#A855F7] text-[10px] font-bold">5%</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- SECTION 5: TRANSPARENCY LAYER -->
         <section id="transparency" class="py-20 bg-[#050816] border-t border-cardBorder">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1398,7 +600,278 @@
                 </div>
             </div>
         </section>
+        </div> <!-- End of view-landing -->
+
+        <!-- dApp View -->
+        <div id="view-dapp" class="page-view flex-grow py-8 transition-opacity duration-300" style="display: none; opacity: 0;">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+                <!-- Back to Main Button -->
+                <div class="mb-6 flex justify-start">
+                    <button onclick="toggleDapp(false)" class="flex items-center gap-2 px-5 py-2.5 glass-panel border border-cardBorder text-secondary hover:text-white hover:border-primary transition-all font-display font-bold tracking-widest text-xs uppercase shadow-[0_0_10px_rgba(0,0,0,0.2)] hover:shadow-[0_0_15px_rgba(255,204,0,0.2)]">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i> BACK TO MAIN
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="glass-panel p-6 flex items-center justify-between">
+                        <div>
+                            <p class="text-secondary text-sm mb-1">Total Saldo (Wallet)</p>
+                            <h3 class="text-2xl font-bold"><span id="ui-snr-balance">0.00</span> <span
+                                    class="text-primary text-lg">SNR</span></h3>
+                            <p class="text-sm mt-1 flex items-center gap-1">
+                                <span class="text-yellow-500 font-bold" id="ui-bnb-balance">0.000</span> <span
+                                    class="text-secondary">BNB (Gas
+                                    Fee)</span>
+                            </p>
+                        </div>
+                        <div
+                            class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
+                            <i data-lucide="wallet" class="w-6 h-6 text-primary"></i>
+                        </div>
+                    </div>
+                    <div class="glass-panel p-6 flex items-center justify-between border-accent/30">
+                        <div>
+                            <p class="text-secondary text-sm mb-1">Status Kedaulatan</p>
+                            <h3 class="text-2xl font-bold text-accent">AKTIF</h3>
+                        </div>
+                        <div
+                            class="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center border border-accent/30">
+                            <i data-lucide="cpu" class="w-6 h-6 text-accent"></i>
+                        </div>
+                    </div>
+                    <div class="glass-panel p-6 flex items-center justify-between">
+                        <div>
+                            <p class="text-secondary text-sm mb-1">Ready to Withdraw</p>
+                            <h3 class="text-2xl font-bold text-green-400"><span id="ui-withdraw-balance">0.00</span> <span
+                                    class="text-sm">SNR</span></h3>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <button onclick="harvestDailyReward()"
+                                class="px-4 py-2 bg-yellow-500/20 text-yellow-400 border border-yellow-500/50 rounded-lg text-sm hover:bg-yellow-500/30 transition-colors w-full">
+                                Harvest
+                            </button>
+                            <button onclick="withdrawFunds()"
+                                class="px-4 py-2 bg-green-500/20 text-green-400 border border-green-500/50 rounded-lg text-sm hover:bg-green-500/30 transition-colors w-full">
+                                Withdraw
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-2 mb-8 bg-card p-2 rounded-xl border border-cardBorder w-fit">
+                    <button onclick="switchTab('staking')" id="btn-staking"
+                        class="px-6 py-2 rounded-lg text-sm font-medium transition-all bg-primary text-black">
+                        Join Protocol
+                    </button>
+                    <button onclick="switchTab('network')" id="btn-network"
+                        class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary hover:text-white">
+                        Jaringan & Rank
+                    </button>
+                    <button onclick="switchTab('assets')" id="btn-assets"
+                        class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary hover:text-white">
+                        Request Asset
+                    </button>
+                    <button onclick="switchTab('p2p')" id="btn-p2p"
+                        class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary hover:text-white">
+                        P2P Portal
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                    <div class="lg:col-span-2 space-y-6">
+
+                        <div id="tab-staking" class="dapp-tab active glass-panel p-8">
+                            <h3 class="text-2xl font-display font-bold mb-6 flex items-center gap-2">
+                                <i data-lucide="shield-alert" class="text-primary w-6 h-6"></i> Titan v4 - Join Protocol
+                            </h3>
+                            <div class="space-y-5">
+                                <div>
+                                    <label class="block text-sm text-secondary mb-2">Jumlah SNR (Min 100)</label>
+                                    <div class="relative">
+                                        <input type="number" id="stake-amount" placeholder="0.0"
+                                            class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
+                                        <span class="absolute right-4 top-3 text-primary font-bold">SNR</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-secondary mb-2">Alamat Mentor / Upline</label>
+                                    <input type="text" id="stake-mentor" placeholder="0x..."
+                                        class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
+                                </div>
+                                <div class="relative z-50">
+                                    <label class="block text-sm text-secondary mb-2">Durasi Staking</label>
+                                    <select id="stake-duration" class="w-full bg-card border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary cursor-pointer relative z-50 appearance-auto">
+                                        <option value="30" class="bg-card text-white py-2">30 Hari (Yield 100 BP)</option>
+                                        <option value="60" class="bg-card text-white py-2">60 Hari (Yield 120 BP)</option>
+                                        <option value="90" class="bg-card text-white py-2">90 Hari (Yield 150 BP)</option>
+                                    </select>
+                                </div>
+                                <button onclick="executeProtocol()"
+                                    class="w-full py-4 mt-4 bg-primary text-black font-bold rounded-lg hover:bg-yellow-400 hover:shadow-[0_0_20px_rgba(255,204,0,0.3)] transition-all">
+                                    Eksekusi Protokol
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="tab-network" class="dapp-tab glass-panel p-8 border-accent/30">
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <h3 class="text-xl font-display font-bold text-white mb-1">Rank Saat Ini</h3>
+                                    <div class="text-4xl font-black text-gradient font-display mb-4">RANK 2 <span
+                                            class="text-lg font-sans text-secondary">(Captain)</span></div>
+
+                                    <div class="flex flex-wrap gap-4 mt-6">
+                                        <div class="bg-background/80 border border-cardBorder p-4 rounded-lg min-w-[140px]">
+                                            <div class="text-secondary text-xs mb-1 flex items-center gap-1"><i
+                                                    data-lucide="users" class="w-3 h-3"></i> Direct Aktif</div>
+                                            <div class="text-xl font-bold">15 <span
+                                                    class="text-sm text-secondary">Member</span></div>
+                                        </div>
+                                        <div class="bg-background/80 border border-cardBorder p-4 rounded-lg min-w-[140px]">
+                                            <div class="text-secondary text-xs mb-1 flex items-center gap-1"><i
+                                                    data-lucide="award" class="w-3 h-3"></i> Group Volume</div>
+                                            <div class="text-xl font-bold">35,000 <span
+                                                    class="text-sm text-secondary">SNR</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    class="hidden sm:flex w-24 h-24 rounded-full border-4 border-accent/20 items-center justify-center bg-card shadow-[0_0_30px_rgba(0,229,255,0.2)]">
+                                    <i data-lucide="award" class="w-10 h-10 text-accent"></i>
+                                </div>
+                            </div>
+
+                            <div class="mt-8 border-t border-cardBorder pt-6">
+                                <label class="block text-sm text-secondary mb-2">Tautan Referral Anda</label>
+                                <div class="flex gap-2">
+                                    <input type="text" readonly value="https://snr-vault.com/dapp?ref=0x5Ce1..."
+                                        class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-secondary focus:outline-none">
+                                    <button
+                                        class="px-4 py-3 bg-card border border-cardBorder rounded-lg hover:bg-white/5 transition-colors flex items-center justify-center">
+                                        <i data-lucide="share-2" class="w-5 h-5 text-white"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="mt-8 border-t border-cardBorder pt-6">
+                                <h4 class="font-bold text-white mb-4">Status Syarat Kedalaman Bonus (10 Level)</h4>
+                                <ul class="space-y-3 text-sm">
+                                    <li class="flex items-center justify-between border-b border-cardBorder pb-2">
+                                        <span class="text-secondary">Level 1 - 4 (Butuh 1 Direct)</span>
+                                        <span class="text-green-400 font-semibold flex items-center gap-1">TERBUKA <i
+                                                data-lucide="check" class="w-4 h-4"></i></span>
+                                    </li>
+                                    <li class="flex items-center justify-between border-b border-cardBorder pb-2">
+                                        <span class="text-secondary">Level 5 - 7 (Butuh 5 Direct)</span>
+                                        <span class="text-green-400 font-semibold flex items-center gap-1">TERBUKA <i
+                                                data-lucide="check" class="w-4 h-4"></i></span>
+                                    </li>
+                                    <li class="flex items-center justify-between pb-1">
+                                        <span class="text-secondary">Level 8 - 10 (Butuh 10 Direct)</span>
+                                        <span class="text-green-400 font-semibold flex items-center gap-1">TERBUKA <i
+                                                data-lucide="check" class="w-4 h-4"></i></span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="tab-assets" class="dapp-tab glass-panel p-8">
+                            <h3 class="text-2xl font-display font-bold mb-6">Request Asset Acquisition</h3>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                                <div
+                                    class="border border-cardBorder bg-background p-4 rounded-lg flex flex-col items-center gap-2 cursor-pointer hover:border-accent text-center">
+                                    <i data-lucide="car" class="w-6 h-6 text-accent"></i><span class="text-sm">MOTO</span>
+                                </div>
+                                <div
+                                    class="border border-cardBorder bg-background p-4 rounded-lg flex flex-col items-center gap-2 cursor-pointer hover:border-accent text-center">
+                                    <i data-lucide="car" class="w-6 h-6 text-accent"></i><span class="text-sm">DRIVE</span>
+                                </div>
+                                <div
+                                    class="border border-cardBorder bg-background p-4 rounded-lg flex flex-col items-center gap-2 cursor-pointer hover:border-accent text-center">
+                                    <i data-lucide="home" class="w-6 h-6 text-primary"></i><span class="text-sm">LIVING
+                                        STD</span>
+                                </div>
+                                <div
+                                    class="border border-cardBorder bg-background p-4 rounded-lg flex flex-col items-center gap-2 cursor-pointer hover:border-accent text-center">
+                                    <i data-lucide="home" class="w-6 h-6 text-primary"></i><span class="text-sm">GOLD</span>
+                                </div>
+                            </div>
+                            <div class="space-y-5">
+                                <div><label class="block text-sm text-secondary mb-2">Nilai Dukungan (SNR)</label><input
+                                        type="number" placeholder="Contoh: 5000"
+                                        class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent">
+                                </div>
+                                <div><label class="block text-sm text-secondary mb-2">Model Unit</label><input type="text"
+                                        placeholder="Contoh: Honda HRV 2024"
+                                        class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-secondary mb-2">Jalur Protokol</label>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <button
+                                            class="border border-cardBorder bg-background py-3 rounded-lg hover:border-accent transition-colors">Regular
+                                            55%</button>
+                                        <button
+                                            class="border border-cardBorder bg-background py-3 rounded-lg hover:border-accent transition-colors">Exclusive
+                                            100%</button>
+                                    </div>
+                                </div>
+                                <button
+                                    class="w-full py-4 mt-4 bg-accent text-black font-bold rounded-lg hover:bg-cyan-400 hover:shadow-[0_0_20px_rgba(0,229,255,0.3)] transition-all">
+                                    Kirim Permintaan Aset
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="tab-p2p"
+                            class="dapp-tab glass-panel p-8 text-center min-h-[400px] flex flex-col items-center justify-center">
+                            <i data-lucide="message-circle" class="w-16 h-16 text-green-400 mb-4"></i>
+                            <h3 class="text-2xl font-bold mb-4">P2P Escrow Resmi SNR</h3>
+                            <p class="text-secondary max-w-md mx-auto mb-8">Lakukan pertukaran aset secara aman dan cepat
+                                melalui layanan P2P Escrow WhatsApp resmi kami.</p>
+                            <a href="https://wa.me/6283829681017?text=Halo%20Admin%20SNR-VAULT,%20saya%20ingin%20menggunakan%20layanan%20P2P."
+                                target="_blank"
+                                class="px-8 py-4 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] transition-all flex items-center gap-3">
+                                <i data-lucide="message-square" class="w-6 h-6"></i>
+                                Hubungi Admin P2P (WA)
+                            </a>
+                            <p class="mt-4 text-sm text-secondary font-display tracking-widest">+62 838-2968-1017</p>
+                        </div>
+
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="glass-panel p-6 border-primary/20">
+                            <h4 class="font-display font-bold text-lg mb-4 flex items-center gap-2"><i data-lucide="gift"
+                                    class="w-5 h-5 text-primary"></i> Leader Rewards</h4>
+                            <div class="text-3xl font-bold mb-4">1,240 <span
+                                    class="text-sm text-secondary font-sans">SNR</span></div>
+                            <button onclick="claimRewards()"
+                                class="w-full py-2 bg-background border border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors font-semibold">Claim
+                                Rewards</button>
+                        </div>
+                        <div class="glass-panel p-6">
+                            <h4 class="font-bold text-lg mb-4">Informasi Token</h4>
+                            <div class="space-y-4 text-sm">
+                                <div class="flex justify-between items-center border-b border-cardBorder pb-2"><span
+                                        class="text-secondary">Smart Contract</span><a
+                                        href="https://bscscan.com/address/0x59a7098D86ac1548dAF3b14aAfC43858D274f543"
+                                        target="_blank" class="text-accent hover:underline text-xs">0x59a7...f543</a></div>
+                                <div class="flex justify-between items-center border-b border-cardBorder pb-2"><span
+                                        class="text-secondary">Jaringan</span><span>BSC Mainnet</span></div>
+                                <div class="flex justify-between items-center pb-2"><span class="text-secondary">Max Cap
+                                        Reward</span><span class="text-green-400 font-medium">300%</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </main>
+
     <!-- Footer / Risk Disclosure -->
     <footer class="border-t border-cardBorder bg-background py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1410,20 +883,23 @@
                     Participation in digital ecosystems involves risks. Market conditions may change. Users should conduct their own evaluation before participating. No guarantees are expressed or implied. This platform is provided as an infrastructure layer and does not constitute financial advice.
                 </p>
             </div>
+
             <div class="flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-secondary">
                 <div class="font-display font-bold text-lg tracking-widest">
                     <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span>
                 </div>
                 <div class="text-center md:text-right">
-                    <p>&copy; 2026 <span>&#9888; <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> Ecosystem. All rights reserved.</p>
+                    <p>&copy; 2026 <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> Ecosystem. All rights reserved.</p>
                 </div>
             </div>
         </div>
     </footer>
+
     <!-- Logic Script -->
     <script>
         // Inisialisasi ikon Lucide
         lucide.createIcons();
+
         // Initialize Globe with Blockchain Touch
         const globeContainer = document.getElementById('globeViz');
         if (globeContainer && typeof Globe !== 'undefined') {
@@ -1435,6 +911,7 @@
                 size: Math.random() * 0.4 + 0.1,
                 color: ['#00E5FF', '#FFCC00', '#ffffff'][Math.floor(Math.random() * 3)]
             }));
+
             // Generate arcs linking nodes
             const arcsData = [...Array(25).keys()].map(() => ({
                 startLat: (Math.random() - 0.5) * 180,
@@ -1443,6 +920,7 @@
                 endLng: (Math.random() - 0.5) * 360,
                 color: ['rgba(0, 229, 255, 0.6)', 'rgba(255, 204, 0, 0.6)'][Math.round(Math.random())]
             }));
+
             const world = Globe()
                 (globeContainer)
                 .backgroundColor('rgba(0,0,0,0)')
@@ -1464,16 +942,19 @@
                 .arcDashAnimateTime(2000)
                 .width(globeContainer.clientWidth)
                 .height(globeContainer.clientHeight || window.innerHeight * 0.8);
+
             // Add auto-rotation
             world.controls().autoRotate = true;
             world.controls().autoRotateSpeed = 1.2;
             world.controls().enableZoom = false;
             world.controls().enablePan = false;
+
             // Handle resize
             window.addEventListener('resize', () => {
                 world.width(globeContainer.clientWidth);
                 world.height(globeContainer.clientHeight || window.innerHeight * 0.8);
             });
+
             // Fix initial rendering size issues
             setTimeout(() => {
                 if(globeContainer.clientWidth) {
@@ -1482,7 +963,97 @@
                 }
             }, 500);
         }
+
+        // Tokenomics Chart
+        document.addEventListener("DOMContentLoaded", function() {
+            const chartCanvas = document.getElementById('tokenomicsBurgerChart');
+            if(chartCanvas) {
+                const ctx = chartCanvas.getContext('2d');
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Treasury', 'Community Reward', 'Presale Asset', 'Founder & Team', 'Marketing Reward'],
+                        datasets: [{
+                            data: [40, 30, 15, 10, 5],
+                            backgroundColor: ['#FFD700', '#00D1FF', '#FFFFFF', '#FF4500', '#A855F7'],
+                            borderWidth: 0,
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '75%',
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { enabled: true }
+                        }
+                    }
+                });
+            }
+        });
+
+        // SPA Navigation Logic
+        function toggleDapp(showDapp) {
+            const landing = document.getElementById('view-landing');
+            const dapp = document.getElementById('view-dapp');
+            
+            if (showDapp) {
+                landing.style.opacity = '0';
+                setTimeout(() => {
+                    landing.style.display = 'none';
+                    dapp.style.display = 'block';
+                    // Trigger reflow for transition
+                    void dapp.offsetWidth;
+                    dapp.style.opacity = '1';
+                    window.scrollTo(0,0);
+                    // Ensure Lucide icons redraw
+                    lucide.createIcons();
+                }, 300);
+            } else {
+                dapp.style.opacity = '0';
+                setTimeout(() => {
+                    dapp.style.display = 'none';
+                    landing.style.display = 'block';
+                    // Trigger reflow for transition
+                    void landing.offsetWidth;
+                    landing.style.opacity = '1';
+                    window.scrollTo(0,0);
+                }, 300);
+            }
+        }
+
+        // Tab Switcher for dApp Dashboard
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.dapp-tab').forEach(tab => {
+                tab.classList.remove('active');
+                tab.style.display = 'none';
+            });
+
+            // Remove active styles from all navigation buttons
+            document.querySelectorAll('[id^="btn-"]').forEach(btn => {
+                btn.classList.remove('bg-primary', 'text-black');
+                btn.classList.add('text-secondary', 'hover:text-white');
+            });
+
+            // Show selected tab
+            const targetTab = document.getElementById('tab-' + tabName);
+            const targetBtn = document.getElementById('btn-' + tabName);
+            if(targetTab) {
+                targetTab.classList.add('active');
+                targetTab.style.display = 'block';
+            }
+            if(targetBtn) {
+                targetBtn.classList.remove('text-secondary', 'hover:text-white');
+                targetBtn.classList.add('bg-primary', 'text-black');
+            }
+        }
+
+        // Initialize default tab on mount
+        document.addEventListener("DOMContentLoaded", () => {
+            switchTab('staking');
+        });
     </script>
 </body>
-</html>
 </html>
