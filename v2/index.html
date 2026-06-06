@@ -5,14 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SNR-VAULT | Deep Space Financial Fortress</title>
+    <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700;900&display=swap"
         rel="stylesheet">
+    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Globe.gl -->
     <script src="https://unpkg.com/globe.gl"></script>
+    <!-- Ethers.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
         tailwind.config = {
@@ -95,91 +99,68 @@
                 transform: translateX(-50%);
             }
         }
-
-        /* PROTOKOL MARQUEE: TERTIB & BERURUTAN */
-.marquee-content {
-    display: inline-flex; /* Mengatur elemen berjejer ke samping */
-    white-space: nowrap;  /* Memaksa teks tetap satu baris panjang */
-    will-change: transform;
-    animation: marquee 30s linear infinite; /* Pastikan nama animasi sesuai */
-}
-
-.marquee-content span {
-    display: inline-block;
-    padding-right: 50px; /* Memberi jarak antar kalimat agar tidak tabrakan */
-}
-
-/* Animasi Jalannya Ticker */
-@keyframes marquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-}
-
-/* Gembok Layar (Tetap dipertahankan agar tidak geser kanan-kiri) */
-html, body {
-    max-width: 100%;
-    overflow-x: hidden;
-}
     </style>
 </head>
 
 <body class="min-h-screen flex flex-col">
 
+    <!-- Marquee -->
+    <div class="bg-primary/10 border-b border-primary/20 py-2 relative z-[60] overflow-hidden">
+        <div class="marquee-content text-primary text-sm font-display tracking-widest font-semibold w-max">
+            <span>&#9888; <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> DEEP SPACE PROTOCOL ONLINE /// SOVEREIGN DEFENSE ACTIVE /// NO IMPERMANENT LOSS ///
+                TOTAL SECURED: 2,450,000 SNR /// </span>
+            <span>&#9888; <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> DEEP SPACE PROTOCOL ONLINE /// SOVEREIGN DEFENSE ACTIVE /// NO IMPERMANENT LOSS ///
+                TOTAL SECURED: 2,450,000 SNR /// </span>
+        </div>
+    </div>
+
+    <!-- Navbar -->
     <nav class="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-cardBorder">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
-                
-                <div class="flex items-center gap-2 cursor-pointer shrink-0" onclick="switchPage('landing')">
-                    <i data-lucide="shield" class="h-6 w-6 sm:h-8 sm:w-8 text-primary"></i>
-                    <div class="font-display font-bold text-lg sm:text-2xl tracking-widest whitespace-nowrap">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="switchPage('landing')">
+                    <i data-lucide="shield" class="h-8 w-8 text-primary"></i>
+                    <div class="font-display font-bold text-2xl tracking-widest">
                         <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span>
                     </div>
                 </div>
 
-                <div id="nav-landing" class="flex items-center gap-2 sm:gap-6">
-                    <div class="flex space-x-3 sm:space-x-8">
-                        <a href="#about" class="text-[10px] sm:text-sm text-secondary hover:text-white transition-colors whitespace-nowrap">Visi & Edukasi</a>
-                        <a href="#security" class="text-[10px] sm:text-sm text-secondary hover:text-white transition-colors whitespace-nowrap">Legalitas</a>
+                <div id="nav-landing" class="flex items-center gap-6">
+                    <div class="hidden md:flex space-x-8">
+                        <a href="#about" class="text-secondary hover:text-white transition-colors">Visi & Edukasi</a>
+                        <a href="#security" class="text-secondary hover:text-white transition-colors">Legalitas</a>
                     </div>
-
                     <button onclick="switchPage('dapp')"
-                        class="px-2 sm:px-6 py-1.5 rounded-lg bg-primary text-black font-bold hover:bg-yellow-400 transition-all flex items-center gap-1 shrink-0">
-                        <span class="text-[10px] sm:text-sm whitespace-nowrap">MASUK PORTAL</span>
-                        <i data-lucide="arrow-right" class="hidden sm:block w-4 h-4"></i>
+                        class="px-6 py-2.5 rounded-lg bg-primary text-black font-semibold hover:bg-yellow-400 transition-all hover:shadow-[0_0_15px_rgba(255,204,0,0.5)] flex items-center gap-2">
+                        Masuk Portal <span class="hidden sm:inline">Aset</span>
                     </button>
                 </div>
 
-                <div id="nav-dapp" class="flex items-center gap-2 sm:gap-4 hidden">
+                <div id="nav-dapp" class="flex items-center gap-6 hidden">
                     <button onclick="switchPage('landing')"
-                        class="text-secondary hover:text-white transition-colors text-sm whitespace-nowrap">
+                        class="text-secondary hover:text-white transition-colors mr-4">
                         Kembali
                     </button>
                     <button id="connect-wallet-btn" onclick="connectWallet()"
-                        class="px-3 py-1.5 rounded-lg bg-card border border-accent text-accent font-semibold flex items-center gap-1.5 shrink-0">
-                        <i data-lucide="wallet" class="w-4 h-4 shrink-0"></i>
-                        <span class="truncate text-[10px] sm:text-sm uppercase">Connect Wallet</span>
+                        class="px-3 py-2 md:px-6 md:py-2.5 rounded-lg bg-card border border-accent text-accent font-semibold hover:bg-accent/10 transition-all flex items-center gap-2 max-w-[150px] md:max-w-none overflow-hidden shrink-0">
+                        <i data-lucide="wallet" class="w-5 h-5 shrink-0"></i>
+                        <span class="truncate text-sm md:text-base">Connect Wallet</span>
                     </button>
                 </div>
             </div>
         </div>
-
-        <div class="bg-primary/10 border-t border-b border-primary/20 py-2 overflow-hidden">
-    <div class="marquee-content text-primary text-[10px] sm:text-sm font-display tracking-widest font-semibold">
-        <span>&#9888; <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> THE DEEP SPACE PROTOCOL ONLINE /// SOVEREIGN DEFENSE ACTIVE /// LOGIC SECURED ///</span>
-        <span>&#9888; <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> NO INFLATION /// ASSETS BACKED BY PT GLOBAL NEXUS CAPITAL ///</span>
-        <span>&#9888; <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> THE DEEP SPACE PROTOCOL ONLINE /// SOVEREIGN DEFENSE ACTIVE /// LOGIC SECURED ///</span>
-    </div>
-</div>
     </nav>
 
+    <!-- LANDING PAGE VIEW -->
     <div id="view-landing" class="page-view active flex-grow">
+        <!-- Hero Section -->
         <section class="relative pt-20 pb-32 overflow-hidden min-h-[80vh] flex items-center">
             <div class="absolute inset-0 z-0">
                 <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px]"></div>
                 <div class="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[150px]">
                 </div>
                 <div id="globeViz"
-                    class="absolute inset-0 flex justify-center items-center opacity-60 mix-blend-screen pointer-events-none">
+                    class="absolute inset-0 flex justify-center items-center opacity-60 mix-blend-screen pointer-events-none transform scale-75 md:scale-100 mt-20 md:mt-0">
                 </div>
             </div>
 
@@ -196,9 +177,9 @@ html, body {
                 </h1>
 
                 <p class="text-xl text-secondary max-w-3xl mx-auto mb-10 leading-relaxed">
-                    Membangun masa depan keuangan terdesentralisasi yang aman.
-                    <span class="text-primary font-medium">SNR</span>-<span class="text-white font-medium">VAULT</span> Bukan Sekedar Token, ini adalah benteng finansial yang mengintegrasikan keamanan blockchain dengan aset
-                    nyata dan Legalitas dunia nyata,
+                    Membangun masa depan keuangan desentralisasi yang aman.
+                    <span class="text-primary font-medium">SNR</span>-<span class="text-white font-medium">VAULT</span> mengintegrasikan blockchain dengan aset
+                    nyata
                     untuk melindungi Anda dari risiko scammer dengan legalitas yang jelas di Indonesia.
                 </p>
 
@@ -213,694 +194,7 @@ html, body {
             </div>
         </section>
 
-        <section class="py-24 bg-background border-t border-cardBorder relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[100px]"></div>
-            <div class="max-w-7xl mx-auto px-4 relative z-10">
-                <div class="grid md:grid-cols-2 gap-16 items-center">
-                    <div>
-                        <h2 class="text-3xl md:text-5xl font-display font-bold mb-8 leading-tight uppercase tracking-tighter">
-                            A NEW CHAPTER IN <br/>
-                            <span class="text-primary italic">FINANCIAL SOVEREIGNTY</span>
-                        </h2>
-                        <div class="space-y-6 text-secondary leading-relaxed text-lg">
-                            <p>
-                                <span class="text-primary font-bold">SNR</span>-<span class="text-white font-bold">VAULT</span> hadir sebagai standar baru dalam pengelolaan aset digital. Kami tidak sekadar mengikuti arus yang ada, melainkan merancang sebuah ekosistem mandiri yang memprioritaskan keamanan dan pertumbuhan jangka panjang.
-                            </p>
-                            <div class="border-l-4 border-primary pl-6 py-2 bg-primary/5 italic">
-                                <p class="text-white">"Kedaulatan finansial bukan lagi sekadar impian. Dengan integrasi teknologi Blockchain dan manajemen aset profesional, kami menghadirkan transparansi total bagi setiap pemegang mandat."</p>
-                            </div>
-                            <p>
-                                Fokus utama kami adalah <span class="text-white font-bold">Profesionalisme dan Visi Masa Depan</span>. Melalui protokol yang presisi, <span class="text-primary font-bold">SNR</span>-<span class="text-white font-bold">VAULT</span> memberikan kepastian logis melalui sistem yang terukur, inklusif bagi seluruh kalangan, dan didukung oleh landasan korporasi yang kuat.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 gap-4">
-                        <div class="glass-panel p-8 border-primary/20 hover:border-primary/40 transition-all group">
-                            <div class="flex items-start gap-4">
-                                <div class="p-3 rounded-lg bg-primary/10 text-primary">
-                                    <i data-lucide="layers" class="w-6 h-6"></i>
-                                </div>
-                                <div>
-                                    <h4 class="text-white font-display font-bold mb-2 uppercase tracking-wider">Infrastruktur Visioner</h4>
-                                    <p class="text-sm text-secondary">Mengadopsi efisiensi Smart Contract untuk memastikan distribusi reward berjalan secara otomatis dan akurat tanpa intervensi manual.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="glass-panel p-8 border-accent/20 hover:border-accent/40 transition-all group">
-                            <div class="flex items-start gap-4">
-                                <div class="p-3 rounded-lg bg-accent/10 text-accent">
-                                    <i data-lucide="briefcase" class="w-6 h-6"></i>
-                                </div>
-                                <div>
-                                    <h4 class="text-white font-display font-bold mb-2 uppercase tracking-wider">Manajemen Profesional</h4>
-                                    <p class="text-sm text-secondary">Sinergi antara aset digital dan entitas hukum PT Global Nexus Capital menciptakan ekosistem yang kredibel dan memiliki fundamental yang nyata.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="glass-panel p-8 border-white/10 hover:border-white/30 transition-all group">
-                            <div class="flex items-start gap-4">
-                                <div class="p-3 rounded-lg bg-white/5 text-white">
-                                    <i data-lucide="shield-check" class="w-6 h-6"></i>
-                                </div>
-                                <div>
-                                    <h4 class="text-white font-display font-bold mb-2 uppercase tracking-wider">Inklusivitas Terukur</h4>
-                                    <p class="text-sm text-secondary">Sistem yang dirancang untuk merangkul setiap partisipan, memastikan kedaulatan aset tetap terjaga bagi semua lapisan pemegang kedaulatan.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="py-20 bg-background/50 border-t border-cardBorder">
-            <div class="max-w-5xl mx-auto px-4 text-center">
-                <h2 class="text-2xl md:text-3xl font-display font-bold mb-4 uppercase tracking-widest text-white">Projection of <span class="text-primary">Sovereign Value</span></h2>
-                <p class="text-secondary mb-12 text-sm max-w-2xl mx-auto">Visualisasi teknis mengenai korelasi antara pengembangan ekosistem dan penguatan nilai aset secara organik.</p>
-                <div class="glass-panel p-6 border-primary/20 bg-card/30">
-                    <canvas id="growthChart" height="150"></canvas>
-                </div>
-            </div>
-        </section>
-
-       <section id="snr-analytics-center" class="py-12 border-t border-cardBorder relative overflow-hidden" style="background: radial-gradient(circle at center, #0d1526 0%, #0B0F19 100%);">
-    
-    <div class="absolute inset-0 opacity-10" style="background-image: linear-gradient(#1E2A44 1px, transparent 1px), linear-gradient(90deg, #1E2A44 1px, transparent 1px); background-size: 30px 30px;"></div>
-
-    <div class="max-w-7xl mx-auto px-4 relative z-10">
-        
-        <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6 border-b border-cardBorder pb-6">
-            <div class="text-center md:text-left">
-                <h2 class="text-3xl font-display font-bold text-white tracking-widest uppercase"><span class="text-primary">SNR</span>-<span class="text-white">VAULT</span></h2>
-                <p class="text-gradient text-sm font-semibold tracking-wide">THE DEEP SPACE FINANCIAL FORTRESS</p>
-            </div>
-            
-            <div class="glass-panel px-6 py-3 border-primary/30 text-center min-w-[250px] shadow-[0_0_15px_rgba(255,204,0,0.2)]">
-                <p class="text-secondary text-xs uppercase tracking-widest mb-1">Scarcity Counter</p>
-                <div class="font-display text-2xl font-bold text-white flex items-center justify-center gap-2">
-                    <span class="text-primary">[</span>
-                    <span id="scarcity-num" class="text-white">125,000</span>
-                    <span class="text-primary">]</span>
-                </div>
-                <p class="text-xs text-primary/80 mt-1 uppercase">Shares Remaining / 125,000</p>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <div class="space-y-6">
-                <div class="glass-panel p-6 border-primary/20 bg-card/50 relative overflow-hidden group hover:border-primary/50 transition-all">
-                    <div class="absolute -inset-1 bg-gradient-to-r from-primary/20 to-accent/20 rounded-xl blur-lg opacity-30 group-hover:opacity-50 transition"></div>
-                    
-                    <div class="relative z-10">
-                        <div class="flex items-center gap-4 mb-4">
-                            <div class="p-3 rounded-xl bg-primary/10 border border-primary/30 shadow-[0_0_10px_rgba(255,204,0,0.3)]">
-                                <i data-lucide="shield-check" class="w-8 h-8 text-primary"></i>
-                            </div>
-                            <h3 class="text-xl font-display font-bold text-white uppercase tracking-wider">Kedaulatan Finansial</h3>
-                        </div>
-                        <p class="text-secondary text-sm leading-relaxed mb-4">
-                            <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> dibangun di atas fondasi kedaulatan finansial yang sejati. Memadukan transparansi <span class="text-accent">Blockchain</span> dengan kepastian <span class="text-white font-semibold">Aset Riil</span> di bawah legalitas hukum Indonesia.
-                        </p>
-                        <div class="text-xs text-secondary/80 border-t border-cardBorder pt-3 space-y-1">
-                            <p>• Logic Secured | Asset Backed</p>
-                            <p>• Covered by <span class="text-white">PT Global Nexus Capital</span></p>
-                        </div>
-                    </div>
-                </div>
-
-                <button onclick="switchPage('dapp')"
-                    class="w-full group px-8 py-4 rounded-lg bg-primary text-black font-bold text-lg hover:bg-yellow-400 transition-all hover:shadow-[0_0_20px_rgba(255,204,0,0.4)] flex items-center justify-center gap-3">
-                    <i data-lucide="key-round" class="w-5 h-5"></i>
-                    Masuk Portal Aset
-                    <i data-lucide="chevron-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
-                </button>
-            </div>
-
-            <div class="lg:col-span-1 glass-panel p-6 border-accent/20 bg-card/30 relative">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-lg font-display font-bold text-white uppercase tracking-wider">Multi-Asset Comparison</h3>
-                    <div class="flex gap-2 text-xs font-semibold">
-                        <span class="flex items-center gap-1.5 text-primary"><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span> SNR</span>
-                        <span class="flex items-center gap-1.5 text-accent"><span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span> REWARD</span>
-                        <span class="flex items-center gap-1.5 text-white"><span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> GROWTH</span>
-                    </div>
-                </div>
-                <div style="position: relative; height: 320px; width: 100%;">
-                    <canvas id="livingWaveChart"></canvas>
-                </div>
-            </div>
-
-            <div class="glass-panel p-6 border-cardBorder bg-card/50 overflow-hidden relative">
-                <div class="flex items-center gap-3 mb-5 border-b border-cardBorder pb-4">
-                    <i data-lucide="activity" class="w-5 h-5 text-green-400 animate-pulse"></i>
-                    <h3 class="text-lg font-display font-bold text-white uppercase tracking-wider">Live Transaction Stream</h3>
-                </div>
-                
-                <div id="waterfall-container" class="space-y-3 h-[300px] overflow-hidden text-xs font-mono relative">
-                    <div class="absolute top-0 left-0 right-0 h-10 bg-gradient-to-b from-card via-card/80 to-transparent z-10"></div>
-                    <div class="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-card via-card/80 to-transparent z-10"></div>
-                    
-                    <div id="waterfall-content" class="relative z-0 space-y-2.5">
-                        <div class="flex justify-between items-center text-secondary border-b border-cardBorder/50 pb-1.5">
-                            <span class="text-accent">TX_ID: 0x8a1c...</span>
-                            <span class="text-white">Stake</span>
-                            <span class="text-primary">+1,200 SNR</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-<section id="snr-tokenomics" class="py-16 relative overflow-hidden" style="background: #000510;">
-    <div class="max-w-7xl mx-auto px-4 relative z-10">
-        
-        <div class="text-center mb-12">
-            <h2 style="font-family: 'Orbitron', sans-serif;" class="text-3xl font-bold tracking-widest text-white">
-                <span style="color: #FFD700;">SNR</span> TOKENOMICS
-            </h2>
-            <div class="h-1 w-24 bg-primary mx-auto mt-4 rounded-full shadow-[0_0_10px_#FFD700]"></div>
-            <p class="text-secondary mt-6 font-display uppercase tracking-widest text-sm">Total Supply: 1,000,000,000 SNR</p>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            
-            <div class="relative flex justify-center items-center">
-                <div class="absolute w-80 h-80 rounded-full bg-primary/5 blur-[80px] animate-pulse"></div>
-                
-                <div style="position: relative; height: 380px; width: 100%; max-width: 450px;">
-                    <canvas id="tokenomicsBurgerChart"></canvas>
-                    
-                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                        <span class="text-primary font-display text-xs tracking-widest">SUPPLY</span>
-                        <span class="text-white font-display text-2xl font-bold">1B SNR</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="space-y-4">
-                <div class="glass-panel p-4 border-l-4 border-[#FFD700] flex justify-between items-center group hover:bg-white/5 transition-all">
-                    <div>
-                        <h4 class="text-primary font-bold font-display text-sm uppercase">Treasury SNR</h4>
-                        <p class="text-secondary text-xs mt-1 leading-relaxed">Dana cadangan strategis untuk menjaga likuiditas dan stabilitas nilai jangka panjang.</p>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-white font-bold block">400M</span>
-                        <span class="text-primary text-[10px] font-bold">40%</span>
-                    </div>
-                </div>
-
-                <div class="glass-panel p-4 border-l-4 border-[#00D1FF] flex justify-between items-center group hover:bg-white/5 transition-all">
-                    <div>
-                        <h4 class="text-[#00D1FF] font-bold font-display text-sm uppercase">Community Reward</h4>
-                        <p class="text-secondary text-xs mt-1 leading-relaxed">Alokasi khusus untuk imbal hasil (reward) staking para kedaulatan komunitas.</p>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-white font-bold block">300M</span>
-                        <span class="text-[#00D1FF] text-[10px] font-bold">30%</span>
-                    </div>
-                </div>
-
-                <div class="glass-panel p-4 border-l-4 border-[#FFFFFF] flex justify-between items-center group hover:bg-white/5 transition-all">
-                    <div>
-                        <h4 class="text-white font-bold font-display text-sm uppercase">Presale Asset</h4>
-                        <p class="text-secondary text-xs mt-1 leading-relaxed">Tahap awal distribusi kepemilikan aset bagi investor visioner pertama.</p>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-white font-bold block">150M</span>
-                        <span class="text-white text-[10px] font-bold">15%</span>
-                    </div>
-                </div>
-
-                <div class="glass-panel p-4 border-l-4 border-[#FF4500] flex justify-between items-center group hover:bg-white/5 transition-all">
-                    <div>
-                        <h4 class="text-[#FF4500] font-bold font-display text-sm uppercase">Founder & Team</h4>
-                        <p class="text-secondary text-xs mt-1 leading-relaxed">Vesting jangka panjang untuk komitmen tim pengembang dan pendiri.</p>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-white font-bold block">100M</span>
-                        <span class="text-[#FF4500] text-[10px] font-bold">10%</span>
-                    </div>
-                </div>
-
-                <div class="glass-panel p-4 border-l-4 border-[#A855F7] flex justify-between items-center group hover:bg-white/5 transition-all">
-                    <div>
-                        <h4 class="text-[#A855F7] font-bold font-display text-sm uppercase">Marketing Reward</h4>
-                        <p class="text-secondary text-xs mt-1 leading-relaxed">Ekspansi ekosistem dan apresiasi untuk mitra promosi global.</p>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-white font-bold block">50M</span>
-                        <span class="text-[#A855F7] text-[10px] font-bold">5%</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const ctxBurger = document.getElementById('tokenomicsBurgerChart').getContext('2d');
-        
-        const data = {
-            labels: ['Treasury', 'Community Reward', 'Presale', 'Founder & Team', 'Marketing'],
-            datasets: [{
-                data: [400, 300, 150, 100, 50],
-                backgroundColor: [
-                    '#FFD700', // Gold
-                    '#00D1FF', // Cyan
-                    '#FFFFFF', // White
-                    '#FF4500', // Orange-Red
-                    '#A855F7'  // Purple
-                ],
-                borderColor: '#000510',
-                borderWidth: 5,
-                hoverOffset: 30, // Efek saat menyala
-                spacing: 10
-            }]
-        };
-
-        const burgerChart = new Chart(ctxBurger, {
-            type: 'doughnut',
-            data: data,
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '75%',
-                plugins: {
-                    legend: { display: false }
-                },
-                animation: {
-                    animateRotate: true,
-                    duration: 1000
-                }
-            }
-        });
-
-        // --- SNR-VAULT SEQUENTIAL GLOW LOGIC ---
-        let currentIndex = 0;
-        const totalSegments = data.datasets[0].data.length;
-
-        function rotateHighlight() {
-            // 1. Reset semua segmen ke keadaan normal
-            burgerChart.setActiveElements([]);
-            burgerChart.tooltip.setActiveElements([], {x: 0, y: 0});
-
-            // 2. Berikan "Highlight" pada segmen saat ini
-            burgerChart.setActiveElements([
-                {
-                    datasetIndex: 0,
-                    index: currentIndex,
-                }
-            ]);
-
-            // 3. Update Chart secara halus
-            burgerChart.update();
-
-            // 4. Sinkronisasi dengan list penjelasan di sebelah kanan (Opsional: Memberi efek glow pada list)
-            const panels = document.querySelectorAll('.glass-panel');
-            panels.forEach((p, i) => {
-                if(i === currentIndex) {
-                    p.style.boxShadow = `0 0 20px ${data.datasets[0].backgroundColor[i]}44`;
-                    p.style.transform = "translateX(10px)";
-                    p.style.background = "rgba(255,255,255,0.1)";
-                } else {
-                    p.style.boxShadow = "none";
-                    p.style.transform = "translateX(0)";
-                    p.style.background = "rgba(255,255,255,0.03)";
-                }
-            });
-
-            // 5. Pindah ke segmen berikutnya
-            currentIndex = (currentIndex + 1) % totalSegments;
-        }
-
-        // Jalankan rotasi setiap 2 detik (2000ms)
-        setInterval(rotateHighlight, 2000);
-    });
-</script>
-
-<style>
-    /* Tambahkan transisi halus agar pergerakan list di kanan tidak kaku */
-    .glass-panel {
-        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-</style>
-
-<script>
-    // --- Point 3: Rotating Scarcity Counter Logic ---
-    function initScarcityCounter() {
-        const scarcityNumEl = document.getElementById('scarcity-num');
-        let currentShares = 125000;
-
-        // Simulate random shares being locked/taken
-        setInterval(() => {
-            // Randomly decrease by 1 to 5 shares
-            const reduction = Math.floor(Math.random() * 5) + 1;
-            currentShares -= reduction;
-
-            // Ensure it doesn't go below 0 (for simulation)
-            if (currentShares < 100) currentShares = 125000;
-
-            // Format with commas for display
-            scarcityNumEl.innerText = currentShares.toLocaleString('en-US');
-            
-            // Add a temporary glow effect on change
-            scarcityNumEl.classList.add('text-primary');
-            setTimeout(() => scarcityNumEl.classList.remove('text-primary'), 100);
-
-        }, 3500); // Update every 3.5 seconds
-    }
-
-    // --- Point 1: Living Multi-Asset Wave Chart Logic ---
-    function initLivingWaveChart() {
-        const ctx = document.getElementById('livingWaveChart').getContext('2d');
-
-        // Initial Data
-        const initialLabels = ['T-5', 'T-4', 'T-3', 'T-2', 'T-1', 'NOW'];
-        const snrData = [40, 55, 45, 80, 85, 100];
-        const rewardData = [20, 35, 60, 55, 70, 90];
-        const growthData = [10, 25, 30, 45, 50, 65];
-
-        const chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: initialLabels,
-                datasets: [
-                    {
-                        label: 'SNR VALUE',
-                        data: snrData,
-                        borderColor: '#FFD700', // Primary Gold
-                        backgroundColor: 'rgba(255, 215, 0, 0.1)',
-                        fill: true,
-                        tension: 0.4, // Smooth waves
-                        borderWidth: 3,
-                        pointRadius: 4,
-                        pointBackgroundColor: '#FFD700'
-                    },
-                    {
-                        label: 'REWARD POOL',
-                        data: rewardData,
-                        borderColor: '#00D1FF', // Accent Cyan
-                        backgroundColor: 'rgba(0, 209, 255, 0.1)',
-                        fill: true,
-                        tension: 0.4,
-                        borderWidth: 2,
-                        pointRadius: 0,
-                        borderDash: [5, 5] // Dashed line
-                    },
-                    {
-                        label: 'GROWTH',
-                        data: growthData,
-                        borderColor: '#FFFFFF', // White
-                        backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                        fill: true,
-                        tension: 0.4,
-                        borderWidth: 2,
-                        pointRadius: 0
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false } // Custom legend used in HTML
-                },
-                scales: {
-                    y: {
-                        grid: { color: 'rgba(255, 255, 255, 0.03)' },
-                        ticks: { display: false } // Hide Y ticks for cleaner look
-                    },
-                    x: {
-                        grid: { display: false },
-                        ticks: { color: '#64748b', font: { family: 'Orbitron', size: 9 } }
-                    }
-                },
-                // Crucial for the "living" effect: Smooth animations
-                animation: {
-                    duration: 1000,
-                    easing: 'easeInOutQuad'
-                }
-            }
-        });
-
-        // Simulate real-time data updates (the "living" part)
-        setInterval(() => {
-            // 1. Add new Y-axis data points (simulate growth with random variance)
-            chart.data.datasets[0].data.push(Math.min(120, chart.data.datasets[0].data[chart.data.datasets[0].data.length - 1] + (Math.random() * 8 - 2))); // SNR
-            chart.data.datasets[1].data.push(Math.min(110, chart.data.datasets[1].data[chart.data.datasets[1].data.length - 1] + (Math.random() * 6 - 1))); // Reward
-            chart.data.datasets[2].data.push(Math.min(100, chart.data.datasets[2].data[chart.data.datasets[2].data.length - 1] + (Math.random() * 4)));     // Growth
-
-            // 2. Remove old data to keep the window (T-5 to NOW)
-            if (chart.data.datasets[0].data.length > 8) {
-                chart.data.datasets[0].data.shift();
-                chart.data.datasets[1].data.shift();
-                chart.data.datasets[2].data.shift();
-            }
-
-            // 3. Update the chart smoothly
-            chart.update('none'); // 'none' for performance, or default for animation
-
-        }, 3000); // Update every 3 seconds
-    }
-
-    // --- Point 1: Live Stream Waterfall Logic ---
-    function initWaterfallStream() {
-        const contentEl = document.getElementById('waterfall-content');
-        
-        // Define some example transaction types and data
-        const txTypes = [
-            { type: 'Stake', color: 'text-white', icon: 'lock' },
-            { type: 'Harvest', color: 'text-green-400', icon: 'zap' },
-            { type: 'P2P', color: 'text-accent', icon: 'arrow-left-right' },
-            { type: 'Join v4', color: 'text-primary', icon: 'shield' },
-            { type: 'Asset Req', color: 'text-white', icon: 'car' }
-        ];
-
-        // Function to create a new transaction row
-        function createTxRow() {
-            const tx = txTypes[Math.floor(Math.random() * txTypes.length)];
-            const txId = '0x' + Math.random().toString(16).slice(2, 6) + '...' + Math.random().toString(16).slice(2, 6);
-            
-            let amount, amountColor;
-            if (tx.type === 'Harvest') {
-                amount = '+' + (Math.random() * 50 + 5).toFixed(2) + ' SNR';
-                amountColor = 'text-green-400';
-            } else if (tx.type === 'P2P') {
-                amount = (Math.random() > 0.5 ? '+' : '-') + (Math.random() * 500 + 100).toFixed(0) + ' SNR';
-                amountColor = amount.startsWith('+') ? 'text-green-400' : 'text-red-400';
-            } else {
-                amount = '+' + (Math.random() * 1000 + 100).toFixed(0) + ' SNR';
-                amountColor = 'text-primary';
-            }
-
-            const row = document.createElement('div');
-            row.className = 'flex justify-between items-center text-secondary border-b border-cardBorder/50 pb-1.5 opacity-0 transform translate-y-2 transition-all duration-500';
-            
-            row.innerHTML = `
-                <span class="text-accent font-mono text-[10px]">${txId}</span>
-                <span class="${tx.color} font-semibold flex items-center gap-1"><i data-lucide="${tx.icon}" class="w-3.5 h-3.5"></i> ${tx.type}</span>
-                <span class="${amountColor} font-bold">${amount}</span>
-            `;
-
-            return row;
-        }
-
-        // Add 6 initial rows
-        for (let i = 0; i < 6; i++) {
-            const row = createTxRow();
-            row.classList.remove('opacity-0', 'translate-y-2'); // Show initial rows
-            contentEl.appendChild(row);
-        }
-        lucide.createIcons({attrs: {class: 'w-3.5 h-3.5'}}); // Initialize new icons
-
-        // Stream logic: Add new row, remove oldest
-        setInterval(() => {
-            const newRow = createTxRow();
-            contentEl.prepend(newRow); // Add to top
-            lucide.createIcons({container: newRow}); // Init new icons in this row
-
-            // Animate in the new row
-            setTimeout(() => {
-                newRow.classList.remove('opacity-0', 'translate-y-2');
-            }, 50);
-
-            // Remove oldest row if we exceed the limit (to keep h-[300px])
-            const rows = contentEl.querySelectorAll('div');
-            if (rows.length > 8) {
-                const oldest = rows[rows.length - 1];
-                oldest.classList.add('opacity-0', 'translate-y-2');
-                setTimeout(() => oldest.remove(), 500);
-            }
-
-        }, 2800); // Add new transaction every 2.8 seconds
-    }
-
-    // Initialize all components when DOM is ready
-    document.addEventListener('DOMContentLoaded', () => {
-        // Point 3
-        if (document.getElementById('scarcity-num')) {
-            initScarcityCounter();
-        }
-        
-        // Point 1 (Chart)
-        if (document.getElementById('livingWaveChart')) {
-            // Ensure Chart.js is loaded
-            if (typeof Chart !== 'undefined') {
-                initLivingWaveChart();
-            } else {
-                console.error("Chart.js not found. Dynamic chart will not load.");
-            }
-        }
-        
-        // Point 1 (Waterfall)
-        if (document.getElementById('waterfall-container')) {
-            initWaterfallStream();
-        }
-    });
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script>
-    const ctxMulti = document.getElementById('multiAssetChart').getContext('2d');
-    
-    // Gradients
-    const goldGrad = ctxMulti.createLinearGradient(0, 0, 0, 400);
-    goldGrad.addColorStop(0, 'rgba(255, 215, 0, 0.3)');
-    goldGrad.addColorStop(1, 'rgba(0, 5, 16, 0)');
-
-    const blueGrad = ctxMulti.createLinearGradient(0, 0, 0, 400);
-    blueGrad.addColorStop(0, 'rgba(0, 150, 255, 0.3)');
-    blueGrad.addColorStop(1, 'rgba(0, 5, 16, 0)');
-
-    const whiteGrad = ctxMulti.createLinearGradient(0, 0, 0, 400);
-    whiteGrad.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
-    whiteGrad.addColorStop(1, 'rgba(0, 5, 16, 0)');
-
-    new Chart(ctxMulti, {
-        type: 'line',
-        data: {
-            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
-            datasets: [
-                {
-                    label: 'SNR VALUE',
-                    data: [40, 55, 45, 80, 85, 100],
-                    borderColor: '#FFD700',
-                    backgroundColor: goldGrad,
-                    fill: true,
-                    tension: 0.4,
-                    borderWidth: 3,
-                    pointRadius: 5,
-                    pointBackgroundColor: '#FFD700'
-                },
-                {
-                    label: 'REWARD POOL',
-                    data: [20, 35, 60, 55, 70, 90],
-                    borderColor: '#00D1FF',
-                    backgroundColor: blueGrad,
-                    fill: true,
-                    tension: 0.4,
-                    borderWidth: 2,
-                    pointRadius: 0, // Cleaner look for secondary line
-                    borderDash: [5, 5] // Dashed line for distinction
-                },
-                {
-                    label: 'GROWTH',
-                    data: [10, 25, 30, 45, 50, 65],
-                    borderColor: '#FFFFFF',
-                    backgroundColor: whiteGrad,
-                    fill: true,
-                    tension: 0.4,
-                    borderWidth: 2,
-                    pointRadius: 0
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'top',
-                    labels: {
-                        color: '#FFFFFF',
-                        font: { family: 'Orbitron', size: 10 }
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                    ticks: { color: '#888', font: { family: 'Orbitron' } }
-                },
-                x: {
-                    grid: { display: false },
-                    ticks: { color: '#FFFFFF', font: { family: 'Orbitron' } }
-                }
-            }
-        }
-    });
-</script>
-
-        <section class="py-24 bg-background relative border-t border-cardBorder">
-            <div class="max-w-7xl mx-auto px-4">
-                <div class="text-center mb-16">
-                    <h2 class="text-3xl md:text-5xl font-display font-bold mb-4 text-white">THE STRATEGIC <span class="text-primary">ROADMAP</span></h2>
-                    <p class="text-secondary tracking-widest text-sm font-semibold uppercase">Arsitektur Pembangunan Ekosistem <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span></p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="glass-panel p-6 border-primary/20 hover:border-primary/50 transition-all">
-                        <div class="text-primary font-display font-bold text-xl mb-4">FASE 01</div>
-                        <h4 class="text-white font-bold mb-2 uppercase text-sm">Infrastruktur Inti</h4>
-                        <p class="text-xs text-secondary leading-relaxed">Membangun fondasi digital yang kokoh, server terdesentralisasi, dan sistem keamanan tingkat tinggi.</p>
-                    </div>
-
-                    <div class="glass-panel p-6 border-white/10 hover:border-white/30 transition-all">
-                        <div class="text-white font-display font-bold text-xl mb-4">FASE 02</div>
-                        <h4 class="text-white font-bold mb-2 uppercase text-sm">Formalitas & Legalitas</h4>
-                        <p class="text-xs text-secondary leading-relaxed">Penyelarasan regulasi dan penguatan payung hukum melalui PT Global Nexus Capital & PT SNR Digital Transformasi.</p>
-                    </div>
-
-                    <div class="glass-panel p-6 border-accent/20 hover:border-accent/50 transition-all">
-                        <div class="text-accent font-display font-bold text-xl mb-4">FASE 03</div>
-                        <h4 class="text-white font-bold mb-2 uppercase text-sm">Blockchain Evolution</h4>
-                        <p class="text-xs text-secondary leading-relaxed">Implementasi Smart Contract Titan v4 dan audit protokol secara berkala untuk kedaulatan data.</p>
-                    </div>
-
-                    <div class="glass-panel p-6 border-primary/20 hover:border-primary/50 transition-all">
-                        <div class="text-primary font-display font-bold text-xl mb-4">FASE 04</div>
-                        <h4 class="text-white font-bold mb-2 uppercase text-sm">Hybrid Ecosystem</h4>
-                        <p class="text-xs text-secondary leading-relaxed">Integrasi strategis antara aset digital SNR dengan portofolio aset riil yang produktif dan terukur.</p>
-                    </div>
-
-                    <div class="glass-panel p-6 border-accent/20 hover:border-accent/50 transition-all">
-                        <div class="text-accent font-display font-bold text-xl mb-4">FASE 05</div>
-                        <h4 class="text-white font-bold mb-2 uppercase text-sm">Mobility Program</h4>
-                        <p class="text-xs text-secondary leading-relaxed">Peluncuran program perolehan kendaraan motor dan mobil melalui skema dukungan aset digital yang inovatif.</p>
-                    </div>
-
-                    <div class="glass-panel p-6 border-primary/20 hover:border-primary/50 transition-all">
-                        <div class="text-primary font-display font-bold text-xl mb-4">FASE 06</div>
-                        <h4 class="text-white font-bold mb-2 uppercase text-sm">Sovereign Living</h4>
-                        <p class="text-xs text-secondary leading-relaxed">Pengembangan aset hunian dan real estate sebagai bentuk jaminan kenyamanan jangka panjang bagi pemegang kedaulatan.</p>
-                    </div>
-
-                    <div class="glass-panel p-6 border-white/20 hover:border-white/50 transition-all lg:col-span-2">
-                        <div class="text-white font-display font-bold text-xl mb-4">FASE 07</div>
-                        <h4 class="text-white font-bold mb-2 uppercase text-sm">Expansion & Scaling</h4>
-                        <p class="text-xs text-secondary leading-relaxed">Perluasan jaringan operasional perusahaan dan pusat edukasi di berbagai wilayah kota besar di seluruh Indonesia.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
+        <!-- About Section -->
         <section id="about" class="py-24 bg-card/30 border-y border-cardBorder">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-16">
@@ -941,217 +235,7 @@ html, body {
             </div>
         </section>
 
-        <section class="snr-faq-section" style="overflow-x: hidden;">
-    <div class="faq-container">
-        <h2 class="faq-title" style="text-align: center;">
-            <span class="gold">APA & MENGAPA </span>
-            <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span>?
-        </h2>
-        
-        <div class="faq-wrapper">
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    <span style="color: #00FFFF; text-align: left;">APA ITU SNR-VAULT DAN BAGAIMANA CARA KERJANYA?</span>
-                    <span class="icon">❯</span>
-                </button>
-                <div class="faq-answer">
-                    <p><span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> adalah ekosistem blockchain yang menggabungkan keamanan Smart Contract dengan utilitas bisnis riil. Sistem ini bekerja melalui protokol otomatis yang memastikan setiap transaksi tercatat secara transparan di jaringan BNB Smart Chain, memberikan akses kontrol penuh kepada pengguna atas aset mereka sendiri.</p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    <span style="color: #00FFFF; text-align: left;">MENGAPA SNR-VAULT LEBIH AMAN DIBANDINGKAN PLATFORM LAIN?</span>
-                    <span class="icon">❯</span>
-                </button>
-                <div class="faq-answer">
-                    <p>Keamanan utama <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> terletak pada prinsip <strong>Self-Custody</strong> dan integrasi hukum melalui PT GLOBAL NEXUS CAPITAL. Tidak seperti platform lain yang meminta Anda menitipkan dana, di sini Anda memegang kendali penuh atas wallet Anda, didukung oleh Smart Contract yang telah diverifikasi untuk mencegah manipulasi data.</p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    <span style="color: #00FFFF; text-align: left;">APA KEUNTUNGAN MENJADI MITRA LIKUIDITAS (LP)?</span>
-                    <span class="icon">❯</span>
-                </button>
-                <div class="faq-answer">
-                    <p>Mitra Likuiditas mendapatkan keuntungan multi-arah: mulai dari <em>Trading Fee</em> di DEX PancakeSwap, insentif harian dari protokol Titan v4, hingga potensi <em>Capital Gain</em> dari kenaikan nilai aset. Semua ini dilakukan tanpa harus menyerahkan kunci akses dana kepada pihak manapun.</p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    <span style="color: #00FFFF; text-align: left;">DARI MANA SUMBER REWARD STAKING SNR-VAULT?</span>
-                    <span class="icon">❯</span>
-                </button>
-                <div class="faq-answer">
-                    <p>Reward dihasilkan melalui ekosistem yang sehat, mencakup biaya transaksi (trading fees) dari DEX, aktivitas operasional dalam protokol Titan v4, serta dukungan aset dari unit bisnis riil di bawah PT GLOBAL NEXUS CAPITAL. Kami tidak menggunakan sistem "gali lubang tutup lubang", melainkan pertumbuhan nilai aset yang berbasis utilitas.</p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    <span style="color: #00FFFF; text-align: left;">APAKAH ADMIN BISA MENGAKSES SALDO DI WALLET SAYA?</span>
-                    <span class="icon">❯</span>
-                </button>
-                <div class="faq-answer">
-                    <p><strong>TIDAK BISA.</strong> <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> dibangun di atas jaringan terdesentralisasi (Web3). Keamanan saldo sepenuhnya berada di tangan Anda melalui 12 kata kunci (Seed Phrase) wallet Anda. Admin atau Developer tidak memiliki celah teknis untuk menyentuh atau memindahkan aset pribadi milik member.</p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    <span style="color: #00FFFF; text-align: left;">BAGAIMANA JIKA SAYA INGIN MENCAIRKAN REWARD KE RUPIAH?</span>
-                    <span class="icon">❯</span>
-                </button>
-                <div class="faq-answer">
-                    <p>Anda memiliki dua jalur resmi: Pertama, melalui <strong>DEX (PancakeSwap)</strong> secara instan 24/7. Kedua, melalui <strong>P2P Gateway</strong> yang dilayani oleh mitra likuiditas resmi kami (Liquidity Partners) untuk proses pencairan yang lebih mudah bagi pengguna awam.</p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    <span style="color: #00FFFF; text-align: left;">APAKAH SNR-VAULT MEMILIKI BADAN HUKUM YANG JELAS?</span>
-                    <span class="icon">❯</span>
-                </button>
-                <div class="faq-answer">
-                    <p>Ya. Seluruh operasional dan distribusi teknologi dikelola oleh <strong>PT SNR DIGITAL TRANSFORMASI</strong> dan didukung oleh holding <strong>PT GLOBAL NEXUS CAPITAL</strong>. Kami berkomitmen pada kepatuhan regulasi di Indonesia untuk memberikan perlindungan hukum bagi setiap mitra dan member kami.</p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    <span style="color: #00FFFF; text-align: left;">APA JAMINANNYA PROYEK INI AKAN BERTAHAN LAMA?</span>
-                    <span class="icon">❯</span>
-                </button>
-                <div class="faq-answer">
-                    <p><span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> didesain sebagai <em>"Long-term Financial Fortress"</em>. Dengan logika Smart Contract yang terkunci, suplai token yang terjaga, dan integrasi dengan sektor bisnis riil (MOTOR, MOBIL, EMAS ANTAM & PERUMAHAN), kami membangun ekosistem yang memiliki nilai fundamental, bukan sekadar tren sesaat.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<style>
-    /* Tambahkan CSS ini untuk memastikan warna Cyan konsisten di semua judul section */
-    .faq-title {
-        color: #00FFFF !important; /* Blue Cyan */
-        font-family: 'Orbitron', sans-serif;
-    }
-</style>
-
-<style>
-    .snr-faq-section {
-        background-color: #050A18;
-        padding: 60px 20px;
-        color: #FFFFFF;
-    }
-    .faq-container {
-        max-width: 900px;
-        margin: 0 auto;
-    }
-    .faq-title {
-        font-family: 'Orbitron', sans-serif;
-        text-align: center;
-        margin-bottom: 50px;
-        font-size: 2rem;
-        letter-spacing: 2px;
-    }
-    .gold { color: #FFD700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
-    .white { color: #FFFFFF; }
-
-    .faq-wrapper {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .faq-item {
-        border: 1px solid rgba(255, 215, 0, 0.2);
-        border-radius: 12px;
-        overflow: hidden;
-        background: rgba(255, 255, 255, 0.03);
-        transition: 0.3s;
-    }
-    
-    .faq-item:hover {
-        border-color: #FFCC00;
-        box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
-    }
-
-    .faq-question {
-        width: 100%;
-        padding: 22px;
-        background: none;
-        border: none;
-        color: white;
-        text-align: left;
-        font-family: 'Orbitron', sans-serif;
-        font-size: 0.85rem;
-        font-weight: 700;
-        cursor: pointer;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        transition: 0.3s;
-    }
-
-    .faq-answer {
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        background: rgba(0, 0, 0, 0.3);
-    }
-
-    .faq-answer p {
-        padding: 25px;
-        font-family: 'Roboto', sans-serif;
-        color: #ddd;
-        line-height: 1.7;
-        border-left: 4px solid #FFCC00;
-        margin: 0;
-        font-size: 0.95rem;
-    }
-
-    .icon {
-        transition: transform 0.4s;
-        color: #FFCC00;
-        font-size: 1.1rem;
-    }
-
-    /* Active State */
-    .faq-item.active {
-        border-color: #FFCC00;
-        background: rgba(255, 215, 0, 0.05);
-    }
-    
-    .faq-item.active .faq-answer {
-        max-height: 600px; /* Adjust if content is longer */
-    }
-
-    .faq-item.active .icon {
-        transform: rotate(90deg);
-    }
-
-    @media (max-width: 768px) {
-        .faq-title { font-size: 1.5rem; }
-        .faq-question { font-size: 0.75rem; padding: 18px; }
-    }
-</style>
-
-<script>
-    function toggleFaq(element) {
-        const item = element.parentElement;
-        
-        // Menutup item lain jika ingin sistem accordion tunggal (opsional)
-        // document.querySelectorAll('.faq-item').forEach(el => {
-        //    if (el !== item) el.classList.remove('active');
-        // });
-
-        item.classList.toggle('active');
-    }
-</script>
-
+        <!-- Legality Section -->
         <section id="security" class="py-24">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="glass-panel p-8 md:p-12 relative overflow-hidden border-primary/20">
@@ -1166,7 +250,7 @@ html, body {
                             <p class="text-secondary mb-6 leading-relaxed">
                                 Ekosistem <span class="text-primary font-bold">SNR</span>-<span
                                     class="text-white font-bold">VAULT</span> dijalankan dengan mematuhi prinsip
-                                kehati-hatian dan memiliki landasan hukum di Indonesia.
+                                kehati-hatian.
                             </p>
                             <ul class="space-y-4">
                                 <li class="flex items-start gap-3">
@@ -1197,9 +281,11 @@ html, body {
         </section>
     </div>
 
+    <!-- DAPP PORTAL VIEW -->
     <div id="view-dapp" class="page-view flex-grow py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
+            <!-- Token Info & Status -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div class="glass-panel p-6 flex items-center justify-between">
                     <div>
@@ -1246,6 +332,7 @@ html, body {
                 </div>
             </div>
 
+            <!-- Navigation Tabs -->
             <div class="flex flex-wrap gap-2 mb-8 bg-card p-2 rounded-xl border border-cardBorder w-fit">
                 <button onclick="switchTab('staking')" id="btn-staking"
                     class="px-6 py-2 rounded-lg text-sm font-medium transition-all bg-primary text-black">
@@ -1265,10 +352,12 @@ html, body {
                 </button>
             </div>
 
+            <!-- Tab Contents -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
                 <div class="lg:col-span-2 space-y-6">
 
+                    <!-- Staking Tab -->
                     <div id="tab-staking" class="dapp-tab active glass-panel p-8">
                         <h3 class="text-2xl font-display font-bold mb-6 flex items-center gap-2">
                             <i data-lucide="shield-alert" class="text-primary w-6 h-6"></i> Titan v4 - Join Protocol
@@ -1287,13 +376,14 @@ html, body {
                                 <input type="text" id="stake-mentor" placeholder="0x..."
                                     class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
                             </div>
-                            <div class="relative z-50">
+                            <div>
                                 <label class="block text-sm text-secondary mb-2">Durasi Staking</label>
-                                <select id="stake-duration" class="w-full bg-card border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary cursor-pointer relative z-50 appearance-auto">
-                                    <option value="30" class="bg-card text-white py-2">30 Hari (Yield 100 BP)</option>
-                                    <option value="60" class="bg-card text-white py-2">60 Hari (Yield 120 BP)</option>
-                                    <option value="90" class="bg-card text-white py-2">90 Hari (Yield 150 BP)</option>
-                                </select>
+                                <input type="hidden" id="stake-duration" value="30">
+                                <div class="grid grid-cols-3 gap-2 sm:gap-4">
+                                    <button id="btn-dur-30" onclick="selectDuration(30)" class="duration-btn border-primary bg-primary/10 border py-3 rounded-lg hover:border-primary transition-colors text-sm sm:text-base">30 Hari</button>
+                                    <button id="btn-dur-60" onclick="selectDuration(60)" class="duration-btn border-cardBorder bg-background border py-3 rounded-lg hover:border-primary transition-colors text-sm sm:text-base">60 Hari</button>
+                                    <button id="btn-dur-90" onclick="selectDuration(90)" class="duration-btn border-cardBorder bg-background border py-3 rounded-lg hover:border-primary transition-colors text-sm sm:text-base">90 Hari</button>
+                                </div>
                             </div>
                             <button onclick="executeProtocol()"
                                 class="w-full py-4 mt-4 bg-primary text-black font-bold rounded-lg hover:bg-yellow-400 hover:shadow-[0_0_20px_rgba(255,204,0,0.3)] transition-all">
@@ -1302,6 +392,7 @@ html, body {
                         </div>
                     </div>
 
+                    <!-- Network & Rank Tab -->
                     <div id="tab-network" class="dapp-tab glass-panel p-8 border-accent/30">
                         <div class="flex items-start justify-between">
                             <div>
@@ -1364,6 +455,7 @@ html, body {
                         </div>
                     </div>
 
+                    <!-- Assets Tab -->
                     <div id="tab-assets" class="dapp-tab glass-panel p-8">
                         <h3 class="text-2xl font-display font-bold mb-6">Request Asset Acquisition</h3>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
@@ -1412,6 +504,7 @@ html, body {
                         </div>
                     </div>
 
+                    <!-- P2P Tab -->
                     <div id="tab-p2p"
                         class="dapp-tab glass-panel p-8 text-center min-h-[400px] flex flex-col items-center justify-center">
                         <i data-lucide="message-circle" class="w-16 h-16 text-green-400 mb-4"></i>
@@ -1429,6 +522,7 @@ html, body {
 
                 </div>
 
+                <!-- Sidebar -->
                 <div class="space-y-6">
                     <div class="glass-panel p-6 border-primary/20">
                         <h4 class="font-display font-bold text-lg mb-4 flex items-center gap-2"><i data-lucide="gift"
@@ -1457,6 +551,7 @@ html, body {
         </div>
     </div>
 
+    <!-- Footer -->
     <footer class="border-t border-cardBorder bg-background py-12 mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -1479,41 +574,17 @@ html, body {
                 <p class="uppercase tracking-widest text-primary/80 font-semibold mb-2">Peringatan Risiko & Disclaimer
                 </p>
                 <p class="max-w-4xl mx-auto">Platform ini disediakan untuk tujuan edukasi dan integrasi teknologi.
-                    <span class="text-primary font-bold">SNR</span>-<span class="text-white font-bold">VAULT</span> murni dibangun untuk menghadirkan solusi teknologi blockchain yang transparan, aman, dan
+                    SNR-VAULT murni dibangun untuk menghadirkan solusi teknologi blockchain yang transparan, aman, dan
                     mematuhi regulasi di Indonesia.</p>
-                <p class="pt-4">&copy; 2026 <span class="text-primary font-bold">SNR</span>-<span class="text-white font-bold">VAULT</span>. All rights reserved.</p>
+                <p class="pt-4">&copy; 2026 SNR-VAULT. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
+    <!-- Logic Script -->
     <script>
         // Inisialisasi ikon Lucide
         lucide.createIcons();
-
-        // --- NEW: Chart Growth Initialization ---
-        document.addEventListener('DOMContentLoaded', () => {
-            const ctxGrowth = document.getElementById('growthChart').getContext('2d');
-            new Chart(ctxGrowth, {
-                type: 'bar',
-                data: {
-                    labels: ['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7'],
-                    datasets: [{
-                        label: 'Ekosistem Power',
-                        data: [20, 35, 55, 70, 85, 95, 100],
-                        backgroundColor: '#FFCC00',
-                        borderRadius: 5,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { display: false },
-                        x: { ticks: { color: '#64748b', font: { family: 'Orbitron' } }, grid: { display: false } }
-                    }
-                }
-            });
-        });
 
         function switchPage(page) {
             // Sembunyikan semua halaman
@@ -1548,6 +619,18 @@ html, body {
             const btn = document.getElementById('btn-' + tabId);
             btn.classList.remove('text-secondary');
             btn.classList.add('bg-primary', 'text-black');
+        }
+
+        // Fungsi Memilih Durasi Staking
+        function selectDuration(days) {
+            document.getElementById('stake-duration').value = days;
+            document.querySelectorAll('.duration-btn').forEach(btn => {
+                btn.classList.remove('border-primary', 'bg-primary/10');
+                btn.classList.add('border-cardBorder', 'bg-background');
+            });
+            const selected = document.getElementById('btn-dur-' + days);
+            selected.classList.remove('border-cardBorder', 'bg-background');
+            selected.classList.add('border-primary', 'bg-primary/10');
         }
 
         // Initialize Globe with Blockchain Touch
@@ -1807,7 +890,599 @@ html, body {
             }
         }
 
+        // Fungsi Withdraw
+        async function withdrawFunds() {
+            if (!stakingContract) {
+                alert('Silakan connect wallet terlebih dahulu!');
+                return;
+            }
+            try {
+                const tx = await stakingContract.withdraw();
+                alert('Transaksi withdraw dikirim... Hash: ' + tx.hash);
+                await tx.wait();
+                alert('Withdraw berhasil!');
+            } catch (error) {
+                console.error("Withdraw error:", error);
+                alert('Gagal withdraw: ' + error.message);
+            }
+        }
+
+        // Fungsi Claim Rewards
+        async function claimRewards() {
+            if (!stakingContract) {
+                alert('Silakan connect wallet terlebih dahulu!');
+                return;
+            }
+            try {
+                const tx = await stakingContract.claimRewards();
+                alert('Transaksi claim dikirim... Hash: ' + tx.hash);
+                await tx.wait();
+                alert('Claim rewards berhasil!');
+            } catch (error) {
+                console.error("Claim error:", error);
+                alert('Gagal claim: ' + error.message);
+            }
+        }
     </script>
 </body>
 
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SNR-VAULT | The Deep-Space Financial Fortress</title>
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Globe.gl -->
+    <script src="https://unpkg.com/globe.gl"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: '#050816',
+                        primary: '#FFCC00',
+                        accent: '#00E5FF',
+                        secondary: '#C0C0C0',
+                        card: 'rgba(19, 26, 42, 0.6)',
+                        cardBorder: '#1E2A44',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Orbitron', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #050816;
+            color: #FFFFFF;
+            font-family: 'Inter', sans-serif;
+            background-image: radial-gradient(circle at 50% -20%, #1a2744 0%, #050816 60%);
+            background-attachment: fixed;
+            -webkit-font-smoothing: antialiased;
+            scroll-behavior: smooth;
+        }
+        .font-display {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(to right, #FFCC00, #00E5FF);
+        }
+        .glass-panel {
+            background-color: rgba(5, 8, 22, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid #1E2A44;
+            border-radius: 0.75rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 229, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-panel:hover {
+            border-color: rgba(0, 229, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(0, 229, 255, 0.1);
+        }
+        /* Subtle Glow Borders */
+        .glow-border {
+            position: relative;
+        }
+        .glow-border::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(to bottom right, rgba(0, 229, 255, 0.5), transparent, rgba(255, 204, 0, 0.5));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        /* Grid Background overlay */
+        .cyan-grid {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(0, 229, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
+            mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+        }
+        .nav-link {
+            position: relative;
+            color: #C0C0C0;
+            transition: color 0.3s;
+        }
+        .nav-link:hover {
+            color: #FFFFFF;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #00E5FF;
+            transition: width 0.3s;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col relative overflow-x-hidden">
+    <!-- Background Elements -->
+    <div class="fixed inset-0 z-[-1] pointer-events-none cyan-grid"></div>
+    <div class="fixed top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px] pointer-events-none z-[-1]"></div>
+    <div class="fixed top-2/3 right-1/4 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[150px] pointer-events-none z-[-1]"></div>
+    <!-- Security Banner -->
+    <div class="bg-[#050816] border-b border-red-500/30 py-2 relative z-[60] flex justify-center items-center">
+        <div class="text-xs md:text-sm text-secondary font-display tracking-wide flex items-center gap-2">
+            <i data-lucide="shield-alert" class="w-4 h-4 text-red-500"></i>
+            <span><strong class="text-white">SECURITY NOTICE:</strong> SNR-VAULT never requests Private Keys, Seed Phrases, or Recovery Codes. All transactions require direct wallet owner approval.</span>
+        </div>
+    </div>
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 bg-[#050816]/80 backdrop-blur-md border-b border-cardBorder">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center gap-3 cursor-pointer">
+                    <i data-lucide="hexagon" class="h-8 w-8 text-primary"></i>
+                    <div class="font-display font-bold text-xl md:text-2xl tracking-widest">
+                        <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span>
+                    </div>
+                </div>
+                <div class="hidden lg:flex items-center gap-8 text-sm font-display tracking-wide">
+                    <a href="#trust" class="nav-link">TRUST</a>
+                    <a href="#community" class="nav-link">COMMUNITY</a>
+                    <a href="#economy" class="nav-link">ECONOMY</a>
+                    <a href="#utility" class="nav-link">UTILITY</a>
+                    <a href="#transparency" class="nav-link">TRANSPARENCY</a>
+                </div>
+                <div class="flex items-center">
+                    <a href="#portal" class="px-5 py-2.5 rounded border border-primary text-primary font-display font-bold text-sm hover:bg-primary hover:text-[#050816] transition-all duration-300 shadow-[0_0_15px_rgba(255,204,0,0.2)] hover:shadow-[0_0_25px_rgba(255,204,0,0.5)] flex items-center gap-2">
+                        ENTER FORTRESS
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Main Content -->
+    <main class="flex-grow">
+        
+        <!-- Hero Section -->
+        <section class="relative pt-24 pb-32 min-h-[90vh] flex items-center border-b border-cardBorder/50">
+            <!-- Globe Container -->
+            <div class="absolute inset-0 z-0 overflow-hidden">
+                <div id="globeViz" class="absolute right-[-20%] top-1/2 transform -translate-y-1/2 opacity-40 mix-blend-screen pointer-events-none scale-150 md:scale-100"></div>
+            </div>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+                <div class="max-w-3xl">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-accent/30 bg-accent/5 text-accent mb-6 font-display text-xs tracking-widest uppercase">
+                        <i data-lucide="cpu" class="w-4 h-4"></i>
+                        <span>Sovereign Economic Infrastructure</span>
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight font-display tracking-tight">
+                        THE DEEP-SPACE <br />
+                        <span class="text-gradient">FINANCIAL FORTRESS</span>
+                    </h1>
+                    <p class="text-lg md:text-xl text-secondary mb-10 leading-relaxed font-light max-w-2xl">
+                        A community-centered digital economic infrastructure connecting people, commerce, distribution, assets, and transparent technology.
+                    </p>
+                    <div class="flex flex-wrap items-center gap-4">
+                        <a href="#trust" class="px-8 py-4 bg-transparent border border-secondary text-white font-display text-sm tracking-widest hover:border-white hover:bg-white/5 transition-all">
+                            EXPLORE ARCHITECTURE
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- SECTION 1: TRUST FIRST -->
+        <section id="trust" class="py-24 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="text-center mb-16">
+                    <h2 class="text-sm font-display text-accent tracking-widest mb-2 uppercase">Trust First</h2>
+                    <h3 class="text-3xl md:text-4xl font-bold font-display">Building Digital Economic Trust Through Transparency and Responsible Technology.</h3>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="glass-panel p-8 glow-border flex flex-col items-center text-center">
+                        <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-6 border border-primary/20">
+                            <i data-lucide="shield-check" class="w-6 h-6 text-primary"></i>
+                        </div>
+                        <h4 class="text-lg font-bold font-display mb-3">Non-Custodial</h4>
+                        <p class="text-sm text-secondary">You retain full control over your digital identity and wallet assets at all times.</p>
+                    </div>
+                    
+                    <div class="glass-panel p-8 glow-border flex flex-col items-center text-center">
+                        <div class="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center mb-6 border border-accent/20">
+                            <i data-lucide="key" class="w-6 h-6 text-accent"></i>
+                        </div>
+                        <h4 class="text-lg font-bold font-display mb-3">User-Controlled</h4>
+                        <p class="text-sm text-secondary">Every action within the ecosystem requires your explicit cryptographic authorization.</p>
+                    </div>
+                    <div class="glass-panel p-8 glow-border flex flex-col items-center text-center">
+                        <div class="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center mb-6 border border-blue-500/20">
+                            <i data-lucide="eye" class="w-6 h-6 text-blue-400"></i>
+                        </div>
+                        <h4 class="text-lg font-bold font-display mb-3">Transparent Tech</h4>
+                        <p class="text-sm text-secondary">Infrastructure logic is publicly verifiable, ensuring trust through absolute clarity.</p>
+                    </div>
+                    <div class="glass-panel p-8 glow-border flex flex-col items-center text-center">
+                        <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-6 border border-white/20">
+                            <i data-lucide="building-2" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <h4 class="text-lg font-bold font-display mb-3">Accountability</h4>
+                        <p class="text-sm text-secondary">Backed by clear corporate structures focused on sustainable economic support.</p>
+                    </div>
+                </div>
+                <div class="mt-12 glass-panel p-6 border-l-4 border-l-primary flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div>
+                        <h5 class="font-display font-bold text-white mb-1">Corporate Presence</h5>
+                        <p class="text-sm text-secondary">Trust Before Participation.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-4">
+                        <div class="px-4 py-2 bg-[#050816] border border-cardBorder rounded text-sm text-secondary font-display tracking-wide">
+                            PT GLOBAL NEXUS CAPITAL
+                        </div>
+                        <div class="px-4 py-2 bg-[#050816] border border-cardBorder rounded text-sm text-secondary font-display tracking-wide">
+                            PT SNR DIGITAL TRANSFORMASI
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- SECTION 2: COMMUNITY FIRST -->
+        <section id="community" class="py-24 bg-gradient-to-b from-transparent to-card/30 border-y border-cardBorder/50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-2 gap-16 items-center">
+                    <div>
+                        <h2 class="text-sm font-display text-primary tracking-widest mb-2 uppercase">Community First</h2>
+                        <h3 class="text-3xl md:text-5xl font-bold font-display mb-6">People Before Technology.</h3>
+                        <p class="text-lg text-secondary mb-6 leading-relaxed">
+                            Technology is only a tool. People and their productive activities are the true foundation of this ecosystem. We build infrastructure to empower human coordination, not replace it.
+                        </p>
+                        
+                        <div class="space-y-4 mt-8">
+                            <div class="flex items-start gap-4">
+                                <div class="mt-1"><i data-lucide="check-circle" class="w-5 h-5 text-accent"></i></div>
+                                <div>
+                                    <h4 class="font-bold text-white font-display">Farmers & Producers</h4>
+                                    <p class="text-sm text-secondary">The originators of tangible value in the real world.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div class="mt-1"><i data-lucide="check-circle" class="w-5 h-5 text-accent"></i></div>
+                                <div>
+                                    <h4 class="font-bold text-white font-display">Merchants & Small Businesses</h4>
+                                    <p class="text-sm text-secondary">The vital connection points enabling local commerce.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div class="mt-1"><i data-lucide="check-circle" class="w-5 h-5 text-accent"></i></div>
+                                <div>
+                                    <h4 class="font-bold text-white font-display">Distributors</h4>
+                                    <p class="text-sm text-secondary">Facilitating the efficient flow of goods and services.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <!-- Abstract Community Representation -->
+                        <div class="aspect-square rounded-full border border-cardBorder flex items-center justify-center relative glow-border p-8">
+                            <div class="absolute inset-0 bg-primary/5 rounded-full blur-2xl"></div>
+                            <div class="grid grid-cols-2 gap-4 relative z-10 w-full h-full">
+                                <div class="glass-panel rounded-lg flex items-center justify-center flex-col gap-2 p-4">
+                                    <i data-lucide="users" class="w-8 h-8 text-white"></i>
+                                    <span class="text-xs font-display tracking-widest text-secondary">MEMBERS</span>
+                                </div>
+                                <div class="glass-panel rounded-lg flex items-center justify-center flex-col gap-2 p-4">
+                                    <i data-lucide="store" class="w-8 h-8 text-primary"></i>
+                                    <span class="text-xs font-display tracking-widest text-secondary">MERCHANTS</span>
+                                </div>
+                                <div class="glass-panel rounded-lg flex items-center justify-center flex-col gap-2 p-4">
+                                    <i data-lucide="truck" class="w-8 h-8 text-accent"></i>
+                                    <span class="text-xs font-display tracking-widest text-secondary">DISTRIBUTORS</span>
+                                </div>
+                                <div class="glass-panel rounded-lg flex items-center justify-center flex-col gap-2 p-4">
+                                    <i data-lucide="sprout" class="w-8 h-8 text-green-400"></i>
+                                    <span class="text-xs font-display tracking-widest text-secondary">PRODUCERS</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- SECTION 3: REAL ECONOMY FIRST -->
+        <section id="economy" class="py-32 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-20">
+                    <h2 class="text-sm font-display text-accent tracking-widest mb-2 uppercase">Real Economy First</h2>
+                    <h3 class="text-3xl md:text-5xl font-bold font-display mb-6">Value Originates From Economic Activity.</h3>
+                    <p class="text-lg text-secondary max-w-3xl mx-auto">
+                        Economic value is generated by productive activity, coordination, and commerce. Our infrastructure serves to support this flow.
+                    </p>
+                </div>
+                <!-- Economic Flow Diagram -->
+                <div class="relative flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0 mt-16 px-4">
+                    <!-- Flow Line Background (Desktop) -->
+                    <div class="hidden md:block absolute top-1/2 left-[10%] right-[10%] h-0.5 bg-cardBorder -translate-y-1/2 z-0"></div>
+                    
+                    <!-- Nodes -->
+                    <div class="flex flex-col items-center relative z-10 gap-3 group">
+                        <div class="w-16 h-16 rounded-full glass-panel flex items-center justify-center border-primary/30 group-hover:border-primary transition-colors">
+                            <i data-lucide="tractor" class="w-6 h-6 text-secondary group-hover:text-primary transition-colors"></i>
+                        </div>
+                        <span class="text-xs font-display tracking-widest text-secondary">AGRICULTURE</span>
+                    </div>
+                    <div class="hidden md:block text-accent"><i data-lucide="arrow-right"></i></div>
+                    <div class="md:hidden text-accent"><i data-lucide="arrow-down"></i></div>
+                    <div class="flex flex-col items-center relative z-10 gap-3 group">
+                        <div class="w-16 h-16 rounded-full glass-panel flex items-center justify-center border-primary/30 group-hover:border-primary transition-colors">
+                            <i data-lucide="factory" class="w-6 h-6 text-secondary group-hover:text-primary transition-colors"></i>
+                        </div>
+                        <span class="text-xs font-display tracking-widest text-secondary">PRODUCTION</span>
+                    </div>
+                    <div class="hidden md:block text-accent"><i data-lucide="arrow-right"></i></div>
+                    <div class="md:hidden text-accent"><i data-lucide="arrow-down"></i></div>
+                    <div class="flex flex-col items-center relative z-10 gap-3 group">
+                        <div class="w-16 h-16 rounded-full glass-panel flex items-center justify-center border-primary/30 group-hover:border-primary transition-colors">
+                            <i data-lucide="route" class="w-6 h-6 text-secondary group-hover:text-primary transition-colors"></i>
+                        </div>
+                        <span class="text-xs font-display tracking-widest text-secondary">DISTRIBUTION</span>
+                    </div>
+                    <div class="hidden md:block text-accent"><i data-lucide="arrow-right"></i></div>
+                    <div class="md:hidden text-accent"><i data-lucide="arrow-down"></i></div>
+                    <div class="flex flex-col items-center relative z-10 gap-3 group">
+                        <div class="w-16 h-16 rounded-full glass-panel flex items-center justify-center border-primary/30 group-hover:border-primary transition-colors">
+                            <i data-lucide="shopping-bag" class="w-6 h-6 text-secondary group-hover:text-primary transition-colors"></i>
+                        </div>
+                        <span class="text-xs font-display tracking-widest text-secondary">MERCHANT</span>
+                    </div>
+                    <div class="hidden md:block text-accent"><i data-lucide="arrow-right"></i></div>
+                    <div class="md:hidden text-accent"><i data-lucide="arrow-down"></i></div>
+                    <div class="flex flex-col items-center relative z-10 gap-3 group">
+                        <div class="w-20 h-20 rounded-full glass-panel glow-border flex items-center justify-center bg-accent/5">
+                            <i data-lucide="network" class="w-8 h-8 text-accent"></i>
+                        </div>
+                        <span class="text-xs font-display tracking-widest text-white font-bold">DIGITAL INFRASTRUCTURE</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- SECTION 4: UTILITY FIRST -->
+        <section id="utility" class="py-24 bg-card/20 border-y border-cardBorder">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-sm font-display text-primary tracking-widest mb-2 uppercase">Utility First</h2>
+                    <h3 class="text-3xl md:text-4xl font-bold font-display">Technology Supporting Everyday Economic Activity.</h3>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="glass-panel p-8 border-t-2 border-t-primary/50">
+                        <h4 class="text-xl font-bold font-display mb-4">Community Commerce</h4>
+                        <p class="text-secondary text-sm leading-relaxed">Frameworks enabling local communities to transact securely and transparently within defined economic zones.</p>
+                    </div>
+                    <div class="glass-panel p-8 border-t-2 border-t-accent/50">
+                        <h4 class="text-xl font-bold font-display mb-4">Merchant Network</h4>
+                        <p class="text-secondary text-sm leading-relaxed">Onboarding pathways for verified real-world businesses to integrate digital verification and settlement systems.</p>
+                    </div>
+                    <div class="glass-panel p-8 border-t-2 border-t-white/50">
+                        <h4 class="text-xl font-bold font-display mb-4">Asset Support Programs</h4>
+                        <p class="text-secondary text-sm leading-relaxed">Protocols designed to verify and support physical asset integration into community-driven economic structures.</p>
+                    </div>
+                    <div class="glass-panel p-8 border-t-2 border-t-accent/50">
+                        <h4 class="text-xl font-bold font-display mb-4">Digital Distribution</h4>
+                        <p class="text-secondary text-sm leading-relaxed">Efficient, auditable ledger systems to track the origin and flow of resources within the network.</p>
+                    </div>
+                    <div class="glass-panel p-8 border-t-2 border-t-primary/50">
+                        <h4 class="text-xl font-bold font-display mb-4">Future Payment Infrastructure</h4>
+                        <p class="text-secondary text-sm leading-relaxed">Development of robust digital settlement rails prioritizing low friction for everyday commercial use.</p>
+                    </div>
+                    <div class="glass-panel p-8 border-t-2 border-t-white/50">
+                        <h4 class="text-xl font-bold font-display mb-4">Future Financial Tools</h4>
+                        <p class="text-secondary text-sm leading-relaxed">Sovereign economic tools for communities to manage, track, and deploy their resources effectively.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- SECTION 6: BLOCKCHAIN INFRASTRUCTURE -->
+        <section class="py-32 relative overflow-hidden">
+            <!-- Background element -->
+            <div class="absolute inset-0 z-0 flex items-center justify-center opacity-10 pointer-events-none">
+                <i data-lucide="boxes" class="w-[800px] h-[800px] text-accent"></i>
+            </div>
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+                <h2 class="text-sm font-display text-accent tracking-widest mb-2 uppercase">Architecture Layer</h2>
+                <h3 class="text-3xl md:text-5xl font-bold font-display mb-8">Transparent Infrastructure Layer.</h3>
+                
+                <p class="text-xl text-secondary max-w-3xl mx-auto leading-relaxed mb-12">
+                    Blockchain is used to improve transparency, traceability, accountability, and coordination. <br/>
+                    <strong class="text-white">Blockchain is not the product. Blockchain is the infrastructure.</strong>
+                </p>
+                <div class="inline-flex flex-col md:flex-row items-center gap-4 p-4 glass-panel border-accent/20">
+                    <div class="flex items-center gap-2 px-4 py-2 bg-background rounded border border-cardBorder">
+                        <div class="w-2 h-2 rounded-full bg-accent animate-pulse"></div>
+                        <span class="text-sm font-display tracking-widest">TRACEABILITY</span>
+                    </div>
+                    <div class="flex items-center gap-2 px-4 py-2 bg-background rounded border border-cardBorder">
+                        <div class="w-2 h-2 rounded-full bg-accent animate-pulse"></div>
+                        <span class="text-sm font-display tracking-widest">ACCOUNTABILITY</span>
+                    </div>
+                    <div class="flex items-center gap-2 px-4 py-2 bg-background rounded border border-cardBorder">
+                        <div class="w-2 h-2 rounded-full bg-accent animate-pulse"></div>
+                        <span class="text-sm font-display tracking-widest">COORDINATION</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- SECTION 7: PORTAL ACCESS -->
+        <section id="portal" class="py-24 border-t border-cardBorder/50 relative">
+            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="glass-panel p-12 text-center glow-border relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-accent to-primary"></div>
+                    
+                    <i data-lucide="lock" class="w-12 h-12 text-primary mx-auto mb-6"></i>
+                    <h3 class="text-3xl font-display font-bold mb-4">PORTAL ACCESS</h3>
+                    <p class="text-secondary mb-10">Access ecosystem tools and community infrastructure. Requires active Web3 identification.</p>
+                    
+                    <button class="px-8 py-4 bg-primary text-[#050816] font-display font-bold tracking-widest text-lg hover:bg-yellow-400 hover:shadow-[0_0_30px_rgba(255,204,0,0.4)] transition-all flex items-center justify-center gap-3 w-full sm:w-auto mx-auto group">
+                        ENTER THE FORTRESS
+                        <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                    <p class="mt-4 text-xs text-secondary/60">Non-custodial connection.</p>
+                </div>
+            </div>
+        </section>
+        <!-- SECTION 5: TRANSPARENCY LAYER -->
+        <section id="transparency" class="py-20 bg-[#050816] border-t border-cardBorder">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mb-10">
+                    <h3 class="text-2xl font-bold font-display text-white">Transparency Layer</h3>
+                    <p class="text-sm text-secondary">Core documentation and public commitments.</p>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    <a href="#" class="glass-panel p-4 text-center hover:bg-white/5 transition-colors border-cardBorder hover:border-secondary">
+                        <i data-lucide="info" class="w-5 h-5 mx-auto mb-2 text-secondary"></i>
+                        <span class="text-xs font-display tracking-widest text-white">ABOUT</span>
+                    </a>
+                    <a href="#" class="glass-panel p-4 text-center hover:bg-white/5 transition-colors border-cardBorder hover:border-secondary">
+                        <i data-lucide="file-text" class="w-5 h-5 mx-auto mb-2 text-secondary"></i>
+                        <span class="text-xs font-display tracking-widest text-white">POLICY</span>
+                    </a>
+                    <a href="#" class="glass-panel p-4 text-center hover:bg-white/5 transition-colors border-cardBorder hover:border-secondary">
+                        <i data-lucide="shield" class="w-5 h-5 mx-auto mb-2 text-secondary"></i>
+                        <span class="text-xs font-display tracking-widest text-white">SECURITY</span>
+                    </a>
+                    <a href="#" class="glass-panel p-4 text-center hover:bg-white/5 transition-colors border-cardBorder hover:border-secondary">
+                        <i data-lucide="alert-triangle" class="w-5 h-5 mx-auto mb-2 text-secondary"></i>
+                        <span class="text-xs font-display tracking-widest text-white">RISK DISCLOSURE</span>
+                    </a>
+                    <a href="#" class="glass-panel p-4 text-center hover:bg-white/5 transition-colors border-cardBorder hover:border-secondary">
+                        <i data-lucide="eye" class="w-5 h-5 mx-auto mb-2 text-secondary"></i>
+                        <span class="text-xs font-display tracking-widest text-white">TRANSPARENCY</span>
+                    </a>
+                    <a href="#" class="glass-panel p-4 text-center hover:bg-white/5 transition-colors border-cardBorder hover:border-secondary">
+                        <i data-lucide="mail" class="w-5 h-5 mx-auto mb-2 text-secondary"></i>
+                        <span class="text-xs font-display tracking-widest text-white">CONTACT</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- Footer / Risk Disclosure -->
+    <footer class="border-t border-cardBorder bg-background py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="glass-panel p-6 border border-cardBorder/50 mb-12">
+                <h4 class="text-sm font-display font-bold text-white mb-2 flex items-center gap-2">
+                    <i data-lucide="alert-circle" class="w-4 h-4 text-primary"></i> RISK DISCLOSURE
+                </h4>
+                <p class="text-xs text-secondary leading-relaxed">
+                    Participation in digital ecosystems involves risks. Market conditions may change. Users should conduct their own evaluation before participating. No guarantees are expressed or implied. This platform is provided as an infrastructure layer and does not constitute financial advice.
+                </p>
+            </div>
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-secondary">
+                <div class="font-display font-bold text-lg tracking-widest">
+                    <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span>
+                </div>
+                <div class="text-center md:text-right">
+                    <p>&copy; 2026 SNR-VAULT Ecosystem. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Logic Script -->
+    <script>
+        // Inisialisasi ikon Lucide
+        lucide.createIcons();
+        // Initialize Globe with Blockchain Touch
+        const globeContainer = document.getElementById('globeViz');
+        if (globeContainer && typeof Globe !== 'undefined') {
+            // Generate random nodes
+            const N = 40;
+            const nodesData = [...Array(N).keys()].map(() => ({
+                lat: (Math.random() - 0.5) * 180,
+                lng: (Math.random() - 0.5) * 360,
+                size: Math.random() * 0.4 + 0.1,
+                color: ['#00E5FF', '#FFCC00', '#ffffff'][Math.floor(Math.random() * 3)]
+            }));
+            // Generate arcs linking nodes
+            const arcsData = [...Array(25).keys()].map(() => ({
+                startLat: (Math.random() - 0.5) * 180,
+                startLng: (Math.random() - 0.5) * 360,
+                endLat: (Math.random() - 0.5) * 180,
+                endLng: (Math.random() - 0.5) * 360,
+                color: ['rgba(0, 229, 255, 0.6)', 'rgba(255, 204, 0, 0.6)'][Math.round(Math.random())]
+            }));
+            const world = Globe()
+                (globeContainer)
+                .backgroundColor('rgba(0,0,0,0)')
+                .showGlobe(true)
+                .showAtmosphere(true)
+                .atmosphereColor('#00E5FF')
+                .atmosphereAltitude(0.25)
+                .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-night.jpg')
+                .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
+                .pointsData(nodesData)
+                .pointColor('color')
+                .pointAltitude(0.02)
+                .pointRadius('size')
+                .pointsMerge(true)
+                .arcsData(arcsData)
+                .arcColor('color')
+                .arcDashLength(0.4)
+                .arcDashGap(0.2)
+                .arcDashAnimateTime(2000)
+                .width(globeContainer.clientWidth)
+                .height(globeContainer.clientHeight || window.innerHeight * 0.8);
+            // Add auto-rotation
+            world.controls().autoRotate = true;
+            world.controls().autoRotateSpeed = 1.2;
+            world.controls().enableZoom = false;
+            world.controls().enablePan = false;
+            // Handle resize
+            window.addEventListener('resize', () => {
+                world.width(globeContainer.clientWidth);
+                world.height(globeContainer.clientHeight || window.innerHeight * 0.8);
+            });
+            // Fix initial rendering size issues
+            setTimeout(() => {
+                if(globeContainer.clientWidth) {
+                    world.width(globeContainer.clientWidth);
+                    world.height(globeContainer.clientHeight || window.innerHeight * 0.8);
+                }
+            }, 500);
+        }
+    </script>
+</body>
+</html>
 </html>
