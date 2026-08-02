@@ -21,10 +21,15 @@ let snrContract;
 let currentUserAddress;
 
 async function connectWallet() {
-    if (typeof window.ethereum !== 'undefined') {
+    if (typeof window.ethereum !== 'undefined' || typeof window.web3 !== 'undefined') {
         try {
-            await window.ethereum.request({ method: 'eth_requestAccounts' });
-            provider = new ethers.providers.Web3Provider(window.ethereum);
+            const eth = window.ethereum || window.web3.currentProvider;
+            if(eth.request) {
+                await eth.request({ method: 'eth_requestAccounts' });
+            } else if (eth.enable) {
+                await eth.enable();
+            }
+            provider = new ethers.providers.Web3Provider(eth);
             signer = provider.getSigner();
             currentUserAddress = await signer.getAddress();
             
@@ -44,10 +49,11 @@ async function connectWallet() {
             await loadTransactionHistory();
 
         } catch (error) {
-            console.error("User denied account access", error);
+            console.error("Connection Error:", error);
+            alert("Gagal konek wallet: " + (error.message || error));
         }
     } else {
-        alert("Please install MetaMask or a compatible Web3 Wallet to connect.");
+        alert("Tolong buka website ini melalui DApp Browser (TokenPocket, TrustWallet, MetaMask) agar fungsi Web3 berjalan.");
     }
 }
 
@@ -227,3 +233,16 @@ async function executeProtocol() {
 
 window.connectWallet = connectWallet;
 window.executeProtocol = executeProtocol;
+
+function selectDuration(days, btnElement) {
+    document.getElementById('stake-duration').value = days;
+    const btns = document.querySelectorAll('.duration-btn');
+    btns.forEach(btn => {
+        btn.classList.remove('bg-primary', 'text-black', 'border-primary', 'font-bold');
+        btn.classList.add('bg-card', 'text-secondary', 'border-cardBorder');
+    });
+    btnElement.classList.remove('bg-card', 'text-secondary', 'border-cardBorder');
+    btnElement.classList.add('bg-primary', 'text-black', 'border-primary', 'font-bold');
+}
+
+window.selectDuration = selectDuration;
