@@ -1,1524 +1,1079 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SNR-VAULT | The Deep-Space Financial Fortress</title>
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Globe.gl -->
+    <script src="https://unpkg.com/globe.gl"></script>
+    <!-- Ethers.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<title>SNR-VAULT | Secure Sovereign</title>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: '#050816',
+                        primary: '#FFCC00',
+                        accent: '#00E5FF',
+                        secondary: '#C0C0C0',
+                        card: 'rgba(19, 26, 42, 0.6)',
+                        cardBorder: '#1E2A44',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Orbitron', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+        }
 
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://snrvault.space/">
-<meta property="og:title" content="SNR-VAULT | The Deep Financial Fortress">
-<meta property="og:description" content="Transparency • Security • Sovereignty — Official Portal of SNR-VAULT.">
-<meta property="og:site_name" content="SNR-VAULT">
-<meta property="og:image" content="https://snrvault.space/og-banner.jpeg?v=1">
-<meta property="og:image:secure_url" content="https://snrvault.space/og-banner.jpeg?v=1">
-<meta property="og:image:type" content="image/jpeg">
-<meta property="og:image:width" content="1536">
-<meta property="og:image:height" content="1024">
+        body {
+            background-color: #050816;
+            color: #FFFFFF;
+            font-family: 'Inter', sans-serif;
+            background-image: radial-gradient(circle at 50% -20%, #1a2744 0%, #050816 60%);
+            background-attachment: fixed;
+            -webkit-font-smoothing: antialiased;
+            scroll-behavior: smooth;
+        }
 
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://snrvault.space/og-banner.jpeg?v=1">
+        .font-display {
+            font-family: 'Orbitron', sans-serif;
+        }
 
-<link rel="icon" href="https://snrvault.space/og-banner.jpeg" type="image/jpeg">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(to right, #FFCC00, #00E5FF);
+        }
 
-<style>
-:root{
-  --gold:#ffcc00;
-  --neon:#00f2ff;
-  --bg:#000205;
-  --dark:#05070A;
-  --white:#ffffff;
-  --soft:#f5f7fa;
-  --panel:rgba(5,7,10,0.9);
+        .glass-panel {
+            background-color: rgba(5, 8, 22, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid #1E2A44;
+            border-radius: 0.75rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 229, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-panel:hover {
+            border-color: rgba(0, 229, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(0, 229, 255, 0.1);
+        }
 
-  --border-line: rgba(0,242,255,0.90);
-  --border-soft: rgba(0,242,255,0.22);
+        /* Subtle Glow Borders */
+        .glow-border {
+            position: relative;
+        }
+        .glow-border::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(to bottom right, rgba(0, 229, 255, 0.5), transparent, rgba(255, 204, 0, 0.5));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
 
-  --glow-blue:rgba(0,242,255,0.55);
-  --glow-gold:rgba(255,204,0,0.65);
-}
+        /* Grid Background overlay */
+        .cyan-grid {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(0, 229, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
+            mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+        }
 
-/* ANDROID STABILITY */
-html, body {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-  position: relative;
-  touch-action: pan-y;
-}
-*{ box-sizing:border-box; max-width:100%; }
+        .nav-link {
+            position: relative;
+            color: #C0C0C0;
+            transition: color 0.3s;
+        }
+        .nav-link:hover {
+            color: #FFFFFF;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #00E5FF;
+            transition: width 0.3s;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
 
-body{
-  margin:0;
-  min-height:100vh;
-  background:
-    radial-gradient(900px 600px at 20% 20%, rgba(0,242,255,.12), transparent 60%),
-    radial-gradient(800px 600px at 80% 80%, rgba(255,204,0,.12), transparent 60%),
-    linear-gradient(180deg,var(--bg),var(--dark));
-  color:var(--soft);
-  font-family:'Orbitron',sans-serif;
-}
-
-.wrapper{
-  width:100%;
-  max-width:1100px;
-  margin:auto;
-  padding:20px;
-}
-
-.t-neon{ color: var(--neon) !important; }
-.t-gold{ color: var(--gold) !important; }
-.t-white{ color: var(--white) !important; }
-
-.neon-line{
-  border:1px solid var(--border-line) !important;
-  box-shadow:none !important;
-}
-
-/* ===================== HEADER ===================== */
-.header{
-  width:100%;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:15px 20px;
-  margin-bottom:14px;
-  background:var(--panel);
-  border:1px solid var(--border-line);
-  border-radius:18px;
-  box-shadow:none;
-}
-
-.logo-block{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  min-width:160px;
-}
-
-.logo{
-  font-size:1.5rem;
-  letter-spacing:2px;
-  line-height:1.1;
-  white-space:nowrap;
-  font-weight:800;
-  text-shadow: 0 0 10px rgba(0,0,0,0.5);
-}
-.snr-text { color: var(--gold); }
-.vault-text { color: var(--white); }
-
-/* PRICE WIDGET */
-.price-widget {
-  background: rgba(255, 204, 0, 0.1);
-  padding: 5px 12px;
-  border-radius: 50px;
-  border: 1px solid var(--gold);
-  font-size: 0.75rem;
-  color: var(--gold);
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 5px;
-  width: fit-content;
-}
-.price-up { color: #39ff14; font-weight: bold; }
-
-.wallet-status{ font-size:.8rem; }
-.wallet-status span{ color:var(--neon); margin-left:8px; }
-
-/* ===================== GRID/CARDS ===================== */
-.grid{
-  width:100%;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:18px;
-}
-
-.card{
-  background:linear-gradient(180deg, rgba(5,7,10,.95), rgba(5,7,10,.75));
-  border:1px solid var(--border-line);
-  border-radius:20px;
-  padding:20px;
-  box-shadow:none;
-  backdrop-filter:blur(12px);
-}
-
-.card h3{
-  margin:0 0 12px;
-  color:var(--gold);
-  font-size:1rem;
-}
-
-.stat{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  margin:8px 0;
-  font-size:.9rem;
-}
-.stat span{
-  color:var(--neon);
-  text-align:right;
-}
-
-.progress{
-  height:8px;
-  background:rgba(255,255,255,.08);
-  border-radius:6px;
-  overflow:hidden;
-  margin-top:10px;
-}
-.progress div{
-  height:100%;
-  width:45%;
-  background:linear-gradient(90deg,var(--gold),var(--neon));
-}
-
-/* ===================== BUTTONS ===================== */
-.btn{
-  width:100%;
-  margin:8px 0;
-  padding:11px;
-  background:rgba(0,242,255,.06);
-  border:1px solid var(--border-soft);
-  border-radius:14px;
-  color:var(--white);
-  font-family:inherit;
-  cursor:pointer;
-  box-shadow:none;
-  transition:.2s;
-  -webkit-tap-highlight-color: transparent;
-}
-.btn:hover{
-  border-color:var(--gold);
-  color:var(--gold);
-  box-shadow:0 0 18px var(--glow-gold), 0 0 28px var(--glow-blue);
-  transform:translateY(-1px);
-}
-.btn:active{ transform:scale(0.99); }
-
-.btn-primary{
-  background:linear-gradient(135deg,#ffcc00,#f5b800);
-  color:#000 !important;
-  font-weight:900;
-  letter-spacing:.5px;
-  border:1px solid rgba(255,204,0,0.7);
-  box-shadow: 0 0 6px rgba(255,204,0,.28), inset 0 0 3px rgba(255,255,255,.12);
-  text-shadow: 0 1px 0 rgba(255,255,255,.30), 0 0 2px rgba(0,0,0,.70);
-  position:relative;
-  isolation:isolate;
-}
-.btn-primary:hover{
-  color:#000 !important;
-  box-shadow: 0 0 18px rgba(255,204,0,.75), 0 0 18px rgba(0,242,255,.18), inset 0 0 6px rgba(255,255,255,.18);
-}
-.btn-primary:active{
-  color:#000 !important;
-  background:linear-gradient(135deg,#f5b800,#ffcc00);
-  box-shadow: inset 0 0 10px rgba(0,0,0,.25);
-  transform:scale(0.985);
-  filter:brightness(.95) contrast(1.10);
-}
-.btn-primary:disabled,
-.btn-primary[disabled]{
-  opacity:1 !important;
-  filter:none !important;
-}
-
-/* ---------- TAB BAR ---------- */
-.tabbar{
-  width:100%;
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  padding:12px;
-  margin-bottom:18px;
-  background:rgba(5,7,10,.55);
-  border:1px solid var(--border-line);
-  border-radius:16px;
-  backdrop-filter: blur(10px);
-  box-shadow:none;
-}
-.tab-btn{
-  width:auto;
-  margin:0;
-  padding:10px 12px;
-  border-radius:14px;
-  letter-spacing:1px;
-  font-size:.78rem;
-  position:relative;
-  overflow:hidden;
-}
-.tab-btn.active{
-  background:linear-gradient(135deg, rgba(255,204,0,0.18), rgba(0,242,255,0.10));
-  border:1px solid rgba(255,204,0,0.55);
-  box-shadow:none;
-  color:var(--gold);
-}
-.tab-btn .mini{
-  color:rgba(245,247,250,.72);
-  font-size:.62rem;
-  letter-spacing:2px;
-  margin-left:6px;
-}
-.tab-panel{ display:none; }
-.tab-panel.show{ display:block; }
-
-.section-title{
-  margin:0 0 10px;
-  font-size:1.05rem;
-  color:var(--gold);
-  letter-spacing:2px;
-}
-.section-sub{
-  margin:0 0 14px;
-  font-size:.82rem;
-  color:rgba(245,247,250,.78);
-  line-height:1.6;
-}
-.pill{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:8px 10px;
-  border-radius:999px;
-  border:1px solid rgba(255,204,0,.25);
-  background:rgba(255,204,0,.06);
-  color:rgba(255,255,255,.88);
-  font-size:.72rem;
-}
-.pill b{ color:var(--gold); }
-
-.kit-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:14px;
-  margin-top:12px;
-}
-.kit{
-  border-radius:16px;
-  padding:14px;
-  border:1px solid var(--border-line);
-  background:linear-gradient(180deg, rgba(5,7,10,.92), rgba(5,7,10,.70));
-  box-shadow:none;
-}
-.kit h4{
-  margin:0 0 8px;
-  color:var(--white);
-  font-size:.92rem;
-}
-.kit p{
-  margin:0;
-  color:rgba(245,247,250,.78);
-  font-size:.78rem;
-  line-height:1.55;
-}
-.kit .tag{
-  display:inline-block;
-  margin-top:10px;
-  font-size:.68rem;
-  color:rgba(0,242,255,.95);
-  letter-spacing:2px;
-  text-transform:uppercase;
-}
-
-/* LOG */
-.log{
-  max-height:140px;
-  overflow-y:auto;
-  font-size:.75rem;
-}
-.log div{
-  margin:6px 0;
-  color:rgba(245,247,250,.78);
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  padding-bottom: 4px;
-}
-
-.footer{
-  text-align:center;
-  margin:25px 0 5px;
-  font-size:.75rem;
-  color:rgba(245,247,250,.6);
-}
-
-@media(max-width:600px){
-  .header{ flex-direction:column; gap:10px; text-align:center; }
-  .logo-block{ align-items:center; }
-}
-
-/* === TICKER === */
-.ticker-wrap{
-  width:100%;
-  overflow:hidden;
-  margin-top:10px;
-  border-top:1px solid rgba(0,242,255,.18);
-  border-bottom:1px solid rgba(0,242,255,.18);
-  background:rgba(0,0,0,.18);
-  border-radius:14px;
-  padding:8px 0;
-  position:relative;
-  transform:translateZ(0);
-  -webkit-transform:translateZ(0);
-}
-.ticker-track{
-  display:flex;
-  min-width: max-content;
-  gap:18px;
-  animation:ticker-marquee var(--ticker-speed, 22s) linear infinite;
-  will-change:transform;
-}
-.ticker{
-  display:inline-flex;
-  align-items:center;
-  gap:18px;
-  white-space:nowrap;
-}
-.ticker-item{
-  display:inline-flex;
-  align-items:center;
-  gap:10px;
-  font-size:.72rem;
-  letter-spacing:3px;
-  color:rgba(245,247,250,.86);
-  text-transform:uppercase;
-}
-.ticker-item b{
-  color:var(--gold);
-  font-weight:800;
-  text-shadow:0 0 12px rgba(255,204,0,.25);
-}
-.ticker-sep{
-  color:rgba(0,242,255,.75);
-  text-shadow:0 0 12px rgba(0,242,255,.25);
-  letter-spacing:6px;
-}
-@keyframes ticker-marquee{
-  from{ transform:translate3d(0,0,0); }
-  to  { transform:translate3d(-50%,0,0); }
-}
-
-/* NOTIF */
-.notify{
-  position:fixed;
-  left:16px;
-  bottom:16px;
-  background:rgba(5,7,10,.92);
-  border:1px solid var(--border-line);
-  border-radius:12px;
-  padding:10px 12px;
-  font-size:.78rem;
-  color:rgba(245,247,250,.92);
-  box-shadow:none;
-  opacity:0;
-  transform:translateY(14px);
-  transition:.35s;
-  z-index:9999;
-}
-.notify.show{ opacity:1; transform:translateY(0); }
-.notify b{ color:var(--gold); }
-
-/* ===== Anti-Fake-Site Guard Overlay ===== */
-.snr-guard{
-  position:fixed;
-  inset:0;
-  z-index:20000;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:18px;
-  background:rgba(0,0,0,.72);
-  backdrop-filter: blur(10px);
-}
-.snr-guard-card{
-  width:min(560px, 100%);
-  border-radius:20px;
-  border:1px solid rgba(255,204,0,.55);
-  background:linear-gradient(180deg, rgba(5,7,10,.96), rgba(5,7,10,.78));
-  box-shadow: 0 0 24px rgba(255,204,0,.25), 0 0 44px rgba(0,242,255,.12);
-  padding:18px;
-}
-.snr-guard-title{
-  font-size:.95rem;
-  letter-spacing:2px;
-  color:var(--gold);
-  margin:0 0 8px;
-  text-transform:uppercase;
-}
-.snr-guard-text{
-  margin:0 0 12px;
-  font-size:.78rem;
-  line-height:1.7;
-  color:rgba(245,247,250,.82);
-}
-.snr-guard-kv{
-  display:grid;
-  grid-template-columns: 1fr;
-  gap:10px;
-  font-size:.75rem;
-  margin-bottom:12px;
-}
-.snr-guard-kv .row{
-  border:1px solid rgba(0,242,255,.18);
-  border-radius:14px;
-  padding:10px 12px;
-  background:rgba(0,0,0,.18);
-}
-.snr-guard-kv b{ color:var(--neon); }
-.snr-guard-actions{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-top:10px;
-}
-.snr-guard-actions .btn{ margin:0; flex:1; }
-.snr-guard-actions .btn-primary{ flex:1; }
-
-.sound-toggle{
-  position:fixed;
-  right:16px;
-  bottom:16px;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:8px 10px;
-  border-radius:12px;
-  background:rgba(5,7,10,.92);
-  border:1px solid var(--border-line);
-  z-index:10000;
-  box-shadow:none;
-}
-.sound-toggle button{
-  border:none;
-  cursor:pointer;
-  font-family:'Orbitron',sans-serif;
-  font-size:.72rem;
-  padding:6px 10px;
-  border-radius:10px;
-  background:rgba(0,242,255,.08);
-  color:var(--neon);
-  border:1px solid var(--border-soft);
-}
-.sound-toggle button.off{ color:var(--gold); border-color:var(--gold); }
-
-/* Floating POLICY */
-.snr-policy-fab{
-  position:fixed;
-  right:16px;
-  bottom:74px;
-  z-index:10001;
-  display:inline-flex;
-  align-items:center;
-  gap:10px;
-  padding:10px 14px;
-  border-radius:999px;
-  text-decoration:none;
-  font-family:'Orbitron',sans-serif;
-  font-size:.74rem;
-  font-weight:800;
-  letter-spacing:2px;
-  color:#000;
-  background:linear-gradient(135deg, var(--gold), #ffea80);
-  border:1px solid rgba(255,204,0,0.55);
-  box-shadow:0 0 14px rgba(255,204,0,0.55), 0 0 26px rgba(0,242,255,0.14);
-  transition:transform .22s ease, box-shadow .22s ease, filter .22s ease;
-}
-.snr-policy-fab .dot{
-  width:9px; height:9px; border-radius:99px;
-  background:var(--neon);
-  box-shadow:0 0 12px rgba(0,242,255,0.8);
-}
-.snr-policy-fab:hover{
-  transform:translateY(-2px) scale(1.03);
-  box-shadow:0 0 22px rgba(255,204,0,0.85), 0 0 38px rgba(0,242,255,0.22);
-  filter:brightness(1.02);
-}
-.snr-policy-fab:active{ transform:translateY(0) scale(0.99); }
-
-/* ===================== SNR LOADER ===================== */
-#snrLoader{
-  position:fixed;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:rgba(0,2,5,0.88);
-  backdrop-filter: blur(10px);
-  z-index:999999;
-  opacity:1;
-  transition:opacity .45s ease;
-}
-.snr-boot{
-  width:min(520px, 92vw);
-  border-radius:18px;
-  border:1px solid rgba(0,242,255,0.55);
-  background:linear-gradient(180deg, rgba(5,7,10,.92), rgba(5,7,10,.70));
-  box-shadow:0 0 30px rgba(0,242,255,0.12);
-  padding:18px 18px 16px;
-}
-.snr-boot-top{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:14px;
-  margin-bottom:10px;
-}
-.snr-boot-title{
-  font-weight:800;
-  letter-spacing:2px;
-  font-size:.95rem;
-  color:#e9f3ff;
-}
-.snr-boot-sub{
-  margin-top:6px;
-  font-size:.72rem;
-  letter-spacing:3px;
-  color:rgba(0,242,255,0.85);
-  text-transform:uppercase;
-}
-.snr-chip{
-  display:inline-flex;
-  align-items:center;
-  gap:10px;
-  padding:10px 14px;
-  border-radius:999px;
-  border:1px solid rgba(0,242,255,0.35);
-  background:rgba(0,242,255,0.06);
-  font-size:.72rem;
-  letter-spacing:2px;
-  color:rgba(245,247,250,.9);
-  text-transform:uppercase;
-}
-.snr-chip .dot{
-  width:8px;height:8px;border-radius:99px;
-  background:rgba(0,242,255,1);
-  box-shadow:0 0 12px rgba(0,242,255,.9);
-}
-.snr-boot-logo{
-  text-align:center;
-  margin:12px 0 10px;
-  font-size:1.4rem;
-  letter-spacing:2px;
-  font-weight:900;
-}
-.snr-boot-logo .snr{ color:#ffcc00; }
-.snr-boot-logo .vault{ color:#ffffff; }
-.snr-boot-lines{
-  margin-top:8px;
-  border-top:1px solid rgba(0,242,255,0.18);
-  border-bottom:1px solid rgba(0,242,255,0.18);
-  padding:10px 0;
-}
-.snr-boot-lines > div{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:6px 0;
-  font-size:.78rem;
-  letter-spacing:2px;
-  text-transform:uppercase;
-  color:rgba(245,247,250,.78);
-}
-.snr-boot-lines b{
-  color:#ffcc00;
-  font-weight:900;
-  letter-spacing:3px;
-}
-.snr-progress-wrap{
-  height:12px;
-  border-radius:999px;
-  background:rgba(255,255,255,0.08);
-  overflow:hidden;
-  margin:12px 0 8px;
-  border:1px solid rgba(0,242,255,0.18);
-}
-#snrProgressBar{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,#ffcc00,#00f2ff);
-  transition:width .18s ease;
-}
-#snrProgressText{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  font-size:.78rem;
-  letter-spacing:2px;
-  color:rgba(245,247,250,.75);
-  text-transform:uppercase;
-}
-#snrPct{
-  color:rgba(0,242,255,.95);
-  font-weight:800;
-}
-
-/* ================= ROADMAP ================= */
-.snr-roadmap{
-  margin:60px auto;
-  padding:0 15px;
-  max-width:1200px;
-  text-align:center;
-}
-.roadmap-slider{
-  display:flex;
-  gap:18px;
-  overflow-x:auto;
-  scroll-snap-type:x mandatory;
-  padding-bottom:15px;
-}
-.roadmap-slider::-webkit-scrollbar{ height:6px; }
-.roadmap-slider::-webkit-scrollbar-thumb{ background:#00f2ff55; border-radius:10px; }
-
-.roadmap-card{
-  min-width:220px;
-  background:rgba(0,20,30,.7);
-  border:1px solid #00f2ff55;
-  border-radius:14px;
-  padding:10px;
-  scroll-snap-align:center;
-  transition:.3s;
-  position:relative;
-}
-.roadmap-card:hover{
-  transform:translateY(-6px) scale(1.03);
-  box-shadow:0 0 25px #00f2ff55;
-}
-.roadmap-card img{ width:100%; border-radius:10px; }
-.roadmap-card span{
-  display:block;
-  margin-top:8px;
-  font-size:.75rem;
-  color:var(--gold);
-  letter-spacing:1px;
-}
-
-.roadmap-wrap{ display:flex; flex-direction:column; gap:14px; }
-.roadmap-side{
-  display:flex;
-  flex-wrap:nowrap;
-  gap:10px;
-  justify-content:flex-start;
-  align-items:center;
-  width:100%;
-  padding:10px 12px;
-  overflow-x:auto;
-  overflow-y:hidden;
-  -webkit-overflow-scrolling:touch;
-  scrollbar-width:none;
-  border:1px solid rgba(0,242,255,.25);
-  background: rgba(0,0,0,.28);
-  backdrop-filter: blur(10px);
-  border-radius:16px;
-  box-shadow: 0 0 18px rgba(0,242,255,.12);
-}
-.roadmap-side::-webkit-scrollbar{ display:none; }
-.roadmap-side .btn{
-  flex:0 0 auto;
-  white-space:nowrap;
-  padding:10px 14px;
-  font-size:.72rem;
-  border-radius:999px;
-  margin:0;
-}
-.rm-filter.active{
-  border-color: rgba(255,204,0,.65) !important;
-  box-shadow:0 0 16px rgba(255,204,0,.16), 0 0 16px rgba(0,242,255,.08);
-}
-
-/* ROADMAP MODAL */
-.roadmap-modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.8);
-  display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
-}
-.roadmap-box{
-  background:#05070a;
-  border:2px solid #00f2ff;
-  padding:25px;
-  border-radius:16px;
-  width:280px;
-  text-align:center;
-  box-shadow:0 0 25px rgba(0,242,255,.4);
-}
-.roadmap-box h3{ color:#ffcc00; margin-bottom:15px; }
-.roadmap-box button{
-  width:100%;
-  margin:6px 0;
-  padding:10px;
-  border:none;
-  border-radius:8px;
-  background:#0a1c22;
-  color:#fff;
-  cursor:pointer;
-  font-weight:600;
-}
-.roadmap-box button:hover{ background:#00f2ff; color:#000; }
-.close-btn{ background:#ff4444!important; margin-top:12px; }
-</style>
+        /* Marquee Animation */
+        .marquee-content {
+            animation: scroll 20s linear infinite;
+        }
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+    </style>
 </head>
 
-<body>
+<body class="min-h-screen flex flex-col relative overflow-x-hidden">
 
-<!-- ===== ROADMAP MODAL ===== -->
-<div id="roadmapModal" class="roadmap-modal">
-  <div class="roadmap-box">
-    <h3>📊 OPEN ROADMAP</h3>
-    <button type="button" onclick="openPhase('all')">📌 Master Roadmap</button>
-    <button type="button" onclick="openPhase('active')">🚀 Active Pilot</button>
-    <button type="button" onclick="openPhase('prepare')">🛠 Prepare Phase</button>
-    <button type="button" class="close-btn" onclick="closeRoadmap()">✖ Close</button>
-  </div>
-</div>
+    <!-- Background Elements -->
+    <div class="fixed inset-0 z-[-1] pointer-events-none cyan-grid"></div>
+    <div class="fixed top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px] pointer-events-none z-[-1]"></div>
+    <div class="fixed top-2/3 right-1/4 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[150px] pointer-events-none z-[-1]"></div>
 
-<!-- ===== Anti-Fake-Site Guard ===== -->
-<div id="snrDomainGuard" class="snr-guard" aria-hidden="true">
-  <div class="snr-guard-card">
-    <h3 class="snr-guard-title">SECURITY WARNING</h3>
-
-    <p class="snr-guard-text">
-      Sistem mendeteksi Anda <b>tidak berada</b> di domain resmi SNR-VAULT.
-      Demi keamanan, fitur aksi (Stake / Claim / Withdraw) akan dikunci.
-    </p>
-
-    <div class="snr-guard-kv">
-      <div class="row">Domain saat ini: <b id="snrCurrentHost">-</b></div>
-      <div class="row">Domain resmi: <b>snrvault.space</b></div>
+    <!-- Security Banner Marquee -->
+    <div class="fixed bottom-0 left-0 w-full bg-[#050816]/95 backdrop-blur-md border-t border-red-500/30 py-2 z-[60] overflow-hidden">
+        <div class="marquee-content flex w-max text-xs md:text-sm text-secondary font-display tracking-wide gap-8">
+            <div class="flex items-center gap-2">
+                <i data-lucide="shield-alert" class="w-4 h-4 text-red-500"></i>
+                <span><strong class="text-white">SECURITY NOTICE:</strong> <span class="text-primary font-display">SNR</span><span class="text-white font-display">-VAULT</span> never requests Private Keys, Seed Phrases, or Recovery Codes. All transactions require direct wallet owner approval.</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <i data-lucide="shield-alert" class="w-4 h-4 text-red-500"></i>
+                <span><strong class="text-white">SECURITY NOTICE:</strong> <span class="text-primary font-display">SNR</span><span class="text-white font-display">-VAULT</span> never requests Private Keys, Seed Phrases, or Recovery Codes. All transactions require direct wallet owner approval.</span>
+            </div>
+        </div>
     </div>
 
-    <div class="snr-guard-actions">
-      <a class="btn btn-primary" href="https://snrvault.space/">Buka Domain Resmi</a>
-      <button class="btn" type="button" onclick="snrCloseGuard()">Saya Mengerti</button>
-    </div>
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 bg-[#050816]/80 backdrop-blur-md border-b border-cardBorder">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center gap-3 cursor-pointer flex-nowrap whitespace-nowrap" onclick="toggleDapp(false)">
+                    <i data-lucide="hexagon" class="h-8 w-8 text-primary"></i>
+                    <div class="font-display font-bold text-xl md:text-2xl tracking-widest whitespace-nowrap">
+                        <span class="text-primary font-display">SNR</span><span class="text-white font-display">-VAULT</span>
+                    </div>
+                </div>
 
-    <p class="snr-guard-text" style="margin-top:12px; opacity:.8;">
-      Tips: Jika link datang dari orang lain, <b>jangan connect wallet</b> sebelum memastikan domain.
-    </p>
-  </div>
-</div>
+                <div class="hidden lg:flex items-center gap-8 text-sm font-display tracking-wide">
+                    <a href="#trust" class="nav-link" data-i18n="nav_trust">TRUST</a>
+                    <a href="#community" class="nav-link" data-i18n="nav_community">COMMUNITY</a>
+                    <a href="#economy" class="nav-link" data-i18n="nav_economy">ECONOMY</a>
+                    <a href="#utility" class="nav-link" data-i18n="nav_utility">UTILITY</a>
+                    <a href="#transparency" class="nav-link" data-i18n="nav_transparency">TRANSPARENCY</a>
+                </div>
 
-<!-- ===================== SNR LOADER ===================== -->
-<div id="snrLoader" aria-hidden="true">
-  <div class="snr-boot">
-    <div class="snr-boot-top">
-      <div>
-        <div class="snr-boot-title">SNR-VAULT BOOT SEQUENCE</div>
-        <div class="snr-boot-sub">Tech • Modern • Powerful</div>
-      </div>
-      <div class="snr-chip"><span class="dot"></span> SYSTEM ONLINE</div>
-    </div>
-
-    <div class="snr-boot-logo">
-      <span class="snr">SNR</span>-<span class="vault">VAULT</span>
-    </div>
-
-    <div class="snr-boot-lines">
-      <div><span>Initializing Core</span><b>OK</b></div>
-      <div><span>Securing Vault Layer</span><b>OK</b></div>
-      <div><span>Syncing Network</span><b>OK</b></div>
-    </div>
-
-    <div class="snr-progress-wrap">
-      <div id="snrProgressBar"></div>
-    </div>
-
-    <div id="snrProgressText">
-      <span>Loading</span>
-      <span id="snrPct">0%</span>
-    </div>
-  </div>
-</div>
-
-<audio id="magicChime" src="https://www.soundjay.com/misc/sounds/magic-chime-01.mp3" preload="auto"></audio>
-<audio id="bgAmbient" loop preload="auto">
-  <source src="https://snrvault.space/ambient.mp3" type="audio/mpeg">
-</audio>
-
-<div class="wrapper">
-  <div class="header">
-    <div class="logo-block">
-      <div class="logo"><span class="snr-text">SNR</span>-<span class="vault-text">VAULT</span></div>
-
-      <div class="price-widget">
-        SNR: $0.5245 <span class="price-up">▲ 4.2%</span>
-      </div>
-
-      <div class="ticker-wrap" style="--ticker-speed: 40s;">
-        <div class="ticker-track">
-          <div class="ticker">
-            <span class="ticker-item">🌐 GLOBAL PARTICIPATION: <b>$248,510,200+</b></span>
-            <span class="ticker-item">🚀 ACTIVE NODES: <b>12,405</b></span>
-            <span class="ticker-item">💎 TOTAL VAULT: <b>85,200 SNR</b></span>
-            <span class="ticker-sep">•</span>
-          </div>
-          <div class="ticker" aria-hidden="true">
-            <span class="ticker-item">🌐 GLOBAL PARTICIPATION: <b>$248,510,200+</b></span>
-            <span class="ticker-item">🚀 ACTIVE NODES: <b>12,405</b></span>
-            <span class="ticker-item">💎 TOTAL VAULT: <b>85,200 SNR</b></span>
-            <span class="ticker-sep">•</span>
-          </div>
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center bg-[#050816] border border-cardBorder rounded overflow-hidden shadow-[0_0_10px_rgba(0,229,255,0.2)]">
+                        <button onclick="switchLanguage('en')" data-lang="en" class="lang-btn px-3 py-1.5 text-xs font-display transition-colors">EN</button>
+                        <button onclick="switchLanguage('id')" data-lang="id" class="lang-btn px-3 py-1.5 text-xs font-display transition-colors">ID</button>
+                    </div>
+                    <a href="#" onclick="toggleDapp(true); return false;" class="px-5 py-2.5 rounded border border-primary text-primary font-display font-bold text-sm hover:bg-primary hover:text-[#050816] transition-all duration-300 shadow-[0_0_15px_rgba(255,204,0,0.2)] hover:shadow-[0_0_25px_rgba(255,204,0,0.5)] flex items-center gap-2">
+                        <span data-i18n="nav_enter">ENTER FORTRESS</span>
+                    </a>
+                </div>
+            </div>
         </div>
-      </div>
+    </nav>
 
-      <div class="wallet-status">
-        Wallet: <span id="walletAddress">Disconnected</span>
-        <span title="BNB">BNB: <b id="bnbBalance">0.0000</b></span>
-        <span title="SNR">SNR: <b id="snrBalance">0.00</b></span>
-      </div>
-    </div>
-  </div>
+    <!-- Main Content -->
+    <main class="flex-grow relative">
+        <div id="view-landing" class="page-view flex-grow transition-opacity duration-500">
+        
+        <!-- Hero Section -->
+        <section class="relative pt-24 pb-32 min-h-[90vh] flex items-center border-b border-cardBorder/50">
+            <!-- Globe Container -->
+            <div class="absolute inset-0 z-0 flex items-center justify-center overflow-hidden">
+                <div id="globeViz" class="w-full h-full opacity-40 mix-blend-screen pointer-events-none flex items-center justify-center"></div>
+            </div>
 
-  <!-- TAB BAR -->
-  <div class="tabbar" role="tablist" aria-label="SNR-VAULT Navigation">
-    <button class="btn tab-btn active" data-tab="dashboard" role="tab" aria-selected="true">
-      DASHBOARD <span class="mini">CORE</span>
-    </button>
-    <button class="btn tab-btn" data-tab="academy" role="tab" aria-selected="false">
-      ACADEMY <span class="mini">LEARN</span>
-    </button>
-    <button class="btn tab-btn" data-tab="node" role="tab" aria-selected="false">
-      NODE <span class="mini">STATUS</span>
-    </button>
-    <button class="btn tab-btn" data-tab="whitepaper" role="tab" aria-selected="false">
-      WHITEPAPER <span class="mini">DOCS</span>
-    </button>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+                <div class="max-w-3xl">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-accent/30 bg-accent/5 text-accent mb-6 font-display text-xs tracking-widest uppercase">
+                        <i data-lucide="cpu" class="w-4 h-4"></i>
+                        <span data-i18n="hero_subtitle">Sovereign Economic Infrastructure</span>
+                    </div>
 
-    <button class="btn tab-btn" type="button" onclick="snrGo('legacy-charter.html','LEGACY CHARTER')">
-      LEGACY <span class="mini">CHARTER</span>
-    </button>
-    <button class="btn tab-btn" type="button" onclick="snrGo('vision.html','VISION 2030')">
-      VISION <span class="mini">2030</span>
-    </button>
-    <button class="btn tab-btn" type="button" onclick="snrGo('policy.html','POLICY v1.0')">
-      POLICY <span class="mini">v1.0</span>
-    </button>
-  </div>
+                    <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight font-display tracking-tight">
+                        THE DEEP-SPACE <br />
+                        <span class="text-gradient">FINANCIAL FORTRESS</span>
+                    </h1>
 
-  <!-- TAB: DASHBOARD -->
-  <section id="tab-dashboard" class="tab-panel show">
-    <div class="grid">
-      <div class="card">
-        <h3>Wallet Info</h3>
-        <div class="stat"><div>Address</div><span id="address">-</span></div>
-        <div class="stat"><div>BNB Balance</div><span id="bnb">0.0000</span></div>
-        <button class="btn btn-primary" onclick="connectWallet();">Connect Wallet</button>
-      </div>
+                    <p class="text-lg md:text-xl text-secondary mb-10 leading-relaxed font-light max-w-2xl">
+                        <span data-i18n="hero_desc">A community-centered digital economic infrastructure connecting people, commerce, distribution, assets, and transparent technology.</span>
+                    </p>
 
-      <div class="card">
-        <h3>Asset Overview</h3>
-        <div class="stat"><div>SNR Balance</div><span id="snr">0.00</span></div>
-        <div class="stat"><div>Staked SNR</div><span id="staked">0.00</span></div>
-        <div class="stat"><div>Pending Reward</div><span id="reward">0.00</span></div>
-        <div class="progress"><div style="width: 65%;"></div></div>
-      </div>
+                    <div class="flex flex-wrap items-center gap-4">
+                        <a href="#trust" class="px-8 py-4 bg-transparent border border-secondary text-white font-display text-sm tracking-widest hover:border-white hover:bg-white/5 transition-all">
+                            <span data-i18n="hero_btn">EXPLORE ARCHITECTURE</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-      <div class="card">
-        <h3>ROI Performance</h3>
-        <div class="stat"><div>Daily ROI</div><span>1.5%</span></div>
-        <div class="stat"><div>Total ROI</div><span>300%</span></div>
-        <div class="stat"><div>Cap Progress</div><span>145%</span></div>
-        <div class="progress"><div style="width: 45%;"></div></div>
-      </div>
+        <!-- SECTION 1: TRUST FIRST -->
+        <section id="trust" class="py-24 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="text-center mb-16">
+                    <h2 class="text-sm font-display text-accent tracking-widest mb-2 uppercase">Trust First</h2>
+                    <h3 class="text-3xl md:text-4xl font-bold font-display"><span data-i18n="sec_trust_title">Building Digital Economic Trust Through Transparency and Responsible Technology.</span></h3>
+                </div>
 
-      <div class="card">
-        <h3>Referral System</h3>
-        <div class="stat"><div>Your Link</div><span id="ref">-</span></div>
-        <button class="btn" onclick="copyRef()">Copy Referral Link</button>
-      </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="glass-panel p-8 glow-border flex flex-col items-center text-center">
+                        <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-6 border border-primary/20">
+                            <i data-lucide="shield-check" class="w-6 h-6 text-primary"></i>
+                        </div>
+                        <h4 class="text-lg font-bold font-display mb-3">Non-Custodial</h4>
+                        <p class="text-sm text-secondary">You retain full control over your digital identity and wallet assets at all times.</p>
+                    </div>
+                    
+                    <div class="glass-panel p-8 glow-border flex flex-col items-center text-center">
+                        <div class="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center mb-6 border border-accent/20">
+                            <i data-lucide="key" class="w-6 h-6 text-accent"></i>
+                        </div>
+                        <h4 class="text-lg font-bold font-display mb-3">User-Controlled</h4>
+                        <p class="text-sm text-secondary">Every action within the ecosystem requires your explicit cryptographic authorization.</p>
+                    </div>
 
-      <div class="card">
-        <h3>Action Panel</h3>
-        <button class="btn" id="btnStake">Stake SNR</button>
-        <button class="btn btn-primary" id="btnClaim">Claim Reward</button>
-        <button class="btn" id="btnCompound">Compound</button>
-        <button class="btn btn-primary" id="btnWithdraw">Withdraw</button>
-      </div>
+                    <div class="glass-panel p-8 glow-border flex flex-col items-center text-center">
+                        <div class="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center mb-6 border border-blue-500/20">
+                            <i data-lucide="eye" class="w-6 h-6 text-blue-400"></i>
+                        </div>
+                        <h4 class="text-lg font-bold font-display mb-3">Transparent Tech</h4>
+                        <p class="text-sm text-secondary">Infrastructure logic is publicly verifiable, ensuring trust through absolute clarity.</p>
+                    </div>
 
-      <div class="card">
-        <h3>System Log</h3>
-        <div class="log" id="log">
-          <div>System ready...</div>
+                    <div class="glass-panel p-8 glow-border flex flex-col items-center text-center">
+                        <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-6 border border-white/20">
+                            <i data-lucide="building-2" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <h4 class="text-lg font-bold font-display mb-3">Accountability</h4>
+                        <p class="text-sm text-secondary">Backed by clear corporate structures focused on sustainable economic support.</p>
+                    </div>
+                </div>
+
+                <div class="mt-12 glass-panel p-6 border-l-4 border-l-primary flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div>
+                        <h5 class="font-display font-bold text-white mb-1">Corporate Presence</h5>
+                        <p class="text-sm text-secondary">Trust Before Participation.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-4">
+                        <div class="px-4 py-2 bg-[#050816] border border-cardBorder rounded text-sm text-secondary font-display tracking-wide">
+                            PT GLOBAL NEXUS CAPITAL
+                        </div>
+                        <div class="px-4 py-2 bg-[#050816] border border-cardBorder rounded text-sm text-secondary font-display tracking-wide">
+                            PT SNR DIGITAL TRANSFORMASI
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: COMMUNITY FIRST -->
+        <section id="community" class="py-24 bg-gradient-to-b from-transparent to-card/30 border-y border-cardBorder/50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-2 gap-16 items-center">
+                    <div>
+                        <h2 class="text-sm font-display text-primary tracking-widest mb-2 uppercase">Community First</h2>
+                        <h3 class="text-3xl md:text-5xl font-bold font-display mb-6"><span data-i18n="sec_comm_title">People Before Technology.</span></h3>
+                        <p class="text-lg text-secondary mb-6 leading-relaxed">
+                            <span data-i18n="sec_comm_desc">Technology is only a tool. People and their productive activities are the true foundation of this ecosystem. We build infrastructure to empower human coordination, not replace it.</span>
+                        </p>
+                        
+                        <div class="space-y-4 mt-8">
+                            <div class="flex items-start gap-4">
+                                <div class="mt-1"><i data-lucide="check-circle" class="w-5 h-5 text-accent"></i></div>
+                                <div>
+                                    <h4 class="font-bold text-white font-display">Farmers & Producers</h4>
+                                    <p class="text-sm text-secondary">The originators of tangible value in the real world.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div class="mt-1"><i data-lucide="check-circle" class="w-5 h-5 text-accent"></i></div>
+                                <div>
+                                    <h4 class="font-bold text-white font-display">Merchants & Small Businesses</h4>
+                                    <p class="text-sm text-secondary">The vital connection points enabling local commerce.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div class="mt-1"><i data-lucide="check-circle" class="w-5 h-5 text-accent"></i></div>
+                                <div>
+                                    <h4 class="font-bold text-white font-display">Distributors</h4>
+                                    <p class="text-sm text-secondary">Facilitating the efficient flow of goods and services.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <!-- Abstract Community Representation -->
+                        <div class="aspect-square rounded-full border border-cardBorder flex items-center justify-center relative glow-border p-8">
+                            <div class="absolute inset-0 bg-primary/5 rounded-full blur-2xl"></div>
+                            <div class="grid grid-cols-2 gap-4 relative z-10 w-full h-full">
+                                <div class="glass-panel rounded-lg flex items-center justify-center flex-col gap-2 p-4">
+                                    <i data-lucide="users" class="w-8 h-8 text-white"></i>
+                                    <span class="text-xs font-display tracking-widest text-secondary">MEMBERS</span>
+                                </div>
+                                <div class="glass-panel rounded-lg flex items-center justify-center flex-col gap-2 p-4">
+                                    <i data-lucide="store" class="w-8 h-8 text-primary"></i>
+                                    <span class="text-xs font-display tracking-widest text-secondary">MERCHANTS</span>
+                                </div>
+                                <div class="glass-panel rounded-lg flex items-center justify-center flex-col gap-2 p-4">
+                                    <i data-lucide="truck" class="w-8 h-8 text-accent"></i>
+                                    <span class="text-xs font-display tracking-widest text-secondary">DISTRIBUTORS</span>
+                                </div>
+                                <div class="glass-panel rounded-lg flex items-center justify-center flex-col gap-2 p-4">
+                                    <i data-lucide="sprout" class="w-8 h-8 text-green-400"></i>
+                                    <span class="text-xs font-display tracking-widest text-secondary">PRODUCERS</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: REAL ECONOMY FIRST -->
+        <section id="economy" class="py-32 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-20">
+                    <h2 class="text-sm font-display text-accent tracking-widest mb-2 uppercase">Real Economy First</h2>
+                    <h3 class="text-3xl md:text-5xl font-bold font-display mb-6"><span data-i18n="sec_econ_title">Value Originates From Economic Activity.</span></h3>
+                    <p class="text-lg text-secondary max-w-3xl mx-auto">
+                        <span data-i18n="sec_econ_desc">Economic value is generated by productive activity, coordination, and commerce. Our infrastructure serves to support this flow.</span>
+                    </p>
+                </div>
+
+                <!-- Economic Flow Diagram -->
+                <div class="relative flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0 mt-16 px-4">
+                    <!-- Flow Line Background (Desktop) -->
+                    <div class="hidden md:block absolute top-1/2 left-[10%] right-[10%] h-0.5 bg-cardBorder -translate-y-1/2 z-0"></div>
+                    
+                    <!-- Nodes -->
+                    <div class="flex flex-col items-center relative z-10 gap-3 group">
+                        <div class="w-16 h-16 rounded-full glass-panel flex items-center justify-center border-primary/30 group-hover:border-primary transition-colors">
+                            <i data-lucide="tractor" class="w-6 h-6 text-secondary group-hover:text-primary transition-colors"></i>
+                        </div>
+                        <span class="text-xs font-display tracking-widest text-secondary">AGRICULTURE</span>
+                    </div>
+
+                    <div class="hidden md:block text-accent"><i data-lucide="arrow-right"></i></div>
+                    <div class="md:hidden text-accent"><i data-lucide="arrow-down"></i></div>
+
+                    <div class="flex flex-col items-center relative z-10 gap-3 group">
+                        <div class="w-16 h-16 rounded-full glass-panel flex items-center justify-center border-primary/30 group-hover:border-primary transition-colors">
+                            <i data-lucide="factory" class="w-6 h-6 text-secondary group-hover:text-primary transition-colors"></i>
+                        </div>
+                        <span class="text-xs font-display tracking-widest text-secondary">PRODUCTION</span>
+                    </div>
+
+                    <div class="hidden md:block text-accent"><i data-lucide="arrow-right"></i></div>
+                    <div class="md:hidden text-accent"><i data-lucide="arrow-down"></i></div>
+
+                    <div class="flex flex-col items-center relative z-10 gap-3 group">
+                        <div class="w-16 h-16 rounded-full glass-panel flex items-center justify-center border-primary/30 group-hover:border-primary transition-colors">
+                            <i data-lucide="route" class="w-6 h-6 text-secondary group-hover:text-primary transition-colors"></i>
+                        </div>
+                        <span class="text-xs font-display tracking-widest text-secondary">DISTRIBUTION</span>
+                    </div>
+
+                    <div class="hidden md:block text-accent"><i data-lucide="arrow-right"></i></div>
+                    <div class="md:hidden text-accent"><i data-lucide="arrow-down"></i></div>
+
+                    <div class="flex flex-col items-center relative z-10 gap-3 group">
+                        <div class="w-16 h-16 rounded-full glass-panel flex items-center justify-center border-primary/30 group-hover:border-primary transition-colors">
+                            <i data-lucide="shopping-bag" class="w-6 h-6 text-secondary group-hover:text-primary transition-colors"></i>
+                        </div>
+                        <span class="text-xs font-display tracking-widest text-secondary">MERCHANT</span>
+                    </div>
+
+                    <div class="hidden md:block text-accent"><i data-lucide="arrow-right"></i></div>
+                    <div class="md:hidden text-accent"><i data-lucide="arrow-down"></i></div>
+
+                    <div class="flex flex-col items-center relative z-10 gap-3 group">
+                        <div class="w-20 h-20 rounded-full glass-panel glow-border flex items-center justify-center bg-accent/5">
+                            <i data-lucide="network" class="w-8 h-8 text-accent"></i>
+                        </div>
+                        <span class="text-xs font-display tracking-widest text-white font-bold">DIGITAL INFRASTRUCTURE</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: UTILITY FIRST -->
+        <section id="utility" class="py-24 bg-card/20 border-y border-cardBorder">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-sm font-display text-primary tracking-widest mb-2 uppercase">Utility First</h2>
+                    <h3 class="text-3xl md:text-4xl font-bold font-display"><span data-i18n="sec_util_title">Technology Supporting Everyday Economic Activity.</span></h3>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="glass-panel p-8 border-t-2 border-t-primary/50">
+                        <h4 class="text-xl font-bold font-display mb-4">Community Commerce</h4>
+                        <p class="text-secondary text-sm leading-relaxed">Frameworks enabling local communities to transact securely and transparently within defined economic zones.</p>
+                    </div>
+                    <div class="glass-panel p-8 border-t-2 border-t-accent/50">
+                        <h4 class="text-xl font-bold font-display mb-4">Merchant Network</h4>
+                        <p class="text-secondary text-sm leading-relaxed">Onboarding pathways for verified real-world businesses to integrate digital verification and settlement systems.</p>
+                    </div>
+                    <div class="glass-panel p-8 border-t-2 border-t-white/50">
+                        <h4 class="text-xl font-bold font-display mb-4">Asset Support Programs</h4>
+                        <p class="text-secondary text-sm leading-relaxed">Protocols designed to verify and support physical asset integration into community-driven economic structures.</p>
+                    </div>
+                    <div class="glass-panel p-8 border-t-2 border-t-accent/50">
+                        <h4 class="text-xl font-bold font-display mb-4">Digital Distribution</h4>
+                        <p class="text-secondary text-sm leading-relaxed">Efficient, auditable ledger systems to track the origin and flow of resources within the network.</p>
+                    </div>
+                    <div class="glass-panel p-8 border-t-2 border-t-primary/50">
+                        <h4 class="text-xl font-bold font-display mb-4">Future Payment Infrastructure</h4>
+                        <p class="text-secondary text-sm leading-relaxed">Development of robust digital settlement rails prioritizing low friction for everyday commercial use.</p>
+                    </div>
+                    <div class="glass-panel p-8 border-t-2 border-t-white/50">
+                        <h4 class="text-xl font-bold font-display mb-4">Future Financial Tools</h4>
+                        <p class="text-secondary text-sm leading-relaxed">Sovereign economic tools for communities to manage, track, and deploy their resources effectively.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: BLOCKCHAIN INFRASTRUCTURE -->
+        <section class="py-32 relative overflow-hidden">
+            <!-- Background element -->
+            <div class="absolute inset-0 z-0 flex items-center justify-center opacity-10 pointer-events-none">
+                <i data-lucide="boxes" class="w-[800px] h-[800px] text-accent"></i>
+            </div>
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+                <h2 class="text-sm font-display text-accent tracking-widest mb-2 uppercase">Architecture Layer</h2>
+                <h3 class="text-3xl md:text-5xl font-bold font-display mb-8"><span data-i18n="sec_block_title">Transparent Infrastructure Layer.</span></h3>
+                
+                <p class="text-xl text-secondary max-w-3xl mx-auto leading-relaxed mb-12">
+                    Blockchain is used to improve transparency, traceability, accountability, and coordination. <br/>
+                    <strong class="text-white">Blockchain is not the product. Blockchain is the infrastructure.</strong>
+                </p>
+
+                <div class="inline-flex flex-col md:flex-row items-center gap-4 p-4 glass-panel border-accent/20">
+                    <div class="flex items-center gap-2 px-4 py-2 bg-background rounded border border-cardBorder">
+                        <div class="w-2 h-2 rounded-full bg-accent animate-pulse"></div>
+                        <span class="text-sm font-display tracking-widest">TRACEABILITY</span>
+                    </div>
+                    <div class="flex items-center gap-2 px-4 py-2 bg-background rounded border border-cardBorder">
+                        <div class="w-2 h-2 rounded-full bg-accent animate-pulse"></div>
+                        <span class="text-sm font-display tracking-widest">ACCOUNTABILITY</span>
+                    </div>
+                    <div class="flex items-center gap-2 px-4 py-2 bg-background rounded border border-cardBorder">
+                        <div class="w-2 h-2 rounded-full bg-accent animate-pulse"></div>
+                        <span class="text-sm font-display tracking-widest">COORDINATION</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 7: PORTAL ACCESS -->
+        <section id="portal" class="py-24 border-t border-cardBorder/50 relative">
+            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="glass-panel p-12 text-center glow-border relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-accent to-primary"></div>
+                    
+                    <i data-lucide="lock" class="w-12 h-12 text-primary mx-auto mb-6"></i>
+                    <h3 class="text-3xl font-display font-bold mb-4" data-i18n="sec_portal_title">PORTAL ACCESS</h3>
+                    <p class="text-secondary mb-10"><span data-i18n="sec_portal_desc">Access ecosystem tools and community infrastructure. Requires active Web3 identification.</span></p>
+                    
+                    <button onclick="toggleDapp(true)" class="px-8 py-4 bg-primary text-[#050816] font-display font-bold tracking-widest text-lg hover:bg-yellow-400 hover:shadow-[0_0_30px_rgba(255,204,0,0.4)] transition-all flex items-center justify-center gap-3 w-full sm:w-auto mx-auto group">
+                        ENTER THE FORTRESS
+                        <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                    <p class="mt-4 text-xs text-secondary/60">Non-custodial connection.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: TOKENOMICS -->
+        <section id="snr-tokenomics" class="py-16 relative overflow-hidden" style="background: #000510;">
+            <div class="max-w-7xl mx-auto px-4 relative z-10">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-display font-bold tracking-widest text-white uppercase">
+                        <span class="text-primary font-display">SNR</span><span class="text-white font-display">-VAULT</span> Tokenomics
+                    </h2>
+                    <div class="h-1 w-24 bg-primary mx-auto mt-4 rounded-full shadow-[0_0_10px_#FFD700]" style="background-color: #FFCC00;"></div>
+                    <p class="text-secondary mt-6 font-display uppercase tracking-widest text-sm" style="color: #8fa0dd;">Total Supply: 1,000,000,000 SNR</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div class="relative flex justify-center items-center">
+                        <div class="absolute w-80 h-80 rounded-full bg-primary/5 blur-[80px] animate-pulse" style="background-color: rgba(255, 204, 0, 0.05);"></div>
+                        <div style="position: relative; height: 380px; width: 100%; max-width: 450px;">
+                            <canvas id="tokenomicsBurgerChart"></canvas>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                <span class="font-display text-xs tracking-widest uppercase" style="color: #FFCC00; font-family: 'Orbitron', sans-serif;">Supply</span>
+                                <span class="text-white font-display text-2xl font-bold" style="font-family: 'Orbitron', sans-serif;">1B SNR</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tokenomics-list" class="space-y-4">
+                        <div class="glass-panel p-4 border-l-4 border-[#FFD700] flex justify-between items-center group" style="background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h4 class="text-primary font-bold font-display text-sm uppercase" style="color: #FFCC00; font-family: 'Orbitron', sans-serif;">Treasury SNR</h4>
+                                <p class="text-secondary text-xs mt-1 leading-relaxed" style="color: #a0aec0;">Dana cadangan strategis likuiditas.</p>
+                            </div>
+                            <div class="text-right" style="text-align: right;"><span class="text-white font-bold block" style="display: block; color: #fff;">400M</span><span class="text-primary text-[10px] font-bold" style="color: #FFCC00;">40%</span></div>
+                        </div>
+                        <div class="glass-panel p-4 border-l-4 border-[#00D1FF] flex justify-between items-center group" style="background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h4 class="text-[#00D1FF] font-bold font-display text-sm uppercase" style="color: #00D1FF; font-family: 'Orbitron', sans-serif;">Community Reward</h4>
+                                <p class="text-secondary text-xs mt-1 leading-relaxed" style="color: #a0aec0;">Imbal hasil kedaulatan komunitas.</p>
+                            </div>
+                            <div class="text-right" style="text-align: right;"><span class="text-white font-bold block" style="display: block; color: #fff;">300M</span><span class="text-[#00D1FF] text-[10px] font-bold">30%</span></div>
+                        </div>
+                        <div class="glass-panel p-4 border-l-4 border-[#FFFFFF] flex justify-between items-center group" style="background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h4 class="text-white font-bold font-display text-sm uppercase" style="font-family: 'Orbitron', sans-serif;">Presale Asset</h4>
+                                <p class="text-secondary text-xs mt-1 leading-relaxed" style="color: #a0aec0;">Distribusi kepemilikan tahap awal.</p>
+                            </div>
+                            <div class="text-right" style="text-align: right;"><span class="text-white font-bold block" style="display: block; color: #fff;">150M</span><span class="text-white text-[10px] font-bold" style="color: #fff;">15%</span></div>
+                        </div>
+                        <div class="glass-panel p-4 border-l-4 border-[#FF4500] flex justify-between items-center group" style="background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h4 class="text-[#FF4500] font-bold font-display text-sm uppercase" style="color: #FF4500; font-family: 'Orbitron', sans-serif;">Founder & Team</h4>
+                                <p class="text-secondary text-xs mt-1 leading-relaxed" style="color: #a0aec0;">Vesting jangka panjang tim pengembang.</p>
+                            </div>
+                            <div class="text-right" style="text-align: right;"><span class="text-white font-bold block" style="display: block; color: #fff;">100M</span><span class="text-[#FF4500] text-[10px] font-bold">10%</span></div>
+                        </div>
+                        <div class="glass-panel p-4 border-l-4 border-[#A855F7] flex justify-between items-center group" style="background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h4 class="text-[#A855F7] font-bold font-display text-sm uppercase" style="color: #A855F7; font-family: 'Orbitron', sans-serif;">Marketing Reward</h4>
+                                <p class="text-secondary text-xs mt-1 leading-relaxed" style="color: #a0aec0;">Ekspansi dan apresiasi mitra global.</p>
+                            </div>
+                            <div class="text-right" style="text-align: right;"><span class="text-white font-bold block" style="display: block; color: #fff;">50M</span><span class="text-[#A855F7] text-[10px] font-bold">5%</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: TRANSPARENCY LAYER -->
+        <section id="transparency" class="py-20 bg-[#050816] border-t border-cardBorder">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mb-10">
+                    <h3 class="text-2xl font-bold font-display text-white">Transparency Layer</h3>
+                    <p class="text-sm text-secondary">Core documentation and public commitments.</p>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    <a href="#" class="glass-panel p-4 text-center hover:bg-white/5 transition-colors border-cardBorder hover:border-secondary">
+                        <i data-lucide="info" class="w-5 h-5 mx-auto mb-2 text-secondary"></i>
+                        <span class="text-xs font-display tracking-widest text-white">ABOUT</span>
+                    </a>
+                    <a href="#" class="glass-panel p-4 text-center hover:bg-white/5 transition-colors border-cardBorder hover:border-secondary">
+                        <i data-lucide="file-text" class="w-5 h-5 mx-auto mb-2 text-secondary"></i>
+                        <span class="text-xs font-display tracking-widest text-white">POLICY</span>
+                    </a>
+                    <a href="#" class="glass-panel p-4 text-center hover:bg-white/5 transition-colors border-cardBorder hover:border-secondary">
+                        <i data-lucide="shield" class="w-5 h-5 mx-auto mb-2 text-secondary"></i>
+                        <span class="text-xs font-display tracking-widest text-white">SECURITY</span>
+                    </a>
+                    <a href="#" class="glass-panel p-4 text-center hover:bg-white/5 transition-colors border-cardBorder hover:border-secondary">
+                        <i data-lucide="alert-triangle" class="w-5 h-5 mx-auto mb-2 text-secondary"></i>
+                        <span class="text-xs font-display tracking-widest text-white">RISK DISCLOSURE</span>
+                    </a>
+                    <a href="#" class="glass-panel p-4 text-center hover:bg-white/5 transition-colors border-cardBorder hover:border-secondary">
+                        <i data-lucide="eye" class="w-5 h-5 mx-auto mb-2 text-secondary"></i>
+                        <span class="text-xs font-display tracking-widest text-white">TRANSPARENCY</span>
+                    </a>
+                    <a href="#" class="glass-panel p-4 text-center hover:bg-white/5 transition-colors border-cardBorder hover:border-secondary">
+                        <i data-lucide="mail" class="w-5 h-5 mx-auto mb-2 text-secondary"></i>
+                        <span class="text-xs font-display tracking-widest text-white">CONTACT</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+        </div> <!-- End of view-landing -->
+
+        <!-- dApp View -->
+        <div id="view-dapp" class="page-view flex-grow py-8 transition-opacity duration-300" style="display: none; opacity: 0;">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+                <!-- Top Actions Row -->
+                <div class="mb-6 flex justify-between items-center">
+                    <button onclick="toggleDapp(false)" class="flex items-center gap-2 px-5 py-2.5 glass-panel border border-cardBorder text-secondary hover:text-white hover:border-primary transition-all font-display font-bold tracking-widest text-xs uppercase shadow-[0_0_10px_rgba(0,0,0,0.2)] hover:shadow-[0_0_15px_rgba(255,204,0,0.2)]">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i> <span data-i18n="dapp_back">BACK TO MAIN</span>
+                    </button>
+                    
+                    <button id="btn-connect-wallet" onclick="connectWallet()" class="flex items-center gap-2 px-6 py-2.5 bg-primary text-[#050816] font-display font-bold tracking-widest text-sm uppercase hover:bg-yellow-400 shadow-[0_0_15px_rgba(255,204,0,0.3)] transition-all rounded">
+                        <i data-lucide="link" class="w-4 h-4"></i> <span data-i18n="dapp_connect">CONNECT WALLET</span>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="glass-panel p-6 flex items-center justify-between">
+                        <div>
+                            <p class="text-secondary text-sm mb-1"><span data-i18n="dapp_bal_title">Total Saldo (Wallet)</span></p>
+                            <h3 class="text-2xl font-bold"><span id="ui-snr-balance">0.00</span> <span
+                                    class="text-primary text-lg">SNR</span></h3>
+                            <p class="text-sm mt-1 flex items-center gap-1">
+                                <span class="text-yellow-500 font-bold" id="ui-bnb-balance">0.000</span> <span
+                                    class="text-secondary">BNB (Gas Fee)</span>
+                            </p>
+                        </div>
+                        <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
+                            <i data-lucide="wallet" class="w-6 h-6 text-primary"></i>
+                        </div>
+                    </div>
+                    <div class="glass-panel p-6 flex items-center justify-between border-accent/30">
+                        <div>
+                            <p class="text-secondary text-sm mb-1"><span data-i18n="dapp_status_title">Status Kedaulatan</span></p>
+                            <h3 class="text-2xl font-bold text-accent" data-i18n="dapp_status_val">AKTIF</h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center border border-accent/30">
+                            <i data-lucide="cpu" class="w-6 h-6 text-accent"></i>
+                        </div>
+                    </div>
+                    <div class="glass-panel p-6 flex items-center justify-between">
+                        <div>
+                            <p class="text-secondary text-sm mb-1" data-i18n="dapp_wd_title">Ready to Withdraw</p>
+                            <h3 class="text-2xl font-bold text-green-400"><span id="ui-withdraw-balance">0.00</span> <span
+                                    class="text-sm">SNR</span></h3>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <button class="px-4 py-2 bg-yellow-500/20 text-yellow-400 border border-yellow-500/50 rounded-lg text-sm hover:bg-yellow-500/30 transition-colors w-full">
+                                <span data-i18n="dapp_btn_harvest">Harvest</span></button>
+                            <button class="px-4 py-2 bg-green-500/20 text-green-400 border border-green-500/50 rounded-lg text-sm hover:bg-green-500/30 transition-colors w-full">
+                                <span data-i18n="dapp_btn_wd">Withdraw</span></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DASHBOARD PANEL INFORMASI STAKING SAYA -->
+            <div class="glass-panel p-6 border-primary/30 mb-8 relative overflow-hidden">
+                <div class="flex items-center gap-3 mb-6 border-b border-cardBorder pb-4">
+                    <div class="p-2 rounded-lg bg-primary/20 text-primary border border-primary/30">
+                        <i data-lucide="shield-check" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-display font-bold text-white uppercase tracking-wider">🛡️ STAKING SNR SAYA</h3>
+                        <p class="text-xs text-secondary">Informasi Real-Time dari Smart Contract Titan Sovereign</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-background/60 p-4 rounded-xl border border-cardBorder">
+                        <p class="text-xs text-secondary mb-1 flex items-center gap-1">💰 Modal Staking</p>
+                        <p class="text-xl font-bold text-primary font-display"><span id="stk-modal">0.00</span> SNR</p>
+                    </div>
+                    <div class="bg-background/60 p-4 rounded-xl border border-cardBorder">
+                        <p class="text-xs text-secondary mb-1 flex items-center gap-1">📈 Reward Berjalan</p>
+                        <p class="text-xl font-bold text-green-400 font-display"><span id="stk-reward-running">0.00</span> SNR</p>
+                    </div>
+                    <div class="bg-background/60 p-4 rounded-xl border border-cardBorder">
+                        <p class="text-xs text-secondary mb-1 flex items-center gap-1">🎁 Reward Sudah Diklaim</p>
+                        <p class="text-xl font-bold text-accent font-display"><span id="stk-reward-claimed">0.00</span> SNR</p>
+                    </div>
+                    <div class="bg-background/60 p-4 rounded-xl border border-cardBorder">
+                        <p class="text-xs text-secondary mb-1 flex items-center gap-1">🔒 Periode Lock</p>
+                        <p class="text-xl font-bold text-white font-display"><span id="stk-lock-period">-</span> Hari</p>
+                    </div>
+                    <div class="bg-background/60 p-4 rounded-xl border border-cardBorder">
+                        <p class="text-xs text-secondary mb-1 flex items-center gap-1">✅ Status Staking</p>
+                        <p class="text-lg font-bold font-display" id="stk-status-badge"><span class="text-secondary">Tidak Aktif</span></p>
+                    </div>
+                    <div class="bg-background/60 p-4 rounded-xl border border-cardBorder">
+                        <p class="text-xs text-secondary mb-1 flex items-center gap-1">📅 Sisa Waktu Lock</p>
+                        <p class="text-lg font-bold text-yellow-400 font-display" id="stk-time-remaining">-</p>
+                    </div>
+                    <div class="md:col-span-2 bg-primary/10 p-4 rounded-xl border border-primary/30">
+                        <p class="text-xs text-primary font-semibold mb-1 flex items-center gap-1">💎 Total Kepemilikan dari Staking (Modal + Reward Berjalan)</p>
+                        <p class="text-2xl font-bold text-white font-display"><span id="stk-total-ownership">0.00</span> SNR</p>
+                    </div>
+                </div>
+            </div>
+
+
+                 <!-- TABS NAVIGATION -->
+            <div class="flex flex-wrap gap-2 mb-8 bg-card p-2 rounded-xl border border-cardBorder w-fit">
+                <button onclick="switchTab('staking')" id="btn-staking" class="px-6 py-2 rounded-lg text-sm font-medium transition-all bg-primary text-black uppercase">Join Protocol</button>
+                <button onclick="switchTab('history')" id="btn-history" class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary uppercase">History Transaksi</button>
+                <button onclick="switchTab('network')" id="btn-network" class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary uppercase">Network & Rank</button>
+                <button onclick="switchTab('p2p')" id="btn-p2p" class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary uppercase">P2P Portal</button>
+            </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 space-y-6">
+
+                        <div id="tab-staking" class="dapp-tab active glass-panel p-8">
+                            <h3 class="text-2xl font-display font-bold mb-6 flex items-center gap-2">
+                                <i data-lucide="shield-alert" class="text-primary w-6 h-6"></i> Titan v4 - Join Protocol
+                            </h3>
+                            <div class="space-y-5">
+                                <div>
+                                    <label class="block text-sm text-secondary mb-2">Jumlah SNR (Min 100)</label>
+                                    <div class="relative">
+                                        <input type="number" id="stake-amount" placeholder="0.0"
+                                            class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
+                                        <span class="absolute right-4 top-3 text-primary font-bold">SNR</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-secondary mb-2">Alamat Mentor / Upline</label>
+                                    <input type="text" id="stake-mentor" placeholder="0x..."
+                                        class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
+                                </div>
+                                <div class="relative z-50">
+                                    <label class="block text-sm text-secondary mb-2">Durasi Staking</label>
+                                    <select id="stake-duration" class="w-full bg-card border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary cursor-pointer relative z-50 appearance-auto">
+                                        <option value="30" class="bg-card text-white py-2">30 Hari (Yield 100 BP)</option>
+                                        <option value="60" class="bg-card text-white py-2">60 Hari (Yield 120 BP)</option>
+                                        <option value="90" class="bg-card text-white py-2">90 Hari (Yield 150 BP)</option>
+                                    </select>
+                                </div>
+                                <button onclick="executeProtocol()"
+                                    class="w-full py-4 mt-4 bg-primary text-black font-bold rounded-lg hover:bg-yellow-400 hover:shadow-[0_0_20px_rgba(255,204,0,0.3)] transition-all">
+                                    Eksekusi Protokol
+                                </button>
+                            </div>
+                        </div>
+
+                                                <div id="tab-history" class="dapp-tab glass-panel p-8" style="display: none;">
+                            <h3 class="text-2xl font-display font-bold mb-6 flex items-center gap-2">
+                                <i data-lucide="history" class="text-accent w-6 h-6"></i> History Transaksi
+                            </h3>
+                            <div id="history-list" class="space-y-2 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                                <div class="text-center text-secondary py-8">Koneksikan Web3 Wallet untuk melihat history.</div>
+                            </div>
+                        </div>
+
+                        <div id="tab-network" class="dapp-tab glass-panel p-8 border-accent/30">
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <h3 class="text-xl font-display font-bold text-white mb-1">Rank Saat Ini</h3>
+                                    <div id="ui-current-rank" class="text-4xl font-black text-gradient font-display mb-4">RANK 2 <span
+                                            class="text-lg font-sans text-secondary">(Captain)</span></div>
+
+                                    <div class="flex flex-wrap gap-4 mt-6">
+                                        <div class="bg-background/80 border border-cardBorder p-4 rounded-lg min-w-[140px]">
+                                            <div class="text-secondary text-xs mb-1 flex items-center gap-1"><i
+                                                    data-lucide="users" class="w-3 h-3"></i> Direct Aktif</div>
+                                            <div id="ui-direct-active" class="text-xl font-bold">15 <span class="text-sm text-secondary">Member</span></div>
+                                        </div>
+                                        <div class="bg-background/80 border border-cardBorder p-4 rounded-lg min-w-[140px]">
+                                            <div class="text-secondary text-xs mb-1 flex items-center gap-1"><i
+                                                    data-lucide="award" class="w-3 h-3"></i> Group Volume</div>
+                                            <div id="ui-group-volume" class="text-xl font-bold">35,000 <span class="text-sm text-secondary">SNR</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="hidden sm:flex w-24 h-24 rounded-full border-4 border-accent/20 items-center justify-center bg-card shadow-[0_0_30px_rgba(0,229,255,0.2)]">
+                                    <i data-lucide="award" class="w-10 h-10 text-accent"></i>
+                                </div>
+                            </div>
+
+                            <div class="mt-8 border-t border-cardBorder pt-6">
+                                <label class="block text-sm text-secondary mb-2">Tautan Referral Anda</label>
+                                <div class="flex gap-2">
+                                    <input type="text" readonly value="https://snr-vault.com/dapp?ref=0x5Ce1..."
+                                        class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-secondary focus:outline-none">
+                                    <button class="px-4 py-3 bg-card border border-cardBorder rounded-lg hover:bg-white/5 transition-colors flex items-center justify-center">
+                                        <i data-lucide="share-2" class="w-5 h-5 text-white"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="tab-assets" class="dapp-tab glass-panel p-8">
+                            <h3 class="text-2xl font-display font-bold mb-6">Request Asset Acquisition</h3>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                                <div class="border border-cardBorder bg-background p-4 rounded-lg flex flex-col items-center gap-2 cursor-pointer hover:border-accent text-center">
+                                    <i data-lucide="car" class="w-6 h-6 text-accent"></i><span class="text-sm">MOTO</span>
+                                </div>
+                                <div class="border border-cardBorder bg-background p-4 rounded-lg flex flex-col items-center gap-2 cursor-pointer hover:border-accent text-center">
+                                    <i data-lucide="car" class="w-6 h-6 text-accent"></i><span class="text-sm">DRIVE</span>
+                                </div>
+                                <div class="border border-cardBorder bg-background p-4 rounded-lg flex flex-col items-center gap-2 cursor-pointer hover:border-accent text-center">
+                                    <i data-lucide="home" class="w-6 h-6 text-primary"></i><span class="text-sm">LIVING STD</span>
+                                </div>
+                                <div class="border border-cardBorder bg-background p-4 rounded-lg flex flex-col items-center gap-2 cursor-pointer hover:border-accent text-center">
+                                    <i data-lucide="home" class="w-6 h-6 text-primary"></i><span class="text-sm">GOLD</span>
+                                </div>
+                            </div>
+                            <div class="space-y-5">
+                                <div><label class="block text-sm text-secondary mb-2">Nilai Dukungan (SNR)</label><input type="number" placeholder="Contoh: 5000" class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent"></div>
+                                <div><label class="block text-sm text-secondary mb-2">Model Unit</label><input type="text" placeholder="Contoh: Honda HRV 2024" class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent"></div>
+                                <button class="w-full py-4 mt-4 bg-accent text-black font-bold rounded-lg hover:bg-cyan-400 hover:shadow-[0_0_20px_rgba(0,229,255,0.3)] transition-all">
+                                    Kirim Permintaan Aset
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="tab-p2p" class="dapp-tab glass-panel p-8 text-center min-h-[400px] flex flex-col items-center justify-center">
+                            <i data-lucide="message-circle" class="w-16 h-16 text-green-400 mb-4"></i>
+                            <h3 class="text-2xl font-bold mb-4">P2P Escrow Resmi SNR</h3>
+                            <p class="text-secondary max-w-md mx-auto mb-8">Lakukan pertukaran aset secara aman dan cepat melalui layanan P2P Escrow WhatsApp resmi kami.</p>
+                            <a href="https://wa.me/6283829681017" target="_blank" class="px-8 py-4 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] transition-all flex items-center gap-3">
+                                <i data-lucide="message-square" class="w-6 h-6"></i> Hubungi Admin P2P (WA)
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="glass-panel p-6 border-primary/20">
+                            <h4 class="font-display font-bold text-lg mb-4 flex items-center gap-2"><i data-lucide="gift" class="w-5 h-5 text-primary"></i> Leader Rewards</h4>
+                            <div id="ui-leader-rewards" class="text-3xl font-bold mb-4">1,240 <span class="text-sm text-secondary font-sans">SNR</span></div>
+                            <button class="w-full py-2 bg-background border border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors font-semibold">Claim Rewards</button>
+                        </div>
+                        <div class="glass-panel p-6">
+                            <h4 class="font-bold text-lg mb-4">Informasi Token</h4>
+                            <div class="space-y-4 text-sm">
+                                <div class="flex justify-between items-center border-b border-cardBorder pb-2"><span class="text-secondary">Smart Contract</span><a href="#" class="text-accent hover:underline text-xs">0x59a7...f543</a></div>
+                                <div class="flex justify-between items-center border-b border-cardBorder pb-2"><span class="text-secondary">Jaringan</span><span>BSC Mainnet</span></div>
+                                <div class="flex justify-between items-center pb-2"><span class="text-secondary">Max Cap Reward</span><span class="text-green-400 font-medium">300%</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- TAB: ACADEMY -->
-  <section id="tab-academy" class="tab-panel">
-    <div class="card">
-      <div class="pill">🛡️ <b>SNR ACADEMY</b> • Member Education Hub</div>
-      <h2 class="section-title" style="margin-top:14px;">ACADEMY PROTOCOL</h2>
-      <p class="section-sub">
-        Di sini member belajar agar <b>paham sistem</b>, <b>aman</b>, <b>nyaman</b>, dan tidak mudah menjadi korban di luar sana.
-        Tidak ada janji kosong. Hanya edukasi, disiplin, dan standar SNR-VAULT.
-      </p>
-
-      <div class="kit-grid">
-        <div class="kit">
-          <h4>Module A — Gerbang Akses</h4>
-          <p>Cara masuk via TokenPocket/TrustWallet/MetaMask, connect wallet, dan membaca status dashboard dengan benar.</p>
-          <div class="tag">ONBOARDING</div>
-        </div>
-        <div class="kit">
-          <h4>Module B — Security & Anti-Scam</h4>
-          <p>Aturan inti: seed phrase, anti phishing, ciri modus penipuan, dan SOP saat ada kejadian.</p>
-          <div class="tag">SECURITY</div>
-        </div>
-        <div class="kit">
-          <h4>Module C — System Mindset</h4>
-          <p>Profit adalah alat, bukan tujuan. Member SNR dibentuk menjadi tenang, sadar, dan tahan jangka panjang.</p>
-          <div class="tag">MENTALITY</div>
-        </div>
-        <div class="kit">
-          <h4>Module D — Member Handbook</h4>
-          <p>Etika komunitas, komunikasi sehat, anti drama, anti FUD, dan standar perilaku SNR-VAULT.</p>
-          <div class="tag">CULTURE</div>
-        </div>
-      </div>
-
-      <div style="margin-top:14px; font-size:.75rem; color:rgba(245,247,250,.72); line-height:1.7;">
-        <b style="color:var(--gold);">Catatan:</b> Konten video/poster akan dipasang bertahap. Member cukup mengikuti update resmi di kanal komunitas.
-      </div>
-    </div>
-  </section>
-
-  <!-- TAB: NODE -->
-  <section id="tab-node" class="tab-panel">
-    <div class="card">
-      <div class="pill">🌌 <b>SNR NODE</b> • Stability & Trust Monitor</div>
-      <h2 class="section-title" style="margin-top:14px;">NODE STATUS</h2>
-      <p class="section-sub">
-        Halaman ini dibuat dengan: ringkas, jelas, dan fokus pada kepercayaan.
-        Status dapat diperluas ke monitoring real-time di versi berikutnya.
-      </p>
-
-      <div class="kit-grid">
-        <div class="kit">
-          <h4>Node Stability</h4>
-          <p><b class="t-neon">Operational</b> • Monitoring aktif • Notifikasi muncul jika ada gangguan.</p>
-          <div class="tag">UPTIME</div>
-        </div>
-        <div class="kit">
-          <h4>Security Layer</h4>
-          <p>Fortress Protocol • Edukasi anti-scam • SOP respon saat kondisi tidak normal.</p>
-          <div class="tag">DEFENSE</div>
-        </div>
-        <div class="kit">
-          <h4>Transparency</h4>
-          <p>Info penting disampaikan tanpa ruang gelap. Semua update dibuat terstruktur dan mudah dipahami.</p>
-          <div class="tag">OPEN</div>
-        </div>
-        <div class="kit">
-          <h4>Community Discipline</h4>
-          <p>Anti FUD • Anti provokasi • Fokus edukasi. Komunitas sehat = sistem kuat.</p>
-          <div class="tag">CULTURE</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- TAB: WHITEPAPER -->
-  <section id="tab-whitepaper" class="tab-panel">
-    <div class="card">
-      <div class="pill">📜 <b>SNR WHITEPAPER</b> • Official Documentation</div>
-      <h2 class="section-title" style="margin-top:14px;">WHITEPAPER ACCESS</h2>
-      <p class="section-sub">
-        Whitepaper adalah kompas. Member yang membaca akan lebih tenang, lebih percaya, dan tidak mudah terseret promosi luar.
-      </p>
-
-      <div class="kit-grid">
-        <div class="kit">
-          <h4>Whitepaper v1.0</h4>
-          <p>Link PDF akan dipasang di sini. (Pusat Informasi dan pengumuman Resmi.)</p>
-          <div class="tag">PDF</div>
-          <button class="btn" style="margin-top:10px;" onclick="alert('Link PDF belum dipasang. Upload whitepaper lalu ganti href/link di kode.');">Open Whitepaper</button>
+        <!-- Transaction Modal Overlay -->
+        <div id="tx-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-[#050816]/80 backdrop-blur-md transition-opacity duration-300" style="display: none; opacity: 0;">
+            <div class="glass-panel p-8 max-w-sm w-full mx-4 border-accent/50 text-center relative overflow-hidden glow-border shadow-[0_0_30px_rgba(0,229,255,0.1)]">
+                <div id="tx-modal-content">
+                    <!-- Content injected dynamically -->
+                </div>
+                <button onclick="closeTxModal()" class="absolute top-4 right-4 text-secondary hover:text-white transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
         </div>
 
-        <div class="kit">
-          <h4>Core Principles</h4>
-          <p>• Stabilitas mengalahkan hype.<br>• Transparansi membangun trust.<br>• Edukasi melindungi komunitas.</p>
-          <div class="tag">DNA</div>
+    </main>
+
+    <!-- Footer / Risk Disclosure -->
+    <footer class="border-t border-cardBorder bg-background py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="glass-panel p-6 border border-cardBorder/50 mb-12">
+                <h4 class="text-sm font-display font-bold text-white mb-2 flex items-center gap-2">
+                    <i data-lucide="alert-circle" class="w-4 h-4 text-primary"></i> RISK DISCLOSURE
+                </h4>
+                <p class="text-xs text-secondary leading-relaxed">
+                    Participation in digital ecosystems involves risks. Market conditions may change. Users should conduct their own evaluation before participating. No guarantees are expressed or implied. This platform is provided as an infrastructure layer and does not constitute financial advice.
+                </p>
+            </div>
+
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-secondary">
+                <div class="font-display font-bold text-lg tracking-widest">
+                    <span class="text-primary font-display">SNR</span><span class="text-white font-display">-VAULT</span>
+                </div>
+                <div class="text-center md:text-right">
+                    <p>&copy; 2026 <span class="text-primary font-display">SNR</span><span class="text-white font-display">-VAULT</span> Ecosystem. All rights reserved.</p>
+                </div>
+            </div>
         </div>
-
-        <div class="kit">
-          <h4>Member Promise</h4>
-          <p>Member tidak dibawa pada ambisi berlebih. Fokus: aman, nyaman, dan bertumbuh dengan cara bermartabat.</p>
-          <div class="tag">ETHIC</div>
-        </div>
-
-        <div class="kit">
-          <h4>Verification</h4>
-          <p>Ke depan bisa dibuat halaman verifikasi (QR/ID) untuk sertifikasi member dan dokumen resmi.</p>
-          <div class="tag">VERIFY</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ROADMAP -->
-  <section class="snr-roadmap">
-    <div class="roadmap-wrap">
-
-      <div class="roadmap-topbar">
-        <div class="roadmap-side">
-          <button class="btn rm-filter active" data-filter="all" type="button">ALL</button>
-          <button class="btn rm-filter" data-filter="active" type="button">ACTIVE</button>
-          <button class="btn rm-filter" data-filter="prepare" type="button">PREPARE</button>
-
-          <a class="btn btn-primary rm-cta" href="https://wa.me/6289528533262" target="_blank">JOIN PILOT</a>
-
-          <button class="btn rm-open" type="button" onclick="showRoadmap()">OPEN ROADMAP</button>
-        </div>
-      </div>
-
-      <div class="roadmap-slider">
-        <div class="roadmap-card" data-phase="master">
-          <img src="assets/roadmap.jpeg" alt="MASTER ROADMAP">
-          <span>MASTER ROADMAP</span>
-        </div>
-
-        <div class="roadmap-card" data-phase="active">
-          <img src="assets/motor.jpeg" alt="PILOT MOTOR">
-          <span>PILOT MOTOR</span>
-        </div>
-
-        <div class="roadmap-card" data-phase="active">
-          <img src="assets/mobil.jpeg" alt="PILOT MOBIL">
-          <span>PILOT MOBIL</span>
-        </div>
-
-        <div class="roadmap-card" data-phase="prepare">
-          <img src="assets/rumah.jpeg" alt="PROPERTY">
-          <span>PROPERTY</span>
-        </div>
-
-        <div class="roadmap-card" data-phase="active">
-          <img src="assets/usaha.jpeg" alt="UMKM PILOT">
-          <span>UMKM PILOT</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="footer">© 2026 SNR-VAULT — <span class="t-neon">Transparency</span> . <span class="t-neon">Security</span> . <span class="t-neon">Sovereignty</span></div>
-</div>
-
-<div class="notify" id="notify"></div>
-
-<a class="snr-policy-fab" href="policy.html" onclick="try{playMagicChime();}catch(e){}; try{log('Navigate: POLICY v1.0');}catch(e){}">
-  <span class="dot"></span> POLICY
-</a>
-
-<div class="sound-toggle">
-  <div style="font-size: 0.6rem; letter-spacing: 1px; color: #888; margin-right: 5px;">SOUND</div>
-  <button id="soundBtn" type="button">ON</button>
-</div>
-
-<script>
-/* WEB3 ENGINE (FIXED) */
-const TOKEN_SNR = "0x5ce1427f77d8c58f97f5e18b36804fd54aa72718";
-const STAKING   = "0x59a7098D86ac1548dAF3b14aAfC43858D274f543";
-
-// ===== Anti-Fake-Site Canonical =====
-const SNR_CANONICAL_HOSTS = ["snrvault.space","www.snrvault.space"];
-
-function log(msg){
-  const box = document.getElementById("log");
-  if(!box) return;
-  const line = document.createElement("div");
-  const t = new Date();
-  const hh = String(t.getHours()).padStart(2,"0");
-  const mm = String(t.getMinutes()).padStart(2,"0");
-  line.textContent = `[${hh}:${mm}] ${msg}`;
-  box.appendChild(line);
-  box.scrollTop = box.scrollHeight;
-}
-
-function snrIsCanonicalHost(){
-  const host = (location.hostname || "").toLowerCase();
-  return SNR_CANONICAL_HOSTS.includes(host);
-}
-
-function snrShowGuard(){
-  const guard = document.getElementById("snrDomainGuard");
-  const hostEl = document.getElementById("snrCurrentHost");
-  if(hostEl) hostEl.textContent = location.hostname || "(unknown)";
-  if(guard){
-    guard.style.display = "flex";
-    guard.setAttribute("aria-hidden","false");
-  }
-}
-function snrCloseGuard(){
-  const guard = document.getElementById("snrDomainGuard");
-  if(guard){
-    guard.style.display = "none";
-    guard.setAttribute("aria-hidden","true");
-  }
-}
-
-function snrLockActions(lock=true){
-  const ids = ["btnStake","btnClaim","btnCompound","btnWithdraw"];
-  ids.forEach(id=>{
-    const el = document.getElementById(id);
-    if(!el) return;
-    el.disabled = lock;
-    el.style.opacity = lock ? "0.45" : "1";
-    el.style.pointerEvents = lock ? "none" : "auto";
-    el.style.filter = lock ? "grayscale(0.25)" : "none";
-  });
-}
-
-/* ROADMAP AUTO SLIDE */
-(function(){
-  const slider = document.querySelector('.roadmap-slider');
-  if(!slider) return;
-  let pos = 0;
-  setInterval(()=>{
-    pos += 240;
-    if(pos >= slider.scrollWidth) pos = 0;
-    slider.scrollTo({ left:pos, behavior:"smooth" });
-  }, 3500);
-})();
-
-/* ROADMAP MODAL */
-function showRoadmap(){ document.getElementById("roadmapModal").style.display="flex"; }
-function closeRoadmap(){ document.getElementById("roadmapModal").style.display="none"; }
-function openPhase(type){
-  closeRoadmap();
-  // type: all | active | prepare
-  const btn = document.querySelector('.rm-filter[data-filter="'+type+'"]');
-  if(btn) btn.click();
-}
-
-/* ROADMAP FILTER */
-document.addEventListener("DOMContentLoaded", () => {
-  const slider = document.querySelector(".roadmap-slider");
-  const cards  = Array.from(document.querySelectorAll(".roadmap-card[data-phase]"));
-  const btns   = document.querySelectorAll(".rm-filter[data-filter]");
-  if(!slider || !cards.length || !btns.length) return;
-
-  function applyFilter(mode){
-    const m = (mode || "all").toLowerCase();
-    btns.forEach(b => b.classList.toggle("active", b.dataset.filter === m));
-
-    cards.forEach(card => {
-      const phase = (card.dataset.phase || "").toLowerCase();
-      const show =
-        m === "all" ||
-        (m === "active" && phase === "active") ||
-        (m === "prepare" && phase === "prepare") ||
-        (m === "all" && phase === "master") ||
-        (m === "all" && phase === "active") ||
-        (m === "all" && phase === "prepare") ||
-        (m === "active" && phase === "active");
-
-      // master tampil hanya di ALL (biar rapi)
-      const finalShow = (m === "all") ? true : (phase === m);
-      card.style.display = finalShow ? "" : "none";
-    });
-
-    slider.scrollTo({ left: 0, behavior: "smooth" });
-    try{ playMagicChime(); }catch(e){}
-    log("Roadmap Filter: " + m.toUpperCase());
-  }
-
-  btns.forEach(btn => btn.addEventListener("click", () => applyFilter(btn.dataset.filter)));
-  applyFilter("all");
-});
-
-// ===== Web3 =====
-let provider, signer, userAddress;
-const BSC_RPC = "https://rpc.ankr.com/bsc";
-const BSC_CHAIN_ID = "0x38";
-
-async function initProvider() {
-  if (window.ethereum) {
-    provider = new ethers.BrowserProvider(window.ethereum);
-    return true;
-  }
-  provider = new ethers.JsonRpcProvider(BSC_RPC);
-  alert("⚠️ Wallet tidak terdeteksi. Buka lewat TokenPocket / TrustWallet / MetaMask Browser.");
-  return false;
-}
-
-async function switchToBSC() {
-  try {
-    await provider.send("wallet_switchEthereumChain", [{ chainId: BSC_CHAIN_ID }]);
-  } catch (e) {
-    if (e && e.code === 4902) {
-      await provider.send("wallet_addEthereumChain", [{
-        chainId: BSC_CHAIN_ID,
-        chainName: "Binance Smart Chain",
-        rpcUrls: [BSC_RPC],
-        nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
-        blockExplorerUrls: ["https://bscscan.com"]
-      }]);
-    }
-  }
-}
-
-function shorten(addr){ return addr.slice(0,6) + "..." + addr.slice(-4); }
-
-async function updateBalances(){
-  if (!provider || !userAddress) return;
-
-  const balWei = await provider.getBalance(userAddress);
-  const bnb = Number(ethers.formatEther(balWei));
-
-  const elBnbHeader = document.getElementById("bnbBalance");
-  if (elBnbHeader) elBnbHeader.innerText = bnb.toFixed(4);
-
-  const elBnbCard = document.getElementById("bnb");
-  if (elBnbCard) elBnbCard.innerText = bnb.toFixed(4);
-
-  const elAddrCard = document.getElementById("address");
-  if (elAddrCard) elAddrCard.innerText = shorten(userAddress);
-
-  const ABI = [
-    "function balanceOf(address) view returns (uint256)",
-    "function decimals() view returns (uint8)"
-  ];
-
-  const token = new ethers.Contract(TOKEN_SNR, ABI, provider);
-  const [raw, dec] = await Promise.all([ token.balanceOf(userAddress), token.decimals() ]);
-  const snr = Number(ethers.formatUnits(raw, dec));
-
-  const elSnrHeader = document.getElementById("snrBalance");
-  if (elSnrHeader) elSnrHeader.innerText = snr.toFixed(2);
-
-  const elSnrCard = document.getElementById("snr");
-  if (elSnrCard) elSnrCard.innerText = snr.toFixed(2);
-
-  log("Balances Updated: BNB " + bnb.toFixed(4) + " | SNR " + snr.toFixed(2));
-}
-
-async function connectWallet() {
-  const ok = await initProvider();
-  if (!ok) return;
-
-  try {
-    await provider.send("eth_requestAccounts", []);
-    await switchToBSC();
-
-    signer = await provider.getSigner();
-    userAddress = await signer.getAddress();
-    try{ localStorage.setItem("snr_wallet_autoconnect","1"); }catch(e){}
-
-    const elWallet = document.getElementById("walletAddress");
-    if (elWallet) elWallet.innerText = shorten(userAddress);
-
-    await updateBalances();
-    log("Wallet Connected: " + shorten(userAddress));
-  } catch (err) {
-    console.error(err);
-    alert("❌ Gagal connect wallet.");
-    log("Connect failed.");
-  }
-}
-
-async function snrAutoReconnect(){
-  let want = "0";
-  try{ want = localStorage.getItem("snr_wallet_autoconnect") || "0"; }catch(e){}
-  if(want !== "1") return;
-
-  const ok = await initProvider();
-  if(!ok) return;
-
-  try{
-    const accounts = await provider.send("eth_accounts", []);
-    if(!accounts || !accounts.length) return;
-
-    try{ await switchToBSC(); }catch(e){}
-
-    signer = await provider.getSigner();
-    userAddress = await signer.getAddress();
-
-    const elWallet = document.getElementById("walletAddress");
-    if (elWallet) elWallet.innerText = shorten(userAddress);
-
-    await updateBalances();
-    log("Auto Reconnect: OK");
-  }catch(e){
-    log("Auto Reconnect: skipped");
-  }
-}
-
-if (window.ethereum) {
-  window.ethereum.on("accountsChanged", async () => { try{ await snrAutoReconnect(); }catch(e){} });
-  window.ethereum.on("chainChanged", async () => { try{ await snrAutoReconnect(); }catch(e){} });
-}
-
-/* TAB SWITCHER */
-(function(){
-  const btns = document.querySelectorAll('.tab-btn[data-tab]');
-  const panels = document.querySelectorAll('.tab-panel');
-
-  function showTab(name){
-    panels.forEach(p => p.classList.remove('show'));
-    const activePanel = document.getElementById('tab-' + name);
-    if(activePanel) activePanel.classList.add('show');
-
-    btns.forEach(b => {
-      b.classList.remove('active');
-      b.setAttribute('aria-selected','false');
-    });
-    const activeBtn = document.querySelector('.tab-btn[data-tab="'+name+'"]');
-    if(activeBtn){
-      activeBtn.classList.add('active');
-      activeBtn.setAttribute('aria-selected','true');
-    }
-  }
-
-  btns.forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
-  showTab('dashboard');
-})();
-
-/* NAV Toast */
-function snrToast(msg){
-  const el = document.getElementById("notify");
-  if(!el) return;
-  el.innerHTML = `🧭 <b>NAV</b> — ${msg}`;
-  el.classList.add("show");
-  setTimeout(() => el.classList.remove("show"), 2600);
-}
-function snrGo(url,label){
-  try{
-    localStorage.setItem("snr_nav_ping", JSON.stringify({
-      t: Date.now(),
-      from: (location.pathname || "index.html"),
-      to: url,
-      label: label || url
-    }));
-  }catch(e){}
-  snrToast(`Menuju <b>${label || url}</b>`);
-  setTimeout(() => { window.location.href = url; }, 320);
-}
-(function(){
-  try{
-    const raw = localStorage.getItem("snr_nav_ping");
-    if(!raw) return;
-    const ping = JSON.parse(raw);
-    if(!ping || !ping.t) return;
-    if(Date.now() - ping.t < 8000){
-      snrToast(`Masuk: <b>${(ping.label || "Halaman")}</b> ✅`);
-    }
-    localStorage.removeItem("snr_nav_ping");
-  }catch(e){}
-})();
-
-/* AUDIO ENGINE */
-let audioEnabled = true;
-
-function unlockAudio() {
-  const ambient = document.getElementById("bgAmbient");
-  if (audioEnabled) ambient.play().catch(()=>{});
-}
-function playMagicChime() {
-  if (!audioEnabled) return;
-  const chime = document.getElementById("magicChime");
-  if(!chime) return;
-  chime.currentTime = 0;
-  chime.play().catch(()=>{});
-}
-
-document.getElementById("soundBtn").onclick = (e) => {
-  e.stopPropagation();
-  audioEnabled = !audioEnabled;
-  const ambient = document.getElementById("bgAmbient");
-  const btn = document.getElementById("soundBtn");
-
-  if (audioEnabled) {
-    btn.innerText = "ON";
-    btn.classList.remove("off");
-    ambient.play().catch(()=>{});
-    log("Sound: ON");
-  } else {
-    btn.innerText = "OFF";
-    btn.classList.add("off");
-    ambient.pause();
-    log("Sound: OFF");
-  }
-};
-
-document.addEventListener("click", () => unlockAudio(), { once: true });
-document.querySelectorAll(".btn").forEach(btn => btn.addEventListener("click", () => { try{ playMagicChime(); }catch(e){} }));
-
-/* DOMAIN GUARD BOOT */
-(function(){
-  if(!snrIsCanonicalHost()){
-    snrShowGuard();
-    snrLockActions(true);
-    log("Security: Unverified domain detected.");
-  }else{
-    snrLockActions(false);
-    log("Security: Canonical domain OK.");
-  }
-})();
-
-/* NOTIF SYSTEM */
-setInterval(() => {
-  const names = ["0x5Z6935***","0x4F87690***","0x5E26138***","0x5372C1***","0x5A3f4***","0x5Df3a5***","0x4DB378***"];
-  const n = names[Math.floor(Math.random()*names.length)];
-  const el = document.getElementById("notify");
-  if(el) {
-    el.innerHTML = `✨ <b>${n}</b> joined SNR-VAULT`;
-    el.classList.add("show");
-    setTimeout(() => el.classList.remove("show"), 3000);
-  }
-}, 8000);
-
-/* LOADER ENGINE */
-(function () {
-  var loader = document.getElementById("snrLoader");
-  var bar = document.getElementById("snrProgressBar");
-  var pct = document.getElementById("snrPct");
-  if (!loader || !bar || !pct) return;
-
-  var p = 0, done = false;
-  function setProgress(val) {
-    p = Math.max(0, Math.min(100, val));
-    bar.style.width = p + "%";
-    pct.innerHTML = Math.round(p) + "%";
-  }
-  function hideLoader() {
-    if (done) return;
-    done = true;
-    setProgress(100);
-    loader.style.transition = "opacity .35s ease, transform .35s ease";
-    loader.style.opacity = "0";
-    loader.style.transform = "scale(1.01)";
-    setTimeout(function () { loader.style.display = "none"; }, 380);
-  }
-
-  loader.style.display = "flex";
-  loader.style.opacity = "1";
-  loader.style.transform = "none";
-  setProgress(0);
-
-  var timer = setInterval(function () {
-    if (done) { clearInterval(timer); return; }
-    var step = (p < 70) ? (4 + Math.random()*2) : (p < 92 ? (0.8 + Math.random()*1.6) : 0.4);
-    setProgress(Math.min(95, p + step));
-  }, 140);
-
-  document.addEventListener("DOMContentLoaded", function () {
-    if (!done) setProgress(Math.max(p, 96));
-  });
-
-  window.addEventListener("load", function () {
-    setProgress(98);
-    setTimeout(hideLoader, 220);
-  });
-
-  setTimeout(function () { try{ snrAutoReconnect(); }catch(e){} }, 600);
-  setTimeout(function () { if (!done) hideLoader(); }, 12000);
-})();
-</script>
+    </footer>
+
+    <!-- Logic Script -->
+    <script>
+        lucide.createIcons();
+
+        // Initialize Globe
+        const globeContainer = document.getElementById('globeViz');
+        if (globeContainer && typeof Globe !== 'undefined') {
+            const N = 40;
+            const nodesData = [...Array(N).keys()].map(() => ({
+                lat: (Math.random() - 0.5) * 180,
+                lng: (Math.random() - 0.5) * 360,
+                size: Math.random() * 0.4 + 0.1,
+                color: ['#00E5FF', '#FFCC00', '#ffffff'][Math.floor(Math.random() * 3)]
+            }));
+
+            const arcsData = [...Array(25).keys()].map(() => ({
+                startLat: (Math.random() - 0.5) * 180,
+                startLng: (Math.random() - 0.5) * 360,
+                endLat: (Math.random() - 0.5) * 180,
+                endLng: (Math.random() - 0.5) * 360,
+                color: ['rgba(0, 229, 255, 0.6)', 'rgba(255, 204, 0, 0.6)'][Math.round(Math.random())]
+            }));
+
+            const world = Globe()
+                (globeContainer)
+                .backgroundColor('rgba(0,0,0,0)')
+                .showGlobe(true)
+                .showAtmosphere(true)
+                .atmosphereColor('#00E5FF')
+                .atmosphereAltitude(0.25)
+                .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-night.jpg')
+                .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
+                .pointsData(nodesData)
+                .pointColor('color')
+                .pointAltitude(0.02)
+                .pointRadius('size')
+                .pointsMerge(true)
+                .arcsData(arcsData)
+                .arcColor('color')
+                .arcDashLength(0.4)
+                .arcDashGap(0.2)
+                .arcDashAnimateTime(2000)
+                .width(globeContainer.clientWidth)
+                .height(globeContainer.clientHeight || window.innerHeight * 0.8);
+
+            world.controls().autoRotate = true;
+            world.controls().autoRotateSpeed = 1.2;
+            world.controls().enableZoom = false;
+            world.controls().enablePan = false;
+
+            window.addEventListener('resize', () => {
+                world.width(globeContainer.clientWidth);
+                world.height(globeContainer.clientHeight || window.innerHeight * 0.8);
+            });
+
+            setTimeout(() => {
+                if(globeContainer.clientWidth) {
+                    world.width(globeContainer.clientWidth);
+                    world.height(globeContainer.clientHeight || window.innerHeight * 0.8);
+                }
+            }, 500);
+        }
+
+        // Tokenomics Chart
+        document.addEventListener("DOMContentLoaded", function() {
+            const chartCanvas = document.getElementById('tokenomicsBurgerChart');
+            if(chartCanvas) {
+                const ctx = chartCanvas.getContext('2d');
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Treasury', 'Community Reward', 'Presale Asset', 'Founder & Team', 'Marketing Reward'],
+                        datasets: [{
+                            data: [40, 30, 15, 10, 5],
+                            backgroundColor: ['#FFD700', '#00D1FF', '#FFFFFF', '#FF4500', '#A855F7'],
+                            borderWidth: 0,
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '75%',
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { enabled: true }
+                        }
+                    }
+                });
+            }
+        });
+
+        // SPA Navigation Logic
+        function toggleDapp(showDapp) {
+            const landing = document.getElementById('view-landing');
+            const dapp = document.getElementById('view-dapp');
+            
+            if (showDapp) {
+                landing.style.opacity = '0';
+                setTimeout(() => {
+                    landing.style.display = 'none';
+                    dapp.style.display = 'block';
+                    void dapp.offsetWidth;
+                    dapp.style.opacity = '1';
+                    window.scrollTo(0,0);
+                    lucide.createIcons();
+                }, 300);
+            } else {
+                dapp.style.opacity = '0';
+                setTimeout(() => {
+                    dapp.style.display = 'none';
+                    landing.style.display = 'block';
+                    void landing.offsetWidth;
+                    landing.style.opacity = '1';
+                    window.scrollTo(0,0);
+                }, 300);
+            }
+        }
+
+        // Tab Switcher for dApp Dashboard
+        function switchTab(tabName) {
+            document.querySelectorAll('.dapp-tab').forEach(tab => {
+                tab.classList.remove('active');
+                tab.style.display = 'none';
+            });
+
+            document.querySelectorAll('[id^="btn-"]').forEach(btn => {
+                btn.classList.remove('bg-primary', 'text-black');
+                btn.classList.add('text-secondary', 'hover:text-white');
+            });
+
+            const targetTab = document.getElementById('tab-' + tabName);
+            const targetBtn = document.getElementById('btn-' + tabName);
+            if(targetTab) {
+                targetTab.classList.add('active');
+                targetTab.style.display = 'block';
+            }
+            if(targetBtn) {
+                targetBtn.classList.remove('text-secondary', 'hover:text-white');
+                targetBtn.classList.add('bg-primary', 'text-black');
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            switchTab('staking');
+        });
+
+        // Web3 Logic moved to dapp.js
+        function showTxModal(type, title, message) {
+            const modal = document.getElementById('tx-modal');
+            const content = document.getElementById('tx-modal-content');
+            
+            let iconHtml = '';
+            if (type === 'loading') {
+                iconHtml = '<i data-lucide="loader-2" class="w-16 h-16 text-accent animate-spin mx-auto mb-6"></i>';
+            } else if (type === 'success') {
+                iconHtml = '<i data-lucide="check-circle" class="w-16 h-16 text-primary mx-auto mb-6 shadow-[0_0_15px_rgba(255,204,0,0.5)] rounded-full"></i>';
+            } else if (type === 'error') {
+                iconHtml = '<i data-lucide="alert-triangle" class="w-16 h-16 text-red-500 mx-auto mb-6"></i>';
+            }
+
+            content.innerHTML = `
+                ${iconHtml}
+                <h3 class="text-2xl font-display font-bold text-white mb-3 tracking-widest uppercase">${title}</h3>
+                <p class="text-sm text-secondary leading-relaxed">${message}</p>
+            `;
+            
+            if(typeof lucide !== 'undefined') lucide.createIcons();
+            
+            modal.style.display = 'flex';
+            void modal.offsetWidth;
+            modal.style.opacity = '1';
+        }
+
+        function closeTxModal() {
+            const modal = document.getElementById('tx-modal');
+            modal.style.opacity = '0';
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+    </script>
+    <script src="dapp.js"></script>
+<script src="i18n.js"></script>
 </body>
 </html>
+
+
