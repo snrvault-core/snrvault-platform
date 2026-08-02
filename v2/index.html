@@ -737,13 +737,14 @@
                                     <input type="text" id="stake-mentor" placeholder="0x..."
                                         class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
                                 </div>
-                                <div class="relative z-50">
+                                <div>
                                     <label class="block text-sm text-secondary mb-2">Durasi Staking</label>
-                                    <select id="stake-duration" class="w-full bg-card border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary cursor-pointer relative z-50 appearance-auto">
-                                        <option value="30" class="bg-card text-white py-2">30 Hari (Yield 100 BP)</option>
-                                        <option value="60" class="bg-card text-white py-2">60 Hari (Yield 120 BP)</option>
-                                        <option value="90" class="bg-card text-white py-2">90 Hari (Yield 150 BP)</option>
-                                    </select>
+                                    <div class="grid grid-cols-3 gap-3">
+                                        <button type="button" onclick="selectDuration(30, this)" class="duration-btn bg-primary text-black font-bold py-3 rounded-lg border border-primary transition-colors text-sm">30 Hari</button>
+                                        <button type="button" onclick="selectDuration(60, this)" class="duration-btn bg-card text-secondary py-3 rounded-lg border border-cardBorder transition-colors text-sm">60 Hari</button>
+                                        <button type="button" onclick="selectDuration(90, this)" class="duration-btn bg-card text-secondary py-3 rounded-lg border border-cardBorder transition-colors text-sm">90 Hari</button>
+                                    </div>
+                                    <input type="hidden" id="stake-duration" value="30">
                                 </div>
                                 <button onclick="executeProtocol()"
                                     class="w-full py-4 mt-4 bg-primary text-black font-bold rounded-lg hover:bg-yellow-400 hover:shadow-[0_0_20px_rgba(255,204,0,0.3)] transition-all">
@@ -1075,5 +1076,6 @@
 <script src="i18n.js"></script>
 </body>
 </html>
+
 
 
