@@ -838,23 +838,37 @@
                     </div>
 
                     <div class="space-y-6">
-                        <div class="glass-panel p-6 border-primary/20">
-                            <h4 class="font-display font-bold text-lg mb-4 flex items-center gap-2"><i data-lucide="gift" class="w-5 h-5 text-primary"></i> Leader Rewards</h4>
-                            <div id="ui-leader-rewards" class="text-3xl font-bold mb-4">1,240 <span class="text-sm text-secondary font-sans">SNR</span></div>
-                            <button class="w-full py-2 bg-background border border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors font-semibold">Claim Rewards</button>
-                        </div>
-                        <div class="glass-panel p-6">
-                            <h4 class="font-bold text-lg mb-4">Informasi Token</h4>
-                            <div class="space-y-4 text-sm">
-                                <div class="flex justify-between items-center border-b border-cardBorder pb-2"><span class="text-secondary">Smart Contract</span><a href="#" class="text-accent hover:underline text-xs">0x59a7...f543</a></div>
-                                <div class="flex justify-between items-center border-b border-cardBorder pb-2"><span class="text-secondary">Jaringan</span><span>BSC Mainnet</span></div>
-                                <div class="flex justify-between items-center pb-2"><span class="text-secondary">Max Cap Reward</span><span class="text-green-400 font-medium">300%</span></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <div class="glass-panel p-6 border-primary/20">
+        <h4 class="font-display font-bold text-lg mb-4 flex items-center gap-2">
+            <i data-lucide="gift" class="w-5 h-5 text-primary"></i> Leader Rewards
+        </h4>
+        <!-- Set default ke 0.00 SNR (Bukan dummy 1,240) dan sesuaikan ID dengan JS -->
+        <div id="ui-leader-reward" class="text-3xl font-bold mb-4">0.00 SNR</div>
+        
+        <!-- Tambahkan id dan onclick handler -->
+        <button id="btn-claim-leader" onclick="executeClaimLeaderFromUI()" class="w-full py-2 bg-background border border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors font-semibold">
+            Claim Rewards
+        </button>
+    </div>
+    
+    <div class="glass-panel p-6">
+        <h4 class="font-bold text-lg mb-4">Informasi Token</h4>
+        <div class="space-y-4 text-sm">
+            <div class="flex justify-between items-center border-b border-cardBorder pb-2">
+                <span class="text-secondary">Smart Contract</span>
+                <a href="https://bscscan.com/address/0x59a7098D86ac1548dAF3b14aAfC43858D274f543" target="_blank" class="text-accent hover:underline text-xs">0x59a7...f543</a>
+            </div>
+            <div class="flex justify-between items-center border-b border-cardBorder pb-2">
+                <span class="text-secondary">Jaringan</span>
+                <span>BSC Mainnet</span>
+            </div>
+            <div class="flex justify-between items-center pb-2">
+                <span class="text-secondary">Max Cap Reward</span>
+                <span class="text-green-400 font-medium">300%</span>
             </div>
         </div>
+    </div>
+</div>
 
         <!-- Transaction Modal Overlay -->
         <div id="tx-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-[#050816]/80 backdrop-blur-md transition-opacity duration-300" style="display: none; opacity: 0;">
