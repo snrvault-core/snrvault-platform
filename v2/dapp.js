@@ -3,6 +3,117 @@
 // Built for Ethers.js (v5 & v6 Auto-compatible)
 // =========================================================
 
+// =========================================================
+// MULTI-LANGUAGE / BILINGUAL SYSTEM
+// =========================================================
+const translations = {
+    id: {
+        connectWallet: "Hubungkan Wallet",
+        stakingTitle: "Staking SNR",
+        minStake: "Jumlah staking minimal adalah 100 SNR!",
+        stakeAmount: "Jumlah Staking",
+        mentorAddress: "Alamat Mentor / Sponsor",
+        executeBtn: "Eksekusi Protokol",
+        harvestBtn: "Panen Reward",
+        claimLeaderBtn: "Klaim Bonus Leader",
+        withdrawBtn: "Tarik Saldo",
+        totalStaked: "Total Staking",
+        dailyYield: "Hasil Harian",
+        readyWithdraw: "Saldo Siap Tarik",
+        rank: "Peringkat",
+        duration30: "30 Hari",
+        duration60: "60 Hari",
+        duration90: "90 Hari",
+        txLoadingPrep: "Menyiapkan Transaksi Staking...",
+        txLoadingApprove: "Meminta Izin Token (Approve SNR)...",
+        txLoadingSend: "Mengirim Transaksi Staking...",
+        txLoadingHarvest: "Memproses Klaim Hasil Harian...",
+        txLoadingClaimLeader: "Memproses Klaim Bonus Leader...",
+        txLoadingWithdraw: "Memproses Penarikan Saldo...",
+        txSuccessStake: "Staking Berhasil Diaktifkan!",
+        txSuccessHarvest: "Panen Reward Harian Berhasil!",
+        txSuccessClaimLeader: "Bonus Leader Berhasil Dicairkan!",
+        txSuccessWithdraw: "Penarikan Saldo Berhasil!",
+        errConnectWallet: "Silakan hubungkan wallet Anda terlebih dahulu!",
+        errEthersNotFound: "Library Ethers.js tidak ditemukan di window!",
+        errConnectFailed: "Gagal konek wallet: ",
+        errTxRejected: "Transaksi dibatalkan oleh pengguna.",
+        errTxFailed: "Transaksi Dibatalkan atau Gagal",
+        days: "Hari",
+        hours: "Jam",
+        completedFree: "Selesai / Bebas"
+    },
+    en: {
+        connectWallet: "Connect Wallet",
+        stakingTitle: "SNR Staking",
+        minStake: "Minimum staking amount is 100 SNR!",
+        stakeAmount: "Staking Amount",
+        mentorAddress: "Mentor / Sponsor Address",
+        executeBtn: "Execute Protocol",
+        harvestBtn: "Harvest Reward",
+        claimLeaderBtn: "Claim Leader Bonus",
+        withdrawBtn: "Withdraw Balance",
+        totalStaked: "Total Staked",
+        dailyYield: "Daily Yield",
+        readyWithdraw: "Ready to Withdraw",
+        rank: "Rank",
+        duration30: "30 Days",
+        duration60: "60 Days",
+        duration90: "90 Days",
+        txLoadingPrep: "Preparing Staking Transaction...",
+        txLoadingApprove: "Requesting Token Allowance (Approve SNR)...",
+        txLoadingSend: "Sending Staking Transaction...",
+        txLoadingHarvest: "Processing Daily Yield Claim...",
+        txLoadingClaimLeader: "Processing Leader Bonus Claim...",
+        txLoadingWithdraw: "Processing Balance Withdrawal...",
+        txSuccessStake: "Staking Activated Successfully!",
+        txSuccessHarvest: "Daily Reward Harvested Successfully!",
+        txSuccessClaimLeader: "Leader Bonus Claimed Successfully!",
+        txSuccessWithdraw: "Balance Withdrawal Successful!",
+        errConnectWallet: "Please connect your wallet first!",
+        errEthersNotFound: "Ethers.js library not found in window!",
+        errConnectFailed: "Failed to connect wallet: ",
+        errTxRejected: "Transaction rejected by user.",
+        errTxFailed: "Transaction Cancelled or Failed",
+        days: "Days",
+        hours: "Hours",
+        completedFree: "Completed / Free"
+    }
+};
+
+let currentLang = localStorage.getItem('dapp_lang') || 'id';
+
+function setLanguage(lang) {
+    if (!translations[lang]) return;
+    currentLang = lang;
+    localStorage.setItem('dapp_lang', lang);
+
+    const elements = document.querySelectorAll('[data-i18n]');
+    elements.forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang][key]) {
+            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                el.placeholder = translations[lang][key];
+            } else {
+                el.innerText = translations[lang][key];
+            }
+        }
+    });
+
+    const langBtn = document.getElementById('btn-lang-toggle');
+    if (langBtn) {
+        langBtn.innerText = lang.toUpperCase();
+    }
+}
+
+function toggleLanguage() {
+    const nextLang = currentLang === 'id' ? 'en' : 'id';
+    setLanguage(nextLang);
+}
+
+window.setLanguage = setLanguage;
+window.toggleLanguage = toggleLanguage;
+
 // 1. SMART CONTRACT CONFIGURATION
 const SNR_TOKEN_ADDRESS = "0x5ce1427f77d8c58f97f5e18b36804fd54aa72718";
 const STAKING_CONTRACT_ADDRESS = "0x59a7098D86ac1548dAF3b14aAfC43858D274f543";
@@ -80,7 +191,7 @@ async function connectWallet() {
             signer = provider.getSigner();
             currentUserAddress = await signer.getAddress();
         } else {
-            throw new Error("Library Ethers.js tidak ditemukan di window!");
+            throw new Error(translations[currentLang].errEthersNotFound);
         }
 
         // Inisialisasi Instance Smart Contract
@@ -116,7 +227,7 @@ async function connectWallet() {
 
     } catch (error) {
         console.error("Connection Error:", error);
-        alert("Gagal konek wallet: " + (error.reason || error.message || error));
+        alert(translations[currentLang].errConnectFailed + (error.reason || error.message || error));
     }
 }
 
@@ -128,10 +239,10 @@ window.initWeb3 = connectWallet;
 
 // 1. Core Join Protocol Execution
 async function btnActionJoinProtocol(amountFormatted, mentorAddress, durationDays) {
-    if (!stakingContract || !currentUserAddress) return alert("Silakan hubungkan wallet Anda terlebih dahulu!");
+    if (!stakingContract || !currentUserAddress) return alert(translations[currentLang].errConnectWallet);
     
     try {
-        showTxModal('loading', 'Menyiapkan Transaksi Staking...');
+        showTxModal('loading', translations[currentLang].txLoadingPrep);
         const parseUnits = ethers.parseUnits || ethers.utils.parseUnits;
         const isAddress = ethers.isAddress || ethers.utils.isAddress;
 
@@ -143,16 +254,16 @@ async function btnActionJoinProtocol(amountFormatted, mentorAddress, durationDay
         // Check & Approve Allowance
         const allowance = await snrContract.allowance(currentUserAddress, STAKING_CONTRACT_ADDRESS);
         if (BigInt(allowance.toString()) < BigInt(amountWei.toString())) {
-            showTxModal('loading', 'Meminta Izin Token (Approve SNR)...');
+            showTxModal('loading', translations[currentLang].txLoadingApprove);
             const approveTx = await snrContract.approve(STAKING_CONTRACT_ADDRESS, amountWei);
             await approveTx.wait();
         }
 
-        showTxModal('loading', 'Mengirim Transaksi Staking...');
+        showTxModal('loading', translations[currentLang].txLoadingSend);
         const tx = await stakingContract.joinProtocol(amountWei, mentor, durationDays || 30);
         await tx.wait();
 
-        showTxModal('success', 'Staking Berhasil Diaktifkan!');
+        showTxModal('success', translations[currentLang].txSuccessStake);
         await updateDashboardBalances();
     } catch (err) {
         handleTxError(err);
@@ -161,13 +272,13 @@ async function btnActionJoinProtocol(amountFormatted, mentorAddress, durationDay
 
 // 2. Harvest Daily Reward
 async function btnActionHarvest() {
-    if (!stakingContract || !currentUserAddress) return alert("Silakan hubungkan wallet terlebih dahulu!");
+    if (!stakingContract || !currentUserAddress) return alert(translations[currentLang].errConnectWallet);
     try {
-        showTxModal('loading', 'Memproses Klaim Hasil Harian...');
+        showTxModal('loading', translations[currentLang].txLoadingHarvest);
         const tx = await stakingContract.harvestDailyReward();
         await tx.wait();
 
-        showTxModal('success', 'Panen Reward Harian Berhasil!');
+        showTxModal('success', translations[currentLang].txSuccessHarvest);
         await updateDashboardBalances();
     } catch (err) {
         handleTxError(err);
@@ -176,13 +287,13 @@ async function btnActionHarvest() {
 
 // 3. Claim Leader Reward
 async function btnActionClaimLeader() {
-    if (!stakingContract || !currentUserAddress) return alert("Silakan hubungkan wallet terlebih dahulu!");
+    if (!stakingContract || !currentUserAddress) return alert(translations[currentLang].errConnectWallet);
     try {
-        showTxModal('loading', 'Memproses Klaim Bonus Leader...');
+        showTxModal('loading', translations[currentLang].txLoadingClaimLeader);
         const tx = await stakingContract.claimLeaderRewards();
         await tx.wait();
 
-        showTxModal('success', 'Bonus Leader Berhasil Dicairkan!');
+        showTxModal('success', translations[currentLang].txSuccessClaimLeader);
         await updateDashboardBalances();
     } catch (err) {
         handleTxError(err);
@@ -191,16 +302,16 @@ async function btnActionClaimLeader() {
 
 // 4. Withdraw Ready Balance
 async function btnActionWithdrawReady(amountFormatted) {
-    if (!stakingContract || !currentUserAddress) return alert("Silakan hubungkan wallet terlebih dahulu!");
+    if (!stakingContract || !currentUserAddress) return alert(translations[currentLang].errConnectWallet);
     try {
-        showTxModal('loading', 'Memproses Penarikan Saldo...');
+        showTxModal('loading', translations[currentLang].txLoadingWithdraw);
         const parseUnits = ethers.parseUnits || ethers.utils.parseUnits;
         const amountWei = parseUnits(amountFormatted.toString(), 18);
 
         const tx = await stakingContract.withdrawReadyBalance(amountWei);
         await tx.wait();
 
-        showTxModal('success', 'Penarikan Saldo Berhasil!');
+        showTxModal('success', translations[currentLang].txSuccessWithdraw);
         await updateDashboardBalances();
     } catch (err) {
         handleTxError(err);
@@ -230,7 +341,7 @@ window.selectDuration = selectDuration;
 
 async function executeClaimLeaderFromUI() {
     if (!currentUserAddress) {
-        alert("Silakan hubungkan wallet Anda terlebih dahulu!");
+        alert(translations[currentLang].errConnectWallet);
         return connectWallet();
     }
     await btnActionClaimLeader();
@@ -239,7 +350,7 @@ window.executeClaimLeaderFromUI = executeClaimLeaderFromUI;
 
 async function executeProtocol() {
     if (!currentUserAddress) {
-        alert("Silakan hubungkan wallet Anda terlebih dahulu!");
+        alert(translations[currentLang].errConnectWallet);
         return connectWallet();
     }
 
@@ -247,7 +358,7 @@ async function executeProtocol() {
     const amount = amountInput ? amountInput.value : "0";
 
     if (!amount || parseFloat(amount) < 100) {
-        alert("Jumlah staking minimal adalah 100 SNR!");
+        alert(translations[currentLang].minStake);
         return;
     }
 
@@ -330,29 +441,30 @@ function updateUI(elementId, textValue) {
 }
 
 function formatSeconds(seconds) {
-    if (seconds <= 0) return "Selesai / Bebas";
+    if (seconds <= 0) return translations[currentLang].completedFree;
     const days = Math.floor(seconds / (3600 * 24));
     const hours = Math.floor((seconds % (3600 * 24)) / 3600);
-    return `${days} Hari ${hours} Jam`;
+    return `${days} ${translations[currentLang].days} ${hours} ${translations[currentLang].hours}`;
 }
 
 function showTxModal(type, text) {
     console.log(`[Tx Modal - ${type.toUpperCase()}]: ${text}`);
-    if (type === 'error') alert("Transaksi Gagal: " + text);
-    else if (type === 'success') alert("Berhasil: " + text);
+    if (type === 'error') alert(text);
+    else if (type === 'success') alert(text);
 }
 
 function handleTxError(err) {
     console.error("Tx Error:", err);
-    let msg = err.reason || err.message || "Transaksi Dibatalkan atau Gagal";
+    let msg = err.reason || err.message || translations[currentLang].errTxFailed;
     if (err.code === "ACTION_REJECTED" || err.code === 4001) {
-        msg = "Transaksi dibatalkan oleh pengguna.";
+        msg = translations[currentLang].errTxRejected;
     }
     showTxModal('error', msg);
 }
 
 // Event Listener Inisialisasi DOM
 window.addEventListener('DOMContentLoaded', () => {
+    setLanguage(currentLang);
     const btnConnect = document.getElementById("btn-connect-wallet");
     if (btnConnect) {
         btnConnect.addEventListener("click", connectWallet);
