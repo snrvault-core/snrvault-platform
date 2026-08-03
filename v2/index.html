@@ -709,49 +709,52 @@
 
 
                  <!-- TABS NAVIGATION -->
-            <div class="flex flex-wrap gap-2 mb-8 bg-card p-2 rounded-xl border border-cardBorder w-fit">
-                <button onclick="switchTab('staking')" id="btn-staking" class="px-6 py-2 rounded-lg text-sm font-medium transition-all bg-primary text-black uppercase">Join Protocol</button>
-                <button onclick="switchTab('history')" id="btn-history" class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary uppercase">History Transaksi</button>
-                <button onclick="switchTab('network')" id="btn-network" class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary uppercase">Network & Rank</button>
-                <button onclick="switchTab('p2p')" id="btn-p2p" class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary uppercase">P2P Portal</button>
+<div class="flex flex-wrap gap-2 mb-8 bg-card p-2 rounded-xl border border-cardBorder w-fit">
+    <button onclick="switchTab('staking')" id="btn-staking" class="px-6 py-2 rounded-lg text-sm font-medium transition-all bg-primary text-black uppercase">Join Protocol</button>
+    <button onclick="switchTab('history')" id="btn-history" class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary uppercase">History Transaksi</button>
+    <button onclick="switchTab('network')" id="btn-network" class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary uppercase">Network & Rank</button>
+    <button onclick="switchTab('p2p')" id="btn-p2p" class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary uppercase">P2P Portal</button>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2 space-y-6">
+
+        <div id="tab-staking" class="dapp-tab active glass-panel p-8">
+            <h3 class="text-2xl font-display font-bold mb-6 flex items-center gap-2">
+                <i data-lucide="shield-alert" class="text-primary w-6 h-6"></i> Titan v4 - Join Protocol
+            </h3>
+            <div class="space-y-5">
+                <div>
+                    <label class="block text-sm text-secondary mb-2">Jumlah SNR (Min 100)</label>
+                    <div class="relative">
+                        <input type="number" id="stake-amount" placeholder="0.0"
+                            class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
+                        <span class="absolute right-4 top-3 text-primary font-bold">SNR</span>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm text-secondary mb-2">Alamat Mentor / Upline</label>
+                    <input type="text" id="stake-mentor" placeholder="0x..."
+                        class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
+                </div>
+                <div>
+                    <label class="block text-sm text-secondary mb-2">Durasi Staking</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <button type="button" onclick="selectDuration(30, this)" class="duration-btn bg-primary text-black font-bold py-3 rounded-lg border border-primary transition-colors text-sm">30 Hari</button>
+                        <button type="button" onclick="selectDuration(60, this)" class="duration-btn bg-card text-secondary py-3 rounded-lg border border-cardBorder transition-colors text-sm">60 Hari</button>
+                        <button type="button" onclick="selectDuration(90, this)" class="duration-btn bg-card text-secondary py-3 rounded-lg border border-cardBorder transition-colors text-sm">90 Hari</button>
+                    </div>
+                    <!-- Hidden input untuk menyimpan durasi terpilih -->
+                    <input type="hidden" id="stake-duration" value="30">
+                </div>
+                <button onclick="executeProtocol()"
+                    class="w-full py-4 mt-4 bg-primary text-black font-bold rounded-lg hover:bg-yellow-400 hover:shadow-[0_0_20px_rgba(255,204,0,0.3)] transition-all">
+                    Eksekusi Protokol
+                </button>
             </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div class="lg:col-span-2 space-y-6">
-
-                        <div id="tab-staking" class="dapp-tab active glass-panel p-8">
-                            <h3 class="text-2xl font-display font-bold mb-6 flex items-center gap-2">
-                                <i data-lucide="shield-alert" class="text-primary w-6 h-6"></i> Titan v4 - Join Protocol
-                            </h3>
-                            <div class="space-y-5">
-                                <div>
-                                    <label class="block text-sm text-secondary mb-2">Jumlah SNR (Min 100)</label>
-                                    <div class="relative">
-                                        <input type="number" id="stake-amount" placeholder="0.0"
-                                            class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
-                                        <span class="absolute right-4 top-3 text-primary font-bold">SNR</span>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-sm text-secondary mb-2">Alamat Mentor / Upline</label>
-                                    <input type="text" id="stake-mentor" placeholder="0x..."
-                                        class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
-                                </div>
-                                <div>
-                                    <label class="block text-sm text-secondary mb-2">Durasi Staking</label>
-                                    <div class="grid grid-cols-3 gap-3">
-                                        <button type="button" onclick="selectDuration(30, this)" class="duration-btn bg-primary text-black font-bold py-3 rounded-lg border border-primary transition-colors text-sm">30 Hari</button>
-                                        <button type="button" onclick="selectDuration(60, this)" class="duration-btn bg-card text-secondary py-3 rounded-lg border border-cardBorder transition-colors text-sm">60 Hari</button>
-                                        <button type="button" onclick="selectDuration(90, this)" class="duration-btn bg-card text-secondary py-3 rounded-lg border border-cardBorder transition-colors text-sm">90 Hari</button>
-                                    </div>
-                                    <input type="hidden" id="stake-duration" value="30">
-                                </div>
-                                <button onclick="executeProtocol()"
-                                    class="w-full py-4 mt-4 bg-primary text-black font-bold rounded-lg hover:bg-yellow-400 hover:shadow-[0_0_20px_rgba(255,204,0,0.3)] transition-all">
-                                    Eksekusi Protokol
-                                </button>
-                            </div>
-                        </div>
+        </div>
+    </div>
+</div>
 
                                                 <div id="tab-history" class="dapp-tab glass-panel p-8" style="display: none;">
                             <h3 class="text-2xl font-display font-bold mb-6 flex items-center gap-2">
