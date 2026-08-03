@@ -64,7 +64,6 @@ async function connectWallet() {
                 await eth.enable();
             }
 
-            // Integrasi Provider (Dukungan Ethers v5 & v6)
             if (typeof ethers.BrowserProvider !== 'undefined') {
                 provider = new ethers.BrowserProvider(eth);
                 signer = await provider.getSigner();
@@ -77,11 +76,10 @@ async function connectWallet() {
 
             currentUserAddress = await (signer.getAddress ? signer.getAddress() : signer.getAddress);
 
-            // Inisialisasi Kontrak dengan Signer untuk kemampuan Read & Write
             stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
             snrContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, signer);
 
-            // Update UI Button
+            // Update UI Button Text
             const connectBtn = document.getElementById('btn-connect-wallet');
             if (connectBtn) {
                 const shortAddress = currentUserAddress.substring(0, 6) + '...' + currentUserAddress.substring(currentUserAddress.length - 4);
@@ -89,7 +87,7 @@ async function connectWallet() {
                 if (typeof lucide !== 'undefined') lucide.createIcons();
             }
 
-            // Sync Saldo Native BNB
+            // Sync BNB Balance
             const bnbBalance = await provider.getBalance(currentUserAddress);
             const formattedBNB = typeof ethers.formatEther !== 'undefined' 
                 ? ethers.formatEther(bnbBalance) 
@@ -98,11 +96,8 @@ async function connectWallet() {
             const bnbElem = document.getElementById('ui-bnb-balance');
             if (bnbElem) bnbElem.innerText = parseFloat(formattedBNB).toFixed(4);
 
-            // Load Data Dashboard & History
             await updateDashboardBalances();
-            await loadTransactionHistory();
 
-            // Auto-Reload saat Ganti Akun / Network
             if (eth.on) {
                 eth.on('accountsChanged', () => window.location.reload());
                 eth.on('chainChanged', () => window.location.reload());
@@ -117,14 +112,39 @@ async function connectWallet() {
     }
 }
 
-// Alias universal
 window.initWeb3 = connectWallet;
 
 // ==========================================
 // TRANSAKSI WRITE (MEMBER ACTIONS)
 // ==========================================
 
-// 1. Join Protocol / Stake
+// Bridge Handler untuk Form UI Join Protocol
+async function executeJoinFromUI() {
+    if (!currentUserAddress) {
+        alert("Silakan hubungkan wallet Anda terlebih dahulu!");
+        return connectWallet();
+    }
+
+    const amountInput = document.getElementById('input-stake-amount');
+    const amount = amountInput ? amountInput.value : "0";
+
+    if (!amount || parseFloat(amount) <= 0) {
+        alert("Silakan masukkan jumlah staking SNR yang valid!");
+        return;
+    }
+
+    const mentorInput = document.getElementById('input-mentor-address');
+    const mentor = mentorInput ? mentorInput.value.trim() : "";
+
+    const selectedDays = document.querySelector('input[name="staking_days"]:checked');
+    const days = selectedDays ? parseInt(selectedDays.value) : 30;
+
+    await btnActionJoinProtocol(amount, mentor, days);
+}
+
+window.executeJoinFromUI = executeJoinFromUI;
+
+// 1. Core Join Protocol
 async function btnActionJoinProtocol(amountFormatted, mentorAddress, durationDays) {
     if (!stakingContract || !currentUserAddress) return alert("Silakan hubungkan wallet Anda terlebih dahulu!");
     try {
@@ -169,7 +189,7 @@ async function btnActionHarvest() {
     }
 }
 
-// 3. Claim Leader / Network Reward
+// 3. Claim Leader Reward
 async function btnActionClaimLeader() {
     if (!stakingContract || !currentUserAddress) return alert("Silakan hubungkan wallet terlebih dahulu!");
     try {
@@ -202,57 +222,6 @@ async function btnActionWithdrawReady(amountFormatted) {
     }
 }
 
-// 5. Unstake Principal Modal Pokok
-async function btnActionUnstake(amountFormatted) {
-    if (!stakingContract || !currentUserAddress) return alert("Silakan hubungkan wallet terlebih dahulu!");
-    try {
-        showTxModal('loading', 'Memproses Penarikan Modal Pokok...');
-        const parseUnits = ethers.parseUnits || ethers.utils.parseUnits;
-        const amountWei = parseUnits(amountFormatted.toString(), 18);
-
-        const tx = await stakingContract.unstakePrincipal(amountWei);
-        await tx.wait();
-
-        showTxModal('success', 'Modal Pokok Berhasil Ditarik!');
-        await updateDashboardBalances();
-    } catch (err) {
-        handleTxError(err);
-    }
-}
-
-// 6. Request Asset Acquisition Program
-async function btnActionRequestAsset(assetTypeEnum, assetValueFormatted, unitModel, protocolPathEnum) {
-    if (!stakingContract || !currentUserAddress) return alert("Silakan hubungkan wallet terlebih dahulu!");
-    try {
-        showTxModal('loading', 'Mengirimkan Pengajuan Program Aset...');
-        const parseUnits = ethers.parseUnits || ethers.utils.parseUnits;
-        const valueWei = parseUnits(assetValueFormatted.toString(), 18);
-
-        const tx = await stakingContract.requestAssetAcquisition(assetTypeEnum, valueWei, unitModel || "", protocolPathEnum || 0);
-        await tx.wait();
-
-        showTxModal('success', 'Pengajuan Program Aset Berhasil!');
-        await updateDashboardBalances();
-    } catch (err) {
-        handleTxError(err);
-    }
-}
-
-// 7. Claim Sovereign Principal (Cairkan Jaminan Aset)
-async function btnActionClaimSovereignAsset() {
-    if (!stakingContract || !currentUserAddress) return alert("Silakan hubungkan wallet terlebih dahulu!");
-    try {
-        showTxModal('loading', 'Mencairkan Jaminan Aset Program...');
-        const tx = await stakingContract.claimSovereignPrincipal();
-        await tx.wait();
-
-        showTxModal('success', 'Pencairan Jaminan Aset Berhasil!');
-        await updateDashboardBalances();
-    } catch (err) {
-        handleTxError(err);
-    }
-}
-
 // ==========================================
 // READ & SINKRONISASI DASHBOARD REAL-TIME
 // ==========================================
@@ -263,15 +232,12 @@ async function updateDashboardBalances() {
         const formatUnits = ethers.formatUnits || ethers.utils.formatUnits;
         const fmt = (val) => parseFloat(formatUnits(val || 0, 18)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
 
-        // Get SNR Token Balance
         const snrBalance = await snrContract.balanceOf(currentUserAddress);
         updateUI('ui-snr-balance', fmt(snrBalance) + " SNR");
         updateUI('ui-wallet-balance', fmt(snrBalance) + " SNR");
 
-        // Single Call via getDashboard View Function
         const d = await stakingContract.getDashboard(currentUserAddress);
 
-        // Populate Staking Data
         updateUI('ui-staking-principal', fmt(d.stakingPrincipal) + " SNR");
         updateUI('ui-current-reward', fmt(d.currentReward) + " SNR");
         updateUI('ui-pending-reward', fmt(d.currentReward) + " SNR");
@@ -281,13 +247,6 @@ async function updateDashboardBalances() {
         updateUI('ui-daily-yield-bp', (Number(d.dailyYieldBP) / 100).toFixed(2) + "% / hari");
         updateUI('ui-remaining-lock', formatSeconds(Number(d.remainingLock)));
 
-        // Populate Asset Data
-        updateUI('ui-asset-value', fmt(d.assetValue) + " SNR");
-        updateUI('ui-asset-locked', fmt(d.assetPrincipalLocked) + " SNR");
-        updateUI('ui-asset-model', d.unitModel || "Belum Ada Program");
-        updateUI('ui-asset-remaining', formatSeconds(Number(d.assetRemaining)));
-
-        // Populate Leader & Network Data
         updateUI('ui-direct-active', d.directActive.toString());
         updateUI('ui-group-volume', fmt(d.groupVolume) + " SNR");
         updateUI('ui-current-rank', "Rank " + d.rank.toString());
@@ -298,13 +257,6 @@ async function updateDashboardBalances() {
     }
 }
 
-async function loadTransactionHistory() {
-    console.log("Loading transaction history for:", currentUserAddress);
-}
-
-// ==========================================
-// HELPER UTILITIES
-// ==========================================
 function updateUI(elementId, textValue) {
     const el = document.getElementById(elementId);
     if (el) el.innerText = textValue;
@@ -319,11 +271,8 @@ function formatSeconds(seconds) {
 
 function showTxModal(type, text) {
     console.log(`[Tx Modal - ${type.toUpperCase()}]: ${text}`);
-    if (type === 'error') {
-        alert("Transaksi Gagal: " + text);
-    } else if (type === 'success') {
-        alert("Berhasil: " + text);
-    }
+    if (type === 'error') alert("Transaksi Gagal: " + text);
+    else if (type === 'success') alert("Berhasil: " + text);
 }
 
 function handleTxError(err) {
@@ -332,7 +281,6 @@ function handleTxError(err) {
     showTxModal('error', msg);
 }
 
-// DOM Event Listener
 window.addEventListener('DOMContentLoaded', () => {
     const btnConnect = document.getElementById("btn-connect-wallet");
     if (btnConnect) {
