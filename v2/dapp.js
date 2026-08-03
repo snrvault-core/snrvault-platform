@@ -118,33 +118,7 @@ window.initWeb3 = connectWallet;
 // TRANSAKSI WRITE (MEMBER ACTIONS)
 // ==========================================
 
-// Bridge Handler untuk Form UI Join Protocol
-async function executeJoinFromUI() {
-    if (!currentUserAddress) {
-        alert("Silakan hubungkan wallet Anda terlebih dahulu!");
-        return connectWallet();
-    }
-
-    const amountInput = document.getElementById('input-stake-amount');
-    const amount = amountInput ? amountInput.value : "0";
-
-    if (!amount || parseFloat(amount) <= 0) {
-        alert("Silakan masukkan jumlah staking SNR yang valid!");
-        return;
-    }
-
-    const mentorInput = document.getElementById('input-mentor-address');
-    const mentor = mentorInput ? mentorInput.value.trim() : "";
-
-    const selectedDays = document.querySelector('input[name="staking_days"]:checked');
-    const days = selectedDays ? parseInt(selectedDays.value) : 30;
-
-    await btnActionJoinProtocol(amount, mentor, days);
-}
-
-window.executeJoinFromUI = executeJoinFromUI;
-
-// 1. Core Join Protocol
+// 1. Core Join Protocol Execution
 async function btnActionJoinProtocol(amountFormatted, mentorAddress, durationDays) {
     if (!stakingContract || !currentUserAddress) return alert("Silakan hubungkan wallet Anda terlebih dahulu!");
     try {
@@ -221,6 +195,83 @@ async function btnActionWithdrawReady(amountFormatted) {
         handleTxError(err);
     }
 }
+
+// ==========================================
+// UI HANDLERS & FORM BRIDGES
+// ==========================================
+
+// Handlers untuk Pilihan Durasi (30, 60, 90 Hari)
+function selectDuration(days, btnElement) {
+    const durationInput = document.getElementById('stake-duration');
+    if (durationInput) {
+        durationInput.value = days;
+    }
+
+    const buttons = document.querySelectorAll('.duration-btn');
+    buttons.forEach(btn => {
+        btn.className = "duration-btn bg-card text-secondary py-3 rounded-lg border border-cardBorder transition-colors text-sm";
+    });
+
+    if (btnElement) {
+        btnElement.className = "duration-btn bg-primary text-black font-bold py-3 rounded-lg border border-primary transition-colors text-sm";
+    }
+}
+window.selectDuration = selectDuration;
+
+// Eksekutor Utama yang Dipanggil Tombol "Eksekusi Protokol"
+async function executeProtocol() {
+    if (!currentUserAddress) {
+        alert("Silakan hubungkan wallet Anda terlebih dahulu!");
+        return connectWallet();
+    }
+
+    // Mendapatkan input dari HTML
+    const amountInput = document.getElementById('stake-amount') || document.getElementById('input-stake-amount');
+    const amount = amountInput ? amountInput.value : "0";
+
+    if (!amount || parseFloat(amount) < 100) {
+        alert("Jumlah staking minimal adalah 100 SNR!");
+        return;
+    }
+
+    const mentorInput = document.getElementById('stake-mentor') || document.getElementById('input-mentor-address');
+    const mentor = mentorInput ? mentorInput.value.trim() : "";
+
+    const durationInput = document.getElementById('stake-duration');
+    const days = durationInput ? parseInt(durationInput.value) : 30;
+
+    await btnActionJoinProtocol(amount, mentor, days);
+}
+window.executeProtocol = executeProtocol;
+
+// Compatibility Bridge untuk fungsi lama
+window.executeJoinFromUI = executeProtocol;
+
+// Navigasi Tab UI
+function switchTab(tabName) {
+    const tabs = document.querySelectorAll('.dapp-tab');
+    tabs.forEach(tab => tab.classList.remove('active', 'block'));
+    tabs.forEach(tab => tab.classList.add('hidden'));
+
+    const navButtons = document.querySelectorAll('[id^="btn-"]');
+    navButtons.forEach(btn => {
+        btn.classList.remove('bg-primary', 'text-black');
+        btn.classList.add('text-secondary');
+    });
+
+    const activeTab = document.getElementById(`tab-${tabName}`);
+    if (activeTab) {
+        activeTab.classList.remove('hidden');
+        activeTab.classList.add('active', 'block');
+    }
+
+    const activeBtn = document.getElementById(`btn-${tabName}`);
+    if (activeBtn) {
+        activeBtn.classList.remove('text-secondary');
+        activeBtn.classList.add('bg-primary', 'text-black');
+    }
+}
+window.switchTab = switchTab;
 
 // ==========================================
 // READ & SINKRONISASI DASHBOARD REAL-TIME
