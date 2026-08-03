@@ -218,6 +218,16 @@ function selectDuration(days, btnElement) {
 }
 window.selectDuration = selectDuration;
 
+// Bridge Handler untuk Tombol Claim Leader Reward dari UI
+async function executeClaimLeaderFromUI() {
+    if (!currentUserAddress) {
+        alert("Silakan hubungkan wallet Anda terlebih dahulu!");
+        return connectWallet();
+    }
+    await btnActionClaimLeader();
+}
+window.executeClaimLeaderFromUI = executeClaimLeaderFromUI;
+
 // Eksekutor Utama yang Dipanggil Tombol "Eksekusi Protokol"
 async function executeProtocol() {
     if (!currentUserAddress) {
