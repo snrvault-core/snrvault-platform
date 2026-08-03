@@ -162,36 +162,42 @@
     </div>
 
     <!-- Navbar -->
-    <nav class="sticky top-0 z-50 bg-[#050816]/80 backdrop-blur-md border-b border-cardBorder">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <div class="flex items-center gap-3 cursor-pointer flex-nowrap whitespace-nowrap" onclick="toggleDapp(false)">
-                    <i data-lucide="hexagon" class="h-8 w-8 text-primary"></i>
-                    <div class="font-display font-bold text-xl md:text-2xl tracking-widest whitespace-nowrap">
-                        <span class="text-primary font-display">SNR</span><span class="text-white font-display">-VAULT</span>
-                    </div>
-                </div>
-
-                <div class="hidden lg:flex items-center gap-8 text-sm font-display tracking-wide">
-                    <a href="#trust" class="nav-link" data-i18n="nav_trust">TRUST</a>
-                    <a href="#community" class="nav-link" data-i18n="nav_community">COMMUNITY</a>
-                    <a href="#economy" class="nav-link" data-i18n="nav_economy">ECONOMY</a>
-                    <a href="#utility" class="nav-link" data-i18n="nav_utility">UTILITY</a>
-                    <a href="#transparency" class="nav-link" data-i18n="nav_transparency">TRANSPARENCY</a>
-                </div>
-
-                <div class="flex items-center gap-4">
-                    <div class="flex items-center bg-[#050816] border border-cardBorder rounded overflow-hidden shadow-[0_0_10px_rgba(0,229,255,0.2)]">
-                        <button onclick="switchLanguage('en')" data-lang="en" class="lang-btn px-3 py-1.5 text-xs font-display transition-colors">EN</button>
-                        <button onclick="switchLanguage('id')" data-lang="id" class="lang-btn px-3 py-1.5 text-xs font-display transition-colors">ID</button>
-                    </div>
-                    <a href="#" onclick="toggleDapp(true); return false;" class="px-5 py-2.5 rounded border border-primary text-primary font-display font-bold text-sm hover:bg-primary hover:text-[#050816] transition-all duration-300 shadow-[0_0_15px_rgba(255,204,0,0.2)] hover:shadow-[0_0_25px_rgba(255,204,0,0.5)] flex items-center gap-2">
-                        <span data-i18n="nav_enter">ENTER FORTRESS</span>
-                    </a>
+<nav class="sticky top-0 z-50 bg-[#050816]/80 backdrop-blur-md border-b border-cardBorder">
+    <div class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
+        <div class="flex items-center justify-between h-20 gap-2">
+            <!-- Brand / Logo -->
+            <div class="flex items-center gap-2 sm:gap-3 cursor-pointer flex-nowrap whitespace-nowrap shrink-0" onclick="toggleDapp(false)">
+                <i data-lucide="hexagon" class="h-7 w-7 sm:h-8 sm:w-8 text-primary"></i>
+                <div class="font-display font-bold text-lg sm:text-xl md:text-2xl tracking-widest whitespace-nowrap">
+                    <span class="text-primary font-display">SNR</span><span class="text-white font-display">-VAULT</span>
                 </div>
             </div>
+
+            <!-- Desktop Nav Links -->
+            <div class="hidden lg:flex items-center gap-8 text-sm font-display tracking-wide">
+                <a href="#trust" class="nav-link" data-i18n="nav_trust">TRUST</a>
+                <a href="#community" class="nav-link" data-i18n="nav_community">COMMUNITY</a>
+                <a href="#economy" class="nav-link" data-i18n="nav_economy">ECONOMY</a>
+                <a href="#utility" class="nav-link" data-i18n="nav_utility">UTILITY</a>
+                <a href="#transparency" class="nav-link" data-i18n="nav_transparency">TRANSPARENCY</a>
+            </div>
+
+            <!-- Right Controls: Language Switcher & Enter Fortress -->
+            <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+                <!-- Language Switcher -->
+                <div class="flex items-center bg-[#050816] border border-cardBorder rounded overflow-hidden shadow-[0_0_10px_rgba(0,229,255,0.2)]">
+                    <button onclick="switchLanguage('en')" data-lang="en" class="lang-btn px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-display transition-colors">EN</button>
+                    <button onclick="switchLanguage('id')" data-lang="id" class="lang-btn px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-display transition-colors">ID</button>
+                </div>
+                
+                <!-- Enter Fortress Button (Responsive Mobile Fix) -->
+                <a href="#" onclick="toggleDapp(true); return false;" class="px-3 sm:px-5 py-2 sm:py-2.5 rounded border border-primary text-primary font-display font-bold text-xs sm:text-sm hover:bg-primary hover:text-[#050816] transition-all duration-300 shadow-[0_0_15px_rgba(255,204,0,0.2)] hover:shadow-[0_0_25px_rgba(255,204,0,0.5)] flex items-center gap-1.5 sm:gap-2 whitespace-nowrap">
+                    <span data-i18n="nav_enter">ENTER FORTRESS</span>
+                </a>
+            </div>
         </div>
-    </nav>
+    </div>
+</nav>
 
     <!-- Main Content -->
     <main class="flex-grow relative">
