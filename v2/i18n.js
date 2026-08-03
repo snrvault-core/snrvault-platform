@@ -63,9 +63,24 @@ function setLanguage(lang) {
     elements.forEach(element => {
         const key = element.getAttribute('data-i18n');
         if (translations[lang][key]) {
-            element.innerText = translations[lang][key];
+            const translatedText = translations[lang][key];
+            
+            // Penanganan presisi untuk Form Input (Placeholder)
+            if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                element.placeholder = translatedText;
+            } else if (element.tagName === 'INPUT' && (element.type === 'button' || element.type === 'submit')) {
+                element.value = translatedText;
+            } else {
+                element.innerText = translatedText;
+            }
         }
     });
+
+    // Update label pada tombol switcher bahasa di UI jika elemen tersedia
+    const langBtn = document.getElementById('btn-lang-toggle');
+    if (langBtn) {
+        langBtn.innerText = lang.toUpperCase();
+    }
 }
 
 function toggleLanguage() {
@@ -73,7 +88,17 @@ function toggleLanguage() {
     setLanguage(newLang);
 }
 
+// Ekspor Fungsi ke Scope Global (window) agar bisa dipanggil langsung dari atribut HTML onclick="toggleLanguage()"
+window.setLanguage = setLanguage;
+window.toggleLanguage = toggleLanguage;
+window.currentLang = currentLang;
+
 // Jalankan Otomatis saat Halaman Selesai Di-load
 window.addEventListener('DOMContentLoaded', () => {
     setLanguage(currentLang);
 });
+
+// Jalankan langsung jika DOM sudah terlanjur siap saat file di-load
+if (document.readyState === 'interactive' || document.readyState === 'complete') {
+    setLanguage(currentLang);
+}
