@@ -3,9 +3,10 @@
 // Built for Ethers.js (v5 & v6 Auto-compatible)
 // =========================================================
 
-// 1. SMART CONTRACT ADDRESSES
+// 1. SMART CONTRACT CONFIGURATION
 const SNR_TOKEN_ADDRESS = "0x5ce1427f77d8c58f97f5e18b36804fd54aa72718";
 const STAKING_CONTRACT_ADDRESS = "0x59a7098D86ac1548dAF3b14aAfC43858D274f543";
+const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 // 2. COMPLETE ABI MAPPINGS
 const STAKING_ABI = [
@@ -29,7 +30,7 @@ const STAKING_ABI = [
         "uint256 directActive, uint256 groupVolume, uint256 rank, uint256 leaderReward, uint256 leaderRewardClaimed, " +
         "uint256 leaderRewardAccumulated, bool leaderCapReached, uint256 rewardCap, uint256 rewardCapRemaining, " +
         "bool blacklisted, bool fundLocked, bool protocolPaused, bool lockdown, bool emergencyMode" +
-    "))",
+        "))",
 
     // --- EVENTS ---
     "event RewardHarvested(address indexed user, uint256 netToCompound, uint256 netToReadyWD)",
@@ -45,70 +46,77 @@ const ERC20_ABI = [
 ];
 
 // 3. GLOBAL VARIABLES
-let provider;
-let signer;
-let stakingContract;
-let snrContract;
-let currentUserAddress;
+let provider = null;
+let signer = null;
+let stakingContract = null;
+let snrContract = null;
+let currentUserAddress = null;
 
 // ==========================================
 // KONEKSI WALLET & INITIALIZATION
 // ==========================================
 async function connectWallet() {
-    if (typeof window.ethereum !== 'undefined' || typeof window.web3 !== 'undefined') {
-        try {
-            const eth = window.ethereum || window.web3.currentProvider;
-            if (eth.request) {
-                await eth.request({ method: 'eth_requestAccounts' });
-            } else if (eth.enable) {
-                await eth.enable();
-            }
-
-            if (typeof ethers.BrowserProvider !== 'undefined') {
-                provider = new ethers.BrowserProvider(eth);
-                signer = await provider.getSigner();
-            } else if (typeof ethers.providers !== 'undefined') {
-                provider = new ethers.providers.Web3Provider(eth);
-                signer = provider.getSigner();
-            } else {
-                throw new Error("Library Ethers.js tidak ditemukan!");
-            }
-
-            currentUserAddress = await (signer.getAddress ? signer.getAddress() : signer.getAddress);
-
-            stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
-            snrContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, signer);
-
-            // Update UI Button Text
-            const connectBtn = document.getElementById('btn-connect-wallet');
-            if (connectBtn) {
-                const shortAddress = currentUserAddress.substring(0, 6) + '...' + currentUserAddress.substring(currentUserAddress.length - 4);
-                connectBtn.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4"></i> <span>' + shortAddress + '</span>';
-                if (typeof lucide !== 'undefined') lucide.createIcons();
-            }
-
-            // Sync BNB Balance
-            const bnbBalance = await provider.getBalance(currentUserAddress);
-            const formattedBNB = typeof ethers.formatEther !== 'undefined' 
-                ? ethers.formatEther(bnbBalance) 
-                : ethers.utils.formatEther(bnbBalance);
-
-            const bnbElem = document.getElementById('ui-bnb-balance');
-            if (bnbElem) bnbElem.innerText = parseFloat(formattedBNB).toFixed(4);
-
-            await updateDashboardBalances();
-
-            if (eth.on) {
-                eth.on('accountsChanged', () => window.location.reload());
-                eth.on('chainChanged', () => window.location.reload());
-            }
-
-        } catch (error) {
-            console.error("Connection Error:", error);
-            alert("Gagal konek wallet: " + (error.message || error));
-        }
-    } else {
+    if (typeof window.ethereum === 'undefined' && typeof window.web3 === 'undefined') {
         alert("Tolong buka website ini melalui DApp Browser (TokenPocket, TrustWallet, MetaMask) agar fungsi Web3 berjalan.");
+        return;
+    }
+
+    try {
+        const eth = window.ethereum || window.web3.currentProvider;
+        
+        if (eth.request) {
+            await eth.request({ method: 'eth_requestAccounts' });
+        } else if (eth.enable) {
+            await eth.enable();
+        }
+
+        // Deteksi Versi Ethers.js (v5 vs v6)
+        if (typeof ethers.BrowserProvider !== 'undefined') {
+            provider = new ethers.BrowserProvider(eth);
+            signer = await provider.getSigner();
+            currentUserAddress = await signer.getAddress();
+        } else if (typeof ethers.providers !== 'undefined') {
+            provider = new ethers.providers.Web3Provider(eth);
+            signer = provider.getSigner();
+            currentUserAddress = await signer.getAddress();
+        } else {
+            throw new Error("Library Ethers.js tidak ditemukan di window!");
+        }
+
+        // Inisialisasi Instance Smart Contract
+        stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
+        snrContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, signer);
+
+        // Update UI Identitas Wallet
+        const connectBtn = document.getElementById('btn-connect-wallet');
+        if (connectBtn) {
+            const shortAddress = `${currentUserAddress.substring(0, 6)}...${currentUserAddress.substring(currentUserAddress.length - 4)}`;
+            connectBtn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> <span>${shortAddress}</span>`;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        // Sync Saldo Native Coin (BNB)
+        const bnbBalance = await provider.getBalance(currentUserAddress);
+        const formatEther = ethers.formatEther || ethers.utils.formatEther;
+        const formattedBNB = formatEther(bnbBalance);
+
+        const bnbElem = document.getElementById('ui-bnb-balance');
+        if (bnbElem) bnbElem.innerText = parseFloat(formattedBNB).toFixed(4);
+
+        // Fetch Data Dashboard
+        await updateDashboardBalances();
+
+        // Register Event Listeners untuk Wallet
+        if (eth.on) {
+            eth.removeAllListeners?.('accountsChanged');
+            eth.removeAllListeners?.('chainChanged');
+            eth.on('accountsChanged', () => window.location.reload());
+            eth.on('chainChanged', () => window.location.reload());
+        }
+
+    } catch (error) {
+        console.error("Connection Error:", error);
+        alert("Gagal konek wallet: " + (error.reason || error.message || error));
     }
 }
 
@@ -121,13 +129,16 @@ window.initWeb3 = connectWallet;
 // 1. Core Join Protocol Execution
 async function btnActionJoinProtocol(amountFormatted, mentorAddress, durationDays) {
     if (!stakingContract || !currentUserAddress) return alert("Silakan hubungkan wallet Anda terlebih dahulu!");
+    
     try {
         showTxModal('loading', 'Menyiapkan Transaksi Staking...');
         const parseUnits = ethers.parseUnits || ethers.utils.parseUnits;
+        const isAddress = ethers.isAddress || ethers.utils.isAddress;
+
         const amountWei = parseUnits(amountFormatted.toString(), 18);
-        const mentor = (mentorAddress && (ethers.isAddress ? ethers.isAddress(mentorAddress) : ethers.utils.isAddress(mentorAddress))) 
+        const mentor = (mentorAddress && isAddress(mentorAddress)) 
             ? mentorAddress 
-            : "0x0000000000000000000000000000000000000000";
+            : ZERO_ADDRESS;
 
         // Check & Approve Allowance
         const allowance = await snrContract.allowance(currentUserAddress, STAKING_CONTRACT_ADDRESS);
@@ -200,7 +211,6 @@ async function btnActionWithdrawReady(amountFormatted) {
 // UI HANDLERS & FORM BRIDGES
 // ==========================================
 
-// Handlers untuk Pilihan Durasi (30, 60, 90 Hari)
 function selectDuration(days, btnElement) {
     const durationInput = document.getElementById('stake-duration');
     if (durationInput) {
@@ -218,7 +228,6 @@ function selectDuration(days, btnElement) {
 }
 window.selectDuration = selectDuration;
 
-// Bridge Handler untuk Tombol Claim Leader Reward dari UI
 async function executeClaimLeaderFromUI() {
     if (!currentUserAddress) {
         alert("Silakan hubungkan wallet Anda terlebih dahulu!");
@@ -228,14 +237,12 @@ async function executeClaimLeaderFromUI() {
 }
 window.executeClaimLeaderFromUI = executeClaimLeaderFromUI;
 
-// Eksekutor Utama yang Dipanggil Tombol "Eksekusi Protokol"
 async function executeProtocol() {
     if (!currentUserAddress) {
         alert("Silakan hubungkan wallet Anda terlebih dahulu!");
         return connectWallet();
     }
 
-    // Mendapatkan input dari HTML
     const amountInput = document.getElementById('stake-amount') || document.getElementById('input-stake-amount');
     const amount = amountInput ? amountInput.value : "0";
 
@@ -248,20 +255,19 @@ async function executeProtocol() {
     const mentor = mentorInput ? mentorInput.value.trim() : "";
 
     const durationInput = document.getElementById('stake-duration');
-    const days = durationInput ? parseInt(durationInput.value) : 30;
+    const days = durationInput ? parseInt(durationInput.value, 10) : 30;
 
     await btnActionJoinProtocol(amount, mentor, days);
 }
 window.executeProtocol = executeProtocol;
-
-// Compatibility Bridge untuk fungsi lama
 window.executeJoinFromUI = executeProtocol;
 
-// Navigasi Tab UI
 function switchTab(tabName) {
     const tabs = document.querySelectorAll('.dapp-tab');
-    tabs.forEach(tab => tab.classList.remove('active', 'block'));
-    tabs.forEach(tab => tab.classList.add('hidden'));
+    tabs.forEach(tab => {
+        tab.classList.remove('active', 'block');
+        tab.classList.add('hidden');
+    });
 
     const navButtons = document.querySelectorAll('[id^="btn-"]');
     navButtons.forEach(btn => {
@@ -294,24 +300,24 @@ async function updateDashboardBalances() {
         const fmt = (val) => parseFloat(formatUnits(val || 0, 18)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
 
         const snrBalance = await snrContract.balanceOf(currentUserAddress);
-        updateUI('ui-snr-balance', fmt(snrBalance) + " SNR");
-        updateUI('ui-wallet-balance', fmt(snrBalance) + " SNR");
+        updateUI('ui-snr-balance', `${fmt(snrBalance)} SNR`);
+        updateUI('ui-wallet-balance', `${fmt(snrBalance)} SNR`);
 
         const d = await stakingContract.getDashboard(currentUserAddress);
 
-        updateUI('ui-staking-principal', fmt(d.stakingPrincipal) + " SNR");
-        updateUI('ui-current-reward', fmt(d.currentReward) + " SNR");
-        updateUI('ui-pending-reward', fmt(d.currentReward) + " SNR");
-        updateUI('ui-reward-claimed', fmt(d.rewardClaimed) + " SNR");
-        updateUI('ui-ready-withdraw', fmt(d.readyWithdraw) + " SNR");
-        updateUI('ui-total-staking-asset', fmt(d.totalStakingAsset) + " SNR");
-        updateUI('ui-daily-yield-bp', (Number(d.dailyYieldBP) / 100).toFixed(2) + "% / hari");
+        updateUI('ui-staking-principal', `${fmt(d.stakingPrincipal)} SNR`);
+        updateUI('ui-current-reward', `${fmt(d.currentReward)} SNR`);
+        updateUI('ui-pending-reward', `${fmt(d.currentReward)} SNR`);
+        updateUI('ui-reward-claimed', `${fmt(d.rewardClaimed)} SNR`);
+        updateUI('ui-ready-withdraw', `${fmt(d.readyWithdraw)} SNR`);
+        updateUI('ui-total-staking-asset', `${fmt(d.totalStakingAsset)} SNR`);
+        updateUI('ui-daily-yield-bp', `${(Number(d.dailyYieldBP) / 100).toFixed(2)}% / hari`);
         updateUI('ui-remaining-lock', formatSeconds(Number(d.remainingLock)));
 
         updateUI('ui-direct-active', d.directActive.toString());
-        updateUI('ui-group-volume', fmt(d.groupVolume) + " SNR");
-        updateUI('ui-current-rank', "Rank " + d.rank.toString());
-        updateUI('ui-leader-reward', fmt(d.leaderReward) + " SNR");
+        updateUI('ui-group-volume', `${fmt(d.groupVolume)} SNR`);
+        updateUI('ui-current-rank', `Rank ${d.rank.toString()}`);
+        updateUI('ui-leader-reward', `${fmt(d.leaderReward)} SNR`);
 
     } catch (err) {
         console.error("Gagal sinkronisasi data dashboard:", err);
@@ -339,9 +345,13 @@ function showTxModal(type, text) {
 function handleTxError(err) {
     console.error("Tx Error:", err);
     let msg = err.reason || err.message || "Transaksi Dibatalkan atau Gagal";
+    if (err.code === "ACTION_REJECTED" || err.code === 4001) {
+        msg = "Transaksi dibatalkan oleh pengguna.";
+    }
     showTxModal('error', msg);
 }
 
+// Event Listener Inisialisasi DOM
 window.addEventListener('DOMContentLoaded', () => {
     const btnConnect = document.getElementById("btn-connect-wallet");
     if (btnConnect) {
