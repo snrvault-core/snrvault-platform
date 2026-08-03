@@ -1,13 +1,14 @@
 // =========================================================
-// dapp.js - SNR Sovereign Enterprise Production Driver
-// Compatible with Ethers.js v6 & HTML Enterprise UI
+// dapp.js - SNR Sovereign Enterprise Full Production Driver
+// Built for Ethers.js (v5 & v6 Auto-compatible)
 // =========================================================
 
-const CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000"; // Ganti dengan Address Smart Contract Staking
-const SNR_TOKEN_ADDRESS = "0x0000000000000000000000000000000000000000"; // Ganti dengan Address Token ERC20 SNR
+// 1. SMART CONTRACT ADDRESSES
+const SNR_TOKEN_ADDRESS = "0x5ce1427f77d8c58f97f5e18b36804fd54aa72718";
+const STAKING_CONTRACT_ADDRESS = "0x59a7098D86ac1548dAF3b14aAfC43858D274f543";
 
-// Complete ABI mapping from SNRStakingV6_TITAN_SOVEREIGN_ENTERPRISE
-const SNR_STAKING_ABI = [
+// 2. COMPLETE ABI MAPPINGS
+const STAKING_ABI = [
     // --- WRITE FUNCTIONS ---
     "function joinProtocol(uint256 _amount, address _mentor, uint256 _days) external",
     "function harvestDailyReward() external",
@@ -16,8 +17,10 @@ const SNR_STAKING_ABI = [
     "function unstakePrincipal(uint256 _amount) external",
     "function requestAssetAcquisition(uint8 _t, uint256 _v, string _model, uint8 _p) external",
     "function claimSovereignPrincipal() external",
-    
-    // --- READ FUNCTIONS ---
+
+    // --- READ / VIEW FUNCTIONS ---
+    "function users(address) view returns (bool isActive, uint256 participation, uint256 currentRank, uint256 totalRewardClaimed, uint256 directActiveCount, uint256 groupVolume, uint256 durationEnd, uint256 lastUpdate, uint256 dailyYieldBP, address mentor)",
+    "function leaderRewards(address) view returns (uint256)",
     "function getDashboard(address _user) external view returns (tuple(" +
         "address wallet, uint256 stakingPrincipal, uint256 currentReward, uint256 rewardClaimed, uint256 readyWithdraw, " +
         "uint256 totalStakingAsset, uint256 dailyYieldBP, uint256 stakingEndDate, uint256 remainingLock, bool stakingActive, " +
@@ -27,215 +30,264 @@ const SNR_STAKING_ABI = [
         "uint256 leaderRewardAccumulated, bool leaderCapReached, uint256 rewardCap, uint256 rewardCapRemaining, " +
         "bool blacklisted, bool fundLocked, bool protocolPaused, bool lockdown, bool emergencyMode" +
     "))",
-    "function getProtocolStatistics() external view returns (tuple(" +
-        "uint256 totalPrincipal, uint256 totalReferral, uint256 totalWithdraw, uint256 totalLiability, " +
-        "uint256 reserveBalance, uint256 reserveHealthBP, bool solvent" +
-    "))"
+
+    // --- EVENTS ---
+    "event RewardHarvested(address indexed user, uint256 netToCompound, uint256 netToReadyWD)",
+    "event RankUpgraded(address indexed user, uint256 newRank)",
+    "event AssetActivated(address indexed user, uint8 atype, uint256 value, uint8 path)"
 ];
 
 const ERC20_ABI = [
     "function approve(address spender, uint256 amount) external returns (bool)",
     "function allowance(address owner, address spender) external view returns (uint256)",
-    "function balanceOf(address account) external view returns (uint256)"
+    "function balanceOf(address account) external view returns (uint256)",
+    "event Transfer(address indexed from, address indexed to, uint256 value)"
 ];
 
-let provider, signer, userAddress, stakingContract, tokenContract;
+// 3. GLOBAL VARIABLES
+let provider;
+let signer;
+let stakingContract;
+let snrContract;
+let currentUserAddress;
 
 // ==========================================
-// 1. KONEKSI WALLET & INITIALIZATION
+// KONEKSI WALLET & INITIALIZATION
 // ==========================================
-async function initWeb3() {
-    if (typeof window.ethers === 'undefined') {
-        alert("Ethers.js library belum terisi. Pastikan CDN Ethers v6 dimuat di HTML!");
-        return;
-    }
-
-    if (window.ethereum) {
+async function connectWallet() {
+    if (typeof window.ethereum !== 'undefined' || typeof window.web3 !== 'undefined') {
         try {
-            provider = new ethers.BrowserProvider(window.ethereum);
-            await provider.send("eth_requestAccounts", []);
-            signer = await provider.getSigner();
-            userAddress = await signer.getAddress();
-
-            stakingContract = new ethers.Contract(CONTRACT_ADDRESS, SNR_STAKING_ABI, signer);
-            tokenContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, signer);
-
-            // Update Teks Tombol Connect Wallet
-            const btnConnect = document.getElementById("btn-connect-wallet");
-            if (btnConnect) {
-                const shortAddress = userAddress.substring(0, 6) + "..." + userAddress.substring(38);
-                const spanText = btnConnect.querySelector('span');
-                if (spanText) {
-                    spanText.innerText = shortAddress;
-                } else {
-                    btnConnect.innerText = shortAddress;
-                }
+            const eth = window.ethereum || window.web3.currentProvider;
+            if (eth.request) {
+                await eth.request({ method: 'eth_requestAccounts' });
+            } else if (eth.enable) {
+                await eth.enable();
             }
 
-            // Sync Data Dashboard Pertama Kali
-            await fetchAndRenderDashboard();
-            
-            // Listen Event Wallet Metamask
-            window.ethereum.on('accountsChanged', () => window.location.reload());
-            window.ethereum.on('chainChanged', () => window.location.reload());
+            // Integrasi Provider (Dukungan Ethers v5 & v6)
+            if (typeof ethers.BrowserProvider !== 'undefined') {
+                provider = new ethers.BrowserProvider(eth);
+                signer = await provider.getSigner();
+            } else if (typeof ethers.providers !== 'undefined') {
+                provider = new ethers.providers.Web3Provider(eth);
+                signer = provider.getSigner();
+            } else {
+                throw new Error("Library Ethers.js tidak ditemukan!");
+            }
+
+            currentUserAddress = await (signer.getAddress ? signer.getAddress() : signer.getAddress);
+
+            // Inisialisasi Kontrak dengan Signer untuk kemampuan Read & Write
+            stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
+            snrContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, signer);
+
+            // Update UI Button
+            const connectBtn = document.getElementById('btn-connect-wallet');
+            if (connectBtn) {
+                const shortAddress = currentUserAddress.substring(0, 6) + '...' + currentUserAddress.substring(currentUserAddress.length - 4);
+                connectBtn.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4"></i> <span>' + shortAddress + '</span>';
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            }
+
+            // Sync Saldo Native BNB
+            const bnbBalance = await provider.getBalance(currentUserAddress);
+            const formattedBNB = typeof ethers.formatEther !== 'undefined' 
+                ? ethers.formatEther(bnbBalance) 
+                : ethers.utils.formatEther(bnbBalance);
+
+            const bnbElem = document.getElementById('ui-bnb-balance');
+            if (bnbElem) bnbElem.innerText = parseFloat(formattedBNB).toFixed(4);
+
+            // Load Data Dashboard & History
+            await updateDashboardBalances();
+            await loadTransactionHistory();
+
+            // Auto-Reload saat Ganti Akun / Network
+            if (eth.on) {
+                eth.on('accountsChanged', () => window.location.reload());
+                eth.on('chainChanged', () => window.location.reload());
+            }
 
         } catch (error) {
-            console.error("User rejected connection", error);
-            showTxModal('error', 'Gagal Menghubungkan Wallet: ' + (error.reason || error.message));
+            console.error("Connection Error:", error);
+            alert("Gagal konek wallet: " + (error.message || error));
         }
     } else {
-        alert("Metamask atau Web3 Wallet tidak terdeteksi! Silakan periksa ekstensi browser Anda.");
+        alert("Tolong buka website ini melalui DApp Browser (TokenPocket, TrustWallet, MetaMask) agar fungsi Web3 berjalan.");
     }
 }
 
-// Alias agar kompatibel jika HTML memanggil connectWallet()
-window.connectWallet = initWeb3;
+// Alias universal
+window.initWeb3 = connectWallet;
 
 // ==========================================
-// 2. LOGIKA TRANSAKSI SMART CONTRACT (WRITE)
+// TRANSAKSI WRITE (MEMBER ACTIONS)
 // ==========================================
 
-// Join Protocol / Staking
-async function btnActionJoinProtocol(amount, mentorAddress, durationDays) {
+// 1. Join Protocol / Stake
+async function btnActionJoinProtocol(amountFormatted, mentorAddress, durationDays) {
+    if (!stakingContract || !currentUserAddress) return alert("Silakan hubungkan wallet Anda terlebih dahulu!");
     try {
         showTxModal('loading', 'Menyiapkan Transaksi Staking...');
-        const amountWei = ethers.parseUnits(amount.toString(), 18);
-        const mentor = mentorAddress && ethers.isAddress(mentorAddress) ? mentorAddress : "0x0000000000000000000000000000000000000000";
+        const parseUnits = ethers.parseUnits || ethers.utils.parseUnits;
+        const amountWei = parseUnits(amountFormatted.toString(), 18);
+        const mentor = (mentorAddress && (ethers.isAddress ? ethers.isAddress(mentorAddress) : ethers.utils.isAddress(mentorAddress))) 
+            ? mentorAddress 
+            : "0x0000000000000000000000000000000000000000";
 
-        const allowance = await tokenContract.allowance(userAddress, CONTRACT_ADDRESS);
-        if (allowance < amountWei) {
-            showTxModal('loading', 'Meminta Izin Token (Approve)...');
-            const approveTx = await tokenContract.approve(CONTRACT_ADDRESS, amountWei);
+        // Check & Approve Allowance
+        const allowance = await snrContract.allowance(currentUserAddress, STAKING_CONTRACT_ADDRESS);
+        if (BigInt(allowance.toString()) < BigInt(amountWei.toString())) {
+            showTxModal('loading', 'Meminta Izin Token (Approve SNR)...');
+            const approveTx = await snrContract.approve(STAKING_CONTRACT_ADDRESS, amountWei);
             await approveTx.wait();
         }
 
-        showTxModal('loading', 'Mengirim Modal ke Smart Contract...');
-        const tx = await stakingContract.joinProtocol(amountWei, mentor, durationDays);
+        showTxModal('loading', 'Mengirim Transaksi Staking...');
+        const tx = await stakingContract.joinProtocol(amountWei, mentor, durationDays || 30);
         await tx.wait();
 
         showTxModal('success', 'Staking Berhasil Diaktifkan!');
-        await fetchAndRenderDashboard();
+        await updateDashboardBalances();
     } catch (err) {
         handleTxError(err);
     }
 }
 
-// Harvest Daily Reward
+// 2. Harvest Daily Reward
 async function btnActionHarvest() {
+    if (!stakingContract || !currentUserAddress) return alert("Silakan hubungkan wallet terlebih dahulu!");
     try {
         showTxModal('loading', 'Memproses Klaim Hasil Harian...');
         const tx = await stakingContract.harvestDailyReward();
         await tx.wait();
 
         showTxModal('success', 'Panen Reward Harian Berhasil!');
-        await fetchAndRenderDashboard();
+        await updateDashboardBalances();
     } catch (err) {
         handleTxError(err);
     }
 }
 
-// Claim Leader Rewards
+// 3. Claim Leader / Network Reward
 async function btnActionClaimLeader() {
+    if (!stakingContract || !currentUserAddress) return alert("Silakan hubungkan wallet terlebih dahulu!");
     try {
-        showTxModal('loading', 'Memproses Klaim Leader Reward...');
+        showTxModal('loading', 'Memproses Klaim Bonus Leader...');
         const tx = await stakingContract.claimLeaderRewards();
         await tx.wait();
 
         showTxModal('success', 'Bonus Leader Berhasil Dicairkan!');
-        await fetchAndRenderDashboard();
+        await updateDashboardBalances();
     } catch (err) {
         handleTxError(err);
     }
 }
 
-// Withdraw Ready Balance
-async function btnActionWithdrawReady(amount) {
+// 4. Withdraw Ready Balance
+async function btnActionWithdrawReady(amountFormatted) {
+    if (!stakingContract || !currentUserAddress) return alert("Silakan hubungkan wallet terlebih dahulu!");
     try {
         showTxModal('loading', 'Memproses Penarikan Saldo...');
-        const amountWei = ethers.parseUnits(amount.toString(), 18);
+        const parseUnits = ethers.parseUnits || ethers.utils.parseUnits;
+        const amountWei = parseUnits(amountFormatted.toString(), 18);
+
         const tx = await stakingContract.withdrawReadyBalance(amountWei);
         await tx.wait();
 
         showTxModal('success', 'Penarikan Saldo Berhasil!');
-        await fetchAndRenderDashboard();
+        await updateDashboardBalances();
     } catch (err) {
         handleTxError(err);
     }
 }
 
-// Unstake Principal
-async function btnActionUnstake(amount) {
+// 5. Unstake Principal Modal Pokok
+async function btnActionUnstake(amountFormatted) {
+    if (!stakingContract || !currentUserAddress) return alert("Silakan hubungkan wallet terlebih dahulu!");
     try {
-        showTxModal('loading', 'Pencabutan Modal Pokok...');
-        const amountWei = ethers.parseUnits(amount.toString(), 18);
+        showTxModal('loading', 'Memproses Penarikan Modal Pokok...');
+        const parseUnits = ethers.parseUnits || ethers.utils.parseUnits;
+        const amountWei = parseUnits(amountFormatted.toString(), 18);
+
         const tx = await stakingContract.unstakePrincipal(amountWei);
         await tx.wait();
 
         showTxModal('success', 'Modal Pokok Berhasil Ditarik!');
-        await fetchAndRenderDashboard();
+        await updateDashboardBalances();
     } catch (err) {
         handleTxError(err);
     }
 }
 
-// Request Asset Program
-async function btnActionRequestAsset(assetTypeEnum, assetValue, unitModel, protocolPathEnum) {
+// 6. Request Asset Acquisition Program
+async function btnActionRequestAsset(assetTypeEnum, assetValueFormatted, unitModel, protocolPathEnum) {
+    if (!stakingContract || !currentUserAddress) return alert("Silakan hubungkan wallet terlebih dahulu!");
     try {
-        showTxModal('loading', 'Mengirimkan Pengajuan Aset Program...');
-        const valueWei = ethers.parseUnits(assetValue.toString(), 18);
-        const tx = await stakingContract.requestAssetAcquisition(assetTypeEnum, valueWei, unitModel, protocolPathEnum);
+        showTxModal('loading', 'Mengirimkan Pengajuan Program Aset...');
+        const parseUnits = ethers.parseUnits || ethers.utils.parseUnits;
+        const valueWei = parseUnits(assetValueFormatted.toString(), 18);
+
+        const tx = await stakingContract.requestAssetAcquisition(assetTypeEnum, valueWei, unitModel || "", protocolPathEnum || 0);
         await tx.wait();
 
         showTxModal('success', 'Pengajuan Program Aset Berhasil!');
-        await fetchAndRenderDashboard();
+        await updateDashboardBalances();
     } catch (err) {
         handleTxError(err);
     }
 }
 
-// Claim Sovereign Principal
+// 7. Claim Sovereign Principal (Cairkan Jaminan Aset)
 async function btnActionClaimSovereignAsset() {
+    if (!stakingContract || !currentUserAddress) return alert("Silakan hubungkan wallet terlebih dahulu!");
     try {
         showTxModal('loading', 'Mencairkan Jaminan Aset Program...');
         const tx = await stakingContract.claimSovereignPrincipal();
         await tx.wait();
 
         showTxModal('success', 'Pencairan Jaminan Aset Berhasil!');
-        await fetchAndRenderDashboard();
+        await updateDashboardBalances();
     } catch (err) {
         handleTxError(err);
     }
 }
 
 // ==========================================
-// 3. SINKRONISASI DATA DASHBOARD (READ)
+// READ & SINKRONISASI DASHBOARD REAL-TIME
 // ==========================================
-async function fetchAndRenderDashboard() {
-    if (!stakingContract || !userAddress) return;
+async function updateDashboardBalances() {
+    if (!stakingContract || !currentUserAddress) return;
 
     try {
-        const d = await stakingContract.getDashboard(userAddress);
-        const userBalance = await tokenContract.balanceOf(userAddress);
+        const formatUnits = ethers.formatUnits || ethers.utils.formatUnits;
+        const fmt = (val) => parseFloat(formatUnits(val || 0, 18)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
 
-        const fmt = (val) => parseFloat(ethers.formatUnits(val || 0, 18)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
+        // Get SNR Token Balance
+        const snrBalance = await snrContract.balanceOf(currentUserAddress);
+        updateUI('ui-snr-balance', fmt(snrBalance) + " SNR");
+        updateUI('ui-wallet-balance', fmt(snrBalance) + " SNR");
 
-        // Update Staking UI
-        updateUI('ui-wallet-balance', fmt(userBalance) + " SNR");
+        // Single Call via getDashboard View Function
+        const d = await stakingContract.getDashboard(currentUserAddress);
+
+        // Populate Staking Data
         updateUI('ui-staking-principal', fmt(d.stakingPrincipal) + " SNR");
         updateUI('ui-current-reward', fmt(d.currentReward) + " SNR");
+        updateUI('ui-pending-reward', fmt(d.currentReward) + " SNR");
         updateUI('ui-reward-claimed', fmt(d.rewardClaimed) + " SNR");
         updateUI('ui-ready-withdraw', fmt(d.readyWithdraw) + " SNR");
         updateUI('ui-total-staking-asset', fmt(d.totalStakingAsset) + " SNR");
         updateUI('ui-daily-yield-bp', (Number(d.dailyYieldBP) / 100).toFixed(2) + "% / hari");
         updateUI('ui-remaining-lock', formatSeconds(Number(d.remainingLock)));
 
-        // Update Asset UI
+        // Populate Asset Data
         updateUI('ui-asset-value', fmt(d.assetValue) + " SNR");
         updateUI('ui-asset-locked', fmt(d.assetPrincipalLocked) + " SNR");
         updateUI('ui-asset-model', d.unitModel || "Belum Ada Program");
         updateUI('ui-asset-remaining', formatSeconds(Number(d.assetRemaining)));
 
-        // Update Network & Referral UI
+        // Populate Leader & Network Data
         updateUI('ui-direct-active', d.directActive.toString());
         updateUI('ui-group-volume', fmt(d.groupVolume) + " SNR");
         updateUI('ui-current-rank', "Rank " + d.rank.toString());
@@ -246,13 +298,18 @@ async function fetchAndRenderDashboard() {
     }
 }
 
-// Helper Update Element DOM
+async function loadTransactionHistory() {
+    console.log("Loading transaction history for:", currentUserAddress);
+}
+
+// ==========================================
+// HELPER UTILITIES
+// ==========================================
 function updateUI(elementId, textValue) {
     const el = document.getElementById(elementId);
     if (el) el.innerText = textValue;
 }
 
-// Helper Formatter Detik
 function formatSeconds(seconds) {
     if (seconds <= 0) return "Selesai / Bebas";
     const days = Math.floor(seconds / (3600 * 24));
@@ -260,7 +317,6 @@ function formatSeconds(seconds) {
     return `${days} Hari ${hours} Jam`;
 }
 
-// Helper Modal Transaksi (Fallback / Custom UI)
 function showTxModal(type, text) {
     console.log(`[Tx Modal - ${type.toUpperCase()}]: ${text}`);
     if (type === 'error') {
@@ -272,14 +328,14 @@ function showTxModal(type, text) {
 
 function handleTxError(err) {
     console.error("Tx Error:", err);
-    let msg = err.reason || err.message || "Transaksi Dibatalkan/Gagal";
+    let msg = err.reason || err.message || "Transaksi Dibatalkan atau Gagal";
     showTxModal('error', msg);
 }
 
-// Inisialisasi Event Listener saat DOM Siap
+// DOM Event Listener
 window.addEventListener('DOMContentLoaded', () => {
     const btnConnect = document.getElementById("btn-connect-wallet");
     if (btnConnect) {
-        btnConnect.addEventListener("click", initWeb3);
+        btnConnect.addEventListener("click", connectWallet);
     }
 });
