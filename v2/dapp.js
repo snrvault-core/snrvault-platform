@@ -1,7 +1,10 @@
-// dapp.js - SNR Sovereign Enterprise Production Driver (Ethers.js v6)
+// =========================================================
+// dapp.js - SNR Sovereign Enterprise Production Driver
+// Compatible with Ethers.js v6 & HTML Enterprise UI
+// =========================================================
 
-const CONTRACT_ADDRESS = "0x...ADDRESS_SMART_CONTRACT_STAKING...";
-const SNR_TOKEN_ADDRESS = "0x...ADDRESS_TOKEN_ERC20_SNR...";
+const CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000"; // Ganti dengan Address Smart Contract Staking
+const SNR_TOKEN_ADDRESS = "0x0000000000000000000000000000000000000000"; // Ganti dengan Address Token ERC20 SNR
 
 // Complete ABI mapping from SNRStakingV6_TITAN_SOVEREIGN_ENTERPRISE
 const SNR_STAKING_ABI = [
@@ -42,6 +45,11 @@ let provider, signer, userAddress, stakingContract, tokenContract;
 // 1. KONEKSI WALLET & INITIALIZATION
 // ==========================================
 async function initWeb3() {
+    if (typeof window.ethers === 'undefined') {
+        alert("Ethers.js library belum terisi. Pastikan CDN Ethers v6 dimuat di HTML!");
+        return;
+    }
+
     if (window.ethereum) {
         try {
             provider = new ethers.BrowserProvider(window.ethereum);
@@ -52,40 +60,48 @@ async function initWeb3() {
             stakingContract = new ethers.Contract(CONTRACT_ADDRESS, SNR_STAKING_ABI, signer);
             tokenContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, signer);
 
-            // Ganti teks tombol connect wallet jika ada di UI
+            // Update Teks Tombol Connect Wallet
             const btnConnect = document.getElementById("btn-connect-wallet");
             if (btnConnect) {
-                btnConnect.innerText = userAddress.substring(0, 6) + "..." + userAddress.substring(38);
+                const shortAddress = userAddress.substring(0, 6) + "..." + userAddress.substring(38);
+                const spanText = btnConnect.querySelector('span');
+                if (spanText) {
+                    spanText.innerText = shortAddress;
+                } else {
+                    btnConnect.innerText = shortAddress;
+                }
             }
 
-            // Sync data awal
+            // Sync Data Dashboard Pertama Kali
             await fetchAndRenderDashboard();
             
-            // Listen event pergantian akun Metamask
+            // Listen Event Wallet Metamask
             window.ethereum.on('accountsChanged', () => window.location.reload());
             window.ethereum.on('chainChanged', () => window.location.reload());
 
         } catch (error) {
             console.error("User rejected connection", error);
-            showTxModal('error', 'Gagal Menghubungkan Wallet');
+            showTxModal('error', 'Gagal Menghubungkan Wallet: ' + (error.reason || error.message));
         }
     } else {
-        alert("Metamask atau Web3 Wallet tidak terdeteksi!");
+        alert("Metamask atau Web3 Wallet tidak terdeteksi! Silakan periksa ekstensi browser Anda.");
     }
 }
 
+// Alias agar kompatibel jika HTML memanggil connectWallet()
+window.connectWallet = initWeb3;
+
 // ==========================================
-// 2. LOGIKA PENANGANAN TRANSAKSI (WRITE)
+// 2. LOGIKA TRANSAKSI SMART CONTRACT (WRITE)
 // ==========================================
 
-// Tombol: Join Protocol / Stake
+// Join Protocol / Staking
 async function btnActionJoinProtocol(amount, mentorAddress, durationDays) {
     try {
         showTxModal('loading', 'Menyiapkan Transaksi Staking...');
         const amountWei = ethers.parseUnits(amount.toString(), 18);
         const mentor = mentorAddress && ethers.isAddress(mentorAddress) ? mentorAddress : "0x0000000000000000000000000000000000000000";
 
-        // Step 1: Check Allowance
         const allowance = await tokenContract.allowance(userAddress, CONTRACT_ADDRESS);
         if (allowance < amountWei) {
             showTxModal('loading', 'Meminta Izin Token (Approve)...');
@@ -93,7 +109,6 @@ async function btnActionJoinProtocol(amount, mentorAddress, durationDays) {
             await approveTx.wait();
         }
 
-        // Step 2: Execute Join
         showTxModal('loading', 'Mengirim Modal ke Smart Contract...');
         const tx = await stakingContract.joinProtocol(amountWei, mentor, durationDays);
         await tx.wait();
@@ -105,7 +120,7 @@ async function btnActionJoinProtocol(amount, mentorAddress, durationDays) {
     }
 }
 
-// Tombol: Harvest Daily Reward
+// Harvest Daily Reward
 async function btnActionHarvest() {
     try {
         showTxModal('loading', 'Memproses Klaim Hasil Harian...');
@@ -119,7 +134,7 @@ async function btnActionHarvest() {
     }
 }
 
-// Tombol: Claim Leader / Referral Reward
+// Claim Leader Rewards
 async function btnActionClaimLeader() {
     try {
         showTxModal('loading', 'Memproses Klaim Leader Reward...');
@@ -133,7 +148,7 @@ async function btnActionClaimLeader() {
     }
 }
 
-// Tombol: Withdraw Ready Balance
+// Withdraw Ready Balance
 async function btnActionWithdrawReady(amount) {
     try {
         showTxModal('loading', 'Memproses Penarikan Saldo...');
@@ -148,7 +163,7 @@ async function btnActionWithdrawReady(amount) {
     }
 }
 
-// Tombol: Unstake Principal
+// Unstake Principal
 async function btnActionUnstake(amount) {
     try {
         showTxModal('loading', 'Pencabutan Modal Pokok...');
@@ -163,7 +178,7 @@ async function btnActionUnstake(amount) {
     }
 }
 
-// Tombol: Request Asset Program
+// Request Asset Program
 async function btnActionRequestAsset(assetTypeEnum, assetValue, unitModel, protocolPathEnum) {
     try {
         showTxModal('loading', 'Mengirimkan Pengajuan Aset Program...');
@@ -178,7 +193,7 @@ async function btnActionRequestAsset(assetTypeEnum, assetValue, unitModel, proto
     }
 }
 
-// Tombol: Claim Sovereign Principal (Pengembalian Modal Aset)
+// Claim Sovereign Principal
 async function btnActionClaimSovereignAsset() {
     try {
         showTxModal('loading', 'Mencairkan Jaminan Aset Program...');
@@ -193,17 +208,15 @@ async function btnActionClaimSovereignAsset() {
 }
 
 // ==========================================
-// 3. SINKRONISASI DATA KE DASHBOARD (READ)
+// 3. SINKRONISASI DATA DASHBOARD (READ)
 // ==========================================
 async function fetchAndRenderDashboard() {
     if (!stakingContract || !userAddress) return;
 
     try {
-        // Single call batch reading
         const d = await stakingContract.getDashboard(userAddress);
         const userBalance = await tokenContract.balanceOf(userAddress);
 
-        // Helper formatter
         const fmt = (val) => parseFloat(ethers.formatUnits(val || 0, 18)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
 
         // Update Staking UI
@@ -228,23 +241,18 @@ async function fetchAndRenderDashboard() {
         updateUI('ui-current-rank', "Rank " + d.rank.toString());
         updateUI('ui-leader-reward', fmt(d.leaderReward) + " SNR");
 
-        // System Security States Check
-        if (d.blacklisted || d.lockdown || d.protocolPaused || d.emergencyMode) {
-            console.warn("Sistem dalam batasan proteksi / pembekuan.");
-        }
-
     } catch (err) {
         console.error("Gagal sinkronisasi data dashboard:", err);
     }
 }
 
-// Helper DOM Updater
+// Helper Update Element DOM
 function updateUI(elementId, textValue) {
     const el = document.getElementById(elementId);
     if (el) el.innerText = textValue;
 }
 
-// Helper Format Detik ke Hari/Jam
+// Helper Formatter Detik
 function formatSeconds(seconds) {
     if (seconds <= 0) return "Selesai / Bebas";
     const days = Math.floor(seconds / (3600 * 24));
@@ -252,9 +260,26 @@ function formatSeconds(seconds) {
     return `${days} Hari ${hours} Jam`;
 }
 
-// Helper Error Handler
+// Helper Modal Transaksi (Fallback / Custom UI)
+function showTxModal(type, text) {
+    console.log(`[Tx Modal - ${type.toUpperCase()}]: ${text}`);
+    if (type === 'error') {
+        alert("Transaksi Gagal: " + text);
+    } else if (type === 'success') {
+        alert("Berhasil: " + text);
+    }
+}
+
 function handleTxError(err) {
     console.error("Tx Error:", err);
     let msg = err.reason || err.message || "Transaksi Dibatalkan/Gagal";
     showTxModal('error', msg);
 }
+
+// Inisialisasi Event Listener saat DOM Siap
+window.addEventListener('DOMContentLoaded', () => {
+    const btnConnect = document.getElementById("btn-connect-wallet");
+    if (btnConnect) {
+        btnConnect.addEventListener("click", initWeb3);
+    }
+});
