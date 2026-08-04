@@ -126,17 +126,6 @@
             100% { opacity: 1; transform: scale(1); }
         }
 
-        /* Seamless Ticker */
-        @keyframes ticker {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-        .animate-ticker {
-            display: inline-block;
-            white-space: nowrap;
-            animation: ticker 30s linear infinite;
-        }
-
         /* Hide dapp initially */
         #view-dapp { display: none; opacity: 0; transition: opacity 0.4s ease; }
         #view-landing { display: block; opacity: 1; transition: opacity 0.4s ease; }
@@ -168,6 +157,7 @@
     </script>
 </head>
 <body class="antialiased selection:bg-accent selection:text-black">
+
     <!-- VIEW: LANDING PAGE -->
     <div id="view-landing">
         <!-- Navigation -->
@@ -175,7 +165,10 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-20">
                     <div class="flex-shrink-0 flex items-center gap-3">
-                        <img src="logo_banner.jpeg" alt="SNR-VAULT Logo" class="w-10 h-10 object-cover rounded-lg shadow-neon-accent">
+                        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-accent to-blue-900 flex items-center justify-center shadow-neon-accent relative overflow-hidden">
+                            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+                            <span class="font-display font-bold text-white text-xl relative z-10">S</span>
+                        </div>
                         <span class="font-display font-black text-xl tracking-wider text-gradient-gold">SNR<span class="text-white">-VAULT</span></span>
                     </div>
                     
@@ -199,6 +192,20 @@
         <!-- Hero Section Premium -->
         <section class="relative min-h-screen flex items-center pt-20 overflow-hidden">
             <div class="cyber-grid"></div>
+            
+            <div class="absolute top-0 w-full bg-primary text-black py-2 font-display text-xs font-bold uppercase overflow-hidden whitespace-nowrap z-50">
+                <div class="animate-ticker">
+                    <span class="mx-8 flex items-center gap-2 inline-flex"><i data-lucide="rocket" class="w-4 h-4"></i> WELCOME TO <span class="text-black">SNR</span>-VAULT SOVEREIGN INFRASTRUCTURE</span>
+                    <span class="mx-8 flex items-center gap-2 inline-flex"><i data-lucide="gem" class="w-4 h-4"></i> CURRENT YIELD UP TO 150 BP DAILY</span>
+                    <span class="mx-8 flex items-center gap-2 inline-flex"><i data-lucide="shield-check" class="w-4 h-4"></i> AUDITED SMART CONTRACT ON BSC</span>
+                    <span class="mx-8 flex items-center gap-2 inline-flex"><i data-lucide="alert-triangle" class="w-4 h-4"></i> NON-CUSTODIAL - YOUR KEYS, YOUR CRYPTO</span>
+                    <span class="mx-8 flex items-center gap-2 inline-flex"><i data-lucide="rocket" class="w-4 h-4"></i> WELCOME TO <span class="text-black">SNR</span>-VAULT SOVEREIGN INFRASTRUCTURE</span>
+                    <span class="mx-8 flex items-center gap-2 inline-flex"><i data-lucide="gem" class="w-4 h-4"></i> CURRENT YIELD UP TO 150 BP DAILY</span>
+                    <span class="mx-8 flex items-center gap-2 inline-flex"><i data-lucide="shield-check" class="w-4 h-4"></i> AUDITED SMART CONTRACT ON BSC</span>
+                    <span class="mx-8 flex items-center gap-2 inline-flex"><i data-lucide="alert-triangle" class="w-4 h-4"></i> NON-CUSTODIAL - YOUR KEYS, YOUR CRYPTO</span>
+                </div>
+            </div>
+
             <!-- Aurora Background -->
             <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-accent rounded-full mix-blend-screen filter blur-[128px] opacity-20 animate-pulse"></div>
             <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary rounded-full mix-blend-screen filter blur-[128px] opacity-10 animate-pulse" style="animation-delay: 2s;"></div>
@@ -431,11 +438,12 @@
                 </div>
                 <div class="border-t border-cardBorder pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-secondary">
                     <p>Risk Disclosure: Cryptocurrency involves high risk. Smart contracts are immutable.</p>
-                    <p>&copy; 2026 <span class="text-gradient-gold">SNR<span class="text-white">-VAULT</span></span> Ecosystem. All Rights Reserved.</p>
+                    <p>&copy; 2026 SNR-VAULT Ecosystem. All Rights Reserved.</p>
                 </div>
             </div>
         </footer>
     </div>
+
     <!-- VIEW: DAPP DASHBOARD (ENTERPRISE TERMINAL) -->
     <div id="view-dapp">
         <!-- Dashboard Navbar -->
@@ -446,8 +454,10 @@
                         <button onclick="toggleDapp(false)" class="p-2 sm:hidden rounded-lg bg-card border border-cardBorder text-secondary hover:text-white">
                             <i data-lucide="arrow-left" class="w-5 h-5"></i>
                         </button>
-                        <img src="logo_banner.jpeg" alt="SNR Logo" class="w-8 h-8 sm:w-10 sm:h-10 object-cover rounded-lg shadow-neon-accent">
-                        <span class="font-display font-black text-sm sm:text-xl text-gradient-gold">SNR<span class="text-white">-VAULT</span></span>
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-br from-accent to-blue-900 flex items-center justify-center shadow-neon-accent">
+                            <span class="font-display font-bold text-white text-lg">S</span>
+                        </div>
+                        <span class="font-display font-black text-lg sm:text-xl hidden sm:block text-gradient-gold">SNR<span class="text-white">-VAULT</span> <span class="text-[10px] text-accent ml-2 border border-accent/50 px-2 py-0.5 rounded">TERMINAL</span></span>
                     </div>
                     
                     <div class="flex items-center gap-2 sm:gap-4">
@@ -458,7 +468,7 @@
                         </div>
                         
                         <!-- Connect Wallet Button -->
-                        <button id="btn-connect-wallet" onclick="initWeb3()" class="glow-btn px-4 py-2 sm:px-6 sm:py-2.5 rounded-lg border border-primary bg-primary/10 text-primary font-display font-bold text-xs sm:text-sm hover:bg-primary hover:text-black transition-all shadow-neon-primary flex items-center gap-2 whitespace-nowrap">
+                        <button id="btn-connect-wallet" onclick="connectWallet()" class="glow-btn px-4 py-2 sm:px-6 sm:py-2.5 rounded-lg border border-primary bg-primary/10 text-primary font-display font-bold text-xs sm:text-sm hover:bg-primary hover:text-black transition-all shadow-neon-primary flex items-center gap-2 whitespace-nowrap">
                             <i data-lucide="wallet" class="w-4 h-4"></i>
                             <span data-i18n="dapp_btn_connect">Connect Wallet</span>
                         </button>
@@ -518,7 +528,7 @@
                         <div>
                             <h2 class="text-sm font-display text-secondary tracking-widest mb-1">CONNECTED WALLET</h2>
                             <div class="text-2xl font-black text-white font-display flex items-end gap-2">
-                                <span id="ui-wallet-balance">0.00</span>
+                                <span id="ui-snr-balance">0.00</span>
                                 <span class="text-sm text-primary mb-1">SNR</span>
                             </div>
                         </div>
@@ -546,7 +556,7 @@
                                         </div>
                                         <div class="text-xs font-display text-secondary tracking-widest mb-2 relative z-10">MODAL STAKING</div>
                                         <div class="text-3xl font-black text-white font-display relative z-10 flex items-end gap-2">
-                                            <span id="ui-staking-principal">0.00</span> <span class="text-sm text-primary mb-1">SNR</span>
+                                            <span id="stk-modal">0.00</span> <span class="text-sm text-primary mb-1">SNR</span>
                                         </div>
                                     </div>
                                     <div class="glass-panel p-5 relative overflow-hidden group border-accent/30 shadow-[inset_0_0_20px_rgba(0,229,255,0.05)]">
@@ -557,35 +567,28 @@
                                             <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span> REWARD BERJALAN (LIVE)
                                         </div>
                                         <div class="text-3xl font-black text-accent font-display relative z-10 flex items-end gap-2 text-shadow-sm">
-                                            <span id="ui-current-reward">0.0000</span> <span class="text-sm mb-1">SNR</span>
+                                            <span id="stk-reward-running">0.0000</span> <span class="text-sm mb-1">SNR</span>
                                         </div>
                                     </div>
-                                    <div class="glass-panel p-5 grid grid-cols-2 gap-4"><div><div class="text-xs font-display text-secondary tracking-widest mb-2">DIKLAIM</div><div class="text-xl sm:text-2xl font-bold text-white font-display flex items-end gap-1"><span id="ui-reward-claimed">0.00</span> <span class="text-xs text-secondary mb-1">SNR</span></div></div><div><div class="text-xs font-display text-accent tracking-widest mb-2">READY TO WITHDRAW</div><div class="text-xl sm:text-2xl font-bold text-white font-display flex items-end gap-1"><span id="ui-ready-withdraw">0.00</span> <span class="text-xs text-accent mb-1">SNR</span></div></div></div>
+                                    <div class="glass-panel p-5">
+                                        <div class="text-xs font-display text-secondary tracking-widest mb-2">REWARD DIKLAIM</div>
+                                        <div class="text-2xl font-bold text-white font-display flex items-end gap-2">
+                                            <span id="stk-reward-claimed">0.00</span> <span class="text-sm text-secondary mb-1">SNR</span>
+                                        </div>
+                                    </div>
                                     <div class="glass-panel p-5 flex justify-between items-center">
                                         <div>
                                             <div class="text-xs font-display text-secondary tracking-widest mb-2">STATUS & PERIODE</div>
                                             <div class="flex items-center gap-3">
                                                 <div id="stk-status-badge" class="px-2 py-1 rounded bg-card border border-cardBorder text-xs font-bold font-display"><span class="text-secondary">Tidak Aktif</span></div>
-                                                <div class="text-lg font-bold text-white"><span id="ui-remaining-lock">-</span></div>
+                                                <div class="text-lg font-bold text-white"><span id="stk-lock-period">-</span> <span class="text-xs text-secondary">Hari</span></div>
                                             </div>
                                         </div>
                                         <div class="text-right">
                                             <div class="text-xs font-display text-secondary tracking-widest mb-1">SISA WAKTU</div>
-                                            <div class="text-xl font-bold text-primary" id="ui-daily-yield-bp">-</div>
+                                            <div class="text-xl font-bold text-primary" id="stk-time-remaining">-</div>
                                         </div>
                                     </div>
-                                </div>
-                                
-                                <!-- Staking Action Buttons -->
-                                <div class="grid grid-cols-3 gap-2 sm:gap-4">
-                                    <div class="relative group">
-                                        <button onclick="btnActionHarvest()" class="w-full py-2 sm:py-3 px-2 sm:px-4 glass-panel border border-accent text-accent hover:bg-accent hover:text-black transition-all font-display font-bold text-[10px] sm:text-xs flex items-center justify-center gap-1 sm:gap-2 shadow-[0_0_10px_rgba(0,229,255,0.1)]">
-                                            <i data-lucide="leaf" class="w-3 h-3 sm:w-4 sm:h-4"></i> HARVEST
-                                        </button>
-                                        <div class="absolute -top-6 left-1/2 -translate-x-1/2 text-[8px] text-accent whitespace-nowrap opacity-70">Cooldown: 24 Jam</div>
-                                    </div>
-                                    <button onclick="btnActionWithdrawReady(prompt('Masukkan jumlah Withdraw (Balance Ready):'))" class="py-2 sm:py-3 px-2 sm:px-4 glass-panel border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all font-display font-bold text-[10px] sm:text-xs flex items-center justify-center gap-1 sm:gap-2 shadow-[0_0_10px_rgba(239,68,68,0.1)]"><i data-lucide="arrow-up-right" class="w-3 h-3 sm:w-4 sm:h-4"></i> WITHDRAW</button>
-                                    <button id="btn-unstake" onclick="btnActionUnstake(prompt('Masukkan jumlah Unstake (Maks: ' + document.getElementById('ui-staking-principal').innerText + '):'))" class="py-2 sm:py-3 px-2 sm:px-4 glass-panel border border-orange-500 text-orange-500 transition-all font-display font-bold text-[10px] sm:text-xs flex items-center justify-center gap-1 sm:gap-2 shadow-[0_0_10px_rgba(249,115,22,0.1)] opacity-50 cursor-not-allowed pointer-events-none"><i data-lucide="unlock" class="w-3 h-3 sm:w-4 sm:h-4"></i> UNSTAKE</button>
                                 </div>
 
                                 <!-- Action Panel -->
@@ -622,7 +625,7 @@
                                             </div>
                                             <input type="hidden" id="stake-duration" value="30">
                                         </div>
-                                        <button onclick="btnActionJoinProtocol(document.getElementById('stake-amount').value, document.getElementById('stake-mentor').value, document.getElementById('stake-duration').value)" class="glow-btn w-full py-4 mt-2 bg-primary text-black font-bold font-display tracking-widest rounded-lg hover:bg-yellow-400 shadow-neon-primary transition-all flex justify-center items-center gap-2">
+                                        <button onclick="executeProtocol()" class="glow-btn w-full py-4 mt-2 bg-primary text-black font-bold font-display tracking-widest rounded-lg hover:bg-yellow-400 shadow-neon-primary transition-all flex justify-center items-center gap-2">
                                             <i data-lucide="cpu" class="w-5 h-5"></i> INITIALIZE PROTOCOL
                                         </button>
                                     </div>
@@ -717,10 +720,10 @@
                         <div class="bg-card border border-primary/20 rounded-xl p-6 sm:p-8 text-center relative overflow-hidden">
                             <div class="absolute inset-0 bg-primary/5"></div>
                             <h4 class="text-sm font-display text-primary tracking-widest mb-2 relative z-10">TOTAL LEADER REWARDS</h4>
-                            <div id="ui-leader-reward" class="text-4xl sm:text-5xl font-black text-white font-display relative z-10">0.00 <span class="text-xl text-primary">SNR</span></div>
+                            <div id="ui-leader-rewards" class="text-4xl sm:text-5xl font-black text-white font-display relative z-10">0.00 <span class="text-xl text-primary">SNR</span></div>
                             <button onclick="btnActionClaimLeader()" class="mt-4 px-6 py-2 bg-primary/10 border border-primary text-primary hover:bg-primary hover:text-black rounded-lg transition-all font-bold text-sm font-display z-10 relative">KLAIM LEADER REWARD</button>
                         </div>
-                        
+
                         <!-- Referral Link Box -->
                         <div class="mt-6 bg-background/50 border border-cardBorder rounded-xl p-5 relative overflow-hidden shadow-[inset_0_0_20px_rgba(255,204,0,0.02)]">
                             <h4 class="text-sm font-display text-white tracking-widest mb-4 flex items-center gap-2">
@@ -738,31 +741,16 @@
 
                     <!-- TAB: P2P MARKET -->
                     <div id="tab-p2p" class="dapp-tab glass-panel p-6 sm:p-8 text-center" style="display: none;">
-                        <i data-lucide="refresh-cw" class="w-16 h-16 text-green-500 mx-auto mb-4"></i>
-                        <h3 class="text-2xl font-display font-bold text-white mb-2">P2P Market OTC</h3>
-                        <p class="text-secondary mb-6 max-w-md mx-auto">Transaksi P2P saat ini dilayani secara langsung via Admin / Escrow Resmi.</p>
-                        <a href="https://wa.me/6283829681017" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-green-500 text-black hover:bg-green-400 font-bold rounded-lg transition-all font-display tracking-widest shadow-[0_0_15px_rgba(34,197,94,0.4)]">
-                            <i data-lucide="message-circle" class="w-5 h-5"></i> HUBUNGI WHATSAPP
-                        </a>
+                        <i data-lucide="refresh-cw" class="w-16 h-16 text-secondary mx-auto mb-4 opacity-50"></i>
+                        <h3 class="text-2xl font-display font-bold text-white mb-2">P2P Market</h3>
+                        <p class="text-secondary mb-6">Trade your assets securely peer-to-peer. Feature is currently under development.</p>
+                        <div class="inline-flex items-center gap-2 px-4 py-2 bg-card border border-cardBorder rounded-full text-xs text-primary font-display tracking-widest">
+                            <span class="status-dot bg-primary"></span> COMING SOON
+                        </div>
                     </div>
 
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Global Sticky Ticker -->
-    <div class="fixed bottom-0 left-0 w-full bg-primary text-black font-display font-bold text-xs sm:text-sm py-2 z-[9999] overflow-hidden flex items-center shadow-[0_-5px_20px_rgba(255,204,0,0.3)]">
-        <div class="animate-ticker">
-            <span class="mx-8 flex items-center gap-2 inline-flex"><i data-lucide="rocket" class="w-4 h-4"></i> WELCOME TO <span class="text-black">SNR</span>-VAULT SOVEREIGN INFRASTRUCTURE</span>
-            <span class="mx-8 flex items-center gap-2 inline-flex"><i data-lucide="gem" class="w-4 h-4"></i> CURRENT YIELD UP TO 150 BP DAILY</span>
-            <span class="mx-8 flex items-center gap-2 inline-flex"><i data-lucide="shield-check" class="w-4 h-4"></i> AUDITED SMART CONTRACT ON BSC</span>
-            <span class="mx-8 flex items-center gap-2 inline-flex"><i data-lucide="alert-triangle" class="w-4 h-4"></i> NON-CUSTODIAL - YOUR KEYS, YOUR CRYPTO</span>
-            <!-- Repeat for seamless loop -->
-            <span class="mx-8 flex items-center gap-2 inline-flex"><i data-lucide="rocket" class="w-4 h-4"></i> WELCOME TO <span class="text-black">SNR</span>-VAULT SOVEREIGN INFRASTRUCTURE</span>
-            <span class="mx-8 flex items-center gap-2 inline-flex"><i data-lucide="gem" class="w-4 h-4"></i> CURRENT YIELD UP TO 150 BP DAILY</span>
-            <span class="mx-8 flex items-center gap-2 inline-flex"><i data-lucide="shield-check" class="w-4 h-4"></i> AUDITED SMART CONTRACT ON BSC</span>
-            <span class="mx-8 flex items-center gap-2 inline-flex"><i data-lucide="alert-triangle" class="w-4 h-4"></i> NON-CUSTODIAL - YOUR KEYS, YOUR CRYPTO</span>
         </div>
     </div>
 
@@ -778,18 +766,6 @@
     <script>
         // Init Lucide
         if(typeof lucide !== 'undefined') lucide.createIcons();
-
-        // Sound Effect System
-        // Audio logic by audio.js
-        
-
-        document.addEventListener('click', function(e) {
-            const target = e.target.closest('button, a, .glow-btn, .duration-btn');
-            if (target) {
-                
-                
-            }
-        });
 
         // Globe init wrapper
         function initGlobe() {
@@ -893,17 +869,6 @@
         });
 
         // Navigation
-        function selectDuration(days, btnElement) {
-            document.getElementById('stake-duration').value = days;
-            const buttons = document.querySelectorAll('.duration-btn');
-            buttons.forEach(btn => {
-                btn.classList.remove('bg-primary', 'text-black', 'border-primary', 'shadow-[0_0_15px_rgba(255,204,0,0.2)]');
-                btn.classList.add('bg-background', 'text-secondary', 'border-cardBorder');
-            });
-            btnElement.classList.remove('bg-background', 'text-secondary', 'border-cardBorder');
-            btnElement.classList.add('bg-primary', 'text-black', 'border-primary', 'shadow-[0_0_15px_rgba(255,204,0,0.2)]');
-        }
-
         function toggleDapp(showDapp) {
             const landing = document.getElementById('view-landing');
             const dapp = document.getElementById('view-dapp');
@@ -965,10 +930,10 @@
                 iconHtml = '<i data-lucide="loader-2" class="w-16 h-16 text-accent animate-spin mx-auto mb-6"></i>';
                 container.className = "glass-panel border-accent/50 p-8 max-w-sm w-full mx-4 text-center transform scale-95 transition-transform duration-300 relative shadow-neon-accent";
             } else if (type === 'success') {
-                if(window.sysAudio) sysAudio.playSuccess(); iconHtml = '<i data-lucide="check-circle" class="w-16 h-16 text-primary mx-auto mb-6 shadow-neon-primary rounded-full"></i>';
+                iconHtml = '<i data-lucide="check-circle" class="w-16 h-16 text-primary mx-auto mb-6 shadow-neon-primary rounded-full"></i>';
                 container.className = "glass-panel border-primary/50 p-8 max-w-sm w-full mx-4 text-center transform scale-95 transition-transform duration-300 relative shadow-neon-primary";
             } else if (type === 'error') {
-                if(window.sysAudio) sysAudio.playError(); iconHtml = '<i data-lucide="alert-triangle" class="w-16 h-16 text-red-500 mx-auto mb-6"></i>';
+                iconHtml = '<i data-lucide="alert-triangle" class="w-16 h-16 text-red-500 mx-auto mb-6"></i>';
                 container.className = "glass-panel border-red-500/50 p-8 max-w-sm w-full mx-4 text-center transform scale-95 transition-transform duration-300 relative shadow-[0_0_20px_rgba(239,68,68,0.3)]";
             }
 
@@ -999,21 +964,18 @@
                 modal.style.display = 'none';
             }, 300);
         }
-    </script>
-    <script src="audio.js"></script><script src="dapp.js?v=2.3"></script>
-    <script src="i18n.js?v=2.3"></script>
-    <script>
-        // 1. Live Reward Ticker (Per detik)
+
+        // 1. Ticker Animasi Reward
         setInterval(() => {
             try {
-                const rewardEl = document.getElementById('ui-current-reward');
-                const principalEl = document.getElementById('ui-staking-principal');
-                const yieldBpEl = document.getElementById('ui-daily-yield-bp');
+                const rewardEl = document.getElementById("ui-current-reward");
+                const principalEl = document.getElementById("ui-staking-principal");
+                const yieldBpEl = document.getElementById("ui-daily-yield-bp");
                 if(rewardEl && principalEl && yieldBpEl) {
-                    const principal = parseFloat(principalEl.innerText.replace(/,/g, ''));
-                    const yieldBp = parseFloat(yieldBpEl.innerText.replace(/,/g, ''));
-                    let currentReward = parseFloat(rewardEl.innerText.replace(/,/g, ''));
-                    const statusBadge = document.getElementById('stk-status-badge'); if(statusBadge) { if(principal > 0) { statusBadge.innerHTML = '<span class="text-green-400">AKTIF</span>'; statusBadge.classList.replace('bg-card', 'bg-green-500/10'); statusBadge.classList.replace('border-cardBorder', 'border-green-500/30'); } else { statusBadge.innerHTML = '<span class="text-secondary">Tidak Aktif</span>'; statusBadge.classList.replace('bg-green-500/10', 'bg-card'); statusBadge.classList.replace('border-green-500/30', 'border-cardBorder'); } } if(principal > 0 && yieldBp > 0 && !isNaN(currentReward)) {
+                    const principal = parseFloat(principalEl.innerText.replace(/,/g, ""));
+                    const yieldBp = parseFloat(yieldBpEl.innerText.replace(/,/g, ""));
+                    let currentReward = parseFloat(rewardEl.innerText.replace(/,/g, ""));
+                    const statusBadge = document.getElementById("stk-status-badge"); if(statusBadge) { if(principal > 0) { statusBadge.innerHTML = "<span class=\"text-green-400\">AKTIF</span>"; statusBadge.classList.replace("bg-card", "bg-green-500/10"); statusBadge.classList.replace("border-cardBorder", "border-green-500/30"); } else { statusBadge.innerHTML = "<span class=\"text-secondary\">Tidak Aktif</span>"; statusBadge.classList.replace("bg-green-500/10", "bg-card"); statusBadge.classList.replace("border-green-500/30", "border-cardBorder"); } } if(principal > 0 && yieldBp > 0 && !isNaN(currentReward)) {
                         const yieldPerSec = (principal * (yieldBp / 100)) / 86400;
                         currentReward += yieldPerSec;
                         rewardEl.innerText = currentReward.toFixed(8); 
@@ -1022,57 +984,97 @@
             } catch(e){}
         }, 1000);
 
-        // 2. Fix Tx History (Gagal memuat ledger)
-        setInterval(() => {
-            const historyList = document.getElementById('history-list');
-            if(historyList && historyList.innerHTML.includes('Gagal memuat ledger')) {
-                const principalEl = document.getElementById('ui-staking-principal');
-                const principal = principalEl ? principalEl.innerText : '0.00';
-                if(parseFloat(principal.replace(/,/g, '')) > 0) {
-                    historyList.innerHTML = `
-                        <div class="flex items-center justify-between p-4 rounded-lg bg-card border border-cardBorder mb-2">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                                    <i data-lucide="arrow-down-right" class="w-5 h-5 text-primary"></i>
-                                </div>
-                                <div>
-                                    <div class="font-bold text-white font-display">Staking SNR</div>
-                                    <div class="text-xs text-secondary mt-1">Status: Confirmed</div>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <div class="font-bold text-primary font-mono">+${principal} SNR</div>
-                                <div class="text-xs text-secondary mt-1">Tx: 0x${Math.random().toString(16).substr(2,8)}</div>
-                            </div>
-                        </div>
-                    `;
-                    if(typeof lucide !== 'undefined') lucide.createIcons();
-                } else {
-                     historyList.innerHTML = '<div class="text-center text-secondary py-12">Belum ada aktifitas.</div>';
+        // 2. SINKRONISASI LEDGER PERMANEN VIA BSCSCAN API (BUKTI TRANSAKSI)
+        let historyFetched = false;
+        setInterval(async () => {
+            const historyList = document.getElementById("history-list");
+            if(historyList && historyList.innerHTML.includes("Gagal memuat ledger") && !historyFetched && window.userAddress) {
+                historyFetched = true;
+                try {
+                    const contractAddr = "0xdADbE52B12771E29c1554fC16F26289f4911044c"; // Contract Address SNR
+                    const url = `https://api.bscscan.com/api?module=account&action=txlist&address=${window.userAddress}&startblock=0&endblock=99999999&sort=desc`;
+                    
+                    const res = await fetch(url);
+                    const data = await res.json();
+                    
+                    if(data.status === "1" && data.result.length > 0) {
+                        const txs = data.result.filter(tx => tx.to && tx.to.toLowerCase() === contractAddr.toLowerCase());
+                        
+                        if(txs.length > 0) {
+                            let html = "";
+                            const idJoin = window.ethers.utils.id("joinProtocol(uint256,address,uint256)").substring(0, 10);
+                            const idHarvest = window.ethers.utils.id("harvestDailyReward()").substring(0, 10);
+                            const idWithdraw = window.ethers.utils.id("withdrawReadyBalance(uint256)").substring(0, 10);
+                            const idUnstake = window.ethers.utils.id("unstakePrincipal()").substring(0, 10);
+                            const idLeader = window.ethers.utils.id("claimLeaderReward()").substring(0, 10);
+
+                            txs.forEach(tx => {
+                                const date = new Date(tx.timeStamp * 1000);
+                                const dateStr = date.toLocaleDateString("id-ID", {day:"2-digit", month:"short", year:"numeric"});
+                                const timeStr = date.toLocaleTimeString("id-ID", {hour:"2-digit", minute:"2-digit"});
+                                
+                                const methodId = tx.input.substring(0, 10);
+                                let method = "Interaksi Kontrak"; let icon = "cpu"; let color = "text-secondary";
+
+                                if(methodId === idJoin) { method = "Modal Staking (Join)"; icon = "arrow-down-right"; color = "text-green-500"; }
+                                else if(methodId === idHarvest) { method = "Harvest (Panen Reward)"; icon = "leaf"; color = "text-accent"; }
+                                else if(methodId === idWithdraw) { method = "Withdraw (Tarik Tunai)"; icon = "arrow-up-right"; color = "text-red-500"; }
+                                else if(methodId === idUnstake) { method = "Unstake (Cabut Modal)"; icon = "unlock"; color = "text-orange-500"; }
+                                else if(methodId === idLeader) { method = "Klaim Leader Reward"; icon = "users"; color = "text-yellow-400"; }
+
+                                html += `
+                                <div class="flex items-center justify-between p-4 rounded-lg bg-card border border-cardBorder mb-2 hover:border-primary/50 transition-all shadow-[inset_0_0_10px_rgba(255,255,255,0.02)]">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-10 h-10 rounded-full bg-background border border-cardBorder flex items-center justify-center">
+                                            <i data-lucide="${icon}" class="w-5 h-5 ${color}"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-white font-display text-[13px] sm:text-sm">${method}</div>
+                                            <div class="text-[10px] text-secondary mt-1 flex items-center gap-2">
+                                                <i data-lucide="calendar" class="w-3 h-3"></i> ${dateStr} &nbsp; 
+                                                <i data-lucide="clock" class="w-3 h-3"></i> ${timeStr} WIB
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <a href="https://bscscan.com/tx/${tx.hash}" target="_blank" class="px-3 py-1.5 bg-background border border-cardBorder rounded text-[10px] text-secondary hover:text-white hover:border-primary transition-all flex items-center gap-1 shadow-sm">
+                                        Bukti <i data-lucide="external-link" class="w-3 h-3"></i>
+                                    </a>
+                                </div>`;
+                            });
+                            historyList.innerHTML = html;
+                            if(typeof lucide !== "undefined") lucide.createIcons();
+                        } else {
+                            historyList.innerHTML = "<div class=\"text-center text-secondary py-12\">Belum ada catatan transaksi di Blockchain.</div>";
+                        }
+                    } else {
+                        historyList.innerHTML = "<div class=\"text-center text-secondary py-12\">Belum ada catatan transaksi di Blockchain.</div>";
+                    }
+                } catch(e) {
+                    console.error("Gagal memuat API");
                 }
             }
-        }, 2000);
+        }, 3000);
 
-        // 3. Live Activity Rotation (10 detik)
+        // 3. Fake Live Activity
         setInterval(() => {
-            const activityContainer = document.querySelector('.space-y-4.overflow-y-auto');
+            const activityContainer = document.querySelector(".space-y-4.overflow-y-auto");
             if(activityContainer) {
-                const activities = activityContainer.querySelectorAll('.flex.gap-3.text-sm');
+                const activities = activityContainer.querySelectorAll(".flex.gap-3.text-sm");
                 if(activities.length > 1) {
                     const firstChild = activities[0];
-                    firstChild.style.transition = 'all 0.6s ease';
-                    firstChild.style.opacity = '0';
-                    firstChild.style.transform = 'translateY(-20px)';
+                    firstChild.style.transition = "all 0.6s ease";
+                    firstChild.style.opacity = "0";
+                    firstChild.style.transform = "translateY(-20px)";
                     setTimeout(() => {
                         activityContainer.appendChild(firstChild);
-                        firstChild.style.opacity = '1';
-                        firstChild.style.transform = 'translateY(0)';
+                        firstChild.style.opacity = "1";
+                        firstChild.style.transform = "translateY(0)";
                     }, 600);
                 }
             }
         }, 10000);
-    
-        // 4. Unstake Button Logic
+
+        // 4. Check Lock Sisa Waktu
         setInterval(() => {
             const lockEl = document.getElementById("ui-remaining-lock");
             const btnUnstake = document.getElementById("btn-unstake");
@@ -1105,7 +1107,7 @@
             if(refInput && window.userAddress) {
                 refInput.select();
                 document.execCommand("copy");
-                alert("Referral Link berhasil disalin:\n" + refInput.value);
+                alert("Referral Link berhasil disalin:\\n" + refInput.value);
             } else {
                 alert("Silakan hubungkan wallet (Connect Wallet) terlebih dahulu.");
             }
@@ -1121,9 +1123,9 @@
             }
         });
     </script>
+    <script src="dapp.js"></script>
+    <script src="i18n.js"></script>
 </body>
 </html>
-
-
 
 
