@@ -206,7 +206,7 @@ async function fetchAndRenderDashboard() {
 
     // Helper formatter
     const fmt = (val) => parseFloat(ethers.utils.formatUnits(val || 0, 18)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
-    const fmt4 = (val) => parseFloat(ethers.utils.formatUnits(val || 0, 18)).toLocaleString('id-ID', { maximumFractionDigits: 4 });
+    const fmtBNB = (val) => parseFloat(ethers.utils.formatUnits(val || 0, 18)).toLocaleString('id-ID', { maximumFractionDigits: 6 });
 
     // 1. Fetch Basic Wallet Balances (Independen dari Staking Contract)
     try {
@@ -214,7 +214,7 @@ async function fetchAndRenderDashboard() {
             const userBalance = await tokenContract.balanceOf(userAddress);
             const bnbBalance = await provider.getBalance(userAddress);
             
-            updateUI('ui-bnb-balance', fmt4(bnbBalance));
+            updateUI('ui-bnb-balance', fmtBNB(bnbBalance));
             updateUI('ui-wallet-balance', fmt(userBalance) + " SNR");
         }
     } catch (err) {
