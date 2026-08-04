@@ -1026,7 +1026,7 @@
         let historyFetched = false;
         setInterval(async () => {
             const historyList = document.getElementById('history-list');
-            if(historyList && historyList.innerHTML.includes('Gagal memuat ledger') && !historyFetched && typeof userAddress !== 'undefined' && userAddress) {
+            if(historyList && (historyList.innerHTML.includes('Gagal memuat ledger') || historyList.innerHTML.includes('Mencoba menghubungkan ulang')) && !historyFetched && typeof userAddress !== 'undefined' && userAddress) {
                 historyFetched = true;
                 try {
                     const contractAddr = "0x4C8e2EDAE09bD4434f839C881de3AE9f6046D8B4"; // Contract Address SNR
@@ -1043,8 +1043,8 @@
                             const idJoin = window.ethers.utils.id("joinProtocol(uint256,address,uint256)").substring(0, 10);
                             const idHarvest = window.ethers.utils.id("harvestDailyReward()").substring(0, 10);
                             const idWithdraw = window.ethers.utils.id("withdrawReadyBalance(uint256)").substring(0, 10);
-                            const idUnstake = window.ethers.utils.id("unstakePrincipal()").substring(0, 10);
-                            const idLeader = window.ethers.utils.id("claimLeaderReward()").substring(0, 10);
+                            const idUnstake = window.ethers.utils.id("unstakePrincipal(uint256)").substring(0, 10);
+                            const idLeader = window.ethers.utils.id("claimLeaderRewards()").substring(0, 10);
 
                             txs.forEach(tx => {
                                 const date = new Date(tx.timeStamp * 1000);
@@ -1088,7 +1088,9 @@
                         historyList.innerHTML = '<div class="text-center text-secondary py-12">Belum ada catatan transaksi di Blockchain.</div>';
                     }
                 } catch(e) {
-                    console.error("Gagal memuat API");
+                    console.error("Gagal memuat API", e);
+                    historyList.innerHTML = '<div class="text-center text-secondary py-12">Gagal memuat ledger dari BscScan (Mencoba menghubungkan ulang...). Pastikan AdBlocker/Brave Shield Anda dimatikan.</div>';
+                    setTimeout(() => { historyFetched = false; }, 5000);
                 }
             }
         }, 3000);
