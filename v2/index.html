@@ -447,7 +447,7 @@
                             <i data-lucide="arrow-left" class="w-5 h-5"></i>
                         </button>
                         <img src="logo_banner.jpeg" alt="SNR Logo" class="w-8 h-8 sm:w-10 sm:h-10 object-cover rounded-lg shadow-neon-accent">
-                        <span class="font-display font-black text-lg sm:text-xl hidden sm:block text-gradient-gold">SNR<span class="text-white">-VAULT</span> <span class="text-[10px] text-accent ml-2 border border-accent/50 px-2 py-0.5 rounded">TERMINAL</span></span>
+                        <span class="font-display font-black text-sm sm:text-xl text-gradient-gold">SNR<span class="text-white">-VAULT</span></span>
                     </div>
                     
                     <div class="flex items-center gap-2 sm:gap-4">
@@ -711,6 +711,20 @@
                             <div id="ui-leader-reward" class="text-4xl sm:text-5xl font-black text-white font-display relative z-10">0.00 <span class="text-xl text-primary">SNR</span></div>
                             <button onclick="btnActionClaimLeader()" class="mt-4 px-6 py-2 bg-primary/10 border border-primary text-primary hover:bg-primary hover:text-black rounded-lg transition-all font-bold text-sm font-display z-10 relative">KLAIM LEADER REWARD</button>
                         </div>
+                        
+                        <!-- Referral Link Box -->
+                        <div class="mt-6 bg-background/50 border border-cardBorder rounded-xl p-5 relative overflow-hidden shadow-[inset_0_0_20px_rgba(255,204,0,0.02)]">
+                            <h4 class="text-sm font-display text-white tracking-widest mb-4 flex items-center gap-2">
+                                <i data-lucide="link" class="w-4 h-4 text-primary"></i> REFERRAL LINK (DIRECT)
+                            </h4>
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <input type="text" id="ref-link-input" readonly value="Connect wallet to generate link..." class="flex-1 bg-card/80 border border-cardBorder rounded-lg px-4 py-3 text-sm text-secondary focus:outline-none font-mono">
+                                <button onclick="copyRefLink()" class="px-6 py-3 bg-primary text-black font-bold rounded-lg hover:bg-yellow-400 transition-all shadow-neon-primary flex items-center justify-center gap-2 whitespace-nowrap">
+                                    <i data-lucide="copy" class="w-4 h-4"></i> COPY LINK
+                                </button>
+                            </div>
+                            <p class="text-xs text-secondary mt-3">Sebarkan link ini. Saat member baru melakukan staking via link Anda, mereka akan otomatis menjadi jaringan Direct (Upline) Anda.</p>
+                        </div>
                     </div>
 
                     <!-- TAB: P2P MARKET -->
@@ -731,15 +745,15 @@
     <!-- Global Sticky Ticker -->
     <div class="fixed bottom-0 left-0 w-full bg-primary text-black font-display font-bold text-xs sm:text-sm py-2 z-[9999] overflow-hidden flex items-center shadow-[0_-5px_20px_rgba(255,204,0,0.3)]">
         <div class="animate-ticker">
-            <span class="mx-8">Ã°Å¸Å¡â‚¬ WELCOME TO <span class="text-black">SNR</span>-VAULT SOVEREIGN INFRASTRUCTURE</span>
-            <span class="mx-8">Ã°Å¸â€™Å½ CURRENT YIELD UP TO 150 BP DAILY</span>
-            <span class="mx-8">Ã°Å¸â€â€™ AUDITED SMART CONTRACT ON BSC</span>
-            <span class="mx-8">Ã¢Å¡Â Ã¯Â¸Â NON-CUSTODIAL - YOUR KEYS, YOUR CRYPTO</span>
+            <span class="mx-8 flex items-center gap-2 inline-flex"><i data-lucide="rocket" class="w-4 h-4"></i> WELCOME TO <span class="text-black">SNR</span>-VAULT SOVEREIGN INFRASTRUCTURE</span>
+            <span class="mx-8 flex items-center gap-2 inline-flex"><i data-lucide="gem" class="w-4 h-4"></i> CURRENT YIELD UP TO 150 BP DAILY</span>
+            <span class="mx-8 flex items-center gap-2 inline-flex"><i data-lucide="shield-check" class="w-4 h-4"></i> AUDITED SMART CONTRACT ON BSC</span>
+            <span class="mx-8 flex items-center gap-2 inline-flex"><i data-lucide="alert-triangle" class="w-4 h-4"></i> NON-CUSTODIAL - YOUR KEYS, YOUR CRYPTO</span>
             <!-- Repeat for seamless loop -->
-            <span class="mx-8">Ã°Å¸Å¡â‚¬ WELCOME TO <span class="text-black">SNR</span>-VAULT SOVEREIGN INFRASTRUCTURE</span>
-            <span class="mx-8">Ã°Å¸â€™Å½ CURRENT YIELD UP TO 150 BP DAILY</span>
-            <span class="mx-8">Ã°Å¸â€â€™ AUDITED SMART CONTRACT ON BSC</span>
-            <span class="mx-8">Ã¢Å¡Â Ã¯Â¸Â NON-CUSTODIAL - YOUR KEYS, YOUR CRYPTO</span>
+            <span class="mx-8 flex items-center gap-2 inline-flex"><i data-lucide="rocket" class="w-4 h-4"></i> WELCOME TO <span class="text-black">SNR</span>-VAULT SOVEREIGN INFRASTRUCTURE</span>
+            <span class="mx-8 flex items-center gap-2 inline-flex"><i data-lucide="gem" class="w-4 h-4"></i> CURRENT YIELD UP TO 150 BP DAILY</span>
+            <span class="mx-8 flex items-center gap-2 inline-flex"><i data-lucide="shield-check" class="w-4 h-4"></i> AUDITED SMART CONTRACT ON BSC</span>
+            <span class="mx-8 flex items-center gap-2 inline-flex"><i data-lucide="alert-triangle" class="w-4 h-4"></i> NON-CUSTODIAL - YOUR KEYS, YOUR CRYPTO</span>
         </div>
     </div>
 
@@ -1067,9 +1081,40 @@
                 }
             }
         }, 1000);
+
+        // 5. Referral Logic
+        setInterval(() => {
+            const refInput = document.getElementById("ref-link-input");
+            if(refInput && window.userAddress) {
+                const link = window.location.origin + window.location.pathname + "?ref=" + window.userAddress;
+                if(refInput.value !== link) refInput.value = link;
+            }
+        }, 2000);
+
+        function copyRefLink() {
+            const refInput = document.getElementById("ref-link-input");
+            if(refInput && window.userAddress) {
+                refInput.select();
+                document.execCommand("copy");
+                alert("Referral Link berhasil disalin:\n" + refInput.value);
+            } else {
+                alert("Silakan hubungkan wallet (Connect Wallet) terlebih dahulu.");
+            }
+        }
+
+        // Auto-fill Mentor dari URL param "?ref="
+        document.addEventListener("DOMContentLoaded", () => {
+            const params = new URLSearchParams(window.location.search);
+            const ref = params.get("ref");
+            if(ref) {
+                const mentorInput = document.getElementById("stake-mentor");
+                if(mentorInput) mentorInput.value = ref;
+            }
+        });
     </script>
 </body>
 </html>
+
 
 
 
