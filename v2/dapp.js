@@ -235,7 +235,7 @@ async function fetchAndRenderDashboard() {
 
         // Update Staking UI
         updateUI('ui-staking-principal', fmt(d.stakingPrincipal) + " SNR");
-        updateUI('ui-current-reward', fmt(d.currentReward) + " SNR");
+        updateUI('ui-current-reward', Number(ethers.utils.formatUnits(d.currentReward, 18)).toFixed(8) + " SNR");
         updateUI('ui-reward-claimed', fmt(d.rewardClaimed) + " SNR");
         updateUI('ui-ready-withdraw', fmt(d.readyWithdraw) + " SNR");
         updateUI('ui-total-staking-asset', fmt(d.totalStakingAsset) + " SNR");
