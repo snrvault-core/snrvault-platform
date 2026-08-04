@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SNR-VAULT | The Deep-Space Financial Fortress</title>
     <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -18,962 +17,836 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        background: '#050816',
-                        primary: '#FFCC00',
-                        accent: '#00E5FF',
-                        secondary: '#C0C0C0',
-                        card: 'rgba(19, 26, 42, 0.6)',
-                        cardBorder: '#1E2A44',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['Orbitron', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
     <style>
-        html, body {
-            overflow-x: hidden;
-            width: 100%;
-            max-width: 100%;
-            margin: 0;
-            padding: 0;
+        :root {
+            --neon-blue: #00E5FF;
+            --neon-gold: #FFCC00;
+            --bg-deep: #030509;
+            --glass-bg: rgba(10, 14, 23, 0.65);
+            --glass-border: rgba(0, 229, 255, 0.15);
         }
-
         body {
-            background-color: #050816;
-            color: #FFFFFF;
+            background-color: var(--bg-deep);
+            color: #E2E8F0;
             font-family: 'Inter', sans-serif;
-            background-image: radial-gradient(circle at 50% -20%, #1a2744 0%, #050816 60%);
-            background-attachment: fixed;
-            -webkit-font-smoothing: antialiased;
-            scroll-behavior: smooth;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 229, 255, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(255, 204, 0, 0.03) 0%, transparent 50%);
         }
-
-        .font-display {
-            font-family: 'Orbitron', sans-serif;
-        }
-
-        .text-gradient {
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-image: linear-gradient(to right, #FFCC00, #00E5FF);
-        }
-
-        .glass-panel {
-            background-color: rgba(5, 8, 22, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid #1E2A44;
-            border-radius: 0.75rem;
-            box-shadow: 0 8px 32px 0 rgba(0, 229, 255, 0.05);
-            transition: all 0.3s ease;
-        }
+        .font-display { font-family: 'Orbitron', sans-serif; }
         
+        /* Glassmorphism Premium */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            border-radius: 1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
         .glass-panel:hover {
             border-color: rgba(0, 229, 255, 0.3);
             box-shadow: 0 8px 32px 0 rgba(0, 229, 255, 0.1);
         }
 
-        /* Subtle Glow Borders */
-        .glow-border {
+        /* Gradients & Glow */
+        .text-gradient {
+            background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .text-gradient-gold {
+            background: linear-gradient(135deg, #FFDF00 0%, #D4AF37 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .glow-btn {
             position: relative;
+            overflow: hidden;
         }
-        .glow-border::before {
-            content: "";
-            position: absolute;
-            inset: -1px;
-            border-radius: inherit;
-            padding: 1px;
-            background: linear-gradient(to bottom right, rgba(0, 229, 255, 0.5), transparent, rgba(255, 204, 0, 0.5));
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            pointer-events: none;
-        }
-
-        /* Grid Background overlay */
-        .cyan-grid {
-            background-size: 40px 40px;
-            background-image: linear-gradient(to right, rgba(0, 229, 255, 0.03) 1px, transparent 1px),
-                              linear-gradient(to bottom, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
-            mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
-        }
-
-        .nav-link {
-            position: relative;
-            color: #C0C0C0;
-            transition: color 0.3s;
-        }
-        .nav-link:hover {
-            color: #FFFFFF;
-        }
-        .nav-link::after {
+        .glow-btn::before {
             content: '';
             position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -4px;
-            left: 0;
-            background-color: #00E5FF;
-            transition: width 0.3s;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 60%);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
-        .nav-link:hover::after {
-            width: 100%;
+        .glow-btn:hover::before {
+            opacity: 1;
+            transform: scale(1);
         }
 
-        /* Marquee Animation */
-        .marquee-content {
-            animation: scroll 20s linear infinite;
+        /* Cyber Grid Background for Hero */
+        .cyber-grid {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 229, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 229, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            perspective: 1000px;
+            transform-style: preserve-3d;
+            animation: gridMove 20s linear infinite;
         }
-        @keyframes scroll {
+        @keyframes gridMove {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(40px); }
+        }
+
+        /* Progress Ring */
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-deep); }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 229, 255, 0.3); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--neon-blue); }
+
+        /* Status Blinker */
+        .status-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            box-shadow: 0 0 8px currentColor;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Seamless Ticker */
+        @keyframes ticker {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
         }
-    </style>
-</head>
+        .animate-ticker {
+            display: inline-block;
+            white-space: nowrap;
+            animation: ticker 30s linear infinite;
+        }
 
-<body class="min-h-screen flex flex-col relative overflow-x-hidden">
+        /* Hide dapp initially */
+        #view-dapp { display: none; opacity: 0; transition: opacity 0.4s ease; }
+        #view-landing { display: block; opacity: 1; transition: opacity 0.4s ease; }
 
-    <!-- Background Elements -->
-    <div class="fixed inset-0 z-[-1] pointer-events-none cyan-grid"></div>
-    <div class="fixed top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px] pointer-events-none z-[-1]"></div>
-    <div class="fixed top-2/3 right-1/4 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[150px] pointer-events-none z-[-1]"></div>
-
-    <!-- Security Banner Marquee -->
-    <div class="fixed bottom-0 left-0 w-full bg-[#050816]/95 backdrop-blur-md border-t border-red-500/30 py-2 z-[60] overflow-hidden">
-        <div class="marquee-content flex w-max text-xs md:text-sm text-secondary font-display tracking-wide gap-8">
-            <div class="flex items-center gap-2">
-                <i data-lucide="shield-alert" class="w-4 h-4 text-red-500"></i>
-                <span><strong class="text-white">SECURITY NOTICE:</strong> <span class="text-primary font-display">SNR</span><span class="text-white font-display">-VAULT</span> never requests Private Keys, Seed Phrases, or Recovery Codes. All transactions require direct wallet owner approval.</span>
-            </div>
-            <div class="flex items-center gap-2">
-                <i data-lucide="shield-alert" class="w-4 h-4 text-red-500"></i>
-                <span><strong class="text-white">SECURITY NOTICE:</strong> <span class="text-primary font-display">SNR</span><span class="text-white font-display">-VAULT</span> never requests Private Keys, Seed Phrases, or Recovery Codes. All transactions require direct wallet owner approval.</span>
-            </div>
-        </div>
-    </div>
-
-   <!-- Navbar -->
-    <nav class="sticky top-0 z-50 bg-[#050816]/80 backdrop-blur-md border-b border-cardBorder">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <div class="flex items-center gap-3 cursor-pointer flex-nowrap whitespace-nowrap" onclick="toggleDapp(false)">
-                    <i data-lucide="hexagon" class="h-8 w-8 text-primary"></i>
-                    <div class="font-display font-bold text-xl md:text-2xl tracking-widest whitespace-nowrap">
-                        <span class="text-primary font-display">SNR</span><span class="text-white font-display">-VAULT</span>
-                    </div>
-                </div>
-
-                <div class="hidden lg:flex items-center gap-8 text-sm font-display tracking-wide">
-                    <a href="#trust" class="nav-link" data-i18n="nav_trust">TRUST</a>
-                    <a href="#community" class="nav-link" data-i18n="nav_community">COMMUNITY</a>
-                    <a href="#economy" class="nav-link" data-i18n="nav_economy">ECONOMY</a>
-                    <a href="#utility" class="nav-link" data-i18n="nav_utility">UTILITY</a>
-                    <a href="#transparency" class="nav-link" data-i18n="nav_transparency">TRANSPARENCY</a>
-                </div>
-
-                <div class="flex items-center gap-4">
-                    <div class="flex items-center bg-[#050816] border border-cardBorder rounded overflow-hidden shadow-[0_0_10px_rgba(0,229,255,0.2)]">
-                        <button onclick="switchLanguage('en')" data-lang="en" class="lang-btn px-3 py-1.5 text-xs font-display transition-colors">EN</button>
-                        <button onclick="switchLanguage('id')" data-lang="id" class="lang-btn px-3 py-1.5 text-xs font-display transition-colors">ID</button>
-                    </div>
-                    <a href="#" onclick="toggleDapp(true); return false;" class="px-5 py-2.5 rounded border border-primary text-primary font-display font-bold text-sm hover:bg-primary hover:text-[#050816] transition-all duration-300 shadow-[0_0_15px_rgba(255,204,0,0.2)] hover:shadow-[0_0_25px_rgba(255,204,0,0.5)] flex items-center gap-2">
-                        <span data-i18n="nav_enter">ENTER FORTRESS</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="flex-grow relative">
-        <div id="view-landing" class="page-view flex-grow transition-opacity duration-500">
+        /* Responsive utilities */
+        .fluid-text-h1 { font-size: clamp(2rem, 5vw, 4.5rem); line-height: 1.1; }
+        .fluid-text-h2 { font-size: clamp(1.75rem, 4vw, 3rem); }
         
-        <!-- Hero Section -->
-        <section class="relative pt-24 pb-32 min-h-[90vh] flex items-center border-b border-cardBorder/50">
-            <!-- Globe Container -->
-            <div class="absolute inset-0 z-0 flex items-center justify-center overflow-hidden">
-                <div id="globeViz" class="w-full h-full opacity-40 mix-blend-screen pointer-events-none flex items-center justify-center"></div>
-            </div>
-
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-                <div class="max-w-3xl">
-                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-accent/30 bg-accent/5 text-accent mb-6 font-display text-xs tracking-widest uppercase">
-                        <i data-lucide="cpu" class="w-4 h-4"></i>
-                        <span data-i18n="hero_subtitle">Sovereign Economic Infrastructure</span>
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: '#030509',
+                        primary: '#FFCC00',
+                        accent: '#00E5FF',
+                        secondary: '#94A3B8',
+                        card: 'rgba(10, 14, 23, 0.65)',
+                        cardBorder: 'rgba(0, 229, 255, 0.15)'
+                    },
+                    boxShadow: {
+                        'neon-accent': '0 0 20px rgba(0, 229, 255, 0.3)',
+                        'neon-primary': '0 0 20px rgba(255, 204, 0, 0.3)'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="antialiased selection:bg-accent selection:text-black">
+    <!-- VIEW: LANDING PAGE -->
+    <div id="view-landing">
+        <!-- Navigation -->
+        <nav class="fixed w-full z-[100] top-0 glass-panel border-x-0 border-t-0 rounded-none bg-background/80">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-20">
+                    <div class="flex-shrink-0 flex items-center gap-3">
+                        <img src="logo_banner.jpeg" alt="SNR-VAULT Logo" class="w-10 h-10 object-cover rounded-lg shadow-neon-accent">
+                        <span class="font-display font-black text-xl tracking-wider text-gradient-gold">SNR<span class="text-white">-VAULT</span></span>
                     </div>
-
-                    <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight font-display tracking-tight">
-                        THE DEEP-SPACE <br />
-                        <span class="text-gradient">FINANCIAL FORTRESS</span>
-                    </h1>
-
-                    <p class="text-lg md:text-xl text-secondary mb-10 leading-relaxed font-light max-w-2xl">
-                        <span data-i18n="hero_desc">A community-centered digital economic infrastructure connecting people, commerce, distribution, assets, and transparent technology.</span>
-                    </p>
-
-                    <div class="flex flex-wrap items-center gap-4">
-                        <a href="#trust" class="px-8 py-4 bg-transparent border border-secondary text-white font-display text-sm tracking-widest hover:border-white hover:bg-white/5 transition-all">
-                            <span data-i18n="hero_btn">EXPLORE ARCHITECTURE</span>
+                    
+                    <div class="flex items-center gap-3 sm:gap-6">
+                        <!-- Bilingual Toggle -->
+                        <div class="flex bg-gray-900/50 rounded-lg p-1 border border-cardBorder">
+                            <button onclick="switchLanguage('en')" data-lang="en" class="lang-btn px-3 py-1.5 text-xs font-display transition-colors rounded text-white bg-accent/20 border border-accent">EN</button>
+                            <button onclick="switchLanguage('id')" data-lang="id" class="lang-btn px-3 py-1.5 text-xs font-display transition-colors rounded text-secondary hover:text-white">ID</button>
+                        </div>
+                        <!-- CTA -->
+                        <a href="#" onclick="toggleDapp(true); return false;" class="glow-btn px-4 py-2 sm:px-6 sm:py-2.5 rounded-lg border border-primary text-primary font-display font-bold text-xs sm:text-sm hover:bg-primary hover:text-black transition-all shadow-neon-primary flex items-center gap-2">
+                            <i data-lucide="rocket" class="w-4 h-4"></i>
+                            <span class="hidden sm:inline" data-i18n="nav_enter">ENTER FORTRESS</span>
+                            <span class="sm:hidden">ENTER</span>
                         </a>
                     </div>
                 </div>
             </div>
-        </section>
+        </nav>
 
-        <!-- SECTION 1: TRUST FIRST -->
-        <section id="trust" class="py-24 relative">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <div class="text-center mb-16">
-                    <h2 class="text-sm font-display text-accent tracking-widest mb-2 uppercase">Trust First</h2>
-                    <h3 class="text-3xl md:text-4xl font-bold font-display"><span data-i18n="sec_trust_title">Building Digital Economic Trust Through Transparency and Responsible Technology.</span></h3>
-                </div>
-
-                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="glass-panel p-8 glow-border flex flex-col items-center text-center">
-                        <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-6 border border-primary/20">
-                            <i data-lucide="shield-check" class="w-6 h-6 text-primary"></i>
+        <!-- Hero Section Premium -->
+        <section class="relative min-h-screen flex items-center pt-20 overflow-hidden">
+            <div class="cyber-grid"></div>
+            <!-- Aurora Background -->
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-accent rounded-full mix-blend-screen filter blur-[128px] opacity-20 animate-pulse"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary rounded-full mix-blend-screen filter blur-[128px] opacity-10 animate-pulse" style="animation-delay: 2s;"></div>
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div class="text-center lg:text-left">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-accent/30 bg-accent/10 text-accent text-xs font-display font-bold tracking-widest mb-6 backdrop-blur-sm">
+                            <span class="status-dot bg-accent"></span>
+                            <span data-i18n="hero_badge">PROTOCOL V4 ACTIVE</span>
                         </div>
-                        <h4 class="text-lg font-bold font-display mb-3">Non-Custodial</h4>
-                        <p class="text-sm text-secondary">You retain full control over your digital identity and wallet assets at all times.</p>
+                        <h1 class="fluid-text-h1 font-black font-display mb-6 tracking-tight">
+                            <span class="text-white">SOVEREIGN</span><br>
+                            <span class="text-gradient">INFRASTRUCTURE</span><br>
+                            <span class="text-white text-3xl sm:text-5xl">FOR DIGITAL ECONOMY</span>
+                        </h1>
+                        <p class="text-base sm:text-lg text-secondary mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-light" data-i18n="hero_desc">
+                            SNR-VAULT is an institutional-grade smart contract fortress. Stake SNR, earn daily compounding yields, and build a permanent organizational sovereignty on the Binance Smart Chain.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                            <button onclick="toggleDapp(true)" class="glow-btn px-8 py-4 bg-primary text-black font-display font-bold tracking-widest text-sm sm:text-base rounded-lg hover:bg-yellow-400 hover:shadow-neon-primary transition-all flex items-center justify-center gap-3">
+                                <i data-lucide="zap" class="w-5 h-5"></i>
+                                <span data-i18n="hero_btn_explore">EXPLORE ARCHITECTURE</span>
+                            </button>
+                            <a href="#tokenomics" class="px-8 py-4 glass-panel text-white font-display font-bold tracking-widest text-sm sm:text-base hover:border-primary transition-all flex items-center justify-center gap-3 group">
+                                <span data-i18n="hero_btn_docs">VIEW DATA</span>
+                                <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform text-primary"></i>
+                            </a>
+                        </div>
+                        
+                        <!-- Live Stats Mini -->
+                        <div class="mt-12 grid grid-cols-2 sm:grid-cols-3 gap-4 border-t border-cardBorder pt-8">
+                            <div>
+                                <div class="text-xs text-secondary font-display mb-1">NETWORK</div>
+                                <div class="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-green-500"></span> Binance Smart Chain
+                                </div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-secondary font-display mb-1">SMART CONTRACT</div>
+                                <div class="text-sm sm:text-base font-bold text-accent">Audited & Verified</div>
+                            </div>
+                            <div class="hidden sm:block">
+                                <div class="text-xs text-secondary font-display mb-1">UPTIME</div>
+                                <div class="text-sm sm:text-base font-bold text-white">99.99%</div>
+                            </div>
+                        </div>
                     </div>
                     
-                    <div class="glass-panel p-8 glow-border flex flex-col items-center text-center">
-                        <div class="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center mb-6 border border-accent/20">
-                            <i data-lucide="key" class="w-6 h-6 text-accent"></i>
+                    <!-- Globe Container Premium -->
+                    <div class="relative h-[400px] sm:h-[500px] lg:h-[600px] w-full flex items-center justify-center">
+                        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-accent/5 to-transparent rounded-full filter blur-3xl animate-pulse"></div>
+                        <div id="globeViz" class="w-full h-full cursor-grab active:cursor-grabbing relative z-10"></div>
+                        
+                        <!-- Floating Data Cards -->
+                        <div class="hidden md:flex absolute top-10 right-0 glass-panel p-3 items-center gap-3 animate-bounce" style="animation-duration: 3s;">
+                            <i data-lucide="activity" class="text-accent w-5 h-5"></i>
+                            <div>
+                                <div class="text-[10px] text-secondary font-display">GLOBAL NODES</div>
+                                <div class="text-sm font-bold text-white">Active</div>
+                            </div>
                         </div>
-                        <h4 class="text-lg font-bold font-display mb-3">User-Controlled</h4>
-                        <p class="text-sm text-secondary">Every action within the ecosystem requires your explicit cryptographic authorization.</p>
-                    </div>
-
-                    <div class="glass-panel p-8 glow-border flex flex-col items-center text-center">
-                        <div class="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center mb-6 border border-blue-500/20">
-                            <i data-lucide="eye" class="w-6 h-6 text-blue-400"></i>
-                        </div>
-                        <h4 class="text-lg font-bold font-display mb-3">Transparent Tech</h4>
-                        <p class="text-sm text-secondary">Infrastructure logic is publicly verifiable, ensuring trust through absolute clarity.</p>
-                    </div>
-
-                    <div class="glass-panel p-8 glow-border flex flex-col items-center text-center">
-                        <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-6 border border-white/20">
-                            <i data-lucide="building-2" class="w-6 h-6 text-white"></i>
-                        </div>
-                        <h4 class="text-lg font-bold font-display mb-3">Accountability</h4>
-                        <p class="text-sm text-secondary">Backed by clear corporate structures focused on sustainable economic support.</p>
-                    </div>
-                </div>
-
-                <div class="mt-12 glass-panel p-6 border-l-4 border-l-primary flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div>
-                        <h5 class="font-display font-bold text-white mb-1">Corporate Presence</h5>
-                        <p class="text-sm text-secondary">Trust Before Participation.</p>
-                    </div>
-                    <div class="flex flex-wrap gap-4">
-                        <div class="px-4 py-2 bg-[#050816] border border-cardBorder rounded text-sm text-secondary font-display tracking-wide">
-                            PT GLOBAL NEXUS CAPITAL
-                        </div>
-                        <div class="px-4 py-2 bg-[#050816] border border-cardBorder rounded text-sm text-secondary font-display tracking-wide">
-                            PT SNR DIGITAL TRANSFORMASI
+                        <div class="hidden md:flex absolute bottom-10 left-0 glass-panel p-3 items-center gap-3 animate-bounce" style="animation-duration: 4s; animation-delay: 1s;">
+                            <i data-lucide="shield-check" class="text-primary w-5 h-5"></i>
+                            <div>
+                                <div class="text-[10px] text-secondary font-display">SECURITY</div>
+                                <div class="text-sm font-bold text-white">Maximum</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- SECTION 2: COMMUNITY FIRST -->
-        <section id="community" class="py-24 bg-gradient-to-b from-transparent to-card/30 border-y border-cardBorder/50">
+        <!-- Trust Layer (Premium Cards) -->
+        <section class="py-20 relative bg-background border-y border-cardBorder">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid lg:grid-cols-2 gap-16 items-center">
-                    <div>
-                        <h2 class="text-sm font-display text-primary tracking-widest mb-2 uppercase">Community First</h2>
-                        <h3 class="text-3xl md:text-5xl font-bold font-display mb-6"><span data-i18n="sec_comm_title">People Before Technology.</span></h3>
-                        <p class="text-lg text-secondary mb-6 leading-relaxed">
-                            <span data-i18n="sec_comm_desc">Technology is only a tool. People and their productive activities are the true foundation of this ecosystem. We build infrastructure to empower human coordination, not replace it.</span>
+                <div class="text-center mb-16">
+                    <h2 class="fluid-text-h2 font-display font-black text-white mb-4">ENTERPRISE <span class="text-gradient">TRUST LAYER</span></h2>
+                    <p class="text-secondary max-w-2xl mx-auto" data-i18n="trust_sub">Built on immutable smart contracts with absolute mathematical certainty.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+                    <!-- Card 1 -->
+                    <div class="glass-panel p-8 group relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+                        <div class="w-14 h-14 bg-background border border-cardBorder rounded-xl flex items-center justify-center mb-6 shadow-neon-accent group-hover:bg-accent/10 transition-colors">
+                            <i data-lucide="lock" class="w-7 h-7 text-accent"></i>
+                        </div>
+                        <h3 class="text-xl font-display font-bold text-white mb-3" data-i18n="trust_1_title">Decentralized Security</h3>
+                        <p class="text-secondary text-sm leading-relaxed" data-i18n="trust_1_desc">Non-custodial architecture. You hold your keys, you control your assets. No intermediaries.</p>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="glass-panel p-8 group relative overflow-hidden border-primary/30">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+                        <div class="w-14 h-14 bg-background border border-primary/30 rounded-xl flex items-center justify-center mb-6 shadow-neon-primary group-hover:bg-primary/10 transition-colors">
+                            <i data-lucide="cpu" class="w-7 h-7 text-primary"></i>
+                        </div>
+                        <h3 class="text-xl font-display font-bold text-white mb-3" data-i18n="trust_2_title">Immutable Protocol</h3>
+                        <p class="text-secondary text-sm leading-relaxed" data-i18n="trust_2_desc">Deployed on Binance Smart Chain. Code is law. The smart contract logic cannot be altered by anyone.</p>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="glass-panel p-8 group relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+                        <div class="w-14 h-14 bg-background border border-cardBorder rounded-xl flex items-center justify-center mb-6 shadow-neon-accent group-hover:bg-accent/10 transition-colors">
+                            <i data-lucide="network" class="w-7 h-7 text-accent"></i>
+                        </div>
+                        <h3 class="text-xl font-display font-bold text-white mb-3" data-i18n="trust_3_title">Permanent Sovereignty</h3>
+                        <p class="text-secondary text-sm leading-relaxed" data-i18n="trust_3_desc">Organizational structure is etched into the blockchain forever. Build once, earn endlessly.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tokenomics 3D Premium -->
+        <section id="tokenomics" class="py-24 relative overflow-hidden">
+            <!-- Background Elements -->
+            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-900/10 via-background to-background"></div>
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="flex flex-col lg:flex-row gap-16 items-center">
+                    <div class="w-full lg:w-1/2">
+                        <h2 class="text-sm text-primary font-display font-bold tracking-widest uppercase mb-2">Macro-Economics</h2>
+                        <h3 class="fluid-text-h2 font-display font-black text-white mb-6">TOKENOMICS <br><span class="text-gradient">ARCHITECTURE</span></h3>
+                        <p class="text-secondary mb-8 text-lg font-light">
+                            Designed for long-term sustainability and extreme scarcity. Fixed supply. Deflationary mechanisms.
                         </p>
                         
-                        <div class="space-y-4 mt-8">
-                            <div class="flex items-start gap-4">
-                                <div class="mt-1"><i data-lucide="check-circle" class="w-5 h-5 text-accent"></i></div>
-                                <div>
-                                    <h4 class="font-bold text-white font-display">Farmers & Producers</h4>
-                                    <p class="text-sm text-secondary">The originators of tangible value in the real world.</p>
+                        <!-- Premium Progress Bars -->
+                        <div class="space-y-5">
+                            <div>
+                                <div class="flex justify-between text-sm font-display mb-2">
+                                    <span class="text-white font-bold flex items-center gap-2"><div class="w-2 h-2 bg-[#FFD700] rounded-full shadow-[0_0_8px_#FFD700]"></div> Treasury / Liquidity</span>
+                                    <span class="text-[#FFD700]">40%</span>
+                                </div>
+                                <div class="w-full bg-background border border-cardBorder rounded-full h-2 overflow-hidden">
+                                    <div class="bg-[#FFD700] h-2 rounded-full shadow-[0_0_10px_#FFD700]" style="width: 40%"></div>
                                 </div>
                             </div>
-                            <div class="flex items-start gap-4">
-                                <div class="mt-1"><i data-lucide="check-circle" class="w-5 h-5 text-accent"></i></div>
-                                <div>
-                                    <h4 class="font-bold text-white font-display">Merchants & Small Businesses</h4>
-                                    <p class="text-sm text-secondary">The vital connection points enabling local commerce.</p>
+                            <div>
+                                <div class="flex justify-between text-sm font-display mb-2">
+                                    <span class="text-white font-bold flex items-center gap-2"><div class="w-2 h-2 bg-[#00D1FF] rounded-full shadow-[0_0_8px_#00D1FF]"></div> Community Rewards</span>
+                                    <span class="text-[#00D1FF]">30%</span>
+                                </div>
+                                <div class="w-full bg-background border border-cardBorder rounded-full h-2 overflow-hidden">
+                                    <div class="bg-[#00D1FF] h-2 rounded-full shadow-[0_0_10px_#00D1FF]" style="width: 30%"></div>
                                 </div>
                             </div>
-                            <div class="flex items-start gap-4">
-                                <div class="mt-1"><i data-lucide="check-circle" class="w-5 h-5 text-accent"></i></div>
-                                <div>
-                                    <h4 class="font-bold text-white font-display">Distributors</h4>
-                                    <p class="text-sm text-secondary">Facilitating the efficient flow of goods and services.</p>
+                            <div>
+                                <div class="flex justify-between text-sm font-display mb-2">
+                                    <span class="text-white font-bold flex items-center gap-2"><div class="w-2 h-2 bg-white rounded-full shadow-[0_0_8px_white]"></div> Presale / Initial Asset</span>
+                                    <span class="text-white">15%</span>
+                                </div>
+                                <div class="w-full bg-background border border-cardBorder rounded-full h-2 overflow-hidden">
+                                    <div class="bg-white h-2 rounded-full shadow-[0_0_10px_white]" style="width: 15%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm font-display mb-2">
+                                    <span class="text-white font-bold flex items-center gap-2"><div class="w-2 h-2 bg-[#FF4500] rounded-full shadow-[0_0_8px_#FF4500]"></div> Founder & Team</span>
+                                    <span class="text-[#FF4500]">10%</span>
+                                </div>
+                                <div class="w-full bg-background border border-cardBorder rounded-full h-2 overflow-hidden">
+                                    <div class="bg-[#FF4500] h-2 rounded-full shadow-[0_0_10px_#FF4500]" style="width: 10%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm font-display mb-2">
+                                    <span class="text-white font-bold flex items-center gap-2"><div class="w-2 h-2 bg-[#A855F7] rounded-full shadow-[0_0_8px_#A855F7]"></div> Marketing & Promo</span>
+                                    <span class="text-[#A855F7]">5%</span>
+                                </div>
+                                <div class="w-full bg-background border border-cardBorder rounded-full h-2 overflow-hidden">
+                                    <div class="bg-[#A855F7] h-2 rounded-full shadow-[0_0_10px_#A855F7]" style="width: 5%"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="relative">
-                        <!-- Abstract Community Representation -->
-                        <div class="aspect-square rounded-full border border-cardBorder flex items-center justify-center relative glow-border p-8">
-                            <div class="absolute inset-0 bg-primary/5 rounded-full blur-2xl"></div>
-                            <div class="grid grid-cols-2 gap-4 relative z-10 w-full h-full">
-                                <div class="glass-panel rounded-lg flex items-center justify-center flex-col gap-2 p-4">
-                                    <i data-lucide="users" class="w-8 h-8 text-white"></i>
-                                    <span class="text-xs font-display tracking-widest text-secondary">MEMBERS</span>
-                                </div>
-                                <div class="glass-panel rounded-lg flex items-center justify-center flex-col gap-2 p-4">
-                                    <i data-lucide="store" class="w-8 h-8 text-primary"></i>
-                                    <span class="text-xs font-display tracking-widest text-secondary">MERCHANTS</span>
-                                </div>
-                                <div class="glass-panel rounded-lg flex items-center justify-center flex-col gap-2 p-4">
-                                    <i data-lucide="truck" class="w-8 h-8 text-accent"></i>
-                                    <span class="text-xs font-display tracking-widest text-secondary">DISTRIBUTORS</span>
-                                </div>
-                                <div class="glass-panel rounded-lg flex items-center justify-center flex-col gap-2 p-4">
-                                    <i data-lucide="sprout" class="w-8 h-8 text-green-400"></i>
-                                    <span class="text-xs font-display tracking-widest text-secondary">PRODUCERS</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 3: REAL ECONOMY FIRST -->
-        <section id="economy" class="py-32 relative">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-20">
-                    <h2 class="text-sm font-display text-accent tracking-widest mb-2 uppercase">Real Economy First</h2>
-                    <h3 class="text-3xl md:text-5xl font-bold font-display mb-6"><span data-i18n="sec_econ_title">Value Originates From Economic Activity.</span></h3>
-                    <p class="text-lg text-secondary max-w-3xl mx-auto">
-                        <span data-i18n="sec_econ_desc">Economic value is generated by productive activity, coordination, and commerce. Our infrastructure serves to support this flow.</span>
-                    </p>
-                </div>
-
-                <!-- Economic Flow Diagram -->
-                <div class="relative flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0 mt-16 px-4">
-                    <!-- Flow Line Background (Desktop) -->
-                    <div class="hidden md:block absolute top-1/2 left-[10%] right-[10%] h-0.5 bg-cardBorder -translate-y-1/2 z-0"></div>
                     
-                    <!-- Nodes -->
-                    <div class="flex flex-col items-center relative z-10 gap-3 group">
-                        <div class="w-16 h-16 rounded-full glass-panel flex items-center justify-center border-primary/30 group-hover:border-primary transition-colors">
-                            <i data-lucide="tractor" class="w-6 h-6 text-secondary group-hover:text-primary transition-colors"></i>
-                        </div>
-                        <span class="text-xs font-display tracking-widest text-secondary">AGRICULTURE</span>
-                    </div>
-
-                    <div class="hidden md:block text-accent"><i data-lucide="arrow-right"></i></div>
-                    <div class="md:hidden text-accent"><i data-lucide="arrow-down"></i></div>
-
-                    <div class="flex flex-col items-center relative z-10 gap-3 group">
-                        <div class="w-16 h-16 rounded-full glass-panel flex items-center justify-center border-primary/30 group-hover:border-primary transition-colors">
-                            <i data-lucide="factory" class="w-6 h-6 text-secondary group-hover:text-primary transition-colors"></i>
-                        </div>
-                        <span class="text-xs font-display tracking-widest text-secondary">PRODUCTION</span>
-                    </div>
-
-                    <div class="hidden md:block text-accent"><i data-lucide="arrow-right"></i></div>
-                    <div class="md:hidden text-accent"><i data-lucide="arrow-down"></i></div>
-
-                    <div class="flex flex-col items-center relative z-10 gap-3 group">
-                        <div class="w-16 h-16 rounded-full glass-panel flex items-center justify-center border-primary/30 group-hover:border-primary transition-colors">
-                            <i data-lucide="route" class="w-6 h-6 text-secondary group-hover:text-primary transition-colors"></i>
-                        </div>
-                        <span class="text-xs font-display tracking-widest text-secondary">DISTRIBUTION</span>
-                    </div>
-
-                    <div class="hidden md:block text-accent"><i data-lucide="arrow-right"></i></div>
-                    <div class="md:hidden text-accent"><i data-lucide="arrow-down"></i></div>
-
-                    <div class="flex flex-col items-center relative z-10 gap-3 group">
-                        <div class="w-16 h-16 rounded-full glass-panel flex items-center justify-center border-primary/30 group-hover:border-primary transition-colors">
-                            <i data-lucide="shopping-bag" class="w-6 h-6 text-secondary group-hover:text-primary transition-colors"></i>
-                        </div>
-                        <span class="text-xs font-display tracking-widest text-secondary">MERCHANT</span>
-                    </div>
-
-                    <div class="hidden md:block text-accent"><i data-lucide="arrow-right"></i></div>
-                    <div class="md:hidden text-accent"><i data-lucide="arrow-down"></i></div>
-
-                    <div class="flex flex-col items-center relative z-10 gap-3 group">
-                        <div class="w-20 h-20 rounded-full glass-panel glow-border flex items-center justify-center bg-accent/5">
-                            <i data-lucide="network" class="w-8 h-8 text-accent"></i>
-                        </div>
-                        <span class="text-xs font-display tracking-widest text-white font-bold">DIGITAL INFRASTRUCTURE</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 4: UTILITY FIRST -->
-        <section id="utility" class="py-24 bg-card/20 border-y border-cardBorder">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-16">
-                    <h2 class="text-sm font-display text-primary tracking-widest mb-2 uppercase">Utility First</h2>
-                    <h3 class="text-3xl md:text-4xl font-bold font-display"><span data-i18n="sec_util_title">Technology Supporting Everyday Economic Activity.</span></h3>
-                </div>
-
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="glass-panel p-8 border-t-2 border-t-primary/50">
-                        <h4 class="text-xl font-bold font-display mb-4">Community Commerce</h4>
-                        <p class="text-secondary text-sm leading-relaxed">Frameworks enabling local communities to transact securely and transparently within defined economic zones.</p>
-                    </div>
-                    <div class="glass-panel p-8 border-t-2 border-t-accent/50">
-                        <h4 class="text-xl font-bold font-display mb-4">Merchant Network</h4>
-                        <p class="text-secondary text-sm leading-relaxed">Onboarding pathways for verified real-world businesses to integrate digital verification and settlement systems.</p>
-                    </div>
-                    <div class="glass-panel p-8 border-t-2 border-t-white/50">
-                        <h4 class="text-xl font-bold font-display mb-4">Asset Support Programs</h4>
-                        <p class="text-secondary text-sm leading-relaxed">Protocols designed to verify and support physical asset integration into community-driven economic structures.</p>
-                    </div>
-                    <div class="glass-panel p-8 border-t-2 border-t-accent/50">
-                        <h4 class="text-xl font-bold font-display mb-4">Digital Distribution</h4>
-                        <p class="text-secondary text-sm leading-relaxed">Efficient, auditable ledger systems to track the origin and flow of resources within the network.</p>
-                    </div>
-                    <div class="glass-panel p-8 border-t-2 border-t-primary/50">
-                        <h4 class="text-xl font-bold font-display mb-4">Future Payment Infrastructure</h4>
-                        <p class="text-secondary text-sm leading-relaxed">Development of robust digital settlement rails prioritizing low friction for everyday commercial use.</p>
-                    </div>
-                    <div class="glass-panel p-8 border-t-2 border-t-white/50">
-                        <h4 class="text-xl font-bold font-display mb-4">Future Financial Tools</h4>
-                        <p class="text-secondary text-sm leading-relaxed">Sovereign economic tools for communities to manage, track, and deploy their resources effectively.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 6: BLOCKCHAIN INFRASTRUCTURE -->
-        <section class="py-32 relative overflow-hidden">
-            <!-- Background element -->
-            <div class="absolute inset-0 z-0 flex items-center justify-center opacity-10 pointer-events-none">
-                <i data-lucide="boxes" class="w-[800px] h-[800px] text-accent"></i>
-            </div>
-            
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-                <h2 class="text-sm font-display text-accent tracking-widest mb-2 uppercase">Architecture Layer</h2>
-                <h3 class="text-3xl md:text-5xl font-bold font-display mb-8"><span data-i18n="sec_block_title">Transparent Infrastructure Layer.</span></h3>
-                
-                <p class="text-xl text-secondary max-w-3xl mx-auto leading-relaxed mb-12">
-                    Blockchain is used to improve transparency, traceability, accountability, and coordination. <br/>
-                    <strong class="text-white">Blockchain is not the product. Blockchain is the infrastructure.</strong>
-                </p>
-
-                <div class="inline-flex flex-col md:flex-row items-center gap-4 p-4 glass-panel border-accent/20">
-                    <div class="flex items-center gap-2 px-4 py-2 bg-background rounded border border-cardBorder">
-                        <div class="w-2 h-2 rounded-full bg-accent animate-pulse"></div>
-                        <span class="text-sm font-display tracking-widest">TRACEABILITY</span>
-                    </div>
-                    <div class="flex items-center gap-2 px-4 py-2 bg-background rounded border border-cardBorder">
-                        <div class="w-2 h-2 rounded-full bg-accent animate-pulse"></div>
-                        <span class="text-sm font-display tracking-widest">ACCOUNTABILITY</span>
-                    </div>
-                    <div class="flex items-center gap-2 px-4 py-2 bg-background rounded border border-cardBorder">
-                        <div class="w-2 h-2 rounded-full bg-accent animate-pulse"></div>
-                        <span class="text-sm font-display tracking-widest">COORDINATION</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 7: PORTAL ACCESS -->
-        <section id="portal" class="py-24 border-t border-cardBorder/50 relative">
-            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <div class="glass-panel p-12 text-center glow-border relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-accent to-primary"></div>
-                    
-                    <i data-lucide="lock" class="w-12 h-12 text-primary mx-auto mb-6"></i>
-                    <h3 class="text-3xl font-display font-bold mb-4" data-i18n="sec_portal_title">PORTAL ACCESS</h3>
-                    <p class="text-secondary mb-10"><span data-i18n="sec_portal_desc">Access ecosystem tools and community infrastructure. Requires active Web3 identification.</span></p>
-                    
-                    <button onclick="toggleDapp(true)" class="px-8 py-4 bg-primary text-[#050816] font-display font-bold tracking-widest text-lg hover:bg-yellow-400 hover:shadow-[0_0_30px_rgba(255,204,0,0.4)] transition-all flex items-center justify-center gap-3 w-full sm:w-auto mx-auto group">
-                        ENTER THE FORTRESS
-                        <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
-                    </button>
-                    <p class="mt-4 text-xs text-secondary/60">Non-custodial connection.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION: TOKENOMICS -->
-        <section id="snr-tokenomics" class="py-16 relative overflow-hidden" style="background: #000510;">
-            <div class="max-w-7xl mx-auto px-4 relative z-10">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl font-display font-bold tracking-widest text-white uppercase">
-                        <span class="text-primary font-display">SNR</span><span class="text-white font-display">-VAULT</span> Tokenomics
-                    </h2>
-                    <div class="h-1 w-24 bg-primary mx-auto mt-4 rounded-full shadow-[0_0_10px_#FFD700]" style="background-color: #FFCC00;"></div>
-                    <p class="text-secondary mt-6 font-display uppercase tracking-widest text-sm" style="color: #8fa0dd;">Total Supply: 1,000,000,000 SNR</p>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                    <div class="relative flex justify-center items-center">
-                        <div class="absolute w-80 h-80 rounded-full bg-primary/5 blur-[80px] animate-pulse" style="background-color: rgba(255, 204, 0, 0.05);"></div>
-                        <div style="position: relative; height: 380px; width: 100%; max-width: 450px;">
+                    <div class="w-full lg:w-1/2 flex justify-center relative">
+                        <!-- Chart Container -->
+                        <div class="relative w-72 h-72 sm:w-96 sm:h-96">
+                            <!-- Glowing center text -->
+                            <div class="absolute inset-0 flex flex-col items-center justify-center z-10 pointer-events-none">
+                                <span class="text-sm text-secondary font-display tracking-widest">TOTAL SUPPLY</span>
+                                <span class="text-3xl sm:text-4xl font-black text-white font-display text-gradient-gold drop-shadow-[0_0_15px_rgba(255,204,0,0.5)]">1B SNR</span>
+                            </div>
                             <canvas id="tokenomicsBurgerChart"></canvas>
-                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                                <span class="font-display text-xs tracking-widest uppercase" style="color: #FFCC00; font-family: 'Orbitron', sans-serif;">Supply</span>
-                                <span class="text-white font-display text-2xl font-bold" style="font-family: 'Orbitron', sans-serif;">1B SNR</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="tokenomics-list" class="space-y-4">
-                        <div class="glass-panel p-4 border-l-4 border-[#FFD700] flex justify-between items-center group" style="background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <h4 class="text-primary font-bold font-display text-sm uppercase" style="color: #FFCC00; font-family: 'Orbitron', sans-serif;">Treasury SNR</h4>
-                                <p class="text-secondary text-xs mt-1 leading-relaxed" style="color: #a0aec0;">Dana cadangan strategis likuiditas.</p>
-                            </div>
-                            <div class="text-right" style="text-align: right;"><span class="text-white font-bold block" style="display: block; color: #fff;">400M</span><span class="text-primary text-[10px] font-bold" style="color: #FFCC00;">40%</span></div>
-                        </div>
-                        <div class="glass-panel p-4 border-l-4 border-[#00D1FF] flex justify-between items-center group" style="background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <h4 class="text-[#00D1FF] font-bold font-display text-sm uppercase" style="color: #00D1FF; font-family: 'Orbitron', sans-serif;">Community Reward</h4>
-                                <p class="text-secondary text-xs mt-1 leading-relaxed" style="color: #a0aec0;">Imbal hasil kedaulatan komunitas.</p>
-                            </div>
-                            <div class="text-right" style="text-align: right;"><span class="text-white font-bold block" style="display: block; color: #fff;">300M</span><span class="text-[#00D1FF] text-[10px] font-bold">30%</span></div>
-                        </div>
-                        <div class="glass-panel p-4 border-l-4 border-[#FFFFFF] flex justify-between items-center group" style="background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <h4 class="text-white font-bold font-display text-sm uppercase" style="font-family: 'Orbitron', sans-serif;">Presale Asset</h4>
-                                <p class="text-secondary text-xs mt-1 leading-relaxed" style="color: #a0aec0;">Distribusi kepemilikan tahap awal.</p>
-                            </div>
-                            <div class="text-right" style="text-align: right;"><span class="text-white font-bold block" style="display: block; color: #fff;">150M</span><span class="text-white text-[10px] font-bold" style="color: #fff;">15%</span></div>
-                        </div>
-                        <div class="glass-panel p-4 border-l-4 border-[#FF4500] flex justify-between items-center group" style="background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <h4 class="text-[#FF4500] font-bold font-display text-sm uppercase" style="color: #FF4500; font-family: 'Orbitron', sans-serif;">Founder & Team</h4>
-                                <p class="text-secondary text-xs mt-1 leading-relaxed" style="color: #a0aec0;">Vesting jangka panjang tim pengembang.</p>
-                            </div>
-                            <div class="text-right" style="text-align: right;"><span class="text-white font-bold block" style="display: block; color: #fff;">100M</span><span class="text-[#FF4500] text-[10px] font-bold">10%</span></div>
-                        </div>
-                        <div class="glass-panel p-4 border-l-4 border-[#A855F7] flex justify-between items-center group" style="background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <h4 class="text-[#A855F7] font-bold font-display text-sm uppercase" style="color: #A855F7; font-family: 'Orbitron', sans-serif;">Marketing Reward</h4>
-                                <p class="text-secondary text-xs mt-1 leading-relaxed" style="color: #a0aec0;">Ekspansi dan apresiasi mitra global.</p>
-                            </div>
-                            <div class="text-right" style="text-align: right;"><span class="text-white font-bold block" style="display: block; color: #fff;">50M</span><span class="text-[#A855F7] text-[10px] font-bold">5%</span></div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-
-        <!-- SECTION 5: TRANSPARENCY LAYER -->
-        <section id="transparency" class="py-20 bg-[#050816] border-t border-cardBorder">
+        
+        <!-- Footer Premium -->
+        <footer class="border-t border-cardBorder bg-background pt-16 pb-8">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="mb-10">
-                    <h3 class="text-2xl font-bold font-display text-white">Transparency Layer</h3>
-                    <p class="text-sm text-secondary">Core documentation and public commitments.</p>
-                </div>
-                
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                    <a href="#" class="glass-panel p-4 text-center hover:bg-white/5 transition-colors border-cardBorder hover:border-secondary">
-                        <i data-lucide="info" class="w-5 h-5 mx-auto mb-2 text-secondary"></i>
-                        <span class="text-xs font-display tracking-widest text-white">ABOUT</span>
-                    </a>
-                    <a href="#" class="glass-panel p-4 text-center hover:bg-white/5 transition-colors border-cardBorder hover:border-secondary">
-                        <i data-lucide="file-text" class="w-5 h-5 mx-auto mb-2 text-secondary"></i>
-                        <span class="text-xs font-display tracking-widest text-white">POLICY</span>
-                    </a>
-                    <a href="#" class="glass-panel p-4 text-center hover:bg-white/5 transition-colors border-cardBorder hover:border-secondary">
-                        <i data-lucide="shield" class="w-5 h-5 mx-auto mb-2 text-secondary"></i>
-                        <span class="text-xs font-display tracking-widest text-white">SECURITY</span>
-                    </a>
-                    <a href="#" class="glass-panel p-4 text-center hover:bg-white/5 transition-colors border-cardBorder hover:border-secondary">
-                        <i data-lucide="alert-triangle" class="w-5 h-5 mx-auto mb-2 text-secondary"></i>
-                        <span class="text-xs font-display tracking-widest text-white">RISK DISCLOSURE</span>
-                    </a>
-                    <a href="#" class="glass-panel p-4 text-center hover:bg-white/5 transition-colors border-cardBorder hover:border-secondary">
-                        <i data-lucide="eye" class="w-5 h-5 mx-auto mb-2 text-secondary"></i>
-                        <span class="text-xs font-display tracking-widest text-white">TRANSPARENCY</span>
-                    </a>
-                    <a href="#" class="glass-panel p-4 text-center hover:bg-white/5 transition-colors border-cardBorder hover:border-secondary">
-                        <i data-lucide="mail" class="w-5 h-5 mx-auto mb-2 text-secondary"></i>
-                        <span class="text-xs font-display tracking-widest text-white">CONTACT</span>
-                    </a>
-                </div>
-            </div>
-        </section>
-        </div> <!-- End of view-landing -->
-
-        <!-- dApp View -->
-        <div id="view-dapp" class="page-view flex-grow py-8 transition-opacity duration-300" style="display: none; opacity: 0;">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-                <!-- Top Actions Row -->
-                <div class="mb-6 flex justify-between items-center">
-                    <button onclick="toggleDapp(false)" class="flex items-center gap-2 px-5 py-2.5 glass-panel border border-cardBorder text-secondary hover:text-white hover:border-primary transition-all font-display font-bold tracking-widest text-xs uppercase shadow-[0_0_10px_rgba(0,0,0,0.2)] hover:shadow-[0_0_15px_rgba(255,204,0,0.2)]">
-                        <i data-lucide="arrow-left" class="w-4 h-4"></i> <span data-i18n="dapp_back">BACK TO MAIN</span>
-                    </button>
-                    
-                    <button id="btn-connect-wallet" onclick="connectWallet()" class="flex items-center gap-2 px-6 py-2.5 bg-primary text-[#050816] font-display font-bold tracking-widest text-sm uppercase hover:bg-yellow-400 shadow-[0_0_15px_rgba(255,204,0,0.3)] transition-all rounded">
-                        <i data-lucide="link" class="w-4 h-4"></i> <span data-i18n="dapp_connect">CONNECT WALLET</span>
-                    </button>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div class="glass-panel p-6 flex items-center justify-between">
-                        <div>
-                            <p class="text-secondary text-sm mb-1"><span data-i18n="dapp_bal_title">Total Saldo (Wallet)</span></p>
-                            <h3 class="text-2xl font-bold"><span id="ui-snr-balance">0.00</span> <span
-                                    class="text-primary text-lg">SNR</span></h3>
-                            <p class="text-sm mt-1 flex items-center gap-1">
-                                <span class="text-yellow-500 font-bold" id="ui-bnb-balance">0.000</span> <span
-                                    class="text-secondary">BNB (Gas Fee)</span>
-                            </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                    <div>
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="font-display font-black text-xl tracking-wider text-gradient-gold">SNR<span class="text-white">-VAULT</span></span>
                         </div>
-                        <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
-                            <i data-lucide="wallet" class="w-6 h-6 text-primary"></i>
-                        </div>
-                    </div>
-                    <div class="glass-panel p-6 flex items-center justify-between border-accent/30">
-                        <div>
-                            <p class="text-secondary text-sm mb-1"><span data-i18n="dapp_status_title">Status Kedaulatan</span></p>
-                            <h3 class="text-2xl font-bold text-accent" data-i18n="dapp_status_val">AKTIF</h3>
-                        </div>
-                        <div class="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center border border-accent/30">
-                            <i data-lucide="cpu" class="w-6 h-6 text-accent"></i>
-                        </div>
-                    </div>
-                    <div class="glass-panel p-6 flex items-center justify-between">
-                        <div>
-                            <p class="text-secondary text-sm mb-1" data-i18n="dapp_wd_title">Ready to Withdraw</p>
-                            <h3 class="text-2xl font-bold text-green-400"><span id="ui-withdraw-balance">0.00</span> <span
-                                    class="text-sm">SNR</span></h3>
-                        </div>
-                        <div class="flex flex-col gap-2">
-                            <button class="px-4 py-2 bg-yellow-500/20 text-yellow-400 border border-yellow-500/50 rounded-lg text-sm hover:bg-yellow-500/30 transition-colors w-full">
-                                <span data-i18n="dapp_btn_harvest">Harvest</span></button>
-                            <button class="px-4 py-2 bg-green-500/20 text-green-400 border border-green-500/50 rounded-lg text-sm hover:bg-green-500/30 transition-colors w-full">
-                                <span data-i18n="dapp_btn_wd">Withdraw</span></button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- DASHBOARD PANEL INFORMASI STAKING SAYA -->
-            <div class="glass-panel p-6 border-primary/30 mb-8 relative overflow-hidden">
-                <div class="flex items-center gap-3 mb-6 border-b border-cardBorder pb-4">
-                    <div class="p-2 rounded-lg bg-primary/20 text-primary border border-primary/30">
-                        <i data-lucide="shield-check" class="w-6 h-6"></i>
+                        <p class="text-sm text-secondary leading-relaxed mb-6">
+                            Sovereign Infrastructure for the Digital Economy. Audited, verifiable, and permanent smart contracts on BSC.
+                        </p>
                     </div>
                     <div>
-                        <h3 class="text-xl font-display font-bold text-white uppercase tracking-wider">🛡️ STAKING SNR SAYA</h3>
-                        <p class="text-xs text-secondary">Informasi Real-Time dari Smart Contract Titan Sovereign</p>
+                        <h4 class="text-white font-display font-bold mb-4">Protocol</h4>
+                        <ul class="space-y-2 text-sm text-secondary">
+                            <li><a href="#" class="hover:text-primary transition-colors">Smart Contract</a></li>
+                            <li><a href="#" class="hover:text-primary transition-colors">Security Audit</a></li>
+                            <li><a href="#" class="hover:text-primary transition-colors">Tokenomics</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-display font-bold mb-4">Resources</h4>
+                        <ul class="space-y-2 text-sm text-secondary">
+                            <li><a href="#" class="hover:text-primary transition-colors">Whitepaper</a></li>
+                            <li><a href="#" class="hover:text-primary transition-colors">Documentation</a></li>
+                            <li><a href="#" class="hover:text-primary transition-colors">GitHub</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-display font-bold mb-4">Community</h4>
+                        <div class="flex gap-4">
+                            <a href="#" class="w-10 h-10 rounded-full bg-card border border-cardBorder flex items-center justify-center hover:border-primary hover:text-primary transition-all"><i data-lucide="twitter" class="w-5 h-5"></i></a>
+                            <a href="#" class="w-10 h-10 rounded-full bg-card border border-cardBorder flex items-center justify-center hover:border-primary hover:text-primary transition-all"><i data-lucide="message-circle" class="w-5 h-5"></i></a>
+                            <a href="#" class="w-10 h-10 rounded-full bg-card border border-cardBorder flex items-center justify-center hover:border-primary hover:text-primary transition-all"><i data-lucide="send" class="w-5 h-5"></i></a>
+                        </div>
                     </div>
                 </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="bg-background/60 p-4 rounded-xl border border-cardBorder">
-                        <p class="text-xs text-secondary mb-1 flex items-center gap-1">💰 Modal Staking</p>
-                        <p class="text-xl font-bold text-primary font-display"><span id="stk-modal">0.00</span> SNR</p>
-                    </div>
-                    <div class="bg-background/60 p-4 rounded-xl border border-cardBorder">
-                        <p class="text-xs text-secondary mb-1 flex items-center gap-1">📈 Reward Berjalan</p>
-                        <p class="text-xl font-bold text-green-400 font-display"><span id="stk-reward-running">0.00</span> SNR</p>
-                    </div>
-                    <div class="bg-background/60 p-4 rounded-xl border border-cardBorder">
-                        <p class="text-xs text-secondary mb-1 flex items-center gap-1">🎁 Reward Sudah Diklaim</p>
-                        <p class="text-xl font-bold text-accent font-display"><span id="stk-reward-claimed">0.00</span> SNR</p>
-                    </div>
-                    <div class="bg-background/60 p-4 rounded-xl border border-cardBorder">
-                        <p class="text-xs text-secondary mb-1 flex items-center gap-1">🔒 Periode Lock</p>
-                        <p class="text-xl font-bold text-white font-display"><span id="stk-lock-period">-</span> Hari</p>
-                    </div>
-                    <div class="bg-background/60 p-4 rounded-xl border border-cardBorder">
-                        <p class="text-xs text-secondary mb-1 flex items-center gap-1">✅ Status Staking</p>
-                        <p class="text-lg font-bold font-display" id="stk-status-badge"><span class="text-secondary">Tidak Aktif</span></p>
-                    </div>
-                    <div class="bg-background/60 p-4 rounded-xl border border-cardBorder">
-                        <p class="text-xs text-secondary mb-1 flex items-center gap-1">📅 Sisa Waktu Lock</p>
-                        <p class="text-lg font-bold text-yellow-400 font-display" id="stk-time-remaining">-</p>
-                    </div>
-                    <div class="md:col-span-2 bg-primary/10 p-4 rounded-xl border border-primary/30">
-                        <p class="text-xs text-primary font-semibold mb-1 flex items-center gap-1">💎 Total Kepemilikan dari Staking (Modal + Reward Berjalan)</p>
-                        <p class="text-2xl font-bold text-white font-display"><span id="stk-total-ownership">0.00</span> SNR</p>
-                    </div>
+                <div class="border-t border-cardBorder pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-secondary">
+                    <p>Risk Disclosure: Cryptocurrency involves high risk. Smart contracts are immutable.</p>
+                    <p>&copy; 2026 <span class="text-gradient-gold">SNR<span class="text-white">-VAULT</span></span> Ecosystem. All Rights Reserved.</p>
                 </div>
             </div>
-
-
-                 <!-- TABS NAVIGATION -->
-<div class="flex flex-wrap gap-2 mb-8 bg-card p-2 rounded-xl border border-cardBorder w-fit">
-    <button onclick="switchTab('staking')" id="btn-staking" class="px-6 py-2 rounded-lg text-sm font-medium transition-all bg-primary text-black uppercase">Join Protocol</button>
-    <button onclick="switchTab('history')" id="btn-history" class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary uppercase">History Transaksi</button>
-    <button onclick="switchTab('network')" id="btn-network" class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary uppercase">Network & Rank</button>
-    <button onclick="switchTab('p2p')" id="btn-p2p" class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary uppercase">P2P Portal</button>
-</div>
-
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    <div class="lg:col-span-2 space-y-6">
-
-        <div id="tab-staking" class="dapp-tab active glass-panel p-8">
-            <h3 class="text-2xl font-display font-bold mb-6 flex items-center gap-2">
-                <i data-lucide="shield-alert" class="text-primary w-6 h-6"></i> Titan v4 - Join Protocol
-            </h3>
-            <div class="space-y-5">
-                <div>
-                    <label class="block text-sm text-secondary mb-2">Jumlah SNR (Min 100)</label>
-                    <div class="relative">
-                        <input type="number" id="stake-amount" placeholder="0.0"
-                            class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
-                        <span class="absolute right-4 top-3 text-primary font-bold">SNR</span>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-sm text-secondary mb-2">Alamat Mentor / Upline</label>
-                    <input type="text" id="stake-mentor" placeholder="0x..."
-                        class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
-                </div>
-                <div>
-                    <label class="block text-sm text-secondary mb-2">Durasi Staking</label>
-                    <div class="grid grid-cols-3 gap-3">
-                        <button type="button" onclick="selectDuration(30, this)" class="duration-btn bg-primary text-black font-bold py-3 rounded-lg border border-primary transition-colors text-sm">30 Hari</button>
-                        <button type="button" onclick="selectDuration(60, this)" class="duration-btn bg-card text-secondary py-3 rounded-lg border border-cardBorder transition-colors text-sm">60 Hari</button>
-                        <button type="button" onclick="selectDuration(90, this)" class="duration-btn bg-card text-secondary py-3 rounded-lg border border-cardBorder transition-colors text-sm">90 Hari</button>
-                    </div>
-                    <!-- Hidden input untuk menyimpan durasi terpilih -->
-                    <input type="hidden" id="stake-duration" value="30">
-                </div>
-                <button onclick="executeProtocol()"
-                    class="w-full py-4 mt-4 bg-primary text-black font-bold rounded-lg hover:bg-yellow-400 hover:shadow-[0_0_20px_rgba(255,204,0,0.3)] transition-all">
-                    Eksekusi Protokol
-                </button>
-            </div>
-        </div>
+        </footer>
     </div>
-</div>
+    <!-- VIEW: DAPP DASHBOARD (ENTERPRISE TERMINAL) -->
+    <div id="view-dapp">
+        <!-- Dashboard Navbar -->
+        <nav class="fixed w-full z-[100] top-0 glass-panel border-x-0 border-t-0 rounded-none bg-background/90 backdrop-blur-xl">
+            <div class="max-w-[1440px] mx-auto px-4 sm:px-6">
+                <div class="flex justify-between items-center h-16 sm:h-20">
+                    <div class="flex items-center gap-2 sm:gap-4">
+                        <button onclick="toggleDapp(false)" class="p-2 sm:hidden rounded-lg bg-card border border-cardBorder text-secondary hover:text-white">
+                            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                        </button>
+                        <img src="logo_banner.jpeg" alt="SNR Logo" class="w-8 h-8 sm:w-10 sm:h-10 object-cover rounded-lg shadow-neon-accent">
+                        <span class="font-display font-black text-lg sm:text-xl hidden sm:block text-gradient-gold">SNR<span class="text-white">-VAULT</span> <span class="text-[10px] text-accent ml-2 border border-accent/50 px-2 py-0.5 rounded">TERMINAL</span></span>
+                    </div>
+                    
+                    <div class="flex items-center gap-2 sm:gap-4">
+                        <!-- Network Status Mini -->
+                        <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-display">
+                            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                            BSC Mainnet
+                        </div>
+                        
+                        <!-- Connect Wallet Button -->
+                        <button id="btn-connect-wallet" onclick="initWeb3()" class="glow-btn px-4 py-2 sm:px-6 sm:py-2.5 rounded-lg border border-primary bg-primary/10 text-primary font-display font-bold text-xs sm:text-sm hover:bg-primary hover:text-black transition-all shadow-neon-primary flex items-center gap-2 whitespace-nowrap">
+                            <i data-lucide="wallet" class="w-4 h-4"></i>
+                            <span data-i18n="dapp_btn_connect">Connect Wallet</span>
+                        </button>
+                        <button onclick="toggleDapp(false)" class="hidden sm:flex items-center gap-2 px-4 py-2.5 glass-panel border border-cardBorder text-secondary hover:text-white transition-all font-display font-bold text-xs uppercase">
+                            <i data-lucide="log-out" class="w-4 h-4"></i> Exit
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
 
-                                                <div id="tab-history" class="dapp-tab glass-panel p-8" style="display: none;">
-                            <h3 class="text-2xl font-display font-bold mb-6 flex items-center gap-2">
-                                <i data-lucide="history" class="text-accent w-6 h-6"></i> History Transaksi
-                            </h3>
-                            <div id="history-list" class="space-y-2 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-                                <div class="text-center text-secondary py-8">Koneksikan Web3 Wallet untuk melihat history.</div>
+        <div class="pt-20 sm:pt-28 pb-12 px-2 sm:px-4 max-w-[1440px] mx-auto min-h-screen">
+            <div class="flex flex-col lg:flex-row gap-6">
+                <!-- Sidebar Navigation & Network Status -->
+                <div class="w-full lg:w-64 flex-shrink-0 flex flex-col gap-4">
+                    <!-- Nav Tabs -->
+                    <div class="glass-panel p-2 flex flex-row lg:flex-col gap-1 overflow-x-auto custom-scrollbar">
+                        <button id="btn-staking" onclick="switchTab('staking')" class="flex-1 lg:w-full text-left px-4 py-3 rounded-lg font-display font-bold text-xs sm:text-sm transition-all flex items-center gap-3 bg-primary text-black whitespace-nowrap">
+                            <i data-lucide="shield" class="w-4 h-4"></i> Vault Dashboard
+                        </button>
+                        <button id="btn-history" onclick="switchTab('history')" class="flex-1 lg:w-full text-left px-4 py-3 rounded-lg font-display font-bold text-xs sm:text-sm text-secondary hover:text-white hover:bg-card border border-transparent hover:border-cardBorder transition-all flex items-center gap-3 whitespace-nowrap">
+                            <i data-lucide="history" class="w-4 h-4"></i> Tx History
+                        </button>
+                        <button id="btn-network" onclick="switchTab('network')" class="flex-1 lg:w-full text-left px-4 py-3 rounded-lg font-display font-bold text-xs sm:text-sm text-secondary hover:text-white hover:bg-card border border-transparent hover:border-cardBorder transition-all flex items-center gap-3 whitespace-nowrap">
+                            <i data-lucide="share-2" class="w-4 h-4"></i> Sovereign Network
+                        </button>
+                        <button id="btn-p2p" onclick="switchTab('p2p')" class="flex-1 lg:w-full text-left px-4 py-3 rounded-lg font-display font-bold text-xs sm:text-sm text-secondary hover:text-white hover:bg-card border border-transparent hover:border-cardBorder transition-all flex items-center gap-3 whitespace-nowrap">
+                            <i data-lucide="refresh-cw" class="w-4 h-4"></i> P2P Market
+                        </button>
+                    </div>
+                    
+                    <!-- Network Status Panel -->
+                    <div class="hidden lg:block glass-panel p-5">
+                        <h4 class="text-xs font-display text-secondary tracking-widest mb-4">SYSTEM STATUS</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-secondary flex items-center gap-2"><i data-lucide="server" class="w-3 h-3"></i> BSC RPC</span>
+                                <span class="text-green-400 font-bold flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> 12ms</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-secondary flex items-center gap-2"><i data-lucide="database" class="w-3 h-3"></i> Treasury</span>
+                                <span class="text-green-400 font-bold flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Sync</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-secondary flex items-center gap-2"><i data-lucide="cpu" class="w-3 h-3"></i> Protocol V4</span>
+                                <span class="text-green-400 font-bold flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Active</span>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        <div id="tab-network" class="dapp-tab glass-panel p-8 border-accent/30">
-                            <div class="flex items-start justify-between">
-                                <div>
-                                    <h3 class="text-xl font-display font-bold text-white mb-1">Rank Saat Ini</h3>
-                                    <div id="ui-current-rank" class="text-4xl font-black text-gradient font-display mb-4">RANK 2 <span
-                                            class="text-lg font-sans text-secondary">(Captain)</span></div>
+                <!-- Main Content Area -->
+                <div class="flex-1 w-full min-w-0">
+                    
+                    <!-- Global Wallet Balance Header -->
+                    <div class="glass-panel p-4 sm:p-6 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                            <h2 class="text-sm font-display text-secondary tracking-widest mb-1">CONNECTED WALLET</h2>
+                            <div class="text-2xl font-black text-white font-display flex items-end gap-2">
+                                <span id="ui-wallet-balance">0.00</span>
+                                <span class="text-sm text-primary mb-1">SNR</span>
+                            </div>
+                        </div>
+                        <div class="w-full sm:w-auto h-px sm:h-10 bg-cardBorder sm:w-px"></div>
+                        <div>
+                            <h2 class="text-sm font-display text-secondary tracking-widest mb-1">GAS TANK (BNB)</h2>
+                            <div class="text-xl font-bold text-secondary font-display flex items-end gap-2">
+                                <span id="ui-bnb-balance">0.0000</span>
+                                <span class="text-xs mb-1">BNB</span>
+                            </div>
+                        </div>
+                    </div>
 
-                                    <div class="flex flex-wrap gap-4 mt-6">
-                                        <div class="bg-background/80 border border-cardBorder p-4 rounded-lg min-w-[140px]">
-                                            <div class="text-secondary text-xs mb-1 flex items-center gap-1"><i
-                                                    data-lucide="users" class="w-3 h-3"></i> Direct Aktif</div>
-                                            <div id="ui-direct-active" class="text-xl font-bold">15 <span class="text-sm text-secondary">Member</span></div>
+                    <!-- TAB: STAKING DASHBOARD -->
+                    <div id="tab-staking" class="dapp-tab block">
+                        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                            
+                            <!-- Left: Personal Staking Stats -->
+                            <div class="xl:col-span-2 flex flex-col gap-6">
+                                <!-- Enterprise Stats Grid -->
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div class="glass-panel p-5 relative overflow-hidden group">
+                                        <div class="absolute -right-4 -top-4 text-primary/5 group-hover:text-primary/10 transition-colors">
+                                            <i data-lucide="database" class="w-32 h-32"></i>
                                         </div>
-                                        <div class="bg-background/80 border border-cardBorder p-4 rounded-lg min-w-[140px]">
-                                            <div class="text-secondary text-xs mb-1 flex items-center gap-1"><i
-                                                    data-lucide="award" class="w-3 h-3"></i> Group Volume</div>
-                                            <div id="ui-group-volume" class="text-xl font-bold">35,000 <span class="text-sm text-secondary">SNR</span></div>
+                                        <div class="text-xs font-display text-secondary tracking-widest mb-2 relative z-10">MODAL STAKING</div>
+                                        <div class="text-3xl font-black text-white font-display relative z-10 flex items-end gap-2">
+                                            <span id="ui-staking-principal">0.00</span> <span class="text-sm text-primary mb-1">SNR</span>
+                                        </div>
+                                    </div>
+                                    <div class="glass-panel p-5 relative overflow-hidden group border-accent/30 shadow-[inset_0_0_20px_rgba(0,229,255,0.05)]">
+                                        <div class="absolute -right-4 -top-4 text-accent/5 group-hover:text-accent/10 transition-colors">
+                                            <i data-lucide="zap" class="w-32 h-32"></i>
+                                        </div>
+                                        <div class="text-xs font-display text-accent tracking-widest mb-2 relative z-10 flex items-center gap-2">
+                                            <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span> REWARD BERJALAN (LIVE)
+                                        </div>
+                                        <div class="text-3xl font-black text-accent font-display relative z-10 flex items-end gap-2 text-shadow-sm">
+                                            <span id="ui-current-reward">0.0000</span> <span class="text-sm mb-1">SNR</span>
+                                        </div>
+                                    </div>
+                                    <div class="glass-panel p-5">
+                                        <div class="text-xs font-display text-secondary tracking-widest mb-2">REWARD DIKLAIM</div>
+                                        <div class="text-2xl font-bold text-white font-display flex items-end gap-2">
+                                            <span id="ui-reward-claimed">0.00</span> <span class="text-sm text-secondary mb-1">SNR</span>
+                                        </div>
+                                    </div>
+                                    <div class="glass-panel p-5 flex justify-between items-center">
+                                        <div>
+                                            <div class="text-xs font-display text-secondary tracking-widest mb-2">STATUS & PERIODE</div>
+                                            <div class="flex items-center gap-3">
+                                                <div id="stk-status-badge" class="px-2 py-1 rounded bg-card border border-cardBorder text-xs font-bold font-display"><span class="text-secondary">Tidak Aktif</span></div>
+                                                <div class="text-lg font-bold text-white"><span id="ui-remaining-lock">-</span></div>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <div class="text-xs font-display text-secondary tracking-widest mb-1">SISA WAKTU</div>
+                                            <div class="text-xl font-bold text-primary" id="ui-daily-yield-bp">-</div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="hidden sm:flex w-24 h-24 rounded-full border-4 border-accent/20 items-center justify-center bg-card shadow-[0_0_30px_rgba(0,229,255,0.2)]">
-                                    <i data-lucide="award" class="w-10 h-10 text-accent"></i>
-                                </div>
-                            </div>
-
-                            <div class="mt-8 border-t border-cardBorder pt-6">
-                                <label class="block text-sm text-secondary mb-2">Tautan Referral Anda</label>
-                                <div class="flex gap-2">
-                                    <input type="text" readonly value="https://snr-vault.com/dapp?ref=0x5Ce1..."
-                                        class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-secondary focus:outline-none">
-                                    <button class="px-4 py-3 bg-card border border-cardBorder rounded-lg hover:bg-white/5 transition-colors flex items-center justify-center">
-                                        <i data-lucide="share-2" class="w-5 h-5 text-white"></i>
+                                
+                                <!-- Staking Action Buttons -->
+                                <div class="grid grid-cols-2 gap-4">
+                                    <button onclick="btnActionHarvest()" class="py-3 px-4 glass-panel border border-accent text-accent hover:bg-accent hover:text-black transition-all font-display font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-[0_0_10px_rgba(0,229,255,0.1)]">
+                                        <i data-lucide="leaf" class="w-4 h-4"></i> HARVEST
+                                    </button>
+                                    <button onclick="btnActionWithdrawReady(prompt('Masukkan jumlah Withdraw (Balance Ready):'))" class="py-3 px-4 glass-panel border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all font-display font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-[0_0_10px_rgba(239,68,68,0.1)]">
+                                        <i data-lucide="arrow-up-right" class="w-4 h-4"></i> WITHDRAW
                                     </button>
                                 </div>
-                            </div>
-                        </div>
 
-                        <div id="tab-assets" class="dapp-tab glass-panel p-8">
-                            <h3 class="text-2xl font-display font-bold mb-6">Request Asset Acquisition</h3>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                                <div class="border border-cardBorder bg-background p-4 rounded-lg flex flex-col items-center gap-2 cursor-pointer hover:border-accent text-center">
-                                    <i data-lucide="car" class="w-6 h-6 text-accent"></i><span class="text-sm">MOTO</span>
-                                </div>
-                                <div class="border border-cardBorder bg-background p-4 rounded-lg flex flex-col items-center gap-2 cursor-pointer hover:border-accent text-center">
-                                    <i data-lucide="car" class="w-6 h-6 text-accent"></i><span class="text-sm">DRIVE</span>
-                                </div>
-                                <div class="border border-cardBorder bg-background p-4 rounded-lg flex flex-col items-center gap-2 cursor-pointer hover:border-accent text-center">
-                                    <i data-lucide="home" class="w-6 h-6 text-primary"></i><span class="text-sm">LIVING STD</span>
-                                </div>
-                                <div class="border border-cardBorder bg-background p-4 rounded-lg flex flex-col items-center gap-2 cursor-pointer hover:border-accent text-center">
-                                    <i data-lucide="home" class="w-6 h-6 text-primary"></i><span class="text-sm">GOLD</span>
+                                <!-- Action Panel -->
+                                <div class="glass-panel p-6 sm:p-8 border-primary/20">
+                                    <h3 class="text-xl font-display font-bold mb-6 flex items-center gap-2">
+                                        <i data-lucide="terminal" class="text-primary w-5 h-5"></i> PROTOCOL EXECUTION
+                                    </h3>
+                                    <div class="space-y-5">
+                                        <div>
+                                            <label class="block text-xs font-display tracking-widest text-secondary mb-2">AMOUNT TO STAKE (MIN 100 SNR)</label>
+                                            <div class="relative">
+                                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                                    <i data-lucide="coins" class="text-secondary w-5 h-5"></i>
+                                                </div>
+                                                <input type="number" id="stake-amount" placeholder="0.0" class="w-full bg-background border border-cardBorder rounded-lg pl-12 pr-16 py-4 text-lg text-white focus:outline-none focus:border-primary transition-colors font-display">
+                                                <button class="absolute inset-y-2 right-2 px-3 bg-card border border-cardBorder rounded text-xs font-bold text-primary hover:bg-primary hover:text-black transition-colors">MAX</button>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-display tracking-widest text-secondary mb-2">UPLINE / MENTOR ADDRESS</label>
+                                            <div class="relative">
+                                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                                    <i data-lucide="hash" class="text-secondary w-5 h-5"></i>
+                                                </div>
+                                                <input type="text" id="stake-mentor" placeholder="0x..." class="w-full bg-background border border-cardBorder rounded-lg pl-12 pr-4 py-4 text-sm text-white focus:outline-none focus:border-primary transition-colors font-mono">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-display tracking-widest text-secondary mb-2">LOCK DURATION (YIELD BP)</label>
+                                            <div class="grid grid-cols-3 gap-3">
+                                                <button type="button" onclick="selectDuration(30, this)" class="duration-btn bg-primary text-black font-bold py-3 sm:py-4 rounded-lg border border-primary transition-colors text-xs sm:text-sm font-display shadow-[0_0_15px_rgba(255,204,0,0.2)]">30 DAYS<br><span class="text-[10px] font-sans opacity-80">100 BP</span></button>
+                                                <button type="button" onclick="selectDuration(60, this)" class="duration-btn bg-background text-secondary py-3 sm:py-4 rounded-lg border border-cardBorder transition-colors text-xs sm:text-sm font-display hover:border-primary/50">60 DAYS<br><span class="text-[10px] font-sans opacity-60">120 BP</span></button>
+                                                <button type="button" onclick="selectDuration(90, this)" class="duration-btn bg-background text-secondary py-3 sm:py-4 rounded-lg border border-cardBorder transition-colors text-xs sm:text-sm font-display hover:border-primary/50">90 DAYS<br><span class="text-[10px] font-sans opacity-60">150 BP</span></button>
+                                            </div>
+                                            <input type="hidden" id="stake-duration" value="30">
+                                        </div>
+                                        <button onclick="btnActionJoinProtocol(document.getElementById('stake-amount').value, document.getElementById('stake-mentor').value, document.getElementById('stake-duration').value)" class="glow-btn w-full py-4 mt-2 bg-primary text-black font-bold font-display tracking-widest rounded-lg hover:bg-yellow-400 shadow-neon-primary transition-all flex justify-center items-center gap-2">
+                                            <i data-lucide="cpu" class="w-5 h-5"></i> INITIALIZE PROTOCOL
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="space-y-5">
-                                <div><label class="block text-sm text-secondary mb-2">Nilai Dukungan (SNR)</label><input type="number" placeholder="Contoh: 5000" class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent"></div>
-                                <div><label class="block text-sm text-secondary mb-2">Model Unit</label><input type="text" placeholder="Contoh: Honda HRV 2024" class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent"></div>
-                                <button class="w-full py-4 mt-4 bg-accent text-black font-bold rounded-lg hover:bg-cyan-400 hover:shadow-[0_0_20px_rgba(0,229,255,0.3)] transition-all">
-                                    Kirim Permintaan Aset
-                                </button>
-                            </div>
-                        </div>
 
-                        <div id="tab-p2p" class="dapp-tab glass-panel p-8 text-center min-h-[400px] flex flex-col items-center justify-center">
-                            <i data-lucide="message-circle" class="w-16 h-16 text-green-400 mb-4"></i>
-                            <h3 class="text-2xl font-bold mb-4">P2P Escrow Resmi SNR</h3>
-                            <p class="text-secondary max-w-md mx-auto mb-8">Lakukan pertukaran aset secara aman dan cepat melalui layanan P2P Escrow WhatsApp resmi kami.</p>
-                            <a href="https://wa.me/6283829681017" target="_blank" class="px-8 py-4 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] transition-all flex items-center gap-3">
-                                <i data-lucide="message-square" class="w-6 h-6"></i> Hubungi Admin P2P (WA)
-                            </a>
+                            <!-- Right: Live Activity Panel -->
+                            <div class="flex flex-col gap-6">
+                                <div class="glass-panel p-5 flex-1 flex flex-col h-full">
+                                    <h3 class="text-sm font-display text-secondary tracking-widest mb-4 flex items-center justify-between border-b border-cardBorder pb-2">
+                                        <span class="flex items-center gap-2"><i data-lucide="radio" class="w-4 h-4 text-accent"></i> LIVE ACTIVITY</span>
+                                        <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
+                                    </h3>
+                                    <div class="space-y-4 overflow-y-auto custom-scrollbar pr-2 flex-1 max-h-[500px]">
+                                        <!-- Simulated Activity Items -->
+                                        <div class="flex gap-3 text-sm border-l-2 border-primary pl-3 bg-card/30 p-2 rounded-r">
+                                            <i data-lucide="arrow-down-right" class="w-4 h-4 text-primary shrink-0 mt-0.5"></i>
+                                            <div>
+                                                <div class="text-white font-bold font-display">New Stake Initiated</div>
+                                                <div class="text-xs text-secondary font-mono">0x7F2...9A4 staked 5,000 SNR</div>
+                                                <div class="text-[10px] text-primary/60 mt-1">Just now</div>
+                                            </div>
+                                        </div>
+                                        <div class="flex gap-3 text-sm border-l-2 border-accent pl-3 p-2">
+                                            <i data-lucide="leaf" class="w-4 h-4 text-accent shrink-0 mt-0.5"></i>
+                                            <div>
+                                                <div class="text-white font-bold font-display">Reward Harvested</div>
+                                                <div class="text-xs text-secondary font-mono">0x2B1...3C8 claimed 120 SNR</div>
+                                                <div class="text-[10px] text-secondary mt-1">2 mins ago</div>
+                                            </div>
+                                        </div>
+                                        <div class="flex gap-3 text-sm border-l-2 border-green-500 pl-3 p-2">
+                                            <i data-lucide="users" class="w-4 h-4 text-green-500 shrink-0 mt-0.5"></i>
+                                            <div>
+                                                <div class="text-white font-bold font-display">Rank Upgraded</div>
+                                                <div class="text-xs text-secondary font-mono">0x9E4...1F5 reached CAPTAIN</div>
+                                                <div class="text-[10px] text-secondary mt-1">5 mins ago</div>
+                                            </div>
+                                        </div>
+                                        <div class="flex gap-3 text-sm border-l-2 border-primary pl-3 p-2">
+                                            <i data-lucide="arrow-down-right" class="w-4 h-4 text-primary shrink-0 mt-0.5"></i>
+                                            <div>
+                                                <div class="text-white font-bold font-display">New Stake Initiated</div>
+                                                <div class="text-xs text-secondary font-mono">0x4A2...8B1 staked 1,200 SNR</div>
+                                                <div class="text-[10px] text-secondary mt-1">12 mins ago</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 pt-4 border-t border-cardBorder text-center">
+                                        <span class="text-xs text-secondary font-mono flex items-center justify-center gap-2"><i data-lucide="lock" class="w-3 h-3"></i> End-to-End Encrypted Logs</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="space-y-6">
-    <div class="glass-panel p-6 border-primary/20">
-        <h4 class="font-display font-bold text-lg mb-4 flex items-center gap-2">
-            <i data-lucide="gift" class="w-5 h-5 text-primary"></i> Leader Rewards
-        </h4>
-        <!-- Set default ke 0.00 SNR (Bukan dummy 1,240) dan sesuaikan ID dengan JS -->
-        <div id="ui-leader-reward" class="text-3xl font-bold mb-4">0.00 SNR</div>
-        
-        <!-- Tambahkan id dan onclick handler -->
-        <button id="btn-claim-leader" onclick="executeClaimLeaderFromUI()" class="w-full py-2 bg-background border border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors font-semibold">
-            Claim Rewards
-        </button>
+                    <!-- TAB: HISTORY -->
+                    <div id="tab-history" class="dapp-tab glass-panel p-6 sm:p-8" style="display: none;">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 border-b border-cardBorder pb-4">
+                            <h3 class="text-2xl font-display font-bold flex items-center gap-2">
+                                <i data-lucide="list" class="text-accent w-6 h-6"></i> TRANSACTION LEDGER
+                            </h3>
+                            <button class="px-3 py-1.5 bg-card border border-cardBorder rounded text-xs text-secondary hover:text-white transition-colors flex items-center gap-1"><i data-lucide="download" class="w-3 h-3"></i> Export CSV</button>
+                        </div>
+                        <div id="history-list" class="space-y-2 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                            <div class="text-center text-secondary py-12 flex flex-col items-center gap-3">
+                                <i data-lucide="database" class="w-8 h-8 text-secondary/50"></i>
+                                <span>Connect Web3 Wallet to synchronize ledger.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB: NETWORK -->
+                    <div id="tab-network" class="dapp-tab glass-panel p-6 sm:p-8" style="display: none;">
+                        <h3 class="text-2xl font-display font-bold mb-6 flex items-center gap-2 border-b border-cardBorder pb-4">
+                            <i data-lucide="share-2" class="text-primary w-6 h-6"></i> SOVEREIGN NETWORK
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <div class="bg-background/50 border border-cardBorder rounded-xl p-5 text-center shadow-[inset_0_0_20px_rgba(255,204,0,0.02)]">
+                                <div class="text-xs font-display text-secondary tracking-widest mb-2">CURRENT RANK</div>
+                                <div id="ui-current-rank" class="text-2xl sm:text-3xl font-black text-gradient-gold font-display">RANK 0</div>
+                            </div>
+                            <div class="bg-background/50 border border-cardBorder rounded-xl p-5 text-center shadow-[inset_0_0_20px_rgba(0,229,255,0.02)]">
+                                <div class="text-xs font-display text-secondary tracking-widest mb-2">DIRECT MEMBER</div>
+                                <div id="ui-direct-active" class="text-2xl sm:text-3xl font-black text-white font-display">0</div>
+                            </div>
+                            <div class="bg-background/50 border border-cardBorder rounded-xl p-5 text-center">
+                                <div class="text-xs font-display text-secondary tracking-widest mb-2">GROUP VOLUME</div>
+                                <div id="ui-group-volume" class="text-2xl sm:text-3xl font-black text-white font-display">0.00 <span class="text-sm text-secondary">SNR</span></div>
+                            </div>
+                        </div>
+                        <div class="bg-card border border-primary/20 rounded-xl p-6 sm:p-8 text-center relative overflow-hidden">
+                            <div class="absolute inset-0 bg-primary/5"></div>
+                            <h4 class="text-sm font-display text-primary tracking-widest mb-2 relative z-10">TOTAL LEADER REWARDS</h4>
+                            <div id="ui-leader-reward" class="text-4xl sm:text-5xl font-black text-white font-display relative z-10">0.00 <span class="text-xl text-primary">SNR</span></div>
+                            <button onclick="btnActionClaimLeader()" class="mt-4 px-6 py-2 bg-primary/10 border border-primary text-primary hover:bg-primary hover:text-black rounded-lg transition-all font-bold text-sm font-display z-10 relative">KLAIM LEADER REWARD</button>
+                        </div>
+                    </div>
+
+                    <!-- TAB: P2P MARKET -->
+                    <div id="tab-p2p" class="dapp-tab glass-panel p-6 sm:p-8 text-center" style="display: none;">
+                        <i data-lucide="refresh-cw" class="w-16 h-16 text-green-500 mx-auto mb-4"></i>
+                        <h3 class="text-2xl font-display font-bold text-white mb-2">P2P Market OTC</h3>
+                        <p class="text-secondary mb-6 max-w-md mx-auto">Transaksi P2P saat ini dilayani secara langsung via Admin / Escrow Resmi.</p>
+                        <a href="https://wa.me/6283829681017" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-green-500 text-black hover:bg-green-400 font-bold rounded-lg transition-all font-display tracking-widest shadow-[0_0_15px_rgba(34,197,94,0.4)]">
+                            <i data-lucide="message-circle" class="w-5 h-5"></i> HUBUNGI WHATSAPP
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </div>
-    
-    <div class="glass-panel p-6">
-        <h4 class="font-bold text-lg mb-4">Informasi Token</h4>
-        <div class="space-y-4 text-sm">
-            <div class="flex justify-between items-center border-b border-cardBorder pb-2">
-                <span class="text-secondary">Smart Contract</span>
-                <a href="https://bscscan.com/address/0x59a7098D86ac1548dAF3b14aAfC43858D274f543" target="_blank" class="text-accent hover:underline text-xs">0x59a7...f543</a>
-            </div>
-            <div class="flex justify-between items-center border-b border-cardBorder pb-2">
-                <span class="text-secondary">Jaringan</span>
-                <span>BSC Mainnet</span>
-            </div>
-            <div class="flex justify-between items-center pb-2">
-                <span class="text-secondary">Max Cap Reward</span>
-                <span class="text-green-400 font-medium">300%</span>
-            </div>
+
+    <!-- Global Sticky Ticker -->
+    <div class="fixed bottom-0 left-0 w-full bg-primary text-black font-display font-bold text-xs sm:text-sm py-2 z-[9999] overflow-hidden flex items-center shadow-[0_-5px_20px_rgba(255,204,0,0.3)]">
+        <div class="animate-ticker">
+            <span class="mx-8">🚀 WELCOME TO <span class="text-black">SNR</span>-VAULT SOVEREIGN INFRASTRUCTURE</span>
+            <span class="mx-8">💎 CURRENT YIELD UP TO 150 BP DAILY</span>
+            <span class="mx-8">🔒 AUDITED SMART CONTRACT ON BSC</span>
+            <span class="mx-8">⚠️ NON-CUSTODIAL - YOUR KEYS, YOUR CRYPTO</span>
+            <!-- Repeat for seamless loop -->
+            <span class="mx-8">🚀 WELCOME TO <span class="text-black">SNR</span>-VAULT SOVEREIGN INFRASTRUCTURE</span>
+            <span class="mx-8">💎 CURRENT YIELD UP TO 150 BP DAILY</span>
+            <span class="mx-8">🔒 AUDITED SMART CONTRACT ON BSC</span>
+            <span class="mx-8">⚠️ NON-CUSTODIAL - YOUR KEYS, YOUR CRYPTO</span>
         </div>
     </div>
-</div>
 
-        <!-- Transaction Modal Overlay -->
-        <div id="tx-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-[#050816]/80 backdrop-blur-md transition-opacity duration-300" style="display: none; opacity: 0;">
-            <div class="glass-panel p-8 max-w-sm w-full mx-4 border-accent/50 text-center relative overflow-hidden glow-border shadow-[0_0_30px_rgba(0,229,255,0.1)]">
-                <div id="tx-modal-content">
-                    <!-- Content injected dynamically -->
-                </div>
-                <button onclick="closeTxModal()" class="absolute top-4 right-4 text-secondary hover:text-white transition-colors">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-            </div>
+    <!-- Modals -->
+    <div id="tx-modal" class="fixed inset-0 z-[200] items-center justify-center bg-black/80 backdrop-blur-sm transition-opacity duration-300" style="display: none; opacity: 0;">
+        <div class="glass-panel border-primary/30 p-8 max-w-sm w-full mx-4 text-center transform scale-95 transition-transform duration-300 relative" id="tx-modal-container">
+            <button onclick="closeTxModal()" class="absolute top-4 right-4 text-secondary hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <div id="tx-modal-content"></div>
         </div>
+    </div>
 
-    </main>
-
-    <!-- Footer / Risk Disclosure -->
-    <footer class="border-t border-cardBorder bg-background py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="glass-panel p-6 border border-cardBorder/50 mb-12">
-                <h4 class="text-sm font-display font-bold text-white mb-2 flex items-center gap-2">
-                    <i data-lucide="alert-circle" class="w-4 h-4 text-primary"></i> RISK DISCLOSURE
-                </h4>
-                <p class="text-xs text-secondary leading-relaxed">
-                    Participation in digital ecosystems involves risks. Market conditions may change. Users should conduct their own evaluation before participating. No guarantees are expressed or implied. This platform is provided as an infrastructure layer and does not constitute financial advice.
-                </p>
-            </div>
-
-            <div class="flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-secondary">
-                <div class="font-display font-bold text-lg tracking-widest">
-                    <span class="text-primary font-display">SNR</span><span class="text-white font-display">-VAULT</span>
-                </div>
-                <div class="text-center md:text-right">
-                    <p>&copy; 2026 <span class="text-primary font-display">SNR</span><span class="text-white font-display">-VAULT</span> Ecosystem. All rights reserved.</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Logic Script -->
+    <!-- Scripts -->
     <script>
-        lucide.createIcons();
+        // Init Lucide
+        if(typeof lucide !== 'undefined') lucide.createIcons();
 
-        // Initialize Globe
-        const globeContainer = document.getElementById('globeViz');
-        if (globeContainer && typeof Globe !== 'undefined') {
-            const N = 40;
-            const nodesData = [...Array(N).keys()].map(() => ({
-                lat: (Math.random() - 0.5) * 180,
-                lng: (Math.random() - 0.5) * 360,
-                size: Math.random() * 0.4 + 0.1,
-                color: ['#00E5FF', '#FFCC00', '#ffffff'][Math.floor(Math.random() * 3)]
-            }));
+        // Sound Effect System
+        const btnSound = new Audio('https://www.soundjay.com/buttons/sounds/button-09.mp3');
+        btnSound.volume = 0.3;
 
-            const arcsData = [...Array(25).keys()].map(() => ({
-                startLat: (Math.random() - 0.5) * 180,
-                startLng: (Math.random() - 0.5) * 360,
-                endLat: (Math.random() - 0.5) * 180,
-                endLng: (Math.random() - 0.5) * 360,
-                color: ['rgba(0, 229, 255, 0.6)', 'rgba(255, 204, 0, 0.6)'][Math.round(Math.random())]
-            }));
+        document.addEventListener('click', function(e) {
+            const target = e.target.closest('button, a, .glow-btn, .duration-btn');
+            if (target) {
+                btnSound.currentTime = 0;
+                btnSound.play().catch(err => { /* Browser may block autoplay */ });
+            }
+        });
 
-            const world = Globe()
-                (globeContainer)
-                .backgroundColor('rgba(0,0,0,0)')
-                .showGlobe(true)
-                .showAtmosphere(true)
-                .atmosphereColor('#00E5FF')
-                .atmosphereAltitude(0.25)
-                .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-night.jpg')
-                .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
-                .pointsData(nodesData)
-                .pointColor('color')
-                .pointAltitude(0.02)
-                .pointRadius('size')
-                .pointsMerge(true)
-                .arcsData(arcsData)
-                .arcColor('color')
-                .arcDashLength(0.4)
-                .arcDashGap(0.2)
-                .arcDashAnimateTime(2000)
-                .width(globeContainer.clientWidth)
-                .height(globeContainer.clientHeight || window.innerHeight * 0.8);
+        // Globe init wrapper
+        function initGlobe() {
+            const globeContainer = document.getElementById('globeViz');
+            if (globeContainer && typeof Globe !== 'undefined') {
+                const N = 40;
+                const nodesData = [...Array(N).keys()].map(() => ({
+                    lat: (Math.random() - 0.5) * 180,
+                    lng: (Math.random() - 0.5) * 360,
+                    size: Math.random() * 0.4 + 0.1,
+                    color: ['#00E5FF', '#FFCC00', '#ffffff'][Math.floor(Math.random() * 3)]
+                }));
 
-            world.controls().autoRotate = true;
-            world.controls().autoRotateSpeed = 1.2;
-            world.controls().enableZoom = false;
-            world.controls().enablePan = false;
+                const arcsData = [...Array(25).keys()].map(() => ({
+                    startLat: (Math.random() - 0.5) * 180,
+                    startLng: (Math.random() - 0.5) * 360,
+                    endLat: (Math.random() - 0.5) * 180,
+                    endLng: (Math.random() - 0.5) * 360,
+                    color: ['rgba(0, 229, 255, 0.6)', 'rgba(255, 204, 0, 0.6)'][Math.round(Math.random())]
+                }));
 
-            window.addEventListener('resize', () => {
-                world.width(globeContainer.clientWidth);
-                world.height(globeContainer.clientHeight || window.innerHeight * 0.8);
-            });
+                const world = Globe()
+                    (globeContainer)
+                    .backgroundColor('rgba(0,0,0,0)')
+                    .showGlobe(true)
+                    .showAtmosphere(true)
+                    .atmosphereColor('#00E5FF')
+                    .atmosphereAltitude(0.25)
+                    .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-night.jpg')
+                    .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
+                    .pointsData(nodesData)
+                    .pointColor('color')
+                    .pointAltitude(0.02)
+                    .pointRadius('size')
+                    .pointsMerge(true)
+                    .arcsData(arcsData)
+                    .arcColor('color')
+                    .arcDashLength(0.4)
+                    .arcDashGap(0.2)
+                    .arcDashAnimateTime(2000)
+                    .width(globeContainer.clientWidth)
+                    .height(globeContainer.clientHeight || window.innerHeight * 0.8);
 
-            setTimeout(() => {
-                if(globeContainer.clientWidth) {
+                world.controls().autoRotate = true;
+                world.controls().autoRotateSpeed = 1.2;
+                world.controls().enableZoom = false;
+                world.controls().enablePan = false;
+
+                window.addEventListener('resize', () => {
                     world.width(globeContainer.clientWidth);
                     world.height(globeContainer.clientHeight || window.innerHeight * 0.8);
-                }
-            }, 500);
-        }
+                });
 
-        // Tokenomics Chart
+                setTimeout(() => {
+                    if(globeContainer.clientWidth) {
+                        world.width(globeContainer.clientWidth);
+                        world.height(globeContainer.clientHeight || window.innerHeight * 0.8);
+                    }
+                }, 500);
+            }
+        }
+        
+        document.addEventListener("DOMContentLoaded", initGlobe);
+
+        // Chart Init
         document.addEventListener("DOMContentLoaded", function() {
             const chartCanvas = document.getElementById('tokenomicsBurgerChart');
-            if(chartCanvas) {
+            if(chartCanvas && typeof Chart !== 'undefined') {
                 const ctx = chartCanvas.getContext('2d');
                 new Chart(ctx, {
                     type: 'doughnut',
@@ -982,24 +855,44 @@
                         datasets: [{
                             data: [40, 30, 15, 10, 5],
                             backgroundColor: ['#FFD700', '#00D1FF', '#FFFFFF', '#FF4500', '#A855F7'],
-                            borderWidth: 0,
-                            hoverOffset: 4
+                            borderWidth: 2,
+                            borderColor: '#030509',
+                            hoverOffset: 10
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        cutout: '75%',
+                        cutout: '80%',
                         plugins: {
                             legend: { display: false },
-                            tooltip: { enabled: true }
+                            tooltip: { 
+                                enabled: true,
+                                backgroundColor: 'rgba(10, 14, 23, 0.9)',
+                                titleFont: { family: 'Orbitron' },
+                                bodyFont: { family: 'Inter' },
+                                padding: 12,
+                                borderColor: 'rgba(0, 229, 255, 0.3)',
+                                borderWidth: 1
+                            }
                         }
                     }
                 });
             }
         });
 
-        // SPA Navigation Logic
+        // Navigation
+        function selectDuration(days, btnElement) {
+            document.getElementById('stake-duration').value = days;
+            const buttons = document.querySelectorAll('.duration-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('bg-primary', 'text-black', 'border-primary', 'shadow-[0_0_15px_rgba(255,204,0,0.2)]');
+                btn.classList.add('bg-background', 'text-secondary', 'border-cardBorder');
+            });
+            btnElement.classList.remove('bg-background', 'text-secondary', 'border-cardBorder');
+            btnElement.classList.add('bg-primary', 'text-black', 'border-primary', 'shadow-[0_0_15px_rgba(255,204,0,0.2)]');
+        }
+
         function toggleDapp(showDapp) {
             const landing = document.getElementById('view-landing');
             const dapp = document.getElementById('view-dapp');
@@ -1012,8 +905,8 @@
                     void dapp.offsetWidth;
                     dapp.style.opacity = '1';
                     window.scrollTo(0,0);
-                    lucide.createIcons();
-                }, 300);
+                    if(typeof lucide !== 'undefined') lucide.createIcons();
+                }, 400);
             } else {
                 dapp.style.opacity = '0';
                 setTimeout(() => {
@@ -1022,30 +915,26 @@
                     void landing.offsetWidth;
                     landing.style.opacity = '1';
                     window.scrollTo(0,0);
-                }, 300);
+                }, 400);
             }
         }
 
-        // Tab Switcher for dApp Dashboard
         function switchTab(tabName) {
             document.querySelectorAll('.dapp-tab').forEach(tab => {
-                tab.classList.remove('active');
                 tab.style.display = 'none';
             });
-
             document.querySelectorAll('[id^="btn-"]').forEach(btn => {
+                if(btn.id.startsWith('btn-connect-wallet')) return;
                 btn.classList.remove('bg-primary', 'text-black');
-                btn.classList.add('text-secondary', 'hover:text-white');
+                btn.classList.add('text-secondary', 'hover:text-white', 'hover:bg-card');
             });
 
             const targetTab = document.getElementById('tab-' + tabName);
             const targetBtn = document.getElementById('btn-' + tabName);
-            if(targetTab) {
-                targetTab.classList.add('active');
-                targetTab.style.display = 'block';
-            }
+            
+            if(targetTab) targetTab.style.display = 'block';
             if(targetBtn) {
-                targetBtn.classList.remove('text-secondary', 'hover:text-white');
+                targetBtn.classList.remove('text-secondary', 'hover:text-white', 'hover:bg-card');
                 targetBtn.classList.add('bg-primary', 'text-black');
             }
         }
@@ -1054,23 +943,27 @@
             switchTab('staking');
         });
 
-        // Web3 Logic moved to dapp.js
+        // Modals
         function showTxModal(type, title, message) {
             const modal = document.getElementById('tx-modal');
             const content = document.getElementById('tx-modal-content');
+            const container = document.getElementById('tx-modal-container');
             
             let iconHtml = '';
             if (type === 'loading') {
                 iconHtml = '<i data-lucide="loader-2" class="w-16 h-16 text-accent animate-spin mx-auto mb-6"></i>';
+                container.className = "glass-panel border-accent/50 p-8 max-w-sm w-full mx-4 text-center transform scale-95 transition-transform duration-300 relative shadow-neon-accent";
             } else if (type === 'success') {
-                iconHtml = '<i data-lucide="check-circle" class="w-16 h-16 text-primary mx-auto mb-6 shadow-[0_0_15px_rgba(255,204,0,0.5)] rounded-full"></i>';
+                iconHtml = '<i data-lucide="check-circle" class="w-16 h-16 text-primary mx-auto mb-6 shadow-neon-primary rounded-full"></i>';
+                container.className = "glass-panel border-primary/50 p-8 max-w-sm w-full mx-4 text-center transform scale-95 transition-transform duration-300 relative shadow-neon-primary";
             } else if (type === 'error') {
                 iconHtml = '<i data-lucide="alert-triangle" class="w-16 h-16 text-red-500 mx-auto mb-6"></i>';
+                container.className = "glass-panel border-red-500/50 p-8 max-w-sm w-full mx-4 text-center transform scale-95 transition-transform duration-300 relative shadow-[0_0_20px_rgba(239,68,68,0.3)]";
             }
 
             content.innerHTML = `
                 ${iconHtml}
-                <h3 class="text-2xl font-display font-bold text-white mb-3 tracking-widest uppercase">${title}</h3>
+                <h3 class="text-xl font-display font-bold text-white mb-3 tracking-widest uppercase">${title}</h3>
                 <p class="text-sm text-secondary leading-relaxed">${message}</p>
             `;
             
@@ -1079,20 +972,24 @@
             modal.style.display = 'flex';
             void modal.offsetWidth;
             modal.style.opacity = '1';
+            container.classList.remove('scale-95');
+            container.classList.add('scale-100');
         }
 
         function closeTxModal() {
             const modal = document.getElementById('tx-modal');
+            const container = document.getElementById('tx-modal-container');
+            
             modal.style.opacity = '0';
+            container.classList.remove('scale-100');
+            container.classList.add('scale-95');
+            
             setTimeout(() => {
                 modal.style.display = 'none';
             }, 300);
         }
     </script>
     <script src="dapp.js"></script>
-<script src="i18n.js"></script>
+    <script src="i18n.js"></script>
 </body>
 </html>
-
-
-
