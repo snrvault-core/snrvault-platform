@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://snr-vault.com/sitemap.xml
