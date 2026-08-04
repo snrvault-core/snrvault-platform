@@ -577,7 +577,16 @@
                                 </div>
                                 
                                 <!-- Staking Action Buttons -->
-                                <div class="grid grid-cols-3 gap-2 sm:gap-4"><button onclick="btnActionHarvest()" class="py-2 sm:py-3 px-2 sm:px-4 glass-panel border border-accent text-accent hover:bg-accent hover:text-black transition-all font-display font-bold text-[10px] sm:text-xs flex items-center justify-center gap-1 sm:gap-2 shadow-[0_0_10px_rgba(0,229,255,0.1)]"><i data-lucide="leaf" class="w-3 h-3 sm:w-4 sm:h-4"></i> HARVEST</button><button onclick="btnActionWithdrawReady(prompt('Masukkan jumlah Withdraw (Balance Ready):'))" class="py-2 sm:py-3 px-2 sm:px-4 glass-panel border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all font-display font-bold text-[10px] sm:text-xs flex items-center justify-center gap-1 sm:gap-2 shadow-[0_0_10px_rgba(239,68,68,0.1)]"><i data-lucide="arrow-up-right" class="w-3 h-3 sm:w-4 sm:h-4"></i> WITHDRAW</button><button id="btn-unstake" onclick="btnActionUnstake(prompt('Masukkan jumlah Unstake (Maks: ' + document.getElementById('ui-staking-principal').innerText + '):'))" class="py-2 sm:py-3 px-2 sm:px-4 glass-panel border border-orange-500 text-orange-500 transition-all font-display font-bold text-[10px] sm:text-xs flex items-center justify-center gap-1 sm:gap-2 shadow-[0_0_10px_rgba(249,115,22,0.1)] opacity-50 cursor-not-allowed pointer-events-none"><i data-lucide="unlock" class="w-3 h-3 sm:w-4 sm:h-4"></i> UNSTAKE</button></div>
+                                <div class="grid grid-cols-3 gap-2 sm:gap-4">
+                                    <div class="relative group">
+                                        <button onclick="btnActionHarvest()" class="w-full py-2 sm:py-3 px-2 sm:px-4 glass-panel border border-accent text-accent hover:bg-accent hover:text-black transition-all font-display font-bold text-[10px] sm:text-xs flex items-center justify-center gap-1 sm:gap-2 shadow-[0_0_10px_rgba(0,229,255,0.1)]">
+                                            <i data-lucide="leaf" class="w-3 h-3 sm:w-4 sm:h-4"></i> HARVEST
+                                        </button>
+                                        <div class="absolute -top-6 left-1/2 -translate-x-1/2 text-[8px] text-accent whitespace-nowrap opacity-70">Cooldown: 24 Jam</div>
+                                    </div>
+                                    <button onclick="btnActionWithdrawReady(prompt('Masukkan jumlah Withdraw (Balance Ready):'))" class="py-2 sm:py-3 px-2 sm:px-4 glass-panel border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all font-display font-bold text-[10px] sm:text-xs flex items-center justify-center gap-1 sm:gap-2 shadow-[0_0_10px_rgba(239,68,68,0.1)]"><i data-lucide="arrow-up-right" class="w-3 h-3 sm:w-4 sm:h-4"></i> WITHDRAW</button>
+                                    <button id="btn-unstake" onclick="btnActionUnstake(prompt('Masukkan jumlah Unstake (Maks: ' + document.getElementById('ui-staking-principal').innerText + '):'))" class="py-2 sm:py-3 px-2 sm:px-4 glass-panel border border-orange-500 text-orange-500 transition-all font-display font-bold text-[10px] sm:text-xs flex items-center justify-center gap-1 sm:gap-2 shadow-[0_0_10px_rgba(249,115,22,0.1)] opacity-50 cursor-not-allowed pointer-events-none"><i data-lucide="unlock" class="w-3 h-3 sm:w-4 sm:h-4"></i> UNSTAKE</button>
+                                </div>
 
                                 <!-- Action Panel -->
                                 <div class="glass-panel p-6 sm:p-8 border-primary/20">
@@ -1005,7 +1014,7 @@
                     const yieldBp = parseFloat(yieldBpEl.innerText.replace(/,/g, ''));
                     let currentReward = parseFloat(rewardEl.innerText.replace(/,/g, ''));
                     const statusBadge = document.getElementById('stk-status-badge'); if(statusBadge) { if(principal > 0) { statusBadge.innerHTML = '<span class="text-green-400">AKTIF</span>'; statusBadge.classList.replace('bg-card', 'bg-green-500/10'); statusBadge.classList.replace('border-cardBorder', 'border-green-500/30'); } else { statusBadge.innerHTML = '<span class="text-secondary">Tidak Aktif</span>'; statusBadge.classList.replace('bg-green-500/10', 'bg-card'); statusBadge.classList.replace('border-green-500/30', 'border-cardBorder'); } } if(principal > 0 && yieldBp > 0 && !isNaN(currentReward)) {
-                        const yieldPerSec = (principal * (yieldBp / 10000)) / 86400;
+                        const yieldPerSec = (principal * (yieldBp / 100)) / 86400;
                         currentReward += yieldPerSec;
                         rewardEl.innerText = currentReward.toFixed(6); 
                     }
