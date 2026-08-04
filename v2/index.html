@@ -1016,7 +1016,7 @@
                     const statusBadge = document.getElementById('stk-status-badge'); if(statusBadge) { if(principal > 0) { statusBadge.innerHTML = '<span class="text-green-400">AKTIF</span>'; statusBadge.classList.replace('bg-card', 'bg-green-500/10'); statusBadge.classList.replace('border-cardBorder', 'border-green-500/30'); } else { statusBadge.innerHTML = '<span class="text-secondary">Tidak Aktif</span>'; statusBadge.classList.replace('bg-green-500/10', 'bg-card'); statusBadge.classList.replace('border-green-500/30', 'border-cardBorder'); } } if(principal > 0 && yieldBp > 0 && !isNaN(currentReward)) {
                         const yieldPerSec = (principal * (yieldBp / 100)) / 86400;
                         currentReward += yieldPerSec;
-                        rewardEl.innerText = currentReward.toFixed(6); 
+                        rewardEl.innerText = currentReward.toFixed(8); 
                     }
                 }
             } catch(e){}
