@@ -202,23 +202,38 @@ async function btnActionClaimSovereignAsset() {
 // 3. SINKRONISASI DATA KE DASHBOARD (READ)
 // ==========================================
 async function fetchAndRenderDashboard() {
-    if (!stakingContract || !userAddress) return;
+    if (!userAddress) return;
+
+    // Helper formatter
+    const fmt = (val) => parseFloat(ethers.utils.formatUnits(val || 0, 18)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
+    const fmt4 = (val) => parseFloat(ethers.utils.formatUnits(val || 0, 18)).toLocaleString('id-ID', { maximumFractionDigits: 4 });
+
+    // 1. Fetch Basic Wallet Balances (Independen dari Staking Contract)
+    try {
+        if (tokenContract && provider) {
+            const userBalance = await tokenContract.balanceOf(userAddress);
+            const bnbBalance = await provider.getBalance(userAddress);
+            
+            updateUI('ui-bnb-balance', fmt4(bnbBalance));
+            updateUI('ui-wallet-balance', fmt(userBalance) + " SNR");
+        }
+    } catch (err) {
+        console.error("Gagal membaca saldo token/BNB:", err);
+    }
+
+    // 2. Fetch Staking Dashboard
+    if (!stakingContract) return;
 
     try {
-        // Single call batch reading
+        // Cek apakah address kontrak valid sebelum memanggil
+        if (CONTRACT_ADDRESS.includes("...")) {
+            console.warn("Alamat Smart Contract Staking belum disetel (Masih Placeholder)!");
+            return;
+        }
+
         const d = await stakingContract.getDashboard(userAddress);
-        const userBalance = await tokenContract.balanceOf(userAddress);
-        const bnbBalance = await provider.getBalance(userAddress);
-
-        // Helper formatter
-        const fmt = (val) => parseFloat(ethers.utils.formatUnits(val || 0, 18)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
-        const fmt4 = (val) => parseFloat(ethers.utils.formatUnits(val || 0, 18)).toLocaleString('id-ID', { maximumFractionDigits: 4 });
-
-        // Update Global UI
-        updateUI('ui-bnb-balance', fmt4(bnbBalance));
 
         // Update Staking UI
-        updateUI('ui-wallet-balance', fmt(userBalance) + " SNR");
         updateUI('ui-staking-principal', fmt(d.stakingPrincipal) + " SNR");
         updateUI('ui-current-reward', fmt(d.currentReward) + " SNR");
         updateUI('ui-reward-claimed', fmt(d.rewardClaimed) + " SNR");
