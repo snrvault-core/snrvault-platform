@@ -1,7 +1,7 @@
-// dapp.js - SNR Sovereign Enterprise Production Driver (Ethers.js v6)
+// dapp.js - SNR Sovereign Enterprise Production Driver (Ethers.js v5.7.2)
 
 const CONTRACT_ADDRESS = "0x...ADDRESS_SMART_CONTRACT_STAKING...";
-const SNR_TOKEN_ADDRESS = "0x...ADDRESS_TOKEN_ERC20_SNR...";
+const SNR_TOKEN_ADDRESS = "0x5ce1427f77d8c58f97f5e18b36804fd54aa72718";
 
 // Complete ABI mapping from SNRStakingV6_TITAN_SOVEREIGN_ENTERPRISE
 const SNR_STAKING_ABI = [
@@ -50,7 +50,7 @@ let provider, signer, userAddress, stakingContract, tokenContract;
 async function initWeb3() {
     if (window.ethereum) {
         try {
-            provider = new ethers.BrowserProvider(window.ethereum);
+            provider = new ethers.providers.Web3Provider(window.ethereum);
             await provider.send("eth_requestAccounts", []);
             signer = await provider.getSigner();
             userAddress = await signer.getAddress();
@@ -73,7 +73,7 @@ async function initWeb3() {
 
         } catch (error) {
             console.error("User rejected connection", error);
-            showTxModal('error', 'Gagal Menghubungkan Wallet');
+            showTxModal('error', 'Koneksi Ditolak', 'Gagal Menghubungkan Wallet');
         }
     } else {
         alert("Metamask atau Web3 Wallet tidak terdeteksi!");
@@ -87,24 +87,24 @@ async function initWeb3() {
 // Tombol: Join Protocol / Stake
 async function btnActionJoinProtocol(amount, mentorAddress, durationDays) {
     try {
-        showTxModal('loading', 'Menyiapkan Transaksi Staking...');
-        const amountWei = ethers.parseUnits(amount.toString(), 18);
-        const mentor = mentorAddress && ethers.isAddress(mentorAddress) ? mentorAddress : "0x0000000000000000000000000000000000000000";
+        showTxModal('loading', 'Transaksi', 'Menyiapkan Transaksi Staking...');
+        const amountWei = ethers.utils.parseUnits(amount.toString(), 18);
+        const mentor = mentorAddress && ethers.utils.isAddress(mentorAddress) ? mentorAddress : "0x0000000000000000000000000000000000000000";
 
         // Step 1: Check Allowance
         const allowance = await tokenContract.allowance(userAddress, CONTRACT_ADDRESS);
-        if (allowance < amountWei) {
-            showTxModal('loading', 'Meminta Izin Token (Approve)...');
+        if (allowance.lt(amountWei)) {
+            showTxModal('loading', 'Transaksi', 'Meminta Izin Token (Approve)...');
             const approveTx = await tokenContract.approve(CONTRACT_ADDRESS, amountWei);
             await approveTx.wait();
         }
 
         // Step 2: Execute Join
-        showTxModal('loading', 'Mengirim Modal ke Smart Contract...');
+        showTxModal('loading', 'Transaksi', 'Mengirim Modal ke Smart Contract...');
         const tx = await stakingContract.joinProtocol(amountWei, mentor, durationDays);
         await tx.wait();
 
-        showTxModal('success', 'Staking Berhasil Diaktifkan!');
+        showTxModal('success', 'Berhasil', 'Staking Berhasil Diaktifkan!');
         await fetchAndRenderDashboard();
     } catch (err) {
         handleTxError(err);
@@ -114,11 +114,11 @@ async function btnActionJoinProtocol(amount, mentorAddress, durationDays) {
 // Tombol: Harvest Daily Reward
 async function btnActionHarvest() {
     try {
-        showTxModal('loading', 'Memproses Klaim Hasil Harian...');
+        showTxModal('loading', 'Transaksi', 'Memproses Klaim Hasil Harian...');
         const tx = await stakingContract.harvestDailyReward();
         await tx.wait();
 
-        showTxModal('success', 'Panen Reward Harian Berhasil!');
+        showTxModal('success', 'Berhasil', 'Panen Reward Harian Berhasil!');
         await fetchAndRenderDashboard();
     } catch (err) {
         handleTxError(err);
@@ -128,11 +128,11 @@ async function btnActionHarvest() {
 // Tombol: Claim Leader / Referral Reward
 async function btnActionClaimLeader() {
     try {
-        showTxModal('loading', 'Memproses Klaim Leader Reward...');
+        showTxModal('loading', 'Transaksi', 'Memproses Klaim Leader Reward...');
         const tx = await stakingContract.claimLeaderRewards();
         await tx.wait();
 
-        showTxModal('success', 'Bonus Leader Berhasil Dicairkan!');
+        showTxModal('success', 'Berhasil', 'Bonus Leader Berhasil Dicairkan!');
         await fetchAndRenderDashboard();
     } catch (err) {
         handleTxError(err);
@@ -142,12 +142,12 @@ async function btnActionClaimLeader() {
 // Tombol: Withdraw Ready Balance
 async function btnActionWithdrawReady(amount) {
     try {
-        showTxModal('loading', 'Memproses Penarikan Saldo...');
-        const amountWei = ethers.parseUnits(amount.toString(), 18);
+        showTxModal('loading', 'Transaksi', 'Memproses Penarikan Saldo...');
+        const amountWei = ethers.utils.parseUnits(amount.toString(), 18);
         const tx = await stakingContract.withdrawReadyBalance(amountWei);
         await tx.wait();
 
-        showTxModal('success', 'Penarikan Saldo Berhasil!');
+        showTxModal('success', 'Berhasil', 'Penarikan Saldo Berhasil!');
         await fetchAndRenderDashboard();
     } catch (err) {
         handleTxError(err);
@@ -157,12 +157,12 @@ async function btnActionWithdrawReady(amount) {
 // Tombol: Unstake Principal
 async function btnActionUnstake(amount) {
     try {
-        showTxModal('loading', 'Pencabutan Modal Pokok...');
-        const amountWei = ethers.parseUnits(amount.toString(), 18);
+        showTxModal('loading', 'Transaksi', 'Pencabutan Modal Pokok...');
+        const amountWei = ethers.utils.parseUnits(amount.toString(), 18);
         const tx = await stakingContract.unstakePrincipal(amountWei);
         await tx.wait();
 
-        showTxModal('success', 'Modal Pokok Berhasil Ditarik!');
+        showTxModal('success', 'Berhasil', 'Modal Pokok Berhasil Ditarik!');
         await fetchAndRenderDashboard();
     } catch (err) {
         handleTxError(err);
@@ -172,12 +172,12 @@ async function btnActionUnstake(amount) {
 // Tombol: Request Asset Program
 async function btnActionRequestAsset(assetTypeEnum, assetValue, unitModel, protocolPathEnum) {
     try {
-        showTxModal('loading', 'Mengirimkan Pengajuan Aset Program...');
-        const valueWei = ethers.parseUnits(assetValue.toString(), 18);
+        showTxModal('loading', 'Transaksi', 'Mengirimkan Pengajuan Aset Program...');
+        const valueWei = ethers.utils.parseUnits(assetValue.toString(), 18);
         const tx = await stakingContract.requestAssetAcquisition(assetTypeEnum, valueWei, unitModel, protocolPathEnum);
         await tx.wait();
 
-        showTxModal('success', 'Pengajuan Program Aset Berhasil!');
+        showTxModal('success', 'Berhasil', 'Pengajuan Program Aset Berhasil!');
         await fetchAndRenderDashboard();
     } catch (err) {
         handleTxError(err);
@@ -187,11 +187,11 @@ async function btnActionRequestAsset(assetTypeEnum, assetValue, unitModel, proto
 // Tombol: Claim Sovereign Principal (Pengembalian Modal Aset)
 async function btnActionClaimSovereignAsset() {
     try {
-        showTxModal('loading', 'Mencairkan Jaminan Aset Program...');
+        showTxModal('loading', 'Transaksi', 'Mencairkan Jaminan Aset Program...');
         const tx = await stakingContract.claimSovereignPrincipal();
         await tx.wait();
 
-        showTxModal('success', 'Pencairan Jaminan Aset Berhasil!');
+        showTxModal('success', 'Berhasil', 'Pencairan Jaminan Aset Berhasil!');
         await fetchAndRenderDashboard();
     } catch (err) {
         handleTxError(err);
@@ -211,8 +211,8 @@ async function fetchAndRenderDashboard() {
         const bnbBalance = await provider.getBalance(userAddress);
 
         // Helper formatter
-        const fmt = (val) => parseFloat(ethers.formatUnits(val || 0, 18)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
-        const fmt4 = (val) => parseFloat(ethers.formatUnits(val || 0, 18)).toLocaleString('id-ID', { maximumFractionDigits: 4 });
+        const fmt = (val) => parseFloat(ethers.utils.formatUnits(val || 0, 18)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
+        const fmt4 = (val) => parseFloat(ethers.utils.formatUnits(val || 0, 18)).toLocaleString('id-ID', { maximumFractionDigits: 4 });
 
         // Update Global UI
         updateUI('ui-bnb-balance', fmt4(bnbBalance));
@@ -270,7 +270,7 @@ function formatSeconds(seconds) {
 function handleTxError(err) {
     console.error("Tx Error:", err);
     let msg = err.reason || err.message || "Transaksi Dibatalkan/Gagal";
-    showTxModal('error', msg);
+    showTxModal('error', 'Error Transaksi', msg);
 }
 
 // ==========================================
@@ -306,10 +306,10 @@ async function fetchTransactionHistory() {
         // 3. Gabungkan dan urutkan
         let allEvents = [];
         
-        logsJoined.forEach(log => allEvents.push({ type: 'Joined', data: log, desc: `Staked ${parseFloat(ethers.formatUnits(log.args[1] || 0, 18)).toLocaleString('id-ID')} SNR`, icon: 'arrow-down-right', color: 'text-primary', border: 'border-primary' }));
-        logsHarvest.forEach(log => allEvents.push({ type: 'Harvest', data: log, desc: `Claimed ${parseFloat(ethers.formatUnits(log.args[1] || 0, 18)).toLocaleString('id-ID')} SNR`, icon: 'leaf', color: 'text-accent', border: 'border-accent' }));
-        logsLeader.forEach(log => allEvents.push({ type: 'Leader', data: log, desc: `Bonus ${parseFloat(ethers.formatUnits(log.args[1] || 0, 18)).toLocaleString('id-ID')} SNR`, icon: 'users', color: 'text-green-500', border: 'border-green-500' }));
-        logsUnstake.forEach(log => allEvents.push({ type: 'Unstake', data: log, desc: `Withdrawn ${parseFloat(ethers.formatUnits(log.args[1] || 0, 18)).toLocaleString('id-ID')} SNR`, icon: 'arrow-up-right', color: 'text-red-500', border: 'border-red-500' }));
+        logsJoined.forEach(log => allEvents.push({ type: 'Joined', data: log, desc: `Staked ${parseFloat(ethers.utils.formatUnits(log.args[1] || 0, 18)).toLocaleString('id-ID')} SNR`, icon: 'arrow-down-right', color: 'text-primary', border: 'border-primary' }));
+        logsHarvest.forEach(log => allEvents.push({ type: 'Harvest', data: log, desc: `Claimed ${parseFloat(ethers.utils.formatUnits(log.args[1] || 0, 18)).toLocaleString('id-ID')} SNR`, icon: 'leaf', color: 'text-accent', border: 'border-accent' }));
+        logsLeader.forEach(log => allEvents.push({ type: 'Leader', data: log, desc: `Bonus ${parseFloat(ethers.utils.formatUnits(log.args[1] || 0, 18)).toLocaleString('id-ID')} SNR`, icon: 'users', color: 'text-green-500', border: 'border-green-500' }));
+        logsUnstake.forEach(log => allEvents.push({ type: 'Unstake', data: log, desc: `Withdrawn ${parseFloat(ethers.utils.formatUnits(log.args[1] || 0, 18)).toLocaleString('id-ID')} SNR`, icon: 'arrow-up-right', color: 'text-red-500', border: 'border-red-500' }));
 
         // Sort desc (terbaru di atas)
         allEvents.sort((a, b) => b.data.blockNumber - a.data.blockNumber);
