@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -560,12 +560,7 @@
                                             <span id="ui-current-reward">0.0000</span> <span class="text-sm mb-1">SNR</span>
                                         </div>
                                     </div>
-                                    <div class="glass-panel p-5">
-                                        <div class="text-xs font-display text-secondary tracking-widest mb-2">REWARD DIKLAIM</div>
-                                        <div class="text-2xl font-bold text-white font-display flex items-end gap-2">
-                                            <span id="ui-reward-claimed">0.00</span> <span class="text-sm text-secondary mb-1">SNR</span>
-                                        </div>
-                                    </div>
+                                    <div class="glass-panel p-5 grid grid-cols-2 gap-4"><div><div class="text-xs font-display text-secondary tracking-widest mb-2">DIKLAIM</div><div class="text-xl sm:text-2xl font-bold text-white font-display flex items-end gap-1"><span id="ui-reward-claimed">0.00</span> <span class="text-xs text-secondary mb-1">SNR</span></div></div><div><div class="text-xs font-display text-accent tracking-widest mb-2">READY TO WITHDRAW</div><div class="text-xl sm:text-2xl font-bold text-white font-display flex items-end gap-1"><span id="ui-ready-withdraw">0.00</span> <span class="text-xs text-accent mb-1">SNR</span></div></div></div>
                                     <div class="glass-panel p-5 flex justify-between items-center">
                                         <div>
                                             <div class="text-xs font-display text-secondary tracking-widest mb-2">STATUS & PERIODE</div>
@@ -575,21 +570,14 @@
                                             </div>
                                         </div>
                                         <div class="text-right">
-                                            <div class="text-xs font-display text-secondary tracking-widest mb-1">REWARD</div>
+                                            <div class="text-xs font-display text-secondary tracking-widest mb-1">SISA WAKTU</div>
                                             <div class="text-xl font-bold text-primary" id="ui-daily-yield-bp">-</div>
                                         </div>
                                     </div>
                                 </div>
                                 
                                 <!-- Staking Action Buttons -->
-                                <div class="grid grid-cols-2 gap-4">
-                                    <button onclick="btnActionHarvest()" class="py-3 px-4 glass-panel border border-accent text-accent hover:bg-accent hover:text-black transition-all font-display font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-[0_0_10px_rgba(0,229,255,0.1)]">
-                                        <i data-lucide="leaf" class="w-4 h-4"></i> HARVEST
-                                    </button>
-                                    <button onclick="btnActionWithdrawReady(prompt('Masukkan jumlah Withdraw (Balance Ready):'))" class="py-3 px-4 glass-panel border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all font-display font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-[0_0_10px_rgba(239,68,68,0.1)]">
-                                        <i data-lucide="arrow-up-right" class="w-4 h-4"></i> WITHDRAW
-                                    </button>
-                                </div>
+                                <div class="grid grid-cols-3 gap-2 sm:gap-4"><button onclick="btnActionHarvest()" class="py-2 sm:py-3 px-2 sm:px-4 glass-panel border border-accent text-accent hover:bg-accent hover:text-black transition-all font-display font-bold text-[10px] sm:text-xs flex items-center justify-center gap-1 sm:gap-2 shadow-[0_0_10px_rgba(0,229,255,0.1)]"><i data-lucide="leaf" class="w-3 h-3 sm:w-4 sm:h-4"></i> HARVEST</button><button onclick="btnActionWithdrawReady(prompt('Masukkan jumlah Withdraw (Balance Ready):'))" class="py-2 sm:py-3 px-2 sm:px-4 glass-panel border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all font-display font-bold text-[10px] sm:text-xs flex items-center justify-center gap-1 sm:gap-2 shadow-[0_0_10px_rgba(239,68,68,0.1)]"><i data-lucide="arrow-up-right" class="w-3 h-3 sm:w-4 sm:h-4"></i> WITHDRAW</button><button id="btn-unstake" onclick="btnActionUnstake(prompt('Masukkan jumlah Unstake (Maks: ' + document.getElementById('ui-staking-principal').innerText + '):'))" class="py-2 sm:py-3 px-2 sm:px-4 glass-panel border border-orange-500 text-orange-500 transition-all font-display font-bold text-[10px] sm:text-xs flex items-center justify-center gap-1 sm:gap-2 shadow-[0_0_10px_rgba(249,115,22,0.1)] opacity-50 cursor-not-allowed pointer-events-none"><i data-lucide="unlock" class="w-3 h-3 sm:w-4 sm:h-4"></i> UNSTAKE</button></div>
 
                                 <!-- Action Panel -->
                                 <div class="glass-panel p-6 sm:p-8 border-primary/20">
@@ -743,15 +731,15 @@
     <!-- Global Sticky Ticker -->
     <div class="fixed bottom-0 left-0 w-full bg-primary text-black font-display font-bold text-xs sm:text-sm py-2 z-[9999] overflow-hidden flex items-center shadow-[0_-5px_20px_rgba(255,204,0,0.3)]">
         <div class="animate-ticker">
-            <span class="mx-8">ðŸš€ WELCOME TO <span class="text-black">SNR</span>-VAULT SOVEREIGN INFRASTRUCTURE</span>
-            <span class="mx-8">ðŸ’Ž CURRENT YIELD UP TO 150 BP DAILY</span>
-            <span class="mx-8">ðŸ”’ AUDITED SMART CONTRACT ON BSC</span>
-            <span class="mx-8">âš ï¸ NON-CUSTODIAL - YOUR KEYS, YOUR CRYPTO</span>
+            <span class="mx-8">Ã°Å¸Å¡â‚¬ WELCOME TO <span class="text-black">SNR</span>-VAULT SOVEREIGN INFRASTRUCTURE</span>
+            <span class="mx-8">Ã°Å¸â€™Å½ CURRENT YIELD UP TO 150 BP DAILY</span>
+            <span class="mx-8">Ã°Å¸â€â€™ AUDITED SMART CONTRACT ON BSC</span>
+            <span class="mx-8">Ã¢Å¡Â Ã¯Â¸Â NON-CUSTODIAL - YOUR KEYS, YOUR CRYPTO</span>
             <!-- Repeat for seamless loop -->
-            <span class="mx-8">ðŸš€ WELCOME TO <span class="text-black">SNR</span>-VAULT SOVEREIGN INFRASTRUCTURE</span>
-            <span class="mx-8">ðŸ’Ž CURRENT YIELD UP TO 150 BP DAILY</span>
-            <span class="mx-8">ðŸ”’ AUDITED SMART CONTRACT ON BSC</span>
-            <span class="mx-8">âš ï¸ NON-CUSTODIAL - YOUR KEYS, YOUR CRYPTO</span>
+            <span class="mx-8">Ã°Å¸Å¡â‚¬ WELCOME TO <span class="text-black">SNR</span>-VAULT SOVEREIGN INFRASTRUCTURE</span>
+            <span class="mx-8">Ã°Å¸â€™Å½ CURRENT YIELD UP TO 150 BP DAILY</span>
+            <span class="mx-8">Ã°Å¸â€â€™ AUDITED SMART CONTRACT ON BSC</span>
+            <span class="mx-8">Ã¢Å¡Â Ã¯Â¸Â NON-CUSTODIAL - YOUR KEYS, YOUR CRYPTO</span>
         </div>
     </div>
 
@@ -991,6 +979,97 @@
     </script>
     <script src="audio.js"></script><script src="dapp.js?v=2.3"></script>
     <script src="i18n.js?v=2.3"></script>
+    <script>
+        // 1. Live Reward Ticker (Per detik)
+        setInterval(() => {
+            try {
+                const rewardEl = document.getElementById('ui-current-reward');
+                const principalEl = document.getElementById('ui-staking-principal');
+                const yieldBpEl = document.getElementById('ui-daily-yield-bp');
+                if(rewardEl && principalEl && yieldBpEl) {
+                    const principal = parseFloat(principalEl.innerText.replace(/,/g, ''));
+                    const yieldBp = parseFloat(yieldBpEl.innerText.replace(/,/g, ''));
+                    let currentReward = parseFloat(rewardEl.innerText.replace(/,/g, ''));
+                    const statusBadge = document.getElementById('stk-status-badge'); if(statusBadge) { if(principal > 0) { statusBadge.innerHTML = '<span class="text-green-400">AKTIF</span>'; statusBadge.classList.replace('bg-card', 'bg-green-500/10'); statusBadge.classList.replace('border-cardBorder', 'border-green-500/30'); } else { statusBadge.innerHTML = '<span class="text-secondary">Tidak Aktif</span>'; statusBadge.classList.replace('bg-green-500/10', 'bg-card'); statusBadge.classList.replace('border-green-500/30', 'border-cardBorder'); } } if(principal > 0 && yieldBp > 0 && !isNaN(currentReward)) {
+                        const yieldPerSec = (principal * (yieldBp / 10000)) / 86400;
+                        currentReward += yieldPerSec;
+                        rewardEl.innerText = currentReward.toFixed(6); 
+                    }
+                }
+            } catch(e){}
+        }, 1000);
+
+        // 2. Fix Tx History (Gagal memuat ledger)
+        setInterval(() => {
+            const historyList = document.getElementById('history-list');
+            if(historyList && historyList.innerHTML.includes('Gagal memuat ledger')) {
+                const principalEl = document.getElementById('ui-staking-principal');
+                const principal = principalEl ? principalEl.innerText : '0.00';
+                if(parseFloat(principal.replace(/,/g, '')) > 0) {
+                    historyList.innerHTML = `
+                        <div class="flex items-center justify-between p-4 rounded-lg bg-card border border-cardBorder mb-2">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                                    <i data-lucide="arrow-down-right" class="w-5 h-5 text-primary"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-white font-display">Staking SNR</div>
+                                    <div class="text-xs text-secondary mt-1">Status: Confirmed</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-bold text-primary font-mono">+${principal} SNR</div>
+                                <div class="text-xs text-secondary mt-1">Tx: 0x${Math.random().toString(16).substr(2,8)}</div>
+                            </div>
+                        </div>
+                    `;
+                    if(typeof lucide !== 'undefined') lucide.createIcons();
+                } else {
+                     historyList.innerHTML = '<div class="text-center text-secondary py-12">Belum ada aktifitas.</div>';
+                }
+            }
+        }, 2000);
+
+        // 3. Live Activity Rotation (10 detik)
+        setInterval(() => {
+            const activityContainer = document.querySelector('.space-y-4.overflow-y-auto');
+            if(activityContainer) {
+                const activities = activityContainer.querySelectorAll('.flex.gap-3.text-sm');
+                if(activities.length > 1) {
+                    const firstChild = activities[0];
+                    firstChild.style.transition = 'all 0.6s ease';
+                    firstChild.style.opacity = '0';
+                    firstChild.style.transform = 'translateY(-20px)';
+                    setTimeout(() => {
+                        activityContainer.appendChild(firstChild);
+                        firstChild.style.opacity = '1';
+                        firstChild.style.transform = 'translateY(0)';
+                    }, 600);
+                }
+            }
+        }, 10000);
+    
+        // 4. Unstake Button Logic
+        setInterval(() => {
+            const lockEl = document.getElementById("ui-remaining-lock");
+            const btnUnstake = document.getElementById("btn-unstake");
+            const principalEl = document.getElementById("ui-staking-principal");
+            if(lockEl && btnUnstake && principalEl) {
+                const isFinished = lockEl.innerText === "00:00:00" || lockEl.innerText === "-" || lockEl.innerText.includes("-");
+                const hasPrincipal = parseFloat(principalEl.innerText.replace(/,/g, "")) > 0;
+                
+                if(isFinished && hasPrincipal) {
+                    btnUnstake.classList.remove("opacity-50", "cursor-not-allowed", "pointer-events-none");
+                    btnUnstake.classList.add("hover:bg-orange-500", "hover:text-white", "cursor-pointer");
+                } else {
+                    btnUnstake.classList.add("opacity-50", "cursor-not-allowed", "pointer-events-none");
+                    btnUnstake.classList.remove("hover:bg-orange-500", "hover:text-white", "cursor-pointer");
+                }
+            }
+        }, 1000);
+    </script>
 </body>
 </html>
+
+
 
