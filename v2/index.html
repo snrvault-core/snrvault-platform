@@ -1026,11 +1026,11 @@
         let historyFetched = false;
         setInterval(async () => {
             const historyList = document.getElementById('history-list');
-            if(historyList && historyList.innerHTML.includes('Gagal memuat ledger') && !historyFetched && window.userAddress) {
+            if(historyList && historyList.innerHTML.includes('Gagal memuat ledger') && !historyFetched && typeof userAddress !== 'undefined' && userAddress) {
                 historyFetched = true;
                 try {
-                    const contractAddr = "0xdADbE52B12771E29c1554fC16F26289f4911044c"; // Contract Address SNR
-                    const url = `https://api.bscscan.com/api?module=account&action=txlist&address=${window.userAddress}&startblock=0&endblock=99999999&sort=desc`;
+                    const contractAddr = "0x4C8e2EDAE09bD4434f839C881de3AE9f6046D8B4"; // Contract Address SNR
+                    const url = `https://api.bscscan.com/api?module=account&action=txlist&address=${userAddress}&startblock=0&endblock=99999999&sort=desc`;
                     
                     const res = await fetch(url);
                     const data = await res.json();
@@ -1134,15 +1134,15 @@
         // 5. Referral Logic
         setInterval(() => {
             const refInput = document.getElementById("ref-link-input");
-            if(refInput && window.userAddress) {
-                const link = window.location.origin + window.location.pathname + "?ref=" + window.userAddress;
+            if(refInput && typeof userAddress !== 'undefined' && userAddress) {
+                const link = window.location.origin + window.location.pathname + "?ref=" + userAddress;
                 if(refInput.value !== link) refInput.value = link;
             }
         }, 2000);
 
         function copyRefLink() {
             const refInput = document.getElementById("ref-link-input");
-            if(refInput && window.userAddress) {
+            if(refInput && typeof userAddress !== 'undefined' && userAddress) {
                 refInput.select();
                 document.execCommand("copy");
                 alert("Referral Link berhasil disalin:\n" + refInput.value);
