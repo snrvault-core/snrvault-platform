@@ -1,6 +1,6 @@
 // dapp.js - SNR Sovereign Enterprise Production Driver (Ethers.js v5.7.2)
 
-const CONTRACT_ADDRESS = "0x...ADDRESS_SMART_CONTRACT_STAKING...";
+const CONTRACT_ADDRESS = "0xdADbE52B12771E29c1554fC16F26289f4911044c";
 const SNR_TOKEN_ADDRESS = "0x5ce1427f77d8c58f97f5e18b36804fd54aa72718";
 
 // Complete ABI mapping from SNRStakingV6_TITAN_SOVEREIGN_ENTERPRISE
