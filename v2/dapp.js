@@ -24,6 +24,7 @@ const SNR_STAKING_ABI = [
         "uint256 leaderRewardAccumulated, bool leaderCapReached, uint256 rewardCap, uint256 rewardCapRemaining, " +
         "bool blacklisted, bool fundLocked, bool protocolPaused, bool lockdown, bool emergencyMode" +
     "))",
+    "function users(address) external view returns (uint256 participation, uint256 originalGrant, uint256 totalRewardClaimed, uint256 lastUpdate, uint256 dailyYieldBP, bool isActive, bool isBlacklisted, uint8 activeProgram, uint256 supportValue, uint256 supportSettled, address mentor, uint256 directActiveCount, uint256 groupVolume, uint256 currentRank, uint256 principalDeposit, bool isFundLockedByAdmin, uint256 readyToWithdraw, uint256 stakingEndDate, uint256 assetEndDate)",
     "function getProtocolStatistics() external view returns (tuple(" +
         "uint256 totalPrincipal, uint256 totalReferral, uint256 totalWithdraw, uint256 totalLiability, " +
         "uint256 reserveBalance, uint256 reserveHealthBP, bool solvent" +
@@ -236,6 +237,24 @@ async function fetchAndRenderDashboard() {
         // Update Staking UI
         updateUI('ui-staking-principal', fmt(d.stakingPrincipal) + " SNR");
         updateUI('ui-current-reward', Number(ethers.utils.formatUnits(d.currentReward, 18)).toFixed(8) + " SNR");
+
+        // Cooldown Timer Logic
+        const userData = await stakingContract.users(userAddress);
+        const lastUpdate = Number(userData.lastUpdate) || 0;
+        if(lastUpdate > 0 && d.stakingActive) {
+            const now = Math.floor(Date.now() / 1000);
+            const diff = (lastUpdate + 86400) - now;
+            if(diff > 0) {
+                updateUI('harvest-cooldown', "Cooldown: " + formatSeconds(diff));
+                document.querySelector('button[onclick="btnActionHarvest()"]').classList.add("opacity-50", "cursor-not-allowed");
+            } else {
+                updateUI('harvest-cooldown', "Siap Panen");
+                document.querySelector('button[onclick="btnActionHarvest()"]').classList.remove("opacity-50", "cursor-not-allowed");
+            }
+        } else {
+            updateUI('harvest-cooldown', "Belum Aktif");
+        }
+
         updateUI('ui-reward-claimed', fmt(d.rewardClaimed) + " SNR");
         updateUI('ui-ready-withdraw', fmt(d.readyWithdraw) + " SNR");
         updateUI('ui-total-staking-asset', fmt(d.totalStakingAsset) + " SNR");
