@@ -1030,14 +1030,14 @@
                 historyFetched = true;
                 try {
                     const contractAddr = "0x4C8e2EDAE09bD4434f839C881de3AE9f6046D8B4"; // Contract Address SNR
-                    const bscApiKey = "EQUIWA818PF6ETNTGNTPWCD9F9DSEUTKZZ"; // HARUS DIGANTI DENGAN API KEY BSCSCAN ANDA JIKA TERBLOKIR
-                    const url = `https://api.etherscan.io/v2/api?chainid=56&module=account&action=txlist&address=${userAddress}&startblock=0&endblock=99999999&sort=desc&apikey=${bscApiKey}`;
+                    const covalentApiKey = "cqt_rQTgdHXTmKjHttP6qRVqqgffDdFd"; // Covalent API Key
+                    const url = `https://api.covalenthq.com/v1/bsc-mainnet/address/${userAddress}/transactions_v3/?key=${covalentApiKey}`;
                     
                     const res = await fetch(url);
-                    const data = await res.json();
+                    const json = await res.json();
                     
-                    if(data.status === "1" && data.result.length > 0) {
-                        const txs = data.result.filter(tx => tx.to && tx.to.toLowerCase() === contractAddr.toLowerCase());
+                    if(json.data && json.data.items) {
+                        const txs = json.data.items.filter(tx => tx.to_address && tx.to_address.toLowerCase() === contractAddr.toLowerCase());
                         
                         if(txs.length > 0) {
                             let html = '';
@@ -1048,18 +1048,20 @@
                             const idLeader = window.ethers.utils.id("claimLeaderRewards()").substring(0, 10);
 
                             txs.forEach(tx => {
-                                const date = new Date(tx.timeStamp * 1000);
+                                const date = new Date(tx.block_signed_at);
                                 const dateStr = date.toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric'});
                                 const timeStr = date.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
                                 
-                                const methodId = tx.input.substring(0, 10);
                                 let method = "Interaksi Kontrak"; let icon = "cpu"; let color = "text-secondary";
 
-                                if(methodId === idJoin) { method = "Modal Staking (Join)"; icon = "arrow-down-right"; color = "text-green-500"; }
-                                else if(methodId === idHarvest) { method = "Harvest (Panen Reward)"; icon = "leaf"; color = "text-accent"; }
-                                else if(methodId === idWithdraw) { method = "Withdraw (Tarik Tunai)"; icon = "arrow-up-right"; color = "text-red-500"; }
-                                else if(methodId === idUnstake) { method = "Unstake (Cabut Modal)"; icon = "unlock"; color = "text-orange-500"; }
-                                else if(methodId === idLeader) { method = "Klaim Leader Reward"; icon = "users"; color = "text-yellow-400"; }
+                                // Covalent returns log_events. We can check topics to guess the method.
+                                if(tx.log_events && tx.log_events.length > 0) {
+                                    const eventsStr = JSON.stringify(tx.log_events);
+                                    if(eventsStr.includes("RewardHarvested")) { method = "Harvest (Panen Reward)"; icon = "leaf"; color = "text-accent"; }
+                                    else if(eventsStr.includes("PrincipalUnstaked")) { method = "Unstake (Cabut Modal)"; icon = "unlock"; color = "text-orange-500"; }
+                                    else if(eventsStr.includes("LeaderCapReached") || eventsStr.includes("RankUpgraded")) { method = "Klaim Leader Reward"; icon = "users"; color = "text-yellow-400"; }
+                                    else if(eventsStr.includes("Transfer")) { method = "Modal Staking (Join)"; icon = "arrow-down-right"; color = "text-green-500"; }
+                                }
 
                                 html += `
                                 <div class="flex items-center justify-between p-4 rounded-lg bg-card border border-cardBorder mb-2 hover:border-primary/50 transition-all shadow-[inset_0_0_10px_rgba(255,255,255,0.02)]">
@@ -1075,7 +1077,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <a href="https://bscscan.com/tx/${tx.hash}" target="_blank" class="px-3 py-1.5 bg-background border border-cardBorder rounded text-[10px] text-secondary hover:text-white hover:border-primary transition-all flex items-center gap-1 shadow-sm">
+                                    <a href="https://bscscan.com/tx/${tx.tx_hash}" target="_blank" class="px-3 py-1.5 bg-background border border-cardBorder rounded text-[10px] text-secondary hover:text-white hover:border-primary transition-all flex items-center gap-1 shadow-sm">
                                         Bukti <i data-lucide="external-link" class="w-3 h-3"></i>
                                     </a>
                                 </div>`;
@@ -1086,7 +1088,7 @@
                             historyList.innerHTML = '<div class="text-center text-secondary py-12">Belum ada catatan transaksi di Blockchain.</div>';
                         }
                     } else {
-                        historyList.innerHTML = `<div class="text-center text-secondary py-12">Belum ada catatan transaksi, ATAU BscScan API Anda limit.<br><span class="text-[10px] text-red-500">Pesan BscScan: ${data.result || data.message}</span></div>`;
+                        historyList.innerHTML = `<div class="text-center text-secondary py-12">Belum ada catatan transaksi, ATAU API limit.<br><span class="text-[10px] text-red-500">Pesan Covalent: ${json.error_message || "Menunggu data"}</span></div>`;
                     }
                 } catch(e) {
                     console.error("Gagal memuat API", e);
