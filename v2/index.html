@@ -544,7 +544,7 @@
                                         <div class="absolute -right-4 -top-4 text-primary/5 group-hover:text-primary/10 transition-colors">
                                             <i data-lucide="database" class="w-32 h-32"></i>
                                         </div>
-                                        <div class="text-xs font-display text-secondary tracking-widest mb-2 relative z-10">MY STAKING</div>
+                                        <div class="text-xs font-display text-secondary tracking-widest mb-2 relative z-10">MODAL STAKING</div>
                                         <div class="text-3xl font-black text-white font-display relative z-10 flex items-end gap-2">
                                             <span id="ui-staking-principal">0.00</span> <span class="text-sm text-primary mb-1">SNR</span>
                                         </div>
@@ -554,13 +554,13 @@
                                             <i data-lucide="zap" class="w-32 h-32"></i>
                                         </div>
                                         <div class="text-xs font-display text-accent tracking-widest mb-2 relative z-10 flex items-center gap-2">
-                                            <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span> CURRENT REWARD (LIVE)
+                                            <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span> REWARD BERJALAN (LIVE)
                                         </div>
                                         <div class="text-3xl font-black text-accent font-display relative z-10 flex items-end gap-2 text-shadow-sm">
                                             <span id="ui-current-reward">0.0000</span> <span class="text-sm mb-1">SNR</span>
                                         </div>
                                     </div>
-                                    <div class="glass-panel p-5 grid grid-cols-2 gap-4"><div><div class="text-xs font-display text-secondary tracking-widest mb-2">CLAIMED</div><div class="text-xl sm:text-2xl font-bold text-white font-display flex items-end gap-1"><span id="ui-reward-claimed">0.00</span> <span class="text-xs text-secondary mb-1">SNR</span></div></div><div><div class="text-xs font-display text-accent tracking-widest mb-2">READY TO WITHDRAW</div><div class="text-xl sm:text-2xl font-bold text-white font-display flex items-end gap-1"><span id="ui-ready-withdraw">0.00</span> <span class="text-xs text-accent mb-1">SNR</span></div></div></div>
+                                    <div class="glass-panel p-5 grid grid-cols-2 gap-4"><div><div class="text-xs font-display text-secondary tracking-widest mb-2">DIKLAIM</div><div class="text-xl sm:text-2xl font-bold text-white font-display flex items-end gap-1"><span id="ui-reward-claimed">0.00</span> <span class="text-xs text-secondary mb-1">SNR</span></div></div><div><div class="text-xs font-display text-accent tracking-widest mb-2">READY TO WITHDRAW</div><div class="text-xl sm:text-2xl font-bold text-white font-display flex items-end gap-1"><span id="ui-ready-withdraw">0.00</span> <span class="text-xs text-accent mb-1">SNR</span></div></div></div>
                                     <div class="glass-panel p-5 flex justify-between items-center">
                                         <div>
                                             <div class="text-xs font-display text-secondary tracking-widest mb-2">STATUS & PERIODE</div>
@@ -570,7 +570,7 @@
                                             </div>
                                         </div>
                                         <div class="text-right">
-                                            <div class="text-xs font-display text-secondary tracking-widest mb-1">DAILY YIELD</div>
+                                            <div class="text-xs font-display text-secondary tracking-widest mb-1">SISA WAKTU</div>
                                             <div class="text-xl font-bold text-primary" id="ui-daily-yield-bp">-</div>
                                         </div>
                                     </div>
@@ -718,7 +718,7 @@
                             <div class="absolute inset-0 bg-primary/5"></div>
                             <h4 class="text-sm font-display text-primary tracking-widest mb-2 relative z-10">TOTAL LEADER REWARDS</h4>
                             <div id="ui-leader-reward" class="text-4xl sm:text-5xl font-black text-white font-display relative z-10">0.00 <span class="text-xl text-primary">SNR</span></div>
-                            <button onclick="btnActionClaimLeader()" class="mt-4 px-6 py-2 bg-primary/10 border border-primary text-primary hover:bg-primary hover:text-black rounded-lg transition-all font-bold text-sm font-display z-10 relative">CLAIM LEADER REWARD</button>
+                            <button onclick="btnActionClaimLeader()" class="mt-4 px-6 py-2 bg-primary/10 border border-primary text-primary hover:bg-primary hover:text-black rounded-lg transition-all font-bold text-sm font-display z-10 relative">KLAIM LEADER REWARD</button>
                         </div>
                         
                         <!-- Referral Link Box -->
@@ -1030,7 +1030,8 @@
                 historyFetched = true;
                 try {
                     const contractAddr = "0x4C8e2EDAE09bD4434f839C881de3AE9f6046D8B4"; // Contract Address SNR
-                    const url = `https://api.bscscan.com/api?module=account&action=txlist&address=${userAddress}&startblock=0&endblock=99999999&sort=desc`;
+                    const bscApiKey = "EQUIWA818PF6ETNTGNTPWCD9F9DSEUTKZZ"; // HARUS DIGANTI DENGAN API KEY BSCSCAN ANDA JIKA TERBLOKIR
+                    const url = `https://api.bscscan.com/api?module=account&action=txlist&address=${userAddress}&startblock=0&endblock=99999999&sort=desc&apikey=${bscApiKey}`;
                     
                     const res = await fetch(url);
                     const data = await res.json();
@@ -1085,11 +1086,11 @@
                             historyList.innerHTML = '<div class="text-center text-secondary py-12">Belum ada catatan transaksi di Blockchain.</div>';
                         }
                     } else {
-                        historyList.innerHTML = '<div class="text-center text-secondary py-12">Belum ada catatan transaksi di Blockchain.</div>';
+                        historyList.innerHTML = `<div class="text-center text-secondary py-12">Belum ada catatan transaksi, ATAU BscScan API Anda limit.<br><span class="text-[10px] text-red-500">Pesan BscScan: ${data.result || data.message}</span></div>`;
                     }
                 } catch(e) {
                     console.error("Gagal memuat API", e);
-                    historyList.innerHTML = '<div class="text-center text-secondary py-12">Gagal memuat ledger dari BscScan (Mencoba menghubungkan ulang...). Pastikan AdBlocker/Brave Shield Anda dimatikan.</div>';
+                    historyList.innerHTML = '<div class="text-center text-secondary py-12">Gagal memuat ledger dari BscScan (Mencoba menghubungkan ulang...). Pastikan Cache Browser sudah dibersihkan (Ctrl+F5).</div>';
                     setTimeout(() => { historyFetched = false; }, 5000);
                 }
             }
