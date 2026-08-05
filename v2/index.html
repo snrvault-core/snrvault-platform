@@ -1031,7 +1031,7 @@
                 try {
                     const contractAddr = "0x4C8e2EDAE09bD4434f839C881de3AE9f6046D8B4"; // Contract Address SNR
                     const bscApiKey = "EQUIWA818PF6ETNTGNTPWCD9F9DSEUTKZZ"; // HARUS DIGANTI DENGAN API KEY BSCSCAN ANDA JIKA TERBLOKIR
-                    const url = `https://api.bscscan.com/api?module=account&action=txlist&address=${userAddress}&startblock=0&endblock=99999999&sort=desc&apikey=${bscApiKey}`;
+                    const url = `https://api.etherscan.io/v2/api?chainid=56&module=account&action=txlist&address=${userAddress}&startblock=0&endblock=99999999&sort=desc&apikey=${bscApiKey}`;
                     
                     const res = await fetch(url);
                     const data = await res.json();
