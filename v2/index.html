@@ -46,6 +46,15 @@
             border-radius: 1rem;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+        /* Mobile Optimization: Disable heavy blur to prevent flickering on Android WebViews */
+        @media (max-width: 768px) {
+            .glass-panel {
+                backdrop-filter: none;
+                -webkit-backdrop-filter: none;
+                background: rgba(10, 14, 23, 0.95);
+                box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.3);
+            }
+        }
         .glass-panel:hover {
             border-color: rgba(0, 229, 255, 0.3);
             box-shadow: 0 8px 32px 0 rgba(0, 229, 255, 0.1);
@@ -140,6 +149,13 @@
         /* Hide dapp initially */
         #view-dapp { display: none; opacity: 0; transition: opacity 0.4s ease; }
         #view-landing { display: block; opacity: 1; transition: opacity 0.4s ease; }
+
+        /* Hardware Acceleration for fast-updating numbers */
+        .hardware-accelerated {
+            will-change: contents;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+        }
 
         /* Responsive utilities */
         .fluid-text-h1 { font-size: clamp(2rem, 5vw, 4.5rem); line-height: 1.1; }
@@ -557,7 +573,7 @@
                                             <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span> REWARD BERJALAN (LIVE)
                                         </div>
                                         <div class="text-3xl font-black text-accent font-display relative z-10 flex items-end gap-2 text-shadow-sm">
-                                            <span id="ui-current-reward">0.0000</span> <span class="text-sm mb-1">SNR</span>
+                                            <span id="ui-current-reward" class="hardware-accelerated">0.0000</span> <span class="text-sm mb-1">SNR</span>
                                         </div>
                                     </div>
                                     <div class="glass-panel p-5 grid grid-cols-2 gap-4"><div><div class="text-xs font-display text-secondary tracking-widest mb-2">DIKLAIM</div><div class="text-xl sm:text-2xl font-bold text-white font-display flex items-end gap-1"><span id="ui-reward-claimed">0.00</span> <span class="text-xs text-secondary mb-1">SNR</span></div></div><div><div class="text-xs font-display text-accent tracking-widest mb-2">READY TO WITHDRAW</div><div class="text-xl sm:text-2xl font-bold text-white font-display flex items-end gap-1"><span id="ui-ready-withdraw">0.00</span> <span class="text-xs text-accent mb-1">SNR</span></div></div></div>
@@ -1013,7 +1029,7 @@
                     const principal = parseFloat(principalEl.innerText.replace(/,/g, ''));
                     const yieldBp = parseFloat(yieldBpEl.innerText.replace(/,/g, ''));
                     let currentReward = parseFloat(rewardEl.innerText.replace(/,/g, ''));
-                    const statusBadge = document.getElementById('stk-status-badge'); if(statusBadge) { if(principal > 0) { statusBadge.innerHTML = '<span class="text-green-400">AKTIF</span>'; statusBadge.classList.replace('bg-card', 'bg-green-500/10'); statusBadge.classList.replace('border-cardBorder', 'border-green-500/30'); } else { statusBadge.innerHTML = '<span class="text-secondary">Tidak Aktif</span>'; statusBadge.classList.replace('bg-green-500/10', 'bg-card'); statusBadge.classList.replace('border-green-500/30', 'border-cardBorder'); } } if(principal > 0 && yieldBp > 0 && !isNaN(currentReward)) {
+                    const statusBadge = document.getElementById('stk-status-badge'); if(statusBadge) { if(principal > 0) { if(!statusBadge.innerHTML.includes('AKTIF')) { statusBadge.innerHTML = '<span class="text-green-400">AKTIF</span>'; statusBadge.classList.replace('bg-card', 'bg-green-500/10'); statusBadge.classList.replace('border-cardBorder', 'border-green-500/30'); } } else { if(!statusBadge.innerHTML.includes('Tidak Aktif')) { statusBadge.innerHTML = '<span class="text-secondary">Tidak Aktif</span>'; statusBadge.classList.replace('bg-green-500/10', 'bg-card'); statusBadge.classList.replace('border-green-500/30', 'border-cardBorder'); } } } if(principal > 0 && yieldBp > 0 && !isNaN(currentReward)) {
                         const yieldPerSec = (principal * (yieldBp / 100)) / 86400;
                         currentReward += yieldPerSec;
                         rewardEl.innerText = currentReward.toFixed(8); 
