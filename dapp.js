@@ -62,7 +62,11 @@ async function initWeb3() {
             // Ganti teks tombol connect wallet jika ada di UI
             const btnConnect = document.getElementById("btn-connect-wallet");
             if (btnConnect) {
-                btnConnect.innerText = userAddress.substring(0, 6) + "..." + userAddress.substring(38);
+                btnConnect.innerHTML = `<i data-lucide="log-out" class="w-4 h-4 text-red-400"></i> ${userAddress.substring(0, 6)}...${userAddress.substring(38)}`;
+                btnConnect.onclick = function() {
+                    if(confirm("Disconnect Wallet?")) { window.location.reload(); }
+                };
+                if(typeof lucide !== 'undefined') lucide.createIcons();
             }
 
             // Sync data awal
