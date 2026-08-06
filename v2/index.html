@@ -10,8 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Globe.gl -->
-    <script src="https://unpkg.com/globe.gl"></script>
+    <!-- Globe.gl Removed for performance -->
     <!-- Ethers.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
     <!-- Chart.js -->
@@ -263,10 +262,10 @@
                         </div>
                     </div>
                     
-                    <!-- Globe Container Premium -->
-                    <div class="relative h-[120px] sm:h-[400px] lg:h-[600px] w-full flex items-center justify-center pointer-events-none sm:pointer-events-auto">
+                    <!-- 2D Lightweight Globe -->
+                    <div class="relative h-[120px] sm:h-[400px] lg:h-[600px] w-full flex items-center justify-center pointer-events-none">
                         <div class="absolute inset-0 bg-gradient-to-b from-transparent via-accent/5 to-transparent rounded-full filter blur-3xl hidden sm:block"></div>
-                        <div id="globeViz" class="w-full h-full cursor-grab active:cursor-grabbing relative z-10"></div>
+                        <i data-lucide="globe" class="w-[100px] h-[100px] sm:w-[350px] sm:h-[350px] lg:w-[500px] lg:h-[500px] text-accent opacity-50 animate-spin" style="animation-duration: 40s;"></i>
                         
                         <!-- Floating Data Cards -->
                         <div class="hidden md:flex absolute top-10 right-0 glass-panel p-3 items-center gap-3 animate-bounce" style="animation-duration: 3s;">
@@ -806,68 +805,7 @@
             }
         });
 
-        // Globe init wrapper
-        function initGlobe() {
-            const globeContainer = document.getElementById('globeViz');
-            if (globeContainer && typeof Globe !== 'undefined') {
-                const N = 40;
-                const nodesData = [...Array(N).keys()].map(() => ({
-                    lat: (Math.random() - 0.5) * 180,
-                    lng: (Math.random() - 0.5) * 360,
-                    size: Math.random() * 0.4 + 0.1,
-                    color: ['#00E5FF', '#FFCC00', '#ffffff'][Math.floor(Math.random() * 3)]
-                }));
 
-                const arcsData = [...Array(25).keys()].map(() => ({
-                    startLat: (Math.random() - 0.5) * 180,
-                    startLng: (Math.random() - 0.5) * 360,
-                    endLat: (Math.random() - 0.5) * 180,
-                    endLng: (Math.random() - 0.5) * 360,
-                    color: ['rgba(0, 229, 255, 0.6)', 'rgba(255, 204, 0, 0.6)'][Math.round(Math.random())]
-                }));
-
-                const world = Globe()
-                    (globeContainer)
-                    .backgroundColor('rgba(0,0,0,0)')
-                    .showGlobe(true)
-                    .showAtmosphere(true)
-                    .atmosphereColor('#00E5FF')
-                    .atmosphereAltitude(0.25)
-                    .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-night.jpg')
-                    .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
-                    .pointsData(nodesData)
-                    .pointColor('color')
-                    .pointAltitude(0.02)
-                    .pointRadius('size')
-                    .pointsMerge(true)
-                    .arcsData(arcsData)
-                    .arcColor('color')
-                    .arcDashLength(0.4)
-                    .arcDashGap(0.2)
-                    .arcDashAnimateTime(2000)
-                    .width(globeContainer.clientWidth)
-                    .height(globeContainer.clientHeight || window.innerHeight * 0.8);
-
-                world.controls().autoRotate = true;
-                world.controls().autoRotateSpeed = 1.2;
-                world.controls().enableZoom = false;
-                world.controls().enablePan = false;
-
-                window.addEventListener('resize', () => {
-                    world.width(globeContainer.clientWidth);
-                    world.height(globeContainer.clientHeight || window.innerHeight * 0.8);
-                });
-
-                setTimeout(() => {
-                    if(globeContainer.clientWidth) {
-                        world.width(globeContainer.clientWidth);
-                        world.height(globeContainer.clientHeight || window.innerHeight * 0.8);
-                    }
-                }, 500);
-            }
-        }
-        
-        document.addEventListener("DOMContentLoaded", initGlobe);
 
         // Chart Init
         document.addEventListener("DOMContentLoaded", function() {
@@ -924,10 +862,6 @@
             const dapp = document.getElementById('view-dapp');
             
             if (showDapp) {
-                // Free up memory for low-end phones by destroying the heavy 3D globe when entering DApp
-                const globe = document.getElementById('globeViz');
-                if (globe) { globe.innerHTML = ''; }
-
                 landing.style.opacity = '0';
                 setTimeout(() => {
                     landing.style.display = 'none';
@@ -1187,3 +1121,6 @@
     </script>
 </body>
 </html>
+
+
+
