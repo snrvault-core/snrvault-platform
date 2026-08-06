@@ -150,6 +150,13 @@
         #view-dapp { display: none; opacity: 0; transition: opacity 0.4s ease; }
         #view-landing { display: block; opacity: 1; transition: opacity 0.4s ease; }
 
+        /* Hardware Acceleration for fast-updating numbers */
+        .hardware-accelerated {
+            will-change: contents;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+        }
+
         /* Responsive utilities */
         .fluid-text-h1 { font-size: clamp(2rem, 5vw, 4.5rem); line-height: 1.1; }
         .fluid-text-h2 { font-size: clamp(1.75rem, 4vw, 3rem); }
@@ -566,7 +573,7 @@
                                             <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span> REWARD BERJALAN (LIVE)
                                         </div>
                                         <div class="text-3xl font-black text-accent font-display relative z-10 flex items-end gap-2 text-shadow-sm">
-                                            <span id="ui-current-reward">0.0000</span> <span class="text-sm mb-1">SNR</span>
+                                            <span id="ui-current-reward" class="hardware-accelerated">0.0000</span> <span class="text-sm mb-1">SNR</span>
                                         </div>
                                     </div>
                                     <div class="glass-panel p-5 grid grid-cols-2 gap-4"><div><div class="text-xs font-display text-secondary tracking-widest mb-2">DIKLAIM</div><div class="text-xl sm:text-2xl font-bold text-white font-display flex items-end gap-1"><span id="ui-reward-claimed">0.00</span> <span class="text-xs text-secondary mb-1">SNR</span></div></div><div><div class="text-xs font-display text-accent tracking-widest mb-2">READY TO WITHDRAW</div><div class="text-xl sm:text-2xl font-bold text-white font-display flex items-end gap-1"><span id="ui-ready-withdraw">0.00</span> <span class="text-xs text-accent mb-1">SNR</span></div></div></div>
