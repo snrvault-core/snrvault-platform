@@ -955,8 +955,8 @@
             }, 300);
         }
     </script>
-    <script src="audio.js"></script><script src="dapp.js?v=V7.3"></script>
-    <script src="i18n.js?v=V7.3"></script>
+    <script src="audio.js"></script><script src="dapp.js?v=V7.4"></script>
+    <script src="i18n.js?v=V7.4"></script>
     <script>
         // 1. Live Reward Ticker (Presisi Terikat Jam Blockchain V7)
         setInterval(() => {
@@ -987,12 +987,28 @@
 
                     if (rewardEl && principal > 0 && dailyYieldBP > 0) {
                         const elapsed = now > lastUpdate ? now - lastUpdate : 0;
-                        // Rumus Presisi Blockchain V7: (principal * (dailyYieldBP / 10000) * elapsed) / 86400
                         const exactReward = (principal * (dailyYieldBP / 10000) * elapsed) / 86400;
                         rewardEl.innerText = exactReward.toFixed(8);
                     }
                 }
             } catch(e){}
+        }, 1000);
+
+        // 4. Unstake Button Logic (Selalu Aktif Jika Ada Modal - Mengikuti Penalti Smart Contract V7)
+        setInterval(() => {
+            const btnUnstake = document.getElementById("btn-unstake");
+            const principalEl = document.getElementById("ui-staking-principal");
+            if(btnUnstake && principalEl) {
+                const hasPrincipal = parseFloat(principalEl.innerText.replace(/,/g, "")) > 0;
+                
+                if(hasPrincipal) {
+                    btnUnstake.classList.remove("opacity-50", "cursor-not-allowed", "pointer-events-none");
+                    btnUnstake.classList.add("hover:bg-orange-500", "hover:text-white", "cursor-pointer");
+                } else {
+                    btnUnstake.classList.add("opacity-50", "cursor-not-allowed", "pointer-events-none");
+                    btnUnstake.classList.remove("hover:bg-orange-500", "hover:text-white", "cursor-pointer");
+                }
+            }
         }, 1000);
 
         // 2. SINKRONISASI LEDGER PERMANEN VIA BSCSCAN API (BUKTI TRANSAKSI)
@@ -1090,24 +1106,7 @@
             }
         }, 10000);
     
-        // 4. Unstake Button Logic
-        setInterval(() => {
-            const lockEl = document.getElementById("ui-remaining-lock");
-            const btnUnstake = document.getElementById("btn-unstake");
-            const principalEl = document.getElementById("ui-staking-principal");
-            if(lockEl && btnUnstake && principalEl) {
-                const isFinished = lockEl.innerText === "00:00:00" || lockEl.innerText === "-" || lockEl.innerText.includes("-");
-                const hasPrincipal = parseFloat(principalEl.innerText.replace(/,/g, "")) > 0;
-                
-                if(isFinished && hasPrincipal) {
-                    btnUnstake.classList.remove("opacity-50", "cursor-not-allowed", "pointer-events-none");
-                    btnUnstake.classList.add("hover:bg-orange-500", "hover:text-white", "cursor-pointer");
-                } else {
-                    btnUnstake.classList.add("opacity-50", "cursor-not-allowed", "pointer-events-none");
-                    btnUnstake.classList.remove("hover:bg-orange-500", "hover:text-white", "cursor-pointer");
-                }
-            }
-        }, 1000);
+        // 4. Unstake Logic handled above
 
         // 5. Referral Logic
         setInterval(() => {
