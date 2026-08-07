@@ -269,6 +269,13 @@ async function fetchAndRenderDashboard() {
         const participation = parseFloat(ethers.utils.formatUnits(userData.participation || 0, 18));
         const dailyYieldBP = Number(userData.dailyYieldBP) || 0;
 
+        // Export state ke window object untuk ticker presisi di index.html
+        window.snrStakingState = {
+            principal: participation,
+            dailyYieldBP: dailyYieldBP,
+            lastUpdate: lastUpdate
+        };
+
         // Hitung Live Reward Real-time dari lastUpdate (Persis seperti rumus Solidity)
         const now = Math.floor(Date.now() / 1000);
         let liveReward = 0;
