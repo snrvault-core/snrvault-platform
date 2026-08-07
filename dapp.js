@@ -117,9 +117,23 @@ async function initWeb3() {
 // Tombol: Join Protocol / Stake
 async function btnActionJoinProtocol(amount, mentorAddress, durationDays) {
     try {
+        const savedMentor = localStorage.getItem('snr_v7_mentor');
+        let mentor = mentorAddress && ethers.utils.isAddress(mentorAddress) ? mentorAddress : savedMentor;
+        mentor = mentor && ethers.utils.isAddress(mentor) ? mentor : "0x0000000000000000000000000000000000000000";
+
+        // Proteksi Jaringan: Cek apakah Upline sudah aktif di V7
+        if (mentor !== "0x0000000000000000000000000000000000000000") {
+            try {
+                const mentorData = await stakingContract.users(mentor);
+                if (!mentorData.isActive && mentor.toLowerCase() !== CONTRACT_ADDRESS.toLowerCase()) {
+                    const confirmWait = confirm(`PERINGATAN UPLINE BELUM AKTIF:\n\nSponsor/Upline Anda (${mentor.substring(0,6)}...${mentor.substring(38)}) belum melakukan Staking di V7.\n\nAgar jaringan Anda terikat sah ke Upline Anda dan tidak dialihkan ke Admin, harap minta Upline Anda untuk melakukan Staking V7 terlebih dahulu.\n\nApakah Anda tetap ingin melanjutkan Staking sekarang?`);
+                    if (!confirmWait) return;
+                }
+            } catch(e) {}
+        }
+
         showTxModal('loading', 'Transaksi', 'Menyiapkan Transaksi Staking V7...');
         const amountWei = ethers.utils.parseUnits(amount.toString(), 18);
-        const mentor = mentorAddress && ethers.utils.isAddress(mentorAddress) ? mentorAddress : "0x0000000000000000000000000000000000000000";
 
         // Step 1: Check Allowance
         const allowance = await tokenContract.allowance(userAddress, CONTRACT_ADDRESS);
