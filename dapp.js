@@ -188,10 +188,21 @@ async function btnActionWithdrawReady(amount) {
     }
 }
 
-// Tombol: Unstake Principal
+// Tombol: Unstake Principal (Aktif dengan Proteksi Penalti V7)
 async function btnActionUnstake(amount) {
+    if (!amount || isNaN(amount) || parseFloat(amount) <= 0) return;
+    
     try {
-        showTxModal('loading', 'Transaksi', 'Pencabutan Modal Pokok...');
+        const userData = await stakingContract.users(userAddress);
+        const now = Math.floor(Date.now() / 1000);
+        const endDate = Number(userData.stakingEndDate) || 0;
+        
+        if (endDate > now) {
+            const confirmEarly = confirm("PERINGATAN DENDA V7:\nMasa staking Anda belum selesai. Pencabutan modal sebelum waktunya akan dikenakan DENDA 50% oleh Smart Contract.\n(25% masuk Treasury, 25% masuk Cadangan Kontrak).\n\nApakah Anda yakin ingin melanjutkan Unstake?");
+            if (!confirmEarly) return;
+        }
+
+        showTxModal('loading', 'Transaksi', 'Memproses Pencabutan Modal Pokok...');
         const amountWei = ethers.utils.parseUnits(amount.toString(), 18);
         const tx = await stakingContract.unstakePrincipal(amountWei);
         await tx.wait();
