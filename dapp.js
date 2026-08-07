@@ -365,6 +365,20 @@ function handleTxError(err) {
     showTxModal('error', 'Error Transaksi', msg);
 }
 
+// Helper Query Log Paralel Terbagi Chunk (Bypass Limit BSC RPC)
+async function queryLogsInChunks(contract, filter, currentBlock, totalBlocks = 10000, chunkSize = 2000) {
+    let logs = [];
+    let start = currentBlock > totalBlocks ? currentBlock - totalBlocks : 0;
+    let promises = [];
+    for (let from = start; from < currentBlock; from += chunkSize) {
+        let to = (from + chunkSize > currentBlock) ? currentBlock : from + chunkSize;
+        promises.push(contract.queryFilter(filter, from, to).catch(() => []));
+    }
+    const results = await Promise.all(promises);
+    results.forEach(res => { if (Array.isArray(res)) logs.push(...res); });
+    return logs;
+}
+
 // ==========================================
 // 4. TRANSACTION HISTORY TAB (LEDGER)
 // ==========================================
@@ -397,7 +411,7 @@ async function fetchTransactionHistory() {
             }
         });
 
-        // 2. Query logs on-chain dengan rentang aman (2,500 blok ~ 2 jam di BSC untuk mencegah RPC Reject)
+        // 2. Query logs on-chain dalam 5 chunk aman x 2,000 blok (Total 10,000 blok ~8.3 jam tanpa ditolak RPC BSC)
         try {
             const filterStaked = tokenContract.filters.Transfer(userAddress, CONTRACT_ADDRESS);
             const filterPayout = tokenContract.filters.Transfer(CONTRACT_ADDRESS, userAddress);
@@ -405,13 +419,12 @@ async function fetchTransactionHistory() {
             const filterUnstake = stakingContract.filters.PrincipalUnstaked(userAddress);
 
             const currentBlock = await provider.getBlockNumber();
-            const startBlock = currentBlock > 2500 ? currentBlock - 2500 : 0;
 
             const [logsStaked, logsPayout, logsHarvest, logsUnstake] = await Promise.all([
-                tokenContract.queryFilter(filterStaked, startBlock, currentBlock).catch(() => []),
-                tokenContract.queryFilter(filterPayout, startBlock, currentBlock).catch(() => []),
-                stakingContract.queryFilter(filterHarvest, startBlock, currentBlock).catch(() => []),
-                stakingContract.queryFilter(filterUnstake, startBlock, currentBlock).catch(() => [])
+                queryLogsInChunks(tokenContract, filterStaked, currentBlock),
+                queryLogsInChunks(tokenContract, filterPayout, currentBlock),
+                queryLogsInChunks(stakingContract, filterHarvest, currentBlock),
+                queryLogsInChunks(stakingContract, filterUnstake, currentBlock)
             ]);
 
             logsStaked.forEach(log => {
