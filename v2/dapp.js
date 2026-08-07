@@ -48,6 +48,31 @@ const ERC20_ABI = [
 
 let provider, signer, userAddress, stakingContract, tokenContract;
 
+// Helper Simpan Ledger Lokal (Mencegah Kehilangan Riwayat Akibat Limit BSC RPC)
+function saveLocalTx(type, txHash, desc) {
+    if (!userAddress) return;
+    try {
+        const key = "snr_v7_ledger_" + userAddress.toLowerCase();
+        let list = JSON.parse(localStorage.getItem(key) || "[]");
+        list.unshift({
+            type: type,
+            txHash: txHash,
+            desc: desc,
+            timestamp: Date.now(),
+            blockNumber: "V7 Ledger"
+        });
+        localStorage.setItem(key, JSON.stringify(list.slice(0, 50)));
+    } catch(e) {}
+}
+
+function getLocalTxs() {
+    if (!userAddress) return [];
+    try {
+        const key = "snr_v7_ledger_" + userAddress.toLowerCase();
+        return JSON.parse(localStorage.getItem(key) || "[]");
+    } catch(e) { return []; }
+}
+
 // ==========================================
 // 1. KONEKSI WALLET & INITIALIZATION
 // ==========================================
@@ -62,7 +87,6 @@ async function initWeb3() {
             stakingContract = new ethers.Contract(CONTRACT_ADDRESS, SNR_STAKING_ABI, signer);
             tokenContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, signer);
 
-            // Ganti teks tombol connect wallet jika ada di UI
             const btnConnect = document.getElementById("btn-connect-wallet");
             if (btnConnect) {
                 btnConnect.innerHTML = `<i data-lucide="log-out" class="w-4 h-4 text-red-400"></i> ${userAddress.substring(0, 6)}...${userAddress.substring(38)}`;
@@ -72,10 +96,8 @@ async function initWeb3() {
                 if(typeof lucide !== 'undefined') lucide.createIcons();
             }
 
-            // Sync data awal
             await fetchAndRenderDashboard();
             
-            // Listen event pergantian akun Metamask
             window.ethereum.on('accountsChanged', () => window.location.reload());
             window.ethereum.on('chainChanged', () => window.location.reload());
 
@@ -112,6 +134,7 @@ async function btnActionJoinProtocol(amount, mentorAddress, durationDays) {
         const tx = await stakingContract.joinProtocol(amountWei, mentor, durationDays);
         await tx.wait();
 
+        saveLocalTx('Staked V7', tx.hash, `Deposit Staking V7: ${parseFloat(amount).toLocaleString('id-ID')} SNR`);
         showTxModal('success', 'Berhasil', 'Staking V7 Berhasil Diaktifkan!');
         await fetchAndRenderDashboard();
     } catch (err) {
@@ -126,6 +149,7 @@ async function btnActionHarvest() {
         const tx = await stakingContract.harvestDailyReward();
         await tx.wait();
 
+        saveLocalTx('Harvest V7', tx.hash, `Panen Profit V7 (Auto-Compound 45%)`);
         showTxModal('success', 'Berhasil', 'Panen Reward Harian V7 Berhasil!');
         await fetchAndRenderDashboard();
     } catch (err) {
@@ -140,6 +164,7 @@ async function btnActionClaimLeader() {
         const tx = await stakingContract.claimLeaderRewards();
         await tx.wait();
 
+        saveLocalTx('Leader Reward V7', tx.hash, `Pencairan Bonus Leader V7`);
         showTxModal('success', 'Berhasil', 'Bonus Leader Berhasil Dicairkan!');
         await fetchAndRenderDashboard();
     } catch (err) {
@@ -155,6 +180,7 @@ async function btnActionWithdrawReady(amount) {
         const tx = await stakingContract.withdrawReadyBalance(amountWei);
         await tx.wait();
 
+        saveLocalTx('Withdraw V7', tx.hash, `Penarikan Saldo Ready: ${parseFloat(amount).toLocaleString('id-ID')} SNR`);
         showTxModal('success', 'Berhasil', 'Penarikan Saldo Berhasil!');
         await fetchAndRenderDashboard();
     } catch (err) {
@@ -170,6 +196,7 @@ async function btnActionUnstake(amount) {
         const tx = await stakingContract.unstakePrincipal(amountWei);
         await tx.wait();
 
+        saveLocalTx('Unstake V7', tx.hash, `Pencabutan Modal: ${parseFloat(amount).toLocaleString('id-ID')} SNR`);
         showTxModal('success', 'Berhasil', 'Modal Pokok Berhasil Ditarik!');
         await fetchAndRenderDashboard();
     } catch (err) {
@@ -212,11 +239,9 @@ async function btnActionClaimSovereignAsset() {
 async function fetchAndRenderDashboard() {
     if (!userAddress) return;
 
-    // Helper formatter
     const fmt = (val) => parseFloat(ethers.utils.formatUnits(val || 0, 18)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
     const fmtBNB = (val) => parseFloat(ethers.utils.formatUnits(val || 0, 18)).toLocaleString('id-ID', { maximumFractionDigits: 6 });
 
-    // 1. Fetch Basic Wallet Balances (Independen dari Staking Contract)
     try {
         if (tokenContract && provider) {
             const userBalance = await tokenContract.balanceOf(userAddress);
@@ -229,7 +254,6 @@ async function fetchAndRenderDashboard() {
         console.error("Gagal membaca saldo token/BNB:", err);
     }
 
-    // 2. Fetch Staking Dashboard
     if (!stakingContract) return;
 
     try {
@@ -239,19 +263,35 @@ async function fetchAndRenderDashboard() {
         }
 
         const d = await stakingContract.getDashboard(userAddress);
+        const userData = await stakingContract.users(userAddress);
+
+        const lastUpdate = Number(userData.lastUpdate) || 0;
+        const participation = parseFloat(ethers.utils.formatUnits(userData.participation || 0, 18));
+        const dailyYieldBP = Number(userData.dailyYieldBP) || 0;
+
+        // Export state ke window object untuk ticker presisi di index.html
+        window.snrStakingState = {
+            principal: participation,
+            dailyYieldBP: dailyYieldBP,
+            lastUpdate: lastUpdate
+        };
+
+        // Hitung Live Reward Real-time dari lastUpdate (Persis seperti rumus Solidity)
+        const now = Math.floor(Date.now() / 1000);
+        let liveReward = 0;
+        if (lastUpdate > 0 && participation > 0 && dailyYieldBP > 0 && now > lastUpdate) {
+            const elapsed = now - lastUpdate;
+            liveReward = (participation * (dailyYieldBP / 10000) * elapsed) / 86400;
+        } else {
+            liveReward = Number(ethers.utils.formatUnits(d.currentReward || 0, 18));
+        }
 
         // Update Staking UI
         updateUI('ui-staking-principal', fmt(d.stakingPrincipal) + " SNR");
-        
-        // Format current reward to numeric decimal text for ticker compatibility
-        const currentRewardNum = Number(ethers.utils.formatUnits(d.currentReward, 18));
-        updateUI('ui-current-reward', currentRewardNum.toFixed(8));
+        updateUI('ui-current-reward', liveReward.toFixed(8));
 
         // Cooldown Timer Logic
-        const userData = await stakingContract.users(userAddress);
-        const lastUpdate = Number(userData.lastUpdate) || 0;
         if(lastUpdate > 0 && d.stakingActive) {
-            const now = Math.floor(Date.now() / 1000);
             const diff = (lastUpdate + 86400) - now;
             if(diff > 0) {
                 updateUI('harvest-cooldown', "Cooldown: " + formatSeconds(diff));
@@ -267,7 +307,7 @@ async function fetchAndRenderDashboard() {
         updateUI('ui-reward-claimed', fmt(d.rewardClaimed) + " SNR");
         updateUI('ui-ready-withdraw', fmt(d.readyWithdraw) + " SNR");
         updateUI('ui-total-staking-asset', fmt(d.totalStakingAsset) + " SNR");
-        updateUI('ui-daily-yield-bp', (Number(d.dailyYieldBP) / 100).toFixed(2) + "% / hari");
+        updateUI('ui-daily-yield-bp', (dailyYieldBP / 100).toFixed(2) + "% / hari");
         updateUI('ui-remaining-lock', formatSeconds(Number(d.remainingLock)));
 
         // Update Asset UI
@@ -282,12 +322,10 @@ async function fetchAndRenderDashboard() {
         updateUI('ui-current-rank', "Rank " + d.rank.toString());
         updateUI('ui-leader-reward', fmt(d.leaderReward) + " SNR");
 
-        // System Security States Check
         if (d.blacklisted || d.lockdown || d.protocolPaused || d.emergencyMode) {
             console.warn("Sistem dalam batasan proteksi / pembekuan.");
         }
 
-        // Sinkronisasi Transaksi History (Ledger)
         fetchTransactionHistory();
 
     } catch (err) {
@@ -329,101 +367,120 @@ async function fetchTransactionHistory() {
         historyList.innerHTML = '<div class="text-center text-secondary py-12"><i data-lucide="loader-2" class="w-8 h-8 text-secondary/50 animate-spin mx-auto mb-3"></i><span>Menyinkronkan Ledger Blockchain V7...</span></div>';
         if(typeof lucide !== 'undefined') lucide.createIcons();
 
-        // 1. Dapatkan filter dari token contract & staking contract
-        const filterStaked = tokenContract.filters.Transfer(userAddress, CONTRACT_ADDRESS);
-        const filterPayout = tokenContract.filters.Transfer(CONTRACT_ADDRESS, userAddress);
-        const filterHarvest = stakingContract.filters.RewardHarvested(userAddress);
-        const filterUnstake = stakingContract.filters.PrincipalUnstaked(userAddress);
-
-        // 2. Query logs (menggunakan range block 50,000 terbaru)
-        const currentBlock = await provider.getBlockNumber();
-        const startBlock = currentBlock > 50000 ? currentBlock - 50000 : 0;
-
-        const [logsStaked, logsPayout, logsHarvest, logsUnstake] = await Promise.all([
-            tokenContract.queryFilter(filterStaked, startBlock, currentBlock).catch(() => []),
-            tokenContract.queryFilter(filterPayout, startBlock, currentBlock).catch(() => []),
-            stakingContract.queryFilter(filterHarvest, startBlock, currentBlock).catch(() => []),
-            stakingContract.queryFilter(filterUnstake, startBlock, currentBlock).catch(() => [])
-        ]);
-
         let allEvents = [];
         let txHashes = new Set();
 
-        // Transfer IN to Contract = Stake / Deposit
-        logsStaked.forEach(log => {
-            if (!txHashes.has(log.transactionHash)) {
-                txHashes.add(log.transactionHash);
-                const val = log.args ? (log.args.value || log.args[2] || 0) : 0;
-                const amount = parseFloat(ethers.utils.formatUnits(val, 18)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
-                allEvents.push({ 
-                    type: 'Staked V7', 
-                    data: log, 
-                    desc: `Deposit Staking V7: ${amount} SNR`, 
-                    icon: 'arrow-down-right', 
-                    color: 'text-primary', 
-                    border: 'border-primary' 
+        // 1. Ambil transaksi lokal (Permanen tanpa tergantung limit RPC)
+        const localTxs = getLocalTxs();
+        localTxs.forEach(item => {
+            if (!txHashes.has(item.txHash)) {
+                txHashes.add(item.txHash);
+                allEvents.push({
+                    type: item.type,
+                    data: { transactionHash: item.txHash, blockNumber: item.blockNumber },
+                    desc: item.desc,
+                    icon: item.type.includes('Harvest') ? 'leaf' : (item.type.includes('Staked') ? 'arrow-down-right' : 'wallet'),
+                    color: item.type.includes('Harvest') ? 'text-accent' : 'text-primary',
+                    border: item.type.includes('Harvest') ? 'border-accent' : 'border-primary'
                 });
             }
         });
 
-        // Harvest V7 events
-        logsHarvest.forEach(log => {
-            const compoundVal = log.args ? (log.args.netToCompound || log.args[1] || 0) : 0;
-            const readyWdVal = log.args ? (log.args.netToReadyWD || log.args[2] || 0) : 0;
-            const compound = parseFloat(ethers.utils.formatUnits(compoundVal, 18)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
-            const readyWd = parseFloat(ethers.utils.formatUnits(readyWdVal, 18)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
-            allEvents.push({ 
-                type: 'Harvest V7', 
-                data: log, 
-                desc: `Panen V7 (Auto-Comp: ${compound} SNR | Ready: ${readyWd} SNR)`, 
-                icon: 'leaf', 
-                color: 'text-accent', 
-                border: 'border-accent' 
+        // 2. Query logs on-chain dengan rentang aman (2,500 blok ~ 2 jam di BSC untuk mencegah RPC Reject)
+        try {
+            const filterStaked = tokenContract.filters.Transfer(userAddress, CONTRACT_ADDRESS);
+            const filterPayout = tokenContract.filters.Transfer(CONTRACT_ADDRESS, userAddress);
+            const filterHarvest = stakingContract.filters.RewardHarvested(userAddress);
+            const filterUnstake = stakingContract.filters.PrincipalUnstaked(userAddress);
+
+            const currentBlock = await provider.getBlockNumber();
+            const startBlock = currentBlock > 2500 ? currentBlock - 2500 : 0;
+
+            const [logsStaked, logsPayout, logsHarvest, logsUnstake] = await Promise.all([
+                tokenContract.queryFilter(filterStaked, startBlock, currentBlock).catch(() => []),
+                tokenContract.queryFilter(filterPayout, startBlock, currentBlock).catch(() => []),
+                stakingContract.queryFilter(filterHarvest, startBlock, currentBlock).catch(() => []),
+                stakingContract.queryFilter(filterUnstake, startBlock, currentBlock).catch(() => [])
+            ]);
+
+            logsStaked.forEach(log => {
+                if (!txHashes.has(log.transactionHash)) {
+                    txHashes.add(log.transactionHash);
+                    const val = log.args ? (log.args.value || log.args[2] || 0) : 0;
+                    const amount = parseFloat(ethers.utils.formatUnits(val, 18)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
+                    allEvents.push({ 
+                        type: 'Staked V7', 
+                        data: log, 
+                        desc: `Deposit Staking V7: ${amount} SNR`, 
+                        icon: 'arrow-down-right', 
+                        color: 'text-primary', 
+                        border: 'border-primary' 
+                    });
+                }
             });
-        });
 
-        // Unstake V7 events
-        logsUnstake.forEach(log => {
-            const amtVal = log.args ? (log.args.amount || log.args[1] || 0) : 0;
-            const amt = parseFloat(ethers.utils.formatUnits(amtVal, 18)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
-            allEvents.push({ 
-                type: 'Unstake V7', 
-                data: log, 
-                desc: `Pencabutan Modal: ${amt} SNR`, 
-                icon: 'arrow-up-right', 
-                color: 'text-red-500', 
-                border: 'border-red-500' 
+            logsHarvest.forEach(log => {
+                if (!txHashes.has(log.transactionHash)) {
+                    txHashes.add(log.transactionHash);
+                    const compoundVal = log.args ? (log.args.netToCompound || log.args[1] || 0) : 0;
+                    const readyWdVal = log.args ? (log.args.netToReadyWD || log.args[2] || 0) : 0;
+                    const compound = parseFloat(ethers.utils.formatUnits(compoundVal, 18)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
+                    const readyWd = parseFloat(ethers.utils.formatUnits(readyWdVal, 18)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
+                    allEvents.push({ 
+                        type: 'Harvest V7', 
+                        data: log, 
+                        desc: `Panen V7 (Auto-Comp: ${compound} SNR | Ready: ${readyWd} SNR)`, 
+                        icon: 'leaf', 
+                        color: 'text-accent', 
+                        border: 'border-accent' 
+                    });
+                }
             });
-        });
 
-        // Transfer OUT from Contract = Withdraw / Payout
-        logsPayout.forEach(log => {
-            if (!txHashes.has(log.transactionHash)) {
-                txHashes.add(log.transactionHash);
-                const val = log.args ? (log.args.value || log.args[2] || 0) : 0;
-                const amount = parseFloat(ethers.utils.formatUnits(val, 18)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
-                allEvents.push({ 
-                    type: 'Withdraw/Claim V7', 
-                    data: log, 
-                    desc: `Pencairan Saldo: ${amount} SNR`, 
-                    icon: 'wallet', 
-                    color: 'text-green-400', 
-                    border: 'border-green-400' 
-                });
-            }
-        });
+            logsUnstake.forEach(log => {
+                if (!txHashes.has(log.transactionHash)) {
+                    txHashes.add(log.transactionHash);
+                    const amtVal = log.args ? (log.args.amount || log.args[1] || 0) : 0;
+                    const amt = parseFloat(ethers.utils.formatUnits(amtVal, 18)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
+                    allEvents.push({ 
+                        type: 'Unstake V7', 
+                        data: log, 
+                        desc: `Pencabutan Modal: ${amt} SNR`, 
+                        icon: 'arrow-up-right', 
+                        color: 'text-red-500', 
+                        border: 'border-red-500' 
+                    });
+                }
+            });
 
-        // Sort desc (terbaru di atas)
-        allEvents.sort((a, b) => b.data.blockNumber - a.data.blockNumber);
+            logsPayout.forEach(log => {
+                if (!txHashes.has(log.transactionHash)) {
+                    txHashes.add(log.transactionHash);
+                    const val = log.args ? (log.args.value || log.args[2] || 0) : 0;
+                    const amount = parseFloat(ethers.utils.formatUnits(val, 18)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
+                    allEvents.push({ 
+                        type: 'Withdraw/Claim V7', 
+                        data: log, 
+                        desc: `Pencairan Saldo: ${amount} SNR`, 
+                        icon: 'wallet', 
+                        color: 'text-green-400', 
+                        border: 'border-green-400' 
+                    });
+                }
+            });
+        } catch (onChainErr) {
+            console.warn("Query logs on-chain dilewati karena RPC limit:", onChainErr);
+        }
 
-        // 4. Render
+        allEvents.sort((a, b) => (b.data.blockNumber || 0) - (a.data.blockNumber || 0));
+
         if (allEvents.length === 0) {
             historyList.innerHTML = '<div class="text-center text-secondary py-12"><i data-lucide="inbox" class="w-8 h-8 text-secondary/50 mx-auto mb-3"></i><span>Tidak ada catatan transaksi di ledger.</span></div>';
         } else {
             let html = '';
             for (const evt of allEvents) {
                 const txHash = evt.data.transactionHash;
-                const shortHash = txHash.substring(0, 8) + '...' + txHash.substring(txHash.length - 6);
+                const shortHash = txHash.length > 14 ? (txHash.substring(0, 8) + '...' + txHash.substring(txHash.length - 6)) : txHash;
                 
                 html += `
                 <div class="flex gap-3 text-sm border-l-2 ${evt.border} pl-3 bg-card/30 p-3 rounded-r mb-2 hover:bg-card/60 transition-colors">
@@ -436,7 +493,7 @@ async function fetchTransactionHistory() {
                             </a>
                         </div>
                         <div class="text-sm text-secondary font-mono mt-1">${evt.desc}</div>
-                        <div class="text-[10px] text-primary/60 mt-2">Block: ${evt.data.blockNumber}</div>
+                        <div class="text-[10px] text-primary/60 mt-2">Status: ${evt.data.blockNumber}</div>
                     </div>
                 </div>`;
             }
