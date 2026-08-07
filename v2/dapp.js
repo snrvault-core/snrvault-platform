@@ -3,7 +3,7 @@
 const CONTRACT_ADDRESS = "0x3a941865fee1fA9d318417524D23400E58D7F051";
 const SNR_TOKEN_ADDRESS = "0x5ce1427f77d8c58f97f5e18b36804fd54aa72718";
 
-// Complete ABI mapping from SNRStakingV6_TITAN_SOVEREIGN_ENTERPRISE
+// Complete ABI mapping from SNRStakingV7_TITAN_SOVEREIGN_ENTERPRISE
 const SNR_STAKING_ABI = [
     // --- WRITE FUNCTIONS ---
     "function joinProtocol(uint256 _amount, address _mentor, uint256 _days) external",
@@ -30,17 +30,20 @@ const SNR_STAKING_ABI = [
         "uint256 reserveBalance, uint256 reserveHealthBP, bool solvent" +
     "))",
     
-    // --- EVENTS ---
-    "event JoinedProtocol(address indexed user, uint256 amount, uint256 daysLock)",
-    "event RewardHarvested(address indexed user, uint256 amount)",
-    "event LeaderRewardClaimed(address indexed user, uint256 amount)",
-    "event PrincipalUnstaked(address indexed user, uint256 amount)"
+    // --- EVENTS V7 ---
+    "event RewardHarvested(address indexed user, uint256 netToCompound, uint256 netToReadyWD)",
+    "event PrincipalUnstaked(address indexed user, uint256 amount, uint256 penalty)",
+    "event AssetActivated(address indexed user, uint8 atype, uint256 value, uint8 path)",
+    "event RankUpgraded(address indexed user, uint256 newRank)",
+    "event LeaderCapReached(address indexed leader)",
+    "event LeaderCapReset(address indexed leader)"
 ];
 
 const ERC20_ABI = [
     "function approve(address spender, uint256 amount) external returns (bool)",
     "function allowance(address owner, address spender) external view returns (uint256)",
-    "function balanceOf(address account) external view returns (uint256)"
+    "function balanceOf(address account) external view returns (uint256)",
+    "event Transfer(address indexed from, address indexed to, uint256 value)"
 ];
 
 let provider, signer, userAddress, stakingContract, tokenContract;
@@ -92,7 +95,7 @@ async function initWeb3() {
 // Tombol: Join Protocol / Stake
 async function btnActionJoinProtocol(amount, mentorAddress, durationDays) {
     try {
-        showTxModal('loading', 'Transaksi', 'Menyiapkan Transaksi Staking...');
+        showTxModal('loading', 'Transaksi', 'Menyiapkan Transaksi Staking V7...');
         const amountWei = ethers.utils.parseUnits(amount.toString(), 18);
         const mentor = mentorAddress && ethers.utils.isAddress(mentorAddress) ? mentorAddress : "0x0000000000000000000000000000000000000000";
 
@@ -105,11 +108,11 @@ async function btnActionJoinProtocol(amount, mentorAddress, durationDays) {
         }
 
         // Step 2: Execute Join
-        showTxModal('loading', 'Transaksi', 'Mengirim Modal ke Smart Contract...');
+        showTxModal('loading', 'Transaksi', 'Mengirim Modal ke Smart Contract V7...');
         const tx = await stakingContract.joinProtocol(amountWei, mentor, durationDays);
         await tx.wait();
 
-        showTxModal('success', 'Berhasil', 'Staking Berhasil Diaktifkan!');
+        showTxModal('success', 'Berhasil', 'Staking V7 Berhasil Diaktifkan!');
         await fetchAndRenderDashboard();
     } catch (err) {
         handleTxError(err);
@@ -119,11 +122,11 @@ async function btnActionJoinProtocol(amount, mentorAddress, durationDays) {
 // Tombol: Harvest Daily Reward
 async function btnActionHarvest() {
     try {
-        showTxModal('loading', 'Transaksi', 'Memproses Klaim Hasil Harian...');
+        showTxModal('loading', 'Transaksi', 'Memproses Klaim Hasil Harian V7...');
         const tx = await stakingContract.harvestDailyReward();
         await tx.wait();
 
-        showTxModal('success', 'Berhasil', 'Panen Reward Harian Berhasil!');
+        showTxModal('success', 'Berhasil', 'Panen Reward Harian V7 Berhasil!');
         await fetchAndRenderDashboard();
     } catch (err) {
         handleTxError(err);
@@ -230,7 +233,6 @@ async function fetchAndRenderDashboard() {
     if (!stakingContract) return;
 
     try {
-        // Cek apakah address kontrak valid sebelum memanggil
         if (CONTRACT_ADDRESS.includes("...")) {
             console.warn("Alamat Smart Contract Staking belum disetel (Masih Placeholder)!");
             return;
@@ -240,7 +242,10 @@ async function fetchAndRenderDashboard() {
 
         // Update Staking UI
         updateUI('ui-staking-principal', fmt(d.stakingPrincipal) + " SNR");
-        updateUI('ui-current-reward', Number(ethers.utils.formatUnits(d.currentReward, 18)).toFixed(8) + " SNR");
+        
+        // Format current reward to numeric decimal text for ticker compatibility
+        const currentRewardNum = Number(ethers.utils.formatUnits(d.currentReward, 18));
+        updateUI('ui-current-reward', currentRewardNum.toFixed(8));
 
         // Cooldown Timer Logic
         const userData = await stakingContract.users(userAddress);
@@ -250,10 +255,10 @@ async function fetchAndRenderDashboard() {
             const diff = (lastUpdate + 86400) - now;
             if(diff > 0) {
                 updateUI('harvest-cooldown', "Cooldown: " + formatSeconds(diff));
-                document.querySelector('button[onclick="btnActionHarvest()"]').classList.add("opacity-50", "cursor-not-allowed");
+                document.querySelector('button[onclick="btnActionHarvest()"]')?.classList.add("opacity-50", "cursor-not-allowed");
             } else {
                 updateUI('harvest-cooldown', "Siap Panen");
-                document.querySelector('button[onclick="btnActionHarvest()"]').classList.remove("opacity-50", "cursor-not-allowed");
+                document.querySelector('button[onclick="btnActionHarvest()"]')?.classList.remove("opacity-50", "cursor-not-allowed");
             }
         } else {
             updateUI('harvest-cooldown', "Belum Aktif");
@@ -315,46 +320,105 @@ function handleTxError(err) {
 // 4. TRANSACTION HISTORY TAB (LEDGER)
 // ==========================================
 async function fetchTransactionHistory() {
-    if (!stakingContract || !userAddress) return;
+    if (!stakingContract || !tokenContract || !userAddress) return;
     
     const historyList = document.getElementById('history-list');
     if (!historyList) return;
     
     try {
-        historyList.innerHTML = '<div class="text-center text-secondary py-12"><i data-lucide="loader-2" class="w-8 h-8 text-secondary/50 animate-spin mx-auto mb-3"></i><span>Menyinkronkan Ledger...</span></div>';
+        historyList.innerHTML = '<div class="text-center text-secondary py-12"><i data-lucide="loader-2" class="w-8 h-8 text-secondary/50 animate-spin mx-auto mb-3"></i><span>Menyinkronkan Ledger Blockchain V7...</span></div>';
         if(typeof lucide !== 'undefined') lucide.createIcons();
 
-        // 1. Dapatkan filter dari kontrak
-        const filterJoined = stakingContract.filters.JoinedProtocol(userAddress);
+        // 1. Dapatkan filter dari token contract & staking contract
+        const filterStaked = tokenContract.filters.Transfer(userAddress, CONTRACT_ADDRESS);
+        const filterPayout = tokenContract.filters.Transfer(CONTRACT_ADDRESS, userAddress);
         const filterHarvest = stakingContract.filters.RewardHarvested(userAddress);
-        const filterLeader = stakingContract.filters.LeaderRewardClaimed(userAddress);
         const filterUnstake = stakingContract.filters.PrincipalUnstaked(userAddress);
 
-        // 2. Query logs (menggunakan range block terbaru untuk mencegah RPC timeout)
+        // 2. Query logs (menggunakan range block 50,000 terbaru)
         const currentBlock = await provider.getBlockNumber();
-        const startBlock = currentBlock > 5000 ? currentBlock - 5000 : 0; // Ambil 5000 blok terakhir (~1.5 hari di BSC)
+        const startBlock = currentBlock > 50000 ? currentBlock - 50000 : 0;
 
-        const [logsJoined, logsHarvest, logsLeader, logsUnstake] = await Promise.all([
-            stakingContract.queryFilter(filterJoined, startBlock, currentBlock),
-            stakingContract.queryFilter(filterHarvest, startBlock, currentBlock),
-            stakingContract.queryFilter(filterLeader, startBlock, currentBlock),
-            stakingContract.queryFilter(filterUnstake, startBlock, currentBlock)
+        const [logsStaked, logsPayout, logsHarvest, logsUnstake] = await Promise.all([
+            tokenContract.queryFilter(filterStaked, startBlock, currentBlock).catch(() => []),
+            tokenContract.queryFilter(filterPayout, startBlock, currentBlock).catch(() => []),
+            stakingContract.queryFilter(filterHarvest, startBlock, currentBlock).catch(() => []),
+            stakingContract.queryFilter(filterUnstake, startBlock, currentBlock).catch(() => [])
         ]);
 
-        // 3. Gabungkan dan urutkan
         let allEvents = [];
-        
-        logsJoined.forEach(log => allEvents.push({ type: 'Joined', data: log, desc: `Staked ${parseFloat(ethers.utils.formatUnits(log.args[1] || 0, 18)).toLocaleString('id-ID')} SNR`, icon: 'arrow-down-right', color: 'text-primary', border: 'border-primary' }));
-        logsHarvest.forEach(log => allEvents.push({ type: 'Harvest', data: log, desc: `Claimed ${parseFloat(ethers.utils.formatUnits(log.args[1] || 0, 18)).toLocaleString('id-ID')} SNR`, icon: 'leaf', color: 'text-accent', border: 'border-accent' }));
-        logsLeader.forEach(log => allEvents.push({ type: 'Leader', data: log, desc: `Bonus ${parseFloat(ethers.utils.formatUnits(log.args[1] || 0, 18)).toLocaleString('id-ID')} SNR`, icon: 'users', color: 'text-green-500', border: 'border-green-500' }));
-        logsUnstake.forEach(log => allEvents.push({ type: 'Unstake', data: log, desc: `Withdrawn ${parseFloat(ethers.utils.formatUnits(log.args[1] || 0, 18)).toLocaleString('id-ID')} SNR`, icon: 'arrow-up-right', color: 'text-red-500', border: 'border-red-500' }));
+        let txHashes = new Set();
+
+        // Transfer IN to Contract = Stake / Deposit
+        logsStaked.forEach(log => {
+            if (!txHashes.has(log.transactionHash)) {
+                txHashes.add(log.transactionHash);
+                const val = log.args ? (log.args.value || log.args[2] || 0) : 0;
+                const amount = parseFloat(ethers.utils.formatUnits(val, 18)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
+                allEvents.push({ 
+                    type: 'Staked V7', 
+                    data: log, 
+                    desc: `Deposit Staking V7: ${amount} SNR`, 
+                    icon: 'arrow-down-right', 
+                    color: 'text-primary', 
+                    border: 'border-primary' 
+                });
+            }
+        });
+
+        // Harvest V7 events
+        logsHarvest.forEach(log => {
+            const compoundVal = log.args ? (log.args.netToCompound || log.args[1] || 0) : 0;
+            const readyWdVal = log.args ? (log.args.netToReadyWD || log.args[2] || 0) : 0;
+            const compound = parseFloat(ethers.utils.formatUnits(compoundVal, 18)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
+            const readyWd = parseFloat(ethers.utils.formatUnits(readyWdVal, 18)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
+            allEvents.push({ 
+                type: 'Harvest V7', 
+                data: log, 
+                desc: `Panen V7 (Auto-Comp: ${compound} SNR | Ready: ${readyWd} SNR)`, 
+                icon: 'leaf', 
+                color: 'text-accent', 
+                border: 'border-accent' 
+            });
+        });
+
+        // Unstake V7 events
+        logsUnstake.forEach(log => {
+            const amtVal = log.args ? (log.args.amount || log.args[1] || 0) : 0;
+            const amt = parseFloat(ethers.utils.formatUnits(amtVal, 18)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
+            allEvents.push({ 
+                type: 'Unstake V7', 
+                data: log, 
+                desc: `Pencabutan Modal: ${amt} SNR`, 
+                icon: 'arrow-up-right', 
+                color: 'text-red-500', 
+                border: 'border-red-500' 
+            });
+        });
+
+        // Transfer OUT from Contract = Withdraw / Payout
+        logsPayout.forEach(log => {
+            if (!txHashes.has(log.transactionHash)) {
+                txHashes.add(log.transactionHash);
+                const val = log.args ? (log.args.value || log.args[2] || 0) : 0;
+                const amount = parseFloat(ethers.utils.formatUnits(val, 18)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
+                allEvents.push({ 
+                    type: 'Withdraw/Claim V7', 
+                    data: log, 
+                    desc: `Pencairan Saldo: ${amount} SNR`, 
+                    icon: 'wallet', 
+                    color: 'text-green-400', 
+                    border: 'border-green-400' 
+                });
+            }
+        });
 
         // Sort desc (terbaru di atas)
         allEvents.sort((a, b) => b.data.blockNumber - a.data.blockNumber);
 
         // 4. Render
         if (allEvents.length === 0) {
-            historyList.innerHTML = '<div class="text-center text-secondary py-12"><i data-lucide="inbox" class="w-8 h-8 text-secondary/50 mx-auto mb-3"></i><span>Tidak ada transaksi di 5000 blok terakhir.</span></div>';
+            historyList.innerHTML = '<div class="text-center text-secondary py-12"><i data-lucide="inbox" class="w-8 h-8 text-secondary/50 mx-auto mb-3"></i><span>Tidak ada catatan transaksi di ledger.</span></div>';
         } else {
             let html = '';
             for (const evt of allEvents) {
@@ -366,7 +430,7 @@ async function fetchTransactionHistory() {
                     <i data-lucide="${evt.icon}" class="w-5 h-5 ${evt.color} shrink-0 mt-0.5"></i>
                     <div class="w-full">
                         <div class="text-white font-bold font-display flex justify-between">
-                            <span>${evt.type} Protocol</span>
+                            <span>${evt.type}</span>
                             <a href="https://bscscan.com/tx/${txHash}" target="_blank" class="text-xs text-secondary hover:text-accent flex items-center gap-1">
                                 ${shortHash} <i data-lucide="external-link" class="w-3 h-3"></i>
                             </a>
