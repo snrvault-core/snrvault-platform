@@ -628,6 +628,7 @@
                                                 </div>
                                                 <input type="text" id="stake-mentor" placeholder="0x..." class="w-full bg-background border border-cardBorder rounded-lg pl-12 pr-4 py-4 text-sm text-white focus:outline-none focus:border-primary transition-colors font-mono">
                                             </div>
+                                            <p id="mentor-status-text" class="text-xs text-green-400 mt-1 hidden font-mono flex items-center gap-1"></p>
                                         </div>
                                         <div>
                                             <label class="block text-xs font-display tracking-widest text-secondary mb-2">LOCK DURATION (YIELD BP)</label>
@@ -757,8 +758,8 @@
                         <i data-lucide="refresh-cw" class="w-16 h-16 text-green-500 mx-auto mb-4"></i>
                         <h3 class="text-2xl font-display font-bold text-white mb-2">P2P Market OTC</h3>
                         <p class="text-secondary mb-6 max-w-md mx-auto">Transaksi P2P saat ini dilayani secara langsung via Admin / Escrow Resmi.</p>
-                        <a href="https://wa.me/6289528533262" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-green-500 text-black hover:bg-green-400 font-bold rounded-lg transition-all font-display tracking-widest shadow-[0_0_15px_rgba(34,197,94,0.4)]">
-                            <i data-lucide="message-circle" class="w-5 h-5"></i> HUBUNGI WHATSAPP
+                        <a href="https://wa.me/6289528533262?text=Halo%20Admin%20P2P%20Escrow%20Resmi%20SNR-VAULT%2C%0A%0ASaya%20ingin%20mengajukan%20pencairan%20%28Cash%20Out%20%2F%20Buy-Back%29%20koin%20SNR%20hasil%20panen%20Staking%20V7%20saya%20melalui%20Jalur%20P2P%20Escrow%20Resmi.%0A%0ABerikut%20adalah%20data%20transaksi%20saya%3A%0A%E2%80%A2%20Nama%20Member%20%2F%20Username%3A%20%0A%E2%80%A2%20Alamat%20Wallet%20%280x...%29%3A%20%0A%E2%80%A2%20Jumlah%20SNR%20yang%20Dijual%3A%20%0A%E2%80%A2%20Metode%20Pembayaran%20%28Bank%20%2F%20E-Wallet%29%3A%20%0A%E2%80%A2%20No.%20Rekening%20%26%20Nama%20Pemilik%20Rekening%3A%20%0A%0ASaya%20siap%20mengikuti%20alur%20transaksi%20aman%20P2P%20Escrow%20demi%20menjaga%20stabilitas%20ekosistem%20SNR-Vault.%20Mohon%20diproses%2C%20terima%20kasih%21" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-green-500 text-black hover:bg-green-400 font-bold rounded-lg transition-all font-display tracking-widest shadow-[0_0_15px_rgba(34,197,94,0.4)]">
+                            <i data-lucide="message-circle" class="w-5 h-5"></i> HUBUNGI ADMIN P2P
                         </a>
                     </div>
 
@@ -955,8 +956,8 @@
             }, 300);
         }
     </script>
-    <script src="audio.js"></script><script src="dapp.js?v=V7.3"></script>
-    <script src="i18n.js?v=V7.3"></script>
+    <script src="audio.js"></script><script src="dapp.js?v=V7.7"></script>
+    <script src="i18n.js?v=V7.7"></script>
     <script>
         // 1. Live Reward Ticker (Presisi Terikat Jam Blockchain V7)
         setInterval(() => {
@@ -987,12 +988,28 @@
 
                     if (rewardEl && principal > 0 && dailyYieldBP > 0) {
                         const elapsed = now > lastUpdate ? now - lastUpdate : 0;
-                        // Rumus Presisi Blockchain V7: (principal * (dailyYieldBP / 10000) * elapsed) / 86400
                         const exactReward = (principal * (dailyYieldBP / 10000) * elapsed) / 86400;
                         rewardEl.innerText = exactReward.toFixed(8);
                     }
                 }
             } catch(e){}
+        }, 1000);
+
+        // 4. Unstake Button Logic (Selalu Aktif Jika Ada Modal - Mengikuti Penalti Smart Contract V7)
+        setInterval(() => {
+            const btnUnstake = document.getElementById("btn-unstake");
+            const principalEl = document.getElementById("ui-staking-principal");
+            if(btnUnstake && principalEl) {
+                const hasPrincipal = parseFloat(principalEl.innerText.replace(/,/g, "")) > 0;
+                
+                if(hasPrincipal) {
+                    btnUnstake.classList.remove("opacity-50", "cursor-not-allowed", "pointer-events-none");
+                    btnUnstake.classList.add("hover:bg-orange-500", "hover:text-white", "cursor-pointer");
+                } else {
+                    btnUnstake.classList.add("opacity-50", "cursor-not-allowed", "pointer-events-none");
+                    btnUnstake.classList.remove("hover:bg-orange-500", "hover:text-white", "cursor-pointer");
+                }
+            }
         }, 1000);
 
         // 2. SINKRONISASI LEDGER PERMANEN VIA BSCSCAN API (BUKTI TRANSAKSI)
@@ -1090,24 +1107,7 @@
             }
         }, 10000);
     
-        // 4. Unstake Button Logic
-        setInterval(() => {
-            const lockEl = document.getElementById("ui-remaining-lock");
-            const btnUnstake = document.getElementById("btn-unstake");
-            const principalEl = document.getElementById("ui-staking-principal");
-            if(lockEl && btnUnstake && principalEl) {
-                const isFinished = lockEl.innerText === "00:00:00" || lockEl.innerText === "-" || lockEl.innerText.includes("-");
-                const hasPrincipal = parseFloat(principalEl.innerText.replace(/,/g, "")) > 0;
-                
-                if(isFinished && hasPrincipal) {
-                    btnUnstake.classList.remove("opacity-50", "cursor-not-allowed", "pointer-events-none");
-                    btnUnstake.classList.add("hover:bg-orange-500", "hover:text-white", "cursor-pointer");
-                } else {
-                    btnUnstake.classList.add("opacity-50", "cursor-not-allowed", "pointer-events-none");
-                    btnUnstake.classList.remove("hover:bg-orange-500", "hover:text-white", "cursor-pointer");
-                }
-            }
-        }, 1000);
+        // 4. Unstake Logic handled above
 
         // 5. Referral Logic
         setInterval(() => {
@@ -1129,15 +1129,39 @@
             }
         }
 
-        // Auto-fill Mentor dari URL param "?ref="
-        document.addEventListener("DOMContentLoaded", () => {
-            const params = new URLSearchParams(window.location.search);
-            const ref = params.get("ref");
-            if(ref) {
+        // Persistent Referral Auto-fill & Verification
+        (function() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const ref = params.get("ref") || params.get("r") || params.get("mentor");
+                if (ref) {
+                    localStorage.setItem('snr_v7_mentor', ref);
+                }
+            } catch(e) {}
+        })();
+
+        setInterval(() => {
+            try {
                 const mentorInput = document.getElementById("stake-mentor");
-                if(mentorInput) mentorInput.value = ref;
-            }
-        });
+                const statusText = document.getElementById("mentor-status-text");
+                const savedMentor = localStorage.getItem('snr_v7_mentor');
+                
+                if (mentorInput) {
+                    if (!mentorInput.value && savedMentor) {
+                        mentorInput.value = savedMentor;
+                    }
+                    if (statusText) {
+                        const currentVal = mentorInput.value || savedMentor;
+                        if (currentVal && currentVal.length > 10) {
+                            statusText.innerText = "✓ Sponsor Terhubung: " + currentVal.substring(0, 6) + "..." + currentVal.substring(currentVal.length - 4);
+                            statusText.classList.remove("hidden");
+                        } else {
+                            statusText.classList.add("hidden");
+                        }
+                    }
+                }
+            } catch(e) {}
+        }, 1000);
     </script>
 </body>
 </html>
