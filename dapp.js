@@ -159,6 +159,19 @@ async function btnActionJoinProtocol(amount, mentorAddress, durationDays) {
 // Tombol: Harvest Daily Reward
 async function btnActionHarvest() {
     try {
+        if (!stakingContract || !userAddress) return;
+        
+        const userData = await stakingContract.users(userAddress);
+        const lastUpdate = Number(userData.lastUpdate) || 0;
+        const now = Math.floor(Date.now() / 1000);
+        
+        if (lastUpdate > 0 && now < lastUpdate + 86400) {
+            const diff = (lastUpdate + 86400) - now;
+            const remainingText = formatSeconds(diff);
+            showTxModal('info', 'Siklus Panen 24 Jam', `Panen harian berjalan dalam siklus 24 jam di blockchain.\n\nPanen berikutnya dapat dilakukan dalam:\n${remainingText}.\n\nReward harian Anda tetap tersimpan aman di blockchain.`);
+            return;
+        }
+
         showTxModal('loading', 'Transaksi', 'Memproses Klaim Hasil Harian V7...');
         const tx = await stakingContract.harvestDailyReward();
         await tx.wait();
