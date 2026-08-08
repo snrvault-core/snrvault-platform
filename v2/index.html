@@ -758,9 +758,9 @@
                         <i data-lucide="refresh-cw" class="w-16 h-16 text-green-500 mx-auto mb-4"></i>
                         <h3 class="text-2xl font-display font-bold text-white mb-2">P2P Market OTC</h3>
                         <p class="text-secondary mb-6 max-w-md mx-auto">Transaksi P2P saat ini dilayani secara langsung via Admin / Escrow Resmi.</p>
-                        <a href="https://wa.me/6289528533262?text=Halo%20Admin%20P2P%20Escrow%20Resmi%20SNR-VAULT%2C%0A%0ASaya%20ingin%20mengajukan%20pencairan%20%28Cash%20Out%20%2F%20Buy-Back%29%20koin%20SNR%20hasil%20panen%20Staking%20V7%20saya%20melalui%20Jalur%20P2P%20Escrow%20Resmi.%0A%0ABerikut%20adalah%20data%20transaksi%20saya%3A%0A%E2%80%A2%20Nama%20Member%20%2F%20Username%3A%20%0A%E2%80%A2%20Alamat%20Wallet%20%280x...%29%3A%20%0A%E2%80%A2%20Jumlah%20SNR%20yang%20Dijual%3A%20%0A%E2%80%A2%20Metode%20Pembayaran%20%28Bank%20%2F%20E-Wallet%29%3A%20%0A%E2%80%A2%20No.%20Rekening%20%26%20Nama%20Pemilik%20Rekening%3A%20%0A%0ASaya%20siap%20mengikuti%20alur%20transaksi%20aman%20P2P%20Escrow%20demi%20menjaga%20stabilitas%20ekosistem%20SNR-Vault.%20Mohon%20diproses%2C%20terima%20kasih%21" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-green-500 text-black hover:bg-green-400 font-bold rounded-lg transition-all font-display tracking-widest shadow-[0_0_15px_rgba(34,197,94,0.4)]">
+                        <button onclick="openP2PWhatsApp()" class="inline-flex items-center gap-2 px-6 py-3 bg-green-500 text-black hover:bg-green-400 font-bold rounded-lg transition-all font-display tracking-widest shadow-[0_0_15px_rgba(34,197,94,0.4)] cursor-pointer">
                             <i data-lucide="message-circle" class="w-5 h-5"></i> HUBUNGI ADMIN P2P
-                        </a>
+                        </button>
                     </div>
 
                 </div>
@@ -956,8 +956,8 @@
             }, 300);
         }
     </script>
-    <script src="audio.js"></script><script src="dapp.js?v=V7.7"></script>
-    <script src="i18n.js?v=V7.7"></script>
+    <script src="audio.js"></script><script src="dapp.js?v=V7.8"></script>
+    <script src="i18n.js?v=V7.8"></script>
     <script>
         // 1. Live Reward Ticker (Presisi Terikat Jam Blockchain V7)
         setInterval(() => {
@@ -1162,6 +1162,13 @@
                 }
             } catch(e) {}
         }, 1000);
+
+        // Open P2P WhatsApp dengan Naskah Otomatis Terjamin (Bypass Incognito/Browser Issue)
+        function openP2PWhatsApp() {
+            const text = "Halo Admin P2P Escrow Resmi SNR-VAULT,\n\nSaya ingin mengajukan pencairan (Cash Out / Buy-Back) koin SNR hasil panen Staking V7 saya melalui Jalur P2P Escrow Resmi.\n\nBerikut data pencairan saya:\n• Nama Member / Username: \n• Alamat Wallet (0x...): \n• Jumlah SNR Dijual: \n• Metode Pembayaran (Bank / E-Wallet): \n• No. Rekening & Nama Pemilik: \n\nSaya siap mengikuti alur transaksi aman P2P Escrow demi menjaga stabilitas ekosistem SNR-Vault. Mohon diproses, terima kasih!";
+            const url = "https://wa.me/6289528533262?text=" + encodeURIComponent(text);
+            window.open(url, '_blank');
+        }
     </script>
 </body>
 </html>
