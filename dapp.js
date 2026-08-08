@@ -377,12 +377,18 @@ function updateUI(elementId, textValue) {
     if (el) el.innerText = textValue;
 }
 
-// Helper Format Detik ke Hari/Jam
+// Helper Format Detik ke Jam/Menit/Detik Presisi
 function formatSeconds(seconds) {
-    if (seconds <= 0) return "Selesai / Bebas";
-    const days = Math.floor(seconds / (3600 * 24));
-    const hours = Math.floor((seconds % (3600 * 24)) / 3600);
-    return `${days} Hari ${hours} Jam`;
+    if (seconds <= 0) return "Siap / Bebas";
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+    if (hours >= 24) {
+        const days = Math.floor(hours / 24);
+        const remHours = hours % 24;
+        return `${days} Hari ${remHours}j ${minutes}m ${secs}s`;
+    }
+    return `${hours} Jam ${minutes} Mnt ${secs} Detik`;
 }
 
 // Helper Error Handler
