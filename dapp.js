@@ -172,11 +172,14 @@ async function btnActionHarvest() {
             return;
         }
 
+        const rewardEl = document.getElementById('ui-current-reward');
+        const harvestedAmt = rewardEl ? rewardEl.innerText : '0.00';
+
         showTxModal('loading', 'Transaksi', 'Memproses Klaim Hasil Harian V7...');
         const tx = await stakingContract.harvestDailyReward();
         await tx.wait();
 
-        saveLocalTx('Harvest V7', tx.hash, `Panen Profit V7 (Auto-Compound 45%)`);
+        saveLocalTx('Harvest V7', tx.hash, `Panen Profit: ${harvestedAmt} SNR (Auto-Compound 45%)`);
         showTxModal('success', 'Berhasil', 'Panen Reward Harian V7 Berhasil!');
         await fetchAndRenderDashboard();
     } catch (err) {
@@ -187,11 +190,14 @@ async function btnActionHarvest() {
 // Tombol: Claim Leader / Referral Reward
 async function btnActionClaimLeader() {
     try {
+        const leaderRewardEl = document.getElementById('ui-leader-reward');
+        const leaderAmt = leaderRewardEl ? leaderRewardEl.innerText.replace("SNR","").trim() : '0.00';
+
         showTxModal('loading', 'Transaksi', 'Memproses Klaim Leader Reward...');
         const tx = await stakingContract.claimLeaderRewards();
         await tx.wait();
 
-        saveLocalTx('Leader Reward V7', tx.hash, `Pencairan Bonus Leader V7`);
+        saveLocalTx('Leader Reward V7', tx.hash, `Klaim Bonus Leader: ${leaderAmt} SNR`);
         showTxModal('success', 'Berhasil', 'Bonus Leader Berhasil Dicairkan!');
         await fetchAndRenderDashboard();
     } catch (err) {
