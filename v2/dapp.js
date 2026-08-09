@@ -117,9 +117,23 @@ async function initWeb3() {
 // Tombol: Join Protocol / Stake
 async function btnActionJoinProtocol(amount, mentorAddress, durationDays) {
     try {
+        const savedMentor = localStorage.getItem('snr_v7_mentor');
+        let mentor = mentorAddress && ethers.utils.isAddress(mentorAddress) ? mentorAddress : savedMentor;
+        mentor = mentor && ethers.utils.isAddress(mentor) ? mentor : "0x0000000000000000000000000000000000000000";
+
+        // Proteksi Jaringan: Cek apakah Upline sudah aktif di V7
+        if (mentor !== "0x0000000000000000000000000000000000000000") {
+            try {
+                const mentorData = await stakingContract.users(mentor);
+                if (!mentorData.isActive && mentor.toLowerCase() !== CONTRACT_ADDRESS.toLowerCase()) {
+                    const confirmWait = confirm(`PERINGATAN UPLINE BELUM AKTIF:\n\nSponsor/Upline Anda (${mentor.substring(0,6)}...${mentor.substring(38)}) belum melakukan Staking di V7.\n\nAgar jaringan Anda terikat sah ke Upline Anda dan tidak dialihkan ke Admin, harap minta Upline Anda untuk melakukan Staking V7 terlebih dahulu.\n\nApakah Anda tetap ingin melanjutkan Staking sekarang?`);
+                    if (!confirmWait) return;
+                }
+            } catch(e) {}
+        }
+
         showTxModal('loading', 'Transaksi', 'Menyiapkan Transaksi Staking V7...');
         const amountWei = ethers.utils.parseUnits(amount.toString(), 18);
-        const mentor = mentorAddress && ethers.utils.isAddress(mentorAddress) ? mentorAddress : "0x0000000000000000000000000000000000000000";
 
         // Step 1: Check Allowance
         const allowance = await tokenContract.allowance(userAddress, CONTRACT_ADDRESS);
@@ -145,11 +159,27 @@ async function btnActionJoinProtocol(amount, mentorAddress, durationDays) {
 // Tombol: Harvest Daily Reward
 async function btnActionHarvest() {
     try {
+        if (!stakingContract || !userAddress) return;
+        
+        const userData = await stakingContract.users(userAddress);
+        const lastUpdate = Number(userData.lastUpdate) || 0;
+        const now = Math.floor(Date.now() / 1000);
+        
+        if (lastUpdate > 0 && now < lastUpdate + 86400) {
+            const diff = (lastUpdate + 86400) - now;
+            const remainingText = formatSeconds(diff);
+            showTxModal('info', 'Siklus Panen 24 Jam', `Panen harian berjalan dalam siklus 24 jam di blockchain.\n\nPanen berikutnya dapat dilakukan dalam:\n${remainingText}.\n\nReward harian Anda tetap tersimpan aman di blockchain.`);
+            return;
+        }
+
+        const rewardEl = document.getElementById('ui-current-reward');
+        const harvestedAmt = rewardEl ? rewardEl.innerText : '0.00';
+
         showTxModal('loading', 'Transaksi', 'Memproses Klaim Hasil Harian V7...');
         const tx = await stakingContract.harvestDailyReward();
         await tx.wait();
 
-        saveLocalTx('Harvest V7', tx.hash, `Panen Profit V7 (Auto-Compound 45%)`);
+        saveLocalTx('Harvest V7', tx.hash, `Panen Profit: ${harvestedAmt} SNR (Auto-Compound 45%)`);
         showTxModal('success', 'Berhasil', 'Panen Reward Harian V7 Berhasil!');
         await fetchAndRenderDashboard();
     } catch (err) {
@@ -160,11 +190,14 @@ async function btnActionHarvest() {
 // Tombol: Claim Leader / Referral Reward
 async function btnActionClaimLeader() {
     try {
+        const leaderRewardEl = document.getElementById('ui-leader-reward');
+        const leaderAmt = leaderRewardEl ? leaderRewardEl.innerText.replace("SNR","").trim() : '0.00';
+
         showTxModal('loading', 'Transaksi', 'Memproses Klaim Leader Reward...');
         const tx = await stakingContract.claimLeaderRewards();
         await tx.wait();
 
-        saveLocalTx('Leader Reward V7', tx.hash, `Pencairan Bonus Leader V7`);
+        saveLocalTx('Leader Reward V7', tx.hash, `Klaim Bonus Leader: ${leaderAmt} SNR`);
         showTxModal('success', 'Berhasil', 'Bonus Leader Berhasil Dicairkan!');
         await fetchAndRenderDashboard();
     } catch (err) {
@@ -188,10 +221,21 @@ async function btnActionWithdrawReady(amount) {
     }
 }
 
-// Tombol: Unstake Principal
+// Tombol: Unstake Principal (Aktif dengan Proteksi Penalti V7)
 async function btnActionUnstake(amount) {
+    if (!amount || isNaN(amount) || parseFloat(amount) <= 0) return;
+    
     try {
-        showTxModal('loading', 'Transaksi', 'Pencabutan Modal Pokok...');
+        const userData = await stakingContract.users(userAddress);
+        const now = Math.floor(Date.now() / 1000);
+        const endDate = Number(userData.stakingEndDate) || 0;
+        
+        if (endDate > now) {
+            const confirmEarly = confirm("PERINGATAN DENDA V7:\nMasa staking Anda belum selesai. Pencabutan modal sebelum waktunya akan dikenakan DENDA 50% oleh Smart Contract.\n(25% masuk Treasury, 25% masuk Cadangan Kontrak).\n\nApakah Anda yakin ingin melanjutkan Unstake?");
+            if (!confirmEarly) return;
+        }
+
+        showTxModal('loading', 'Transaksi', 'Memproses Pencabutan Modal Pokok...');
         const amountWei = ethers.utils.parseUnits(amount.toString(), 18);
         const tx = await stakingContract.unstakePrincipal(amountWei);
         await tx.wait();
@@ -339,12 +383,18 @@ function updateUI(elementId, textValue) {
     if (el) el.innerText = textValue;
 }
 
-// Helper Format Detik ke Hari/Jam
+// Helper Format Detik ke Jam/Menit/Detik Presisi
 function formatSeconds(seconds) {
-    if (seconds <= 0) return "Selesai / Bebas";
-    const days = Math.floor(seconds / (3600 * 24));
-    const hours = Math.floor((seconds % (3600 * 24)) / 3600);
-    return `${days} Hari ${hours} Jam`;
+    if (seconds <= 0) return "Siap / Bebas";
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+    if (hours >= 24) {
+        const days = Math.floor(hours / 24);
+        const remHours = hours % 24;
+        return `${days} Hari ${remHours}j ${minutes}m ${secs}s`;
+    }
+    return `${hours} Jam ${minutes} Mnt ${secs} Detik`;
 }
 
 // Helper Error Handler
@@ -352,6 +402,20 @@ function handleTxError(err) {
     console.error("Tx Error:", err);
     let msg = err.reason || err.message || "Transaksi Dibatalkan/Gagal";
     showTxModal('error', 'Error Transaksi', msg);
+}
+
+// Helper Query Log Paralel Terbagi Chunk (Bypass Limit BSC RPC)
+async function queryLogsInChunks(contract, filter, currentBlock, totalBlocks = 10000, chunkSize = 2000) {
+    let logs = [];
+    let start = currentBlock > totalBlocks ? currentBlock - totalBlocks : 0;
+    let promises = [];
+    for (let from = start; from < currentBlock; from += chunkSize) {
+        let to = (from + chunkSize > currentBlock) ? currentBlock : from + chunkSize;
+        promises.push(contract.queryFilter(filter, from, to).catch(() => []));
+    }
+    const results = await Promise.all(promises);
+    results.forEach(res => { if (Array.isArray(res)) logs.push(...res); });
+    return logs;
 }
 
 // ==========================================
@@ -386,7 +450,7 @@ async function fetchTransactionHistory() {
             }
         });
 
-        // 2. Query logs on-chain dengan rentang aman (2,500 blok ~ 2 jam di BSC untuk mencegah RPC Reject)
+        // 2. Query logs on-chain dalam 5 chunk aman x 2,000 blok (Total 10,000 blok ~8.3 jam tanpa ditolak RPC BSC)
         try {
             const filterStaked = tokenContract.filters.Transfer(userAddress, CONTRACT_ADDRESS);
             const filterPayout = tokenContract.filters.Transfer(CONTRACT_ADDRESS, userAddress);
@@ -394,13 +458,12 @@ async function fetchTransactionHistory() {
             const filterUnstake = stakingContract.filters.PrincipalUnstaked(userAddress);
 
             const currentBlock = await provider.getBlockNumber();
-            const startBlock = currentBlock > 2500 ? currentBlock - 2500 : 0;
 
             const [logsStaked, logsPayout, logsHarvest, logsUnstake] = await Promise.all([
-                tokenContract.queryFilter(filterStaked, startBlock, currentBlock).catch(() => []),
-                tokenContract.queryFilter(filterPayout, startBlock, currentBlock).catch(() => []),
-                stakingContract.queryFilter(filterHarvest, startBlock, currentBlock).catch(() => []),
-                stakingContract.queryFilter(filterUnstake, startBlock, currentBlock).catch(() => [])
+                queryLogsInChunks(tokenContract, filterStaked, currentBlock),
+                queryLogsInChunks(tokenContract, filterPayout, currentBlock),
+                queryLogsInChunks(stakingContract, filterHarvest, currentBlock),
+                queryLogsInChunks(stakingContract, filterUnstake, currentBlock)
             ]);
 
             logsStaked.forEach(log => {
