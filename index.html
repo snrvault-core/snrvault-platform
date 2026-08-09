@@ -1264,7 +1264,9 @@
                                 allTxs.push({
                                     hash: hash,
                                     timeStamp: item.timestamp || Date.now(),
-                                    method: item.type || item.desc || "Interaksi Kontrak V7",
+                                    method: item.type || "Interaksi Kontrak V7",
+                                    desc: item.desc || item.type || "",
+                                    amount: item.amount || item.desc || "",
                                     icon: (item.type || "").includes('Harvest') ? 'leaf' : ((item.type || "").includes('Staked') ? 'arrow-down-right' : 'wallet'),
                                     color: (item.type || "").includes('Harvest') ? 'text-yellow-400' : 'text-cyan-400',
                                     border: (item.type || "").includes('Harvest') ? 'border-yellow-500/40' : 'border-cyan-500/40'
@@ -1292,10 +1294,15 @@
                                 else if (input.includes("3ccfd60b") || input.includes("claim")) { method = "Klaim Leader Reward"; icon = "users"; color = "text-yellow-400"; border = "border-yellow-500/40"; }
                                 else if (input.includes("095ea7b3") || input.includes("a9059cbb")) { method = "Modal Staking (Join Protocol)"; icon = "arrow-down-right"; color = "text-green-400"; border = "border-green-500/40"; }
 
+                                const valFormatted = (tx.value && tx.value !== "0") ? (parseFloat(tx.value)/1e18).toLocaleString('id-ID', {maximumFractionDigits: 2}) + ' SNR' : '';
+
                                 allTxs.push({
                                     hash: tx.hash,
                                     timeStamp: parseInt(tx.timeStamp) * 1000,
-                                    method: method, icon: icon, color: color, border: border
+                                    method: method,
+                                    desc: method,
+                                    amount: valFormatted,
+                                    icon: icon, color: color, border: border
                                 });
                             }
                         });
@@ -1320,7 +1327,10 @@
                                     allTxs.push({
                                         hash: tx.tx_hash,
                                         timeStamp: new Date(tx.block_signed_at).getTime(),
-                                        method: method, icon: icon, color: color, border: "border-yellow-500/40"
+                                        method: method,
+                                        desc: method,
+                                        amount: "",
+                                        icon: icon, color: color, border: "border-yellow-500/40"
                                     });
                                 }
                             });
@@ -1339,23 +1349,32 @@
                         const timeStr = date.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
                         const shortHash = tx.hash.length > 14 ? (tx.hash.substring(0, 8) + '...' + tx.hash.substring(tx.hash.length - 6)) : tx.hash;
 
+                        const detailText = (tx.desc && tx.desc !== tx.method) ? tx.desc : (tx.amount ? tx.amount : "Transaksi Blockchain V7 Terverifikasi");
+
                         html += `
-                        <div class="flex items-center justify-between p-4 rounded-lg bg-slate-900 border ${tx.border || 'border-slate-800'} mb-2 hover:border-cyan-400 transition-all">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-full bg-background border border-slate-800 flex items-center justify-center">
-                                    <i data-lucide="${tx.icon || 'cpu'}" class="w-5 h-5 ${tx.color || 'text-cyan-400'}"></i>
+                        <div class="p-4 rounded-lg bg-slate-900 border ${tx.border || 'border-slate-800'} mb-3 hover:border-cyan-400 transition-all">
+                            <div class="flex items-center gap-3 mb-1.5">
+                                <div class="w-8 h-8 rounded-full bg-background border border-slate-800 flex items-center justify-center shrink-0">
+                                    <i data-lucide="${tx.icon || 'cpu'}" class="w-4 h-4 ${tx.color || 'text-cyan-400'}"></i>
                                 </div>
-                                <div>
-                                    <div class="font-bold text-white font-display text-[13px] sm:text-sm">${tx.method || 'Interaksi Kontrak V7'}</div>
-                                    <div class="text-[10px] text-slate-400 mt-1 flex items-center gap-2 font-mono">
-                                        <i data-lucide="calendar" class="w-3 h-3 text-cyan-400"></i> ${dateStr} &nbsp; 
-                                        <i data-lucide="clock" class="w-3 h-3 text-cyan-400"></i> ${timeStr} WIB
-                                    </div>
+                                <div class="font-bold text-white font-display text-xs sm:text-sm leading-snug">
+                                    ${tx.method || 'Interaksi Kontrak V7'}
                                 </div>
                             </div>
-                            <a href="https://bscscan.com/tx/${tx.hash}" target="_blank" class="px-3 py-1.5 bg-background border border-slate-700 rounded text-[10px] text-cyan-400 hover:bg-cyan-400 hover:text-black transition-all flex items-center gap-1 font-mono">
-                                ${shortHash} <i data-lucide="external-link" class="w-3 h-3"></i>
-                            </a>
+
+                            <div class="pl-11 mb-2.5 text-xs sm:text-sm font-bold text-yellow-400 font-mono break-words">
+                                ${detailText}
+                            </div>
+
+                            <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800/80 text-[10px] sm:text-xs font-mono">
+                                <div class="text-slate-400 flex items-center gap-1.5">
+                                    <i data-lucide="calendar" class="w-3 h-3 text-cyan-400 shrink-0"></i> ${dateStr} &nbsp; 
+                                    <i data-lucide="clock" class="w-3 h-3 text-cyan-400 shrink-0"></i> ${timeStr} WIB
+                                </div>
+                                <a href="https://bscscan.com/tx/${tx.hash}" target="_blank" class="px-2.5 py-1 bg-background border border-slate-700 rounded text-[10px] text-cyan-400 hover:bg-cyan-400 hover:text-black transition-all flex items-center gap-1">
+                                    ${shortHash} <i data-lucide="external-link" class="w-3 h-3"></i>
+                                </a>
+                            </div>
                         </div>`;
                     });
                     historyList.innerHTML = html;
