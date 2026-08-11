@@ -261,18 +261,18 @@
                             <span class="text-white">ECONOMY</span>
                         </h1>
 
-                        <p class="text-base sm:text-lg text-slate-300 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-light">
-                            A community-centered digital economic infrastructure connecting people, commerce, distribution, assets, and transparent technology. Stake <span class="text-yellow-400 font-bold">SNR</span> on Binance Smart Chain.
+                        <p data-i18n="hero_desc" class="text-base sm:text-lg text-slate-300 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-light">
+                            A community-centered digital economic infrastructure connecting people, commerce, distribution, assets, and transparent technology. Stake SNR on Binance Smart Chain.
                         </p>
 
                         <!-- Hero CTA Buttons -->
                         <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                             <button onclick="toggleDapp(true)" class="glow-btn px-8 py-4 bg-yellow-400 text-black font-display font-black tracking-widest text-sm sm:text-base rounded-lg hover:bg-yellow-300 shadow-neon-primary transition-all flex items-center justify-center gap-3 cursor-pointer">
                                 <i data-lucide="zap" class="w-5 h-5"></i>
-                                <span>EXPLORE ARCHITECTURE</span>
+                                <span data-i18n="btn_explore">EXPLORE ARCHITECTURE</span>
                             </button>
                             <a href="#tokenomics" class="px-8 py-4 glass-panel text-white border-slate-700 font-display font-bold tracking-widest text-sm sm:text-base hover:border-cyan-400 transition-all flex items-center justify-center gap-3 group">
-                                <span>VIEW DATA</span>
+                                <span data-i18n="btn_view_data">VIEW DATA</span>
                                 <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform text-yellow-400"></i>
                             </a>
                         </div>
@@ -326,7 +326,7 @@
                                 </div>
                             </div>
                             <button onclick="toggleDapp(true)" class="w-full mt-6 py-3 bg-yellow-400 text-black font-display font-black text-xs tracking-widest rounded hover:bg-yellow-300 transition-all flex items-center justify-center gap-2 cursor-pointer">
-                                LAUNCH TERMINAL <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                                <span data-i18n="btn_launch_terminal">LAUNCH TERMINAL</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
                             </button>
                         </div>
                     </div>
@@ -594,7 +594,7 @@
                     <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black font-display tracking-tight text-white mb-4">
                         SOVEREIGN TITAN <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-yellow-400 to-yellow-500">HALL OF FAME</span>
                     </h2>
-                    <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
+                    <p data-i18n="hof_subtitle" class="text-slate-400 text-sm sm:text-base leading-relaxed">
                         Apresiasi tertinggi bagi Pemimpin Elit SNR-VAULT yang berhasil membuktikan kedaulatan kepemimpinan dan mencetak rekor di jaringan nasional.
                     </p>
                 </div>
@@ -678,12 +678,12 @@
                         <h4 class="text-lg font-bold text-white font-display mb-1 flex items-center justify-center md:justify-start gap-2">
                             <i data-lucide="sparkles" class="w-5 h-5 text-yellow-400"></i> INGIN FOTO & NAMA ANDA DIABADIKAN DI SINI?
                         </h4>
-                        <p class="text-xs sm:text-sm text-slate-300">
+                        <p data-i18n="hof_cta_desc" class="text-xs sm:text-sm text-slate-300">
                             Tembus kualifikasi <strong>Rank Colonel</strong> atau <strong>Titan</strong>, kirimkan foto resmi Anda ke Admin Escrow untuk dipajang di Panggung Kehormatan!
                         </p>
                     </div>
                     <button onclick="openP2PWhatsApp()" class="px-6 py-3 bg-yellow-400 hover:bg-yellow-300 text-black font-black font-display text-xs sm:text-sm rounded-lg transition-all shadow-neon-primary whitespace-nowrap cursor-pointer flex items-center gap-2">
-                        <i data-lucide="send" class="w-4 h-4"></i> KIRIM FOTO LEADER
+                        <i data-lucide="send" class="w-4 h-4"></i> <span data-i18n="btn_send_photo">KIRIM FOTO LEADER</span>
                     </button>
                 </div>
 
@@ -741,29 +741,35 @@
         <nav class="fixed w-full z-[100] top-0 glass-panel border-x-0 border-t-0 rounded-none bg-background/90 backdrop-blur-xl">
             <div class="max-w-[1440px] mx-auto px-4 sm:px-6">
                 <div class="flex justify-between items-center h-16 sm:h-20">
-                    <div class="flex items-center gap-2 sm:gap-4">
-                        <button onclick="toggleDapp(false)" class="p-2 sm:hidden rounded-lg bg-slate-900 border border-slate-700 text-slate-400 hover:text-white">
-                            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                    <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                        <button onclick="toggleDapp(false)" class="p-1.5 sm:hidden rounded-lg bg-slate-900 border border-slate-700 text-slate-400 hover:text-white flex-shrink-0">
+                            <i data-lucide="arrow-left" class="w-4 h-4"></i>
                         </button>
-                        <img src="logo_banner.jpeg" alt="SNR Logo" class="w-8 h-8 sm:w-10 sm:h-10 object-cover rounded-lg shadow-neon-accent">
-                        <span class="font-display font-black text-sm sm:text-xl flex items-center gap-0.5">
+                        <img src="logo_banner.jpeg" alt="SNR Logo" class="w-7 h-7 sm:w-10 sm:h-10 object-cover rounded-lg shadow-neon-accent flex-shrink-0">
+                        <span class="font-display font-black text-xs sm:text-xl flex items-center gap-0.5 flex-shrink-0">
                             <span class="text-yellow-400">SNR</span><span class="text-white">-VAULT</span>
                         </span>
                     </div>
                     
-                    <div class="flex items-center gap-2 sm:gap-4">
+                    <div class="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
                         <!-- Network Status Mini -->
-                        <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-display">
+                        <div class="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-display flex-shrink-0">
                             <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
                             BSC Mainnet V7
                         </div>
                         
+                        <!-- Bilingual Toggle (Always Visible in dApp Header) -->
+                        <div class="flex bg-slate-900/80 rounded-lg p-0.5 sm:p-1 border border-slate-700 flex-shrink-0">
+                            <button onclick="setLanguage('en')" id="lang-en-dapp" class="px-2 sm:px-2.5 py-1 text-[10px] sm:text-xs font-display transition-colors rounded text-cyan-400 font-bold bg-slate-800 border border-cyan-500/40">EN</button>
+                            <button onclick="setLanguage('id')" id="lang-id-dapp" class="px-2 sm:px-2.5 py-1 text-[10px] sm:text-xs font-display transition-colors rounded text-slate-400 font-bold hover:text-white bg-transparent">ID</button>
+                        </div>
+                        
                         <!-- Connect Wallet Button -->
-                        <button id="btn-connect-wallet" onclick="initWeb3()" class="glow-btn px-4 py-2 sm:px-6 sm:py-2.5 rounded-lg border border-yellow-400 bg-yellow-400 text-black font-display font-black text-xs sm:text-sm hover:bg-yellow-300 transition-all shadow-neon-primary flex items-center gap-2 whitespace-nowrap cursor-pointer">
-                            <i data-lucide="wallet" class="w-4 h-4"></i>
-                            <span>Connect Wallet</span>
+                        <button id="btn-connect-wallet" onclick="initWeb3()" class="glow-btn px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-lg border border-yellow-400 bg-yellow-400 text-black font-display font-black text-xs sm:text-sm hover:bg-yellow-300 transition-all shadow-neon-primary flex items-center gap-1.5 sm:gap-2 whitespace-nowrap cursor-pointer flex-shrink-0">
+                            <i data-lucide="wallet" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
+                            <span data-i18n="btn_connect">Connect Wallet</span>
                         </button>
-                        <button onclick="toggleDapp(false)" class="hidden sm:flex items-center gap-2 px-4 py-2.5 glass-panel border border-slate-700 text-slate-300 hover:text-white transition-all font-display font-bold text-xs uppercase cursor-pointer">
+                        <button onclick="toggleDapp(false)" class="hidden sm:flex items-center gap-2 px-3 py-2.5 glass-panel border border-slate-700 text-slate-300 hover:text-white transition-all font-display font-bold text-xs uppercase cursor-pointer flex-shrink-0">
                             <i data-lucide="log-out" class="w-4 h-4"></i> Exit
                         </button>
                     </div>
@@ -895,15 +901,15 @@
                                 <div class="grid grid-cols-3 gap-2 sm:gap-4">
                                     <div class="relative group">
                                         <button onclick="btnActionHarvest()" class="w-full py-2.5 sm:py-3.5 px-2 sm:px-4 bg-yellow-400 hover:bg-yellow-300 text-black font-display font-bold text-[10px] sm:text-xs flex items-center justify-center gap-1 sm:gap-2 shadow-[0_0_15px_rgba(255,204,0,0.3)] rounded-lg transition-all border border-yellow-400 cursor-pointer">
-                                            <i data-lucide="leaf" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i> HARVEST
+                                            <i data-lucide="leaf" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i> <span data-i18n="btn_harvest">HARVEST</span>
                                         </button>
                                         <div id="harvest-cooldown" class="absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] text-cyan-400 font-mono font-bold whitespace-nowrap opacity-90">Cooldown: 24 Jam</div>
                                     </div>
                                     <button onclick="btnActionWithdrawReady(prompt('Masukkan Jumlah SNR yang ingin ditarik ke Wallet:'))" class="py-2.5 sm:py-3.5 px-2 sm:px-4 bg-yellow-400 hover:bg-yellow-300 text-black font-display font-bold text-[10px] sm:text-xs flex items-center justify-center gap-1 sm:gap-2 shadow-[0_0_15px_rgba(255,204,0,0.3)] rounded-lg transition-all border border-yellow-400 cursor-pointer">
-                                        <i data-lucide="download" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i> WITHDRAW
+                                        <i data-lucide="download" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i> <span data-i18n="btn_withdraw">WITHDRAW</span>
                                     </button>
                                     <button id="btn-unstake" onclick="btnActionUnstake(prompt('Peringatan: Pencabutan modal awal sebelum masa kunci selesai dikenakan denda 50% oleh Smart Contract.\n\nMasukkan jumlah SNR yang ingin ditarik:'))" class="py-2.5 sm:py-3.5 px-2 sm:px-4 glass-panel border border-orange-500 text-orange-400 hover:bg-orange-500 hover:text-white transition-all font-display font-bold text-[10px] sm:text-xs flex items-center justify-center gap-1 sm:gap-2 cursor-pointer shadow-[0_0_10px_rgba(249,115,22,0.2)] rounded-lg">
-                                        <i data-lucide="unlock" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i> UNSTAKE
+                                        <i data-lucide="unlock" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i> <span data-i18n="btn_unstake">UNSTAKE</span>
                                     </button>
                                 </div>
 
@@ -941,7 +947,7 @@
                                         </div>
                                         <!-- HIGH VISIBILITY ELECTRIC CYAN STAKING BUTTON -->
                                         <button id="btn-initialize" onclick="btnActionJoinProtocol(document.getElementById('stake-amount').value, document.getElementById('stake-mentor').value, document.getElementById('stake-duration').value)" style="background-color: #00E5FF !important; color: #000000 !important; opacity: 1 !important;" class="w-full py-4 sm:py-5 mt-4 font-black font-display tracking-widest rounded-xl shadow-[0_0_25px_rgba(0,229,255,0.8)] transition-all flex justify-center items-center gap-2 cursor-pointer text-sm sm:text-base border-2 border-cyan-300 hover:brightness-110">
-                                            <i data-lucide="cpu" class="w-5 h-5 text-black"></i> INITIALIZE STAKING
+                                            <i data-lucide="cpu" class="w-5 h-5 text-black"></i> <span data-i18n="btn_init_staking">INITIALIZE STAKING</span>
                                         </button>
                                     </div>
                                 </div>
@@ -1025,7 +1031,7 @@
                         <div class="bg-slate-900 border border-yellow-500/30 rounded-xl p-6 sm:p-8 text-center relative overflow-hidden">
                             <h4 class="text-sm font-display text-yellow-400 tracking-widest mb-2 relative z-10">TOTAL LEADER REWARDS</h4>
                             <div id="ui-leader-reward" class="text-4xl sm:text-5xl font-black text-white font-display relative z-10">0.00 <span class="text-xl text-yellow-400 font-bold">SNR</span></div>
-                            <button onclick="btnActionClaimLeader()" class="mt-4 px-6 py-2.5 bg-yellow-400 text-black hover:bg-yellow-300 rounded-lg transition-all font-bold text-sm font-display z-10 relative cursor-pointer">KLAIM LEADER REWARD</button>
+                            <button onclick="btnActionClaimLeader()" class="mt-4 px-6 py-2.5 bg-yellow-400 text-black hover:bg-yellow-300 rounded-lg transition-all font-bold text-sm font-display z-10 relative cursor-pointer" data-i18n="btn_claim_leader">KLAIM LEADER REWARD</button>
                         </div>
                         
                         <!-- Referral Link Box -->
@@ -1036,10 +1042,10 @@
                             <div class="flex flex-col sm:flex-row gap-3">
                                 <input type="text" id="ref-link-input" readonly value="Connect wallet to generate link..." class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-300 focus:outline-none font-mono">
                                 <button onclick="copyRefLink()" class="px-6 py-3 bg-yellow-400 text-black font-bold rounded-lg hover:bg-yellow-300 transition-all shadow-neon-primary flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer">
-                                    <i data-lucide="copy" class="w-4 h-4"></i> COPY LINK
+                                    <i data-lucide="copy" class="w-4 h-4"></i> <span data-i18n="btn_copy_link">COPY LINK</span>
                                 </button>
                             </div>
-                            <p class="text-xs text-slate-400 mt-3">Sebarkan link ini. Saat member baru melakukan staking via link Anda, mereka akan otomatis menjadi jaringan Direct (Upline) Anda.</p>
+                            <p data-i18n="dapp_ref_desc" class="text-xs text-slate-400 mt-3">Sebarkan link ini. Saat member baru melakukan staking via link Anda, mereka akan otomatis menjadi jaringan Direct (Upline) Anda.</p>
                         </div>
                     </div>
 
@@ -1047,9 +1053,9 @@
                     <div id="tab-p2p" class="dapp-tab glass-panel p-6 sm:p-8 text-center" style="display: none;">
                         <i data-lucide="refresh-cw" class="w-16 h-16 text-green-500 mx-auto mb-4"></i>
                         <h3 class="text-2xl font-display font-bold text-yellow-400 mb-2">P2P Market OTC</h3>
-                        <p class="text-slate-400 mb-6 max-w-md mx-auto">Transaksi P2P saat ini dilayani secara langsung via Admin / Escrow Resmi.</p>
+                        <p data-i18n="dapp_p2p_desc" class="text-slate-400 mb-6 max-w-md mx-auto">Transaksi P2P saat ini dilayani secara langsung via Admin / Escrow Resmi.</p>
                         <button onclick="openP2PWhatsApp()" class="inline-flex items-center gap-2 px-6 py-3 bg-green-500 text-black hover:bg-green-400 font-bold rounded-lg transition-all font-display tracking-widest shadow-[0_0_15px_rgba(34,197,94,0.4)] cursor-pointer">
-                            <i data-lucide="message-circle" class="w-5 h-5"></i> HUBUNGI ADMIN P2P
+                            <i data-lucide="message-circle" class="w-5 h-5"></i> <span data-i18n="btn_p2p_wa">HUBUNGI ADMIN P2P</span>
                         </button>
                     </div>
 
@@ -1061,7 +1067,7 @@
                                 <h3 class="text-2xl font-display font-bold text-yellow-400 flex items-center gap-2">
                                     <i data-lucide="crown" class="text-yellow-400 w-6 h-6"></i> RANK QUALIFICATION & YIELD MAXIMIZER GUIDE
                                 </h3>
-                                <p class="text-xs sm:text-sm text-slate-400 mt-1">Panduan lengkap kualifikasi rank, bonus jaringan 10 level, dan strategi optimalisasi hasil panen harian.</p>
+                                <p data-i18n="dapp_ranks_desc" class="text-xs sm:text-sm text-slate-400 mt-1">Panduan lengkap kualifikasi rank, bonus jaringan 10 level, dan strategi optimalisasi hasil panen harian.</p>
                             </div>
                         </div>
 
@@ -1147,21 +1153,21 @@
                                     <ul class="space-y-3 text-xs text-slate-300 leading-relaxed font-sans">
                                         <li class="flex items-start gap-2">
                                             <i data-lucide="check-circle" class="w-4 h-4 text-yellow-400 shrink-0 mt-0.5"></i>
-                                            <span><strong>Pilih Paket 90 Hari (1.50% / Hari):</strong> Maksimalkan hasil panen harian Anda dengan rate tertinggi dan True Auto-Compound 45%.</span>
+                                            <span data-i18n="strat_b1"><strong>Pilih Paket 90 Hari (1.50% / Hari):</strong> Maksimalkan hasil panen harian Anda dengan rate tertinggi dan True Auto-Compound 45%.</span>
                                         </li>
                                         <li class="flex items-start gap-2">
                                             <i data-lucide="check-circle" class="w-4 h-4 text-yellow-400 shrink-0 mt-0.5"></i>
-                                            <span><strong>Dynamic Compression:</strong> Bonus dari jaringan di bawah yang belum memenuhi syarat rank akan otomatis melompat ke Upline yang berhak.</span>
+                                            <span data-i18n="strat_b2"><strong>Dynamic Compression:</strong> Bonus dari jaringan di bawah yang belum memenuhi syarat rank akan otomatis melompat ke Upline yang berhak.</span>
                                         </li>
                                         <li class="flex items-start gap-2">
                                             <i data-lucide="check-circle" class="w-4 h-4 text-yellow-400 shrink-0 mt-0.5"></i>
-                                            <span><strong>Leader Payout Cap 100%:</strong> Perbesar modal staking pribadi Anda untuk memperbesar kuota pencairan Leader Reward tanpa batas!</span>
+                                            <span data-i18n="strat_b3"><strong>Leader Payout Cap 100%:</strong> Perbesar modal staking pribadi Anda untuk memperbesar kuota pencairan Leader Reward tanpa batas!</span>
                                         </li>
                                     </ul>
                                 </div>
                                 <div class="mt-6 pt-4 border-t border-slate-800">
                                     <button onclick="switchTab('staking')" class="w-full py-3 bg-yellow-400 text-black font-bold font-display text-xs rounded-lg hover:bg-yellow-300 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-neon-primary">
-                                        <i data-lucide="rocket" class="w-4 h-4"></i> MULAI PERBESAR STAKING SEKARANG
+                                        <i data-lucide="rocket" class="w-4 h-4"></i> <span data-i18n="btn_boost_staking">MULAI PERBESAR STAKING SEKARANG</span>
                                     </button>
                                 </div>
                             </div>
@@ -1462,13 +1468,13 @@
             }, 6000);
         })();
 
-        // 3. MULTI-SOURCE TRANSACTION LEDGER SYNC (Presisi BscScan + LocalStorage)
+        // 3. MULTI-SOURCE TRANSACTION LEDGER SYNC (4-Tier Failsafe Ledger Engine)
         let lastLedgerSyncAddr = "";
         async function syncRealLedgerHistory() {
             const historyList = document.getElementById('history-list');
             if (!historyList || typeof userAddress === 'undefined' || !userAddress) return;
 
-            if (lastLedgerSyncAddr === userAddress.toLowerCase() && !historyList.innerHTML.includes('Menyinkronkan') && !historyList.innerHTML.includes('Gagal')) {
+            if (lastLedgerSyncAddr === userAddress.toLowerCase() && historyList.children.length > 0 && !historyList.innerHTML.includes('Menyinkronkan') && !historyList.innerHTML.includes('Belum ada')) {
                 return;
             }
 
@@ -1478,7 +1484,7 @@
                 let allTxs = [];
                 let seenHashes = new Set();
 
-                // 1. Ambil transaksi lokal (dari saveLocalTx)
+                // Tier 1: LocalStorage Ledger
                 try {
                     const key1 = 'snr_v7_ledger_' + userAddress.toLowerCase();
                     const key2 = 'snr_v7_txs_' + userAddress.toLowerCase();
@@ -1495,7 +1501,7 @@
                                     method: item.type || "Interaksi Kontrak V7",
                                     desc: item.desc || item.type || "",
                                     amount: item.amount || item.desc || "",
-                                    icon: (item.type || "").includes('Harvest') ? 'leaf' : ((item.type || "").includes('Staked') ? 'arrow-down-right' : 'wallet'),
+                                    icon: (item.type || "").includes('Harvest') ? 'leaf' : ((item.type || "").includes('Staked') || (item.type || "").includes('Join') ? 'arrow-down-right' : 'wallet'),
                                     color: (item.type || "").includes('Harvest') ? 'text-yellow-400' : 'text-cyan-400',
                                     border: (item.type || "").includes('Harvest') ? 'border-yellow-500/40' : 'border-cyan-500/40'
                                 });
@@ -1504,16 +1510,57 @@
                     }
                 } catch(e){}
 
-                // 2. Fetch BscScan Free API
+                // Tier 2: Web3 Direct BSC RPC On-Chain Event Query (No API Key Required)
+                if (stakingContract && provider) {
+                    try {
+                        const currentBlock = await provider.getBlockNumber();
+                        const fromBlock = Math.max(0, currentBlock - 300000); // ~10 Hari Terakhir BSC
+
+                        const harvestEvents = await stakingContract.queryFilter(stakingContract.filters.RewardHarvested(userAddress), fromBlock);
+                        harvestEvents.forEach(evt => {
+                            if (!seenHashes.has(evt.transactionHash)) {
+                                seenHashes.add(evt.transactionHash);
+                                const compoundAmt = evt.args.netToCompound ? (parseFloat(ethers.utils.formatUnits(evt.args.netToCompound, 18)).toLocaleString('id-ID', {maximumFractionDigits: 2}) + ' SNR') : '';
+                                allTxs.push({
+                                    hash: evt.transactionHash,
+                                    timeStamp: Date.now() - 3600000,
+                                    method: "Harvest (Panen Reward V7)",
+                                    desc: `Panen Profit: ${compoundAmt} (Auto-Compound 45%)`,
+                                    amount: compoundAmt,
+                                    icon: 'leaf', color: 'text-yellow-400', border: 'border-yellow-500/40'
+                                });
+                            }
+                        });
+
+                        const unstakeEvents = await stakingContract.queryFilter(stakingContract.filters.PrincipalUnstaked(userAddress), fromBlock);
+                        unstakeEvents.forEach(evt => {
+                            if (!seenHashes.has(evt.transactionHash)) {
+                                seenHashes.add(evt.transactionHash);
+                                const amt = evt.args.amount ? (parseFloat(ethers.utils.formatUnits(evt.args.amount, 18)).toLocaleString('id-ID', {maximumFractionDigits: 2}) + ' SNR') : '';
+                                allTxs.push({
+                                    hash: evt.transactionHash,
+                                    timeStamp: Date.now() - 3600000,
+                                    method: "Unstake (Cabut Modal V7)",
+                                    desc: `Pencabutan Modal: ${amt}`,
+                                    amount: amt,
+                                    icon: 'unlock', color: 'text-orange-500', border: 'border-orange-500/40'
+                                });
+                            }
+                        });
+                    } catch(e){}
+                }
+
+                // Tier 3: BscScan API (txlist & tokentx)
                 try {
-                    const bscUrl = `https://api.bscscan.com/api?module=account&action=txlist&address=${userAddress}&startblock=0&endblock=99999999&page=1&offset=50&sort=desc`;
+                    const bscUrl = `https://api.bscscan.com/api?module=account&action=txlist&address=${userAddress}&startblock=0&endblock=99999999&page=1&offset=100&sort=desc`;
                     const res = await fetch(bscUrl);
                     const json = await res.json();
                     
                     if (json.status === "1" && Array.isArray(json.result)) {
                         json.result.forEach(tx => {
                             const toAddr = (tx.to || "").toLowerCase();
-                            if ((toAddr === contractAddr || toAddr === tokenAddr) && !seenHashes.has(tx.hash)) {
+                            const fromAddr = (tx.from || "").toLowerCase();
+                            if ((toAddr === contractAddr || toAddr === tokenAddr || fromAddr === contractAddr || fromAddr === tokenAddr) && !seenHashes.has(tx.hash)) {
                                 seenHashes.add(tx.hash);
                                 let method = "Interaksi Kontrak V7"; let icon = "cpu"; let color = "text-cyan-400"; let border = "border-cyan-500/40";
                                 const input = (tx.input || "").toLowerCase();
@@ -1537,14 +1584,57 @@
                     }
                 } catch(e){}
 
-                // 3. Fetch Covalent API Fallback jika BscScan kosong
+                try {
+                    const tokenUrl = `https://api.bscscan.com/api?module=account&action=tokentx&contractaddress=${tokenAddr}&address=${userAddress}&startblock=0&endblock=99999999&page=1&offset=100&sort=desc`;
+                    const resToken = await fetch(tokenUrl);
+                    const jsonToken = await resToken.json();
+
+                    if (jsonToken.status === "1" && Array.isArray(jsonToken.result)) {
+                        jsonToken.result.forEach(tx => {
+                            if (!seenHashes.has(tx.hash)) {
+                                seenHashes.add(tx.hash);
+                                const fromAddr = (tx.from || "").toLowerCase();
+                                const toAddr = (tx.to || "").toLowerCase();
+                                const valFormatted = (parseFloat(tx.value)/1e18).toLocaleString('id-ID', {maximumFractionDigits: 2}) + ' SNR';
+                                
+                                let method = "Transfer Token SNR";
+                                let icon = "refresh-cw";
+                                let color = "text-cyan-400";
+                                let border = "border-cyan-500/40";
+
+                                if (fromAddr === contractAddr) {
+                                    method = "Pencairan / Reward V7";
+                                    icon = "leaf";
+                                    color = "text-yellow-400";
+                                    border = "border-yellow-500/40";
+                                } else if (toAddr === contractAddr) {
+                                    method = "Setoran Staking V7";
+                                    icon = "arrow-down-right";
+                                    color = "text-green-400";
+                                    border = "border-green-500/40";
+                                }
+
+                                allTxs.push({
+                                    hash: tx.hash,
+                                    timeStamp: parseInt(tx.timeStamp) * 1000,
+                                    method: method,
+                                    desc: `${method}: ${valFormatted}`,
+                                    amount: valFormatted,
+                                    icon: icon, color: color, border: border
+                                });
+                            }
+                        });
+                    }
+                } catch(e){}
+
+                // Tier 4: Covalent API Fallback
                 if (allTxs.length === 0) {
                     try {
                         const covUrl = `https://api.covalenthq.com/v1/bsc-mainnet/address/${userAddress}/transactions_v3/?key=cqt_rQTgdHXTmKjHttP6qRVqqgffDdFd`;
-                        const res = await fetch(covUrl);
-                        const json = await res.json();
-                        if (json.data && json.data.items) {
-                            json.data.items.forEach(tx => {
+                        const resCov = await fetch(covUrl);
+                        const jsonCov = await resCov.json();
+                        if (jsonCov.data && jsonCov.data.items) {
+                            jsonCov.data.items.forEach(tx => {
                                 const toAddr = (tx.to_address || "").toLowerCase();
                                 if ((toAddr === contractAddr || toAddr === tokenAddr) && !seenHashes.has(tx.tx_hash)) {
                                     seenHashes.add(tx.tx_hash);
@@ -1672,7 +1762,7 @@
 
         // Open P2P WhatsApp
         function openP2PWhatsApp() {
-            const text = "Halo Admin P2P Escrow Resmi SNR-VAULT,\n\nSaya ingin mengajukan pencairan (Cash Out / Buy-Back) koin SNR hasil panen Staking V7 saya melalui Jalur P2P Escrow Resmi.\n\nBerikut data pencairan saya:\n• Nama Member / Username: \n• Alamat Wallet (0x...): \n• Jumlah SNR Dijual: \n• Metode Pembayaran (Bank / E-Wallet): \n• No. Rekening & Nama Pemilik: \n\nSaya siap mengikuti alur transaksi aman P2P Escrow demi menjaga stabilitas ekosistem SNR-Vault. Mohon diproses, terima kasih!";
+            const text = "Halo Admin P2P Escrow Resmi SNR-VAULT,\n\nSaya ingin mengajukan pencairan koin SNR hasil panen Staking V7 saya melalui Jalur P2P Escrow Resmi.\n\nBerikut data pencairan saya:\n• Nama Member: \n• Alamat Wallet: \n• Jumlah SNR Dijual: \n• Metode Pembayaran (Bank / E-Wallet): \n• No. Rekening & Nama Pemilik: \n\nSaya siap mengikuti alur transaksi aman P2P Escrow demi menjaga stabilitas ekosistem SNR-Vault. Mohon diproses, terima kasih!";
             const url = "https://wa.me/6289528533262?text=" + encodeURIComponent(text);
             window.open(url, '_blank');
         }
