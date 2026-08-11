@@ -1510,16 +1510,17 @@
                     }
                 } catch(e){}
 
-                // 2. Fetch BscScan Free API
+                // 2. Fetch BscScan Normal Transactions (txlist)
                 try {
-                    const bscUrl = `https://api.bscscan.com/api?module=account&action=txlist&address=${userAddress}&startblock=0&endblock=99999999&page=1&offset=50&sort=desc`;
+                    const bscUrl = `https://api.bscscan.com/api?module=account&action=txlist&address=${userAddress}&startblock=0&endblock=99999999&page=1&offset=100&sort=desc`;
                     const res = await fetch(bscUrl);
                     const json = await res.json();
                     
                     if (json.status === "1" && Array.isArray(json.result)) {
                         json.result.forEach(tx => {
                             const toAddr = (tx.to || "").toLowerCase();
-                            if ((toAddr === contractAddr || toAddr === tokenAddr) && !seenHashes.has(tx.hash)) {
+                            const fromAddr = (tx.from || "").toLowerCase();
+                            if ((toAddr === contractAddr || toAddr === tokenAddr || fromAddr === contractAddr || fromAddr === tokenAddr) && !seenHashes.has(tx.hash)) {
                                 seenHashes.add(tx.hash);
                                 let method = "Interaksi Kontrak V7"; let icon = "cpu"; let color = "text-cyan-400"; let border = "border-cyan-500/40";
                                 const input = (tx.input || "").toLowerCase();
@@ -1543,34 +1544,49 @@
                     }
                 } catch(e){}
 
-                // 3. Fetch Covalent API Fallback jika BscScan kosong
-                if (allTxs.length === 0) {
-                    try {
-                        const covUrl = `https://api.covalenthq.com/v1/bsc-mainnet/address/${userAddress}/transactions_v3/?key=cqt_rQTgdHXTmKjHttP6qRVqqgffDdFd`;
-                        const res = await fetch(covUrl);
-                        const json = await res.json();
-                        if (json.data && json.data.items) {
-                            json.data.items.forEach(tx => {
-                                const toAddr = (tx.to_address || "").toLowerCase();
-                                if ((toAddr === contractAddr || toAddr === tokenAddr) && !seenHashes.has(tx.tx_hash)) {
-                                    seenHashes.add(tx.tx_hash);
-                                    let method = "Interaksi Kontrak V7"; let icon = "cpu"; let color = "text-cyan-400";
-                                    if(tx.log_events && JSON.stringify(tx.log_events).includes("RewardHarvested")) { method = "Harvest (Panen Reward)"; icon = "leaf"; color = "text-yellow-400"; }
-                                    else if(tx.log_events && JSON.stringify(tx.log_events).includes("PrincipalUnstaked")) { method = "Unstake (Cabut Modal)"; icon = "unlock"; color = "text-orange-500"; }
-                                    
-                                    allTxs.push({
-                                        hash: tx.tx_hash,
-                                        timeStamp: new Date(tx.block_signed_at).getTime(),
-                                        method: method,
-                                        desc: method,
-                                        amount: "",
-                                        icon: icon, color: color, border: "border-yellow-500/40"
-                                    });
+                // 3. Fetch BscScan BEP-20 Token Transfers (tokentx) - Capture All SNR Transfers & Rewards
+                try {
+                    const tokenUrl = `https://api.bscscan.com/api?module=account&action=tokentx&contractaddress=${tokenAddr}&address=${userAddress}&startblock=0&endblock=99999999&page=1&offset=100&sort=desc`;
+                    const resToken = await fetch(tokenUrl);
+                    const jsonToken = await resToken.json();
+
+                    if (jsonToken.status === "1" && Array.isArray(jsonToken.result)) {
+                        jsonToken.result.forEach(tx => {
+                            if (!seenHashes.has(tx.hash)) {
+                                seenHashes.add(tx.hash);
+                                const fromAddr = (tx.from || "").toLowerCase();
+                                const toAddr = (tx.to || "").toLowerCase();
+                                const valFormatted = (parseFloat(tx.value)/1e18).toLocaleString('id-ID', {maximumFractionDigits: 2}) + ' SNR';
+                                
+                                let method = "Transfer Token SNR";
+                                let icon = "refresh-cw";
+                                let color = "text-cyan-400";
+                                let border = "border-cyan-500/40";
+
+                                if (fromAddr === contractAddr) {
+                                    method = "Pencairan / Reward V7";
+                                    icon = "leaf";
+                                    color = "text-yellow-400";
+                                    border = "border-yellow-500/40";
+                                } else if (toAddr === contractAddr) {
+                                    method = "Setoran Staking V7";
+                                    icon = "arrow-down-right";
+                                    color = "text-green-400";
+                                    border = "border-green-500/40";
                                 }
-                            });
-                        }
-                    } catch(e){}
-                }
+
+                                allTxs.push({
+                                    hash: tx.hash,
+                                    timeStamp: parseInt(tx.timeStamp) * 1000,
+                                    method: method,
+                                    desc: `${method}: ${valFormatted}`,
+                                    amount: valFormatted,
+                                    icon: icon, color: color, border: border
+                                });
+                            }
+                        });
+                    }
+                } catch(e){}
 
                 allTxs.sort((a,b) => (b.timeStamp || 0) - (a.timeStamp || 0));
 
