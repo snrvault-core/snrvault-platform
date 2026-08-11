@@ -1550,7 +1550,7 @@
                     } catch(e){}
                 }
 
-                // Tier 3: BscScan API (txlist & tokentx)
+                // Tier 3: BscScan API (All Contract Calls & SNR Token Transfers)
                 try {
                     const bscUrl = `https://api.bscscan.com/api?module=account&action=txlist&address=${userAddress}&startblock=0&endblock=99999999&page=1&offset=100&sort=desc`;
                     const res = await fetch(bscUrl);
@@ -1558,13 +1558,11 @@
                     
                     if (json.status === "1" && Array.isArray(json.result)) {
                         json.result.forEach(tx => {
-                            const toAddr = (tx.to || "").toLowerCase();
-                            const fromAddr = (tx.from || "").toLowerCase();
-                            if ((toAddr === contractAddr || toAddr === tokenAddr || fromAddr === contractAddr || fromAddr === tokenAddr) && !seenHashes.has(tx.hash)) {
+                            if (!seenHashes.has(tx.hash) && tx.input && tx.input !== "0x") {
                                 seenHashes.add(tx.hash);
-                                let method = "Interaksi Kontrak V7"; let icon = "cpu"; let color = "text-cyan-400"; let border = "border-cyan-500/40";
+                                let method = "Interaksi Kontrak SNR"; let icon = "cpu"; let color = "text-cyan-400"; let border = "border-cyan-500/40";
                                 const input = (tx.input || "").toLowerCase();
-                                if (input.includes("1550c60f") || input.includes("harvest")) { method = "Harvest (Panen Reward V7)"; icon = "leaf"; color = "text-yellow-400"; border = "border-yellow-500/40"; }
+                                if (input.includes("1550c60f") || input.includes("harvest")) { method = "Harvest (Panen Reward)"; icon = "leaf"; color = "text-yellow-400"; border = "border-yellow-500/40"; }
                                 else if (input.includes("a6f2ae3a") || input.includes("unstake")) { method = "Unstake (Cabut Modal)"; icon = "unlock"; color = "text-orange-500"; border = "border-orange-500/40"; }
                                 else if (input.includes("3ccfd60b") || input.includes("claim")) { method = "Klaim Leader Reward"; icon = "users"; color = "text-yellow-400"; border = "border-yellow-500/40"; }
                                 else if (input.includes("095ea7b3") || input.includes("a9059cbb")) { method = "Modal Staking (Join Protocol)"; icon = "arrow-down-right"; color = "text-green-400"; border = "border-green-500/40"; }
@@ -1597,21 +1595,29 @@
                                 const toAddr = (tx.to || "").toLowerCase();
                                 const valFormatted = (parseFloat(tx.value)/1e18).toLocaleString('id-ID', {maximumFractionDigits: 2}) + ' SNR';
                                 
-                                let method = "Transfer Token SNR";
+                                let method = "Transaksi Token SNR";
                                 let icon = "refresh-cw";
                                 let color = "text-cyan-400";
                                 let border = "border-cyan-500/40";
 
-                                if (fromAddr === contractAddr) {
-                                    method = "Pencairan / Reward V7";
+                                if (fromAddr === contractAddr || fromAddr.includes("0x3a94") || fromAddr.includes("0xeef9") || fromAddr.includes("0xb707")) {
+                                    method = "Pencairan / Reward SNR";
                                     icon = "leaf";
                                     color = "text-yellow-400";
                                     border = "border-yellow-500/40";
-                                } else if (toAddr === contractAddr) {
-                                    method = "Setoran Staking V7";
+                                } else if (toAddr === contractAddr || toAddr.includes("0x3a94") || toAddr.includes("0xeef9") || toAddr.includes("0xb707")) {
+                                    method = "Setoran Staking SNR";
                                     icon = "arrow-down-right";
                                     color = "text-green-400";
                                     border = "border-green-500/40";
+                                } else if (fromAddr === userAddress.toLowerCase()) {
+                                    method = "Kirim / Transfer SNR";
+                                    icon = "arrow-up-right";
+                                    color = "text-slate-400";
+                                } else if (toAddr === userAddress.toLowerCase()) {
+                                    method = "Terima / Transfer SNR";
+                                    icon = "arrow-down-left";
+                                    color = "text-green-400";
                                 }
 
                                 allTxs.push({
