@@ -1,33 +1,37 @@
-// i18n.js - SNR-VAULT Bilingual Engine (Preserving Signature Terms & Iconic Buttons)
+// i18n.js - SNR-VAULT Bilingual Engine (Supporting Paragraphs Only - All Titles & Buttons Unchanged)
 
 const i18nDict = {
-    // Navigation & Hero (Descriptive Texts)
-    'nav_how_it_works': { en: 'HOW IT WORKS', id: 'CARA KERJA' },
-    'nav_canons': { en: 'V7 CANONS', id: 'KANUN V7' },
-    'nav_hall_of_fame': { en: 'HALL OF FAME', id: 'HALL OF FAME' },
-    'nav_tokenomics': { en: 'TOKENOMICS', id: 'TOKENOMICS' },
-    'nav_transparency': { en: 'TRANSPARENCY', id: 'TRANSPARANSI' },
-    'nav_roadmap': { en: 'ROADMAP', id: 'ROADMAP' },
-
-    'hero_badge': { en: 'PROTOCOL V4 ACTIVE', id: 'PROTOKOL V4 AKTIF' },
+    // Hero Descriptive Paragraph
     'hero_desc': { 
         en: 'A community-centered digital economic infrastructure connecting people, commerce, distribution, assets, and transparent technology. Stake SNR on Binance Smart Chain.', 
         id: 'Infrastruktur ekonomi digital berbasis komunitas yang menghubungkan manusia, perdagangan, distribusi, aset, dan teknologi transparan. Staking SNR di Binance Smart Chain.' 
     },
 
-    // Hall of Fame Section
-    'hof_badge': { en: 'PANGGUNG KEHORMATAN LEADER', id: 'PANGGUNG KEHORMATAN LEADER' },
+    // Hall of Fame Supporting Text Paragraphs
     'hof_subtitle': { 
         en: 'Highest appreciation for SNR-VAULT Elite Leaders who have proven leadership sovereignty and set records in the national network.', 
         id: 'Apresiasi tertinggi bagi Pemimpin Elit SNR-VAULT yang berhasil membuktikan kedaulatan kepemimpinan dan mencetak rekor di jaringan nasional.' 
     },
-    'hof_cta_title': { en: 'WANT YOUR PHOTO & NAME IMMORTALIZED HERE?', id: 'INGIN FOTO & NAMA ANDA DIABADIKAN DI SINI?' },
     'hof_cta_desc': { 
         en: 'Qualify for Rank Colonel or Titan, send your official photo to Escrow Admin to be displayed on the Hall of Fame!', 
         id: 'Tembus kualifikasi Rank Colonel atau Titan, kirimkan foto resmi Anda ke Admin Escrow untuk dipajang di Panggung Kehormatan!' 
     },
 
-    // Footer
+    // DApp Terminal Supporting Paragraphs (After Connect Wallet)
+    'dapp_ref_desc': {
+        en: 'Share this link. When a new member stakes via your link, they will automatically join your Direct (Upline) network.',
+        id: 'Sebarkan link ini. Saat member baru melakukan staking via link Anda, mereka akan otomatis menjadi jaringan Direct (Upline) Anda.'
+    },
+    'dapp_p2p_desc': {
+        en: 'P2P transactions are currently served directly via Official Admin / Escrow.',
+        id: 'Transaksi P2P saat ini dilayani secara langsung via Admin / Escrow Resmi.'
+    },
+    'dapp_ranks_desc': {
+        en: 'Complete guide for rank qualifications, 10-level network rewards, and daily yield optimization strategy.',
+        id: 'Panduan lengkap kualifikasi rank, bonus jaringan 10 level, dan strategi optimalisasi hasil panen harian.'
+    },
+
+    // Footer Legal Disclosure
     'footer_legal': {
         en: 'Under the Governance of PT SNR DIGITAL TRANSFORMASI. Sovereign Infrastructure for the Digital Economy. Audited, verifiable, and permanent smart contracts on BSC.',
         id: 'Di bawah Tata Kelola PT SNR DIGITAL TRANSFORMASI. Infrastruktur Berdaulat Ekonomi Digital. Smart Contract diaudit, terverifikasi, dan permanen di BSC.'
@@ -44,7 +48,7 @@ function switchLanguage(lang) {
     currentLang = lang;
     localStorage.setItem('snr_lang', lang);
     
-    // Translate elements with data-i18n attributes
+    // Translate elements with data-i18n attributes (Supporting Paragraphs Only)
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (i18nDict[key] && i18nDict[key][lang]) {
