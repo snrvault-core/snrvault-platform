@@ -1468,13 +1468,13 @@
             }, 6000);
         })();
 
-        // 3. MULTI-SOURCE TRANSACTION LEDGER SYNC (Presisi BscScan + LocalStorage)
+        // 3. MULTI-SOURCE TRANSACTION LEDGER SYNC (4-Tier Failsafe Ledger Engine)
         let lastLedgerSyncAddr = "";
         async function syncRealLedgerHistory() {
             const historyList = document.getElementById('history-list');
             if (!historyList || typeof userAddress === 'undefined' || !userAddress) return;
 
-            if (lastLedgerSyncAddr === userAddress.toLowerCase() && !historyList.innerHTML.includes('Menyinkronkan') && !historyList.innerHTML.includes('Gagal')) {
+            if (lastLedgerSyncAddr === userAddress.toLowerCase() && historyList.children.length > 0 && !historyList.innerHTML.includes('Menyinkronkan') && !historyList.innerHTML.includes('Belum ada')) {
                 return;
             }
 
@@ -1484,7 +1484,7 @@
                 let allTxs = [];
                 let seenHashes = new Set();
 
-                // 1. Ambil transaksi lokal (dari saveLocalTx)
+                // Tier 1: LocalStorage Ledger
                 try {
                     const key1 = 'snr_v7_ledger_' + userAddress.toLowerCase();
                     const key2 = 'snr_v7_txs_' + userAddress.toLowerCase();
@@ -1501,7 +1501,7 @@
                                     method: item.type || "Interaksi Kontrak V7",
                                     desc: item.desc || item.type || "",
                                     amount: item.amount || item.desc || "",
-                                    icon: (item.type || "").includes('Harvest') ? 'leaf' : ((item.type || "").includes('Staked') ? 'arrow-down-right' : 'wallet'),
+                                    icon: (item.type || "").includes('Harvest') ? 'leaf' : ((item.type || "").includes('Staked') || (item.type || "").includes('Join') ? 'arrow-down-right' : 'wallet'),
                                     color: (item.type || "").includes('Harvest') ? 'text-yellow-400' : 'text-cyan-400',
                                     border: (item.type || "").includes('Harvest') ? 'border-yellow-500/40' : 'border-cyan-500/40'
                                 });
@@ -1510,7 +1510,47 @@
                     }
                 } catch(e){}
 
-                // 2. Fetch BscScan Normal Transactions (txlist)
+                // Tier 2: Web3 Direct BSC RPC On-Chain Event Query (No API Key Required)
+                if (stakingContract && provider) {
+                    try {
+                        const currentBlock = await provider.getBlockNumber();
+                        const fromBlock = Math.max(0, currentBlock - 300000); // ~10 Hari Terakhir BSC
+
+                        const harvestEvents = await stakingContract.queryFilter(stakingContract.filters.RewardHarvested(userAddress), fromBlock);
+                        harvestEvents.forEach(evt => {
+                            if (!seenHashes.has(evt.transactionHash)) {
+                                seenHashes.add(evt.transactionHash);
+                                const compoundAmt = evt.args.netToCompound ? (parseFloat(ethers.utils.formatUnits(evt.args.netToCompound, 18)).toLocaleString('id-ID', {maximumFractionDigits: 2}) + ' SNR') : '';
+                                allTxs.push({
+                                    hash: evt.transactionHash,
+                                    timeStamp: Date.now() - 3600000,
+                                    method: "Harvest (Panen Reward V7)",
+                                    desc: `Panen Profit: ${compoundAmt} (Auto-Compound 45%)`,
+                                    amount: compoundAmt,
+                                    icon: 'leaf', color: 'text-yellow-400', border: 'border-yellow-500/40'
+                                });
+                            }
+                        });
+
+                        const unstakeEvents = await stakingContract.queryFilter(stakingContract.filters.PrincipalUnstaked(userAddress), fromBlock);
+                        unstakeEvents.forEach(evt => {
+                            if (!seenHashes.has(evt.transactionHash)) {
+                                seenHashes.add(evt.transactionHash);
+                                const amt = evt.args.amount ? (parseFloat(ethers.utils.formatUnits(evt.args.amount, 18)).toLocaleString('id-ID', {maximumFractionDigits: 2}) + ' SNR') : '';
+                                allTxs.push({
+                                    hash: evt.transactionHash,
+                                    timeStamp: Date.now() - 3600000,
+                                    method: "Unstake (Cabut Modal V7)",
+                                    desc: `Pencabutan Modal: ${amt}`,
+                                    amount: amt,
+                                    icon: 'unlock', color: 'text-orange-500', border: 'border-orange-500/40'
+                                });
+                            }
+                        });
+                    } catch(e){}
+                }
+
+                // Tier 3: BscScan API (txlist & tokentx)
                 try {
                     const bscUrl = `https://api.bscscan.com/api?module=account&action=txlist&address=${userAddress}&startblock=0&endblock=99999999&page=1&offset=100&sort=desc`;
                     const res = await fetch(bscUrl);
@@ -1544,7 +1584,6 @@
                     }
                 } catch(e){}
 
-                // 3. Fetch BscScan BEP-20 Token Transfers (tokentx) - Capture All SNR Transfers & Rewards
                 try {
                     const tokenUrl = `https://api.bscscan.com/api?module=account&action=tokentx&contractaddress=${tokenAddr}&address=${userAddress}&startblock=0&endblock=99999999&page=1&offset=100&sort=desc`;
                     const resToken = await fetch(tokenUrl);
@@ -1587,6 +1626,35 @@
                         });
                     }
                 } catch(e){}
+
+                // Tier 4: Covalent API Fallback
+                if (allTxs.length === 0) {
+                    try {
+                        const covUrl = `https://api.covalenthq.com/v1/bsc-mainnet/address/${userAddress}/transactions_v3/?key=cqt_rQTgdHXTmKjHttP6qRVqqgffDdFd`;
+                        const resCov = await fetch(covUrl);
+                        const jsonCov = await resCov.json();
+                        if (jsonCov.data && jsonCov.data.items) {
+                            jsonCov.data.items.forEach(tx => {
+                                const toAddr = (tx.to_address || "").toLowerCase();
+                                if ((toAddr === contractAddr || toAddr === tokenAddr) && !seenHashes.has(tx.tx_hash)) {
+                                    seenHashes.add(tx.tx_hash);
+                                    let method = "Interaksi Kontrak V7"; let icon = "cpu"; let color = "text-cyan-400";
+                                    if(tx.log_events && JSON.stringify(tx.log_events).includes("RewardHarvested")) { method = "Harvest (Panen Reward)"; icon = "leaf"; color = "text-yellow-400"; }
+                                    else if(tx.log_events && JSON.stringify(tx.log_events).includes("PrincipalUnstaked")) { method = "Unstake (Cabut Modal)"; icon = "unlock"; color = "text-orange-500"; }
+                                    
+                                    allTxs.push({
+                                        hash: tx.tx_hash,
+                                        timeStamp: new Date(tx.block_signed_at).getTime(),
+                                        method: method,
+                                        desc: method,
+                                        amount: "",
+                                        icon: icon, color: color, border: "border-yellow-500/40"
+                                    });
+                                }
+                            });
+                        }
+                    } catch(e){}
+                }
 
                 allTxs.sort((a,b) => (b.timeStamp || 0) - (a.timeStamp || 0));
 
