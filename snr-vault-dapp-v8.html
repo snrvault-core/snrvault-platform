@@ -81,18 +81,18 @@
     </style>
 </head>
 
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col pt-10">
 
-    <!-- Marquee -->
-    <div class="bg-primary/10 border-b border-primary/20 py-2 relative z-[60] overflow-hidden">
+    <!-- Sticky Marquee -->
+    <div class="bg-primary/10 border-b border-primary/20 py-2 fixed top-0 w-full z-[60] overflow-hidden backdrop-blur-md">
         <div class="marquee-content text-primary text-sm font-display tracking-widest font-semibold w-max">
-            <span>&#9888; SNR-VAULT V8 ONLINE /// 100% REGULATED REAL YIELD /// NO PONZI MECHANICS /// FULL TRANSPARENCY /// TOTAL STAKED: 2,450,000 SNR /// </span>
-            <span>&#9888; SNR-VAULT V8 ONLINE /// 100% REGULATED REAL YIELD /// NO PONZI MECHANICS /// FULL TRANSPARENCY /// TOTAL STAKED: 2,450,000 SNR /// </span>
+            <span>&#9888; <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> V8 ONLINE /// EKOSISTEM DEFI TRANSPARAN & TERLINDUNGI /// BUKAN PONZI /// ANTI-BOT SHIELD ACTIVE /// </span>
+            <span>&#9888; <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> V8 ONLINE /// EKOSISTEM DEFI TRANSPARAN & TERLINDUNGI /// BUKAN PONZI /// ANTI-BOT SHIELD ACTIVE /// </span>
         </div>
     </div>
 
     <!-- Navbar -->
-    <nav class="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-cardBorder">
+    <nav class="sticky top-10 z-50 bg-background/90 backdrop-blur-md border-b border-cardBorder">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
                 <div class="flex items-center gap-3 cursor-pointer" onclick="switchPage('landing')">
@@ -115,13 +115,13 @@
 
                 <div id="nav-dapp" class="flex items-center gap-6 hidden">
                     <button onclick="switchPage('landing')"
-                        class="text-secondary hover:text-white transition-colors mr-4">
+                        class="text-secondary hover:text-white transition-colors mr-4 hidden sm:block">
                         Kembali
                     </button>
                     <button id="connect-wallet-btn" onclick="connectWallet()"
                         class="px-6 py-2.5 rounded-lg bg-card border border-accent text-accent font-semibold hover:bg-accent/10 transition-all flex items-center gap-2">
                         <i data-lucide="wallet" class="w-5 h-5"></i>
-                        <span>Connect Wallet</span>
+                        <span id="wallet-text">Connect</span>
                     </button>
                 </div>
             </div>
@@ -139,18 +139,20 @@
             </div>
 
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-green-500/30 bg-green-500/10 text-green-400 mb-8 animate-pulse">
-                    <i data-lucide="check-circle" class="w-4 h-4"></i>
-                    <span class="text-sm font-semibold tracking-wide">100% REGULATED REAL YIELD DEFI</span>
+                <img src="logo_banner.jpeg" alt="SNR-VAULT Banner" class="max-w-xs md:max-w-md w-full mx-auto mb-8 rounded-xl shadow-[0_0_30px_rgba(255,204,0,0.2)] border border-primary/20">
+
+                <div class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-green-500/30 bg-green-500/10 text-green-400 mb-8 animate-pulse max-w-full overflow-hidden">
+                    <i data-lucide="check-circle" class="w-4 h-4 flex-shrink-0"></i>
+                    <span class="text-xs sm:text-sm font-semibold tracking-wide truncate">EKOSISTEM DEFI TRANSPARAN (REAL YIELD)</span>
                 </div>
 
-                <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight font-display">
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight font-display break-words">
                     THE DEEP SPACE <br />
                     <span class="text-gradient">FINANCIAL FORTRESS</span>
                 </h1>
 
-                <p class="text-xl text-secondary max-w-3xl mx-auto mb-10 leading-relaxed">
-                    Staking kripto legal pertama yang terintegrasi dengan bisnis nyata. Dapatkan hasil bagi keuntungan yang transparan, dinamis, dan patuh regulasi Indonesia. 
+                <p class="text-lg md:text-xl text-secondary max-w-3xl mx-auto mb-10 leading-relaxed px-4">
+                    <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> adalah benteng finansial yang mendistribusikan Bagi Hasil (Real Yield) langsung dari profit bisnis nyata. Aman, transparan, dan terlindungi teknologi Anti-Bot tingkat dunia.
                 </p>
 
                 <div class="flex justify-center items-center gap-4">
@@ -167,25 +169,25 @@
         <section id="security" class="py-24 bg-card/30 border-y border-cardBorder">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-16">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4 font-display">Mengapa Kami Berbeda?</h2>
-                    <p class="text-secondary max-w-2xl mx-auto">Kami beroperasi di luar skema Ponzi tradisional dengan komitmen pada ketaatan hukum (Bappebti/OJK).</p>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4 font-display">Antitesis Skema Ponzi</h2>
+                    <p class="text-secondary max-w-2xl mx-auto">Kami beroperasi di luar ekosistem piramida ilegal. Ini adalah standar institusional yang mematuhi regulasi.</p>
                 </div>
 
                 <div class="grid md:grid-cols-3 gap-8">
-                    <div class="glass-panel p-8">
+                    <div class="glass-panel p-8 hover:border-accent/50 transition-colors">
                         <i data-lucide="bar-chart" class="w-10 h-10 text-accent mb-4"></i>
                         <h3 class="text-xl font-bold mb-3 font-display">Real Yield Distribution</h3>
-                        <p class="text-secondary text-sm">Tidak ada janji bunga tetap. Staking reward murni dari injeksi profit bisnis asli perusahaan, memastikan protokol tidak pernah bangkrut.</p>
+                        <p class="text-secondary text-sm">Tanpa inflasi token palsu. Reward Anda berasal dari keringat bisnis riil perusahaan yang disuntikkan langsung ke dalam Smart Contract.</p>
                     </div>
-                    <div class="glass-panel p-8">
-                        <i data-lucide="users" class="w-10 h-10 text-primary mb-4"></i>
-                        <h3 class="text-xl font-bold mb-3 font-display">Fair Marketing (1-Level)</h3>
-                        <p class="text-secondary text-sm">Bebas skema piramida. Dapatkan komisi transparan langsung di awal tanpa merusak struktur hadiah staking keseluruhan jaringan.</p>
+                    <div class="glass-panel p-8 hover:border-primary/50 transition-colors">
+                        <i data-lucide="shield-alert" class="w-10 h-10 text-primary mb-4"></i>
+                        <h3 class="text-xl font-bold mb-3 font-display">Anti-Bot Sovereign Shield</h3>
+                        <p class="text-secondary text-sm">Dilengkapi pertahanan kriptografi militer (Max Wallet, Tx Limits, Blacklist) untuk melindungi investor asli dari manipulasi Bot Sniper.</p>
                     </div>
-                    <div class="glass-panel p-8">
+                    <div class="glass-panel p-8 hover:border-green-400/50 transition-colors">
                         <i data-lucide="shield-check" class="w-10 h-10 text-green-400 mb-4"></i>
                         <h3 class="text-xl font-bold mb-3 font-display">Non-Custodial Escrow</h3>
-                        <p class="text-secondary text-sm">Dana staking Anda dikunci oleh Smart Contract yang terdesentralisasi. Kami menghapus intervensi P2P Fiat yang ilegal, 100% on-chain.</p>
+                        <p class="text-secondary text-sm">Tidak ada campur tangan admin atau P2P ilegal. Uang Anda diamankan oleh Smart Contract di blockchain yang tidak bisa diretas siapapun.</p>
                     </div>
                 </div>
             </div>
@@ -200,8 +202,9 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div class="glass-panel p-6 flex items-center justify-between">
                     <div>
-                        <p class="text-secondary text-sm mb-1">Total Saldo (Wallet)</p>
-                        <h3 class="text-2xl font-bold">12,500 <span class="text-primary text-lg">SNR</span></h3>
+                        <p class="text-secondary text-sm mb-1">Total Saldo Tersedia</p>
+                        <h3 class="text-2xl font-bold"><span id="display-balance">0.00</span> <span class="text-primary text-lg">SNR</span></h3>
+                        <p class="text-xs text-secondary mt-1">BNB: <span id="display-bnb">0.00</span></p>
                     </div>
                     <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
                         <i data-lucide="wallet" class="w-6 h-6 text-primary"></i>
@@ -209,37 +212,41 @@
                 </div>
                 <div class="glass-panel p-6 flex items-center justify-between border-accent/30">
                     <div>
-                        <p class="text-secondary text-sm mb-1">Estimasi Real Yield (APY)</p>
-                        <h3 class="text-2xl font-bold text-accent">~45.5% <span class="text-sm font-normal text-secondary">Dinamis</span></h3>
+                        <p class="text-secondary text-sm mb-1">Aset Terkunci (Staked)</p>
+                        <h3 class="text-2xl font-bold text-accent"><span id="display-staked">0.00</span> <span class="text-sm font-normal text-secondary">SNR</span></h3>
                     </div>
                     <div class="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center border border-accent/30">
-                        <i data-lucide="trending-up" class="w-6 h-6 text-accent"></i>
+                        <i data-lucide="lock" class="w-6 h-6 text-accent"></i>
                     </div>
                 </div>
                 <div class="glass-panel p-6 flex items-center justify-between">
                     <div>
                         <p class="text-secondary text-sm mb-1">Pending Staking Reward</p>
-                        <h3 class="text-2xl font-bold text-green-400">450 <span class="text-sm">SNR</span></h3>
+                        <h3 class="text-2xl font-bold text-green-400"><span id="display-reward">0.00</span> <span class="text-sm">SNR</span></h3>
                     </div>
-                    <button class="px-4 py-2 bg-green-500/20 text-green-400 border border-green-500/50 rounded-lg text-sm hover:bg-green-500/30 transition-colors">
-                        Claim Reward
-                    </button>
-                </div>
+                    <div class="flex flex-col gap-2">
+                        <button id="btn-claim" onclick="claimReward()" class="px-4 py-2 bg-green-500/20 text-green-400 border border-green-500/50 rounded-lg text-sm hover:bg-green-500/30 transition-colors">
+                            Claim Reward
+                        </button>
+                        <button id="btn-compound" onclick="compoundReward()" class="px-4 py-2 bg-primary/20 text-primary border border-primary/50 rounded-lg text-sm hover:bg-primary/30 transition-colors">
+                            Compound
+                        </button>
+                    </div>
             </div>
 
             <!-- Navigation Tabs -->
-            <div class="flex flex-wrap gap-2 mb-8 bg-card p-2 rounded-xl border border-cardBorder w-fit">
-                <button onclick="switchTab('staking')" id="btn-staking" class="px-6 py-2 rounded-lg text-sm font-medium transition-all bg-primary text-black">
-                    Staking Pool (V8)
+            <div class="flex flex-wrap gap-2 mb-8 bg-card p-2 rounded-xl border border-cardBorder w-full sm:w-fit justify-center sm:justify-start">
+                <button onclick="switchTab('staking')" id="btn-staking" class="flex-grow sm:flex-grow-0 px-6 py-2 rounded-lg text-sm font-medium transition-all bg-primary text-black whitespace-nowrap">
+                    Staking (V8)
                 </button>
-                <button onclick="switchTab('otc')" id="btn-otc" class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary hover:text-white border border-accent/30 bg-accent/5">
-                    Direct Buy (Fixed Price)
+                <button onclick="switchTab('otc')" id="btn-otc" class="flex-grow sm:flex-grow-0 px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary hover:text-white border border-accent/30 bg-accent/5 whitespace-nowrap">
+                    Direct Buy
                 </button>
-                <button onclick="switchTab('network')" id="btn-network" class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary hover:text-white">
-                    Affiliate & Leaderboard
+                <button onclick="switchTab('network')" id="btn-network" class="flex-grow sm:flex-grow-0 px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary hover:text-white whitespace-nowrap">
+                    Afiliasi
                 </button>
-                <button onclick="switchTab('p2p')" id="btn-p2p" class="px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary hover:text-white">
-                    Trade on DEX
+                <button onclick="switchTab('p2p')" id="btn-p2p" class="flex-grow sm:flex-grow-0 px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary hover:text-white whitespace-nowrap">
+                    DEX Trade
                 </button>
             </div>
 
@@ -252,69 +259,30 @@
                         <h3 class="text-2xl font-display font-bold mb-2 flex items-center gap-2">
                             <i data-lucide="lock" class="text-primary w-6 h-6"></i> Stake SNR Token
                         </h3>
-                        <p class="text-secondary text-sm mb-6">Nikmati bagi hasil keuntungan bisnis riil perusahaan tanpa janji bunga Ponzi. Dapat dibatalkan kapan saja (5% early unstake penalty jika ditarik sebelum 30 hari, dikembalikan ke reward pool).</p>
+                        <p class="text-secondary text-sm mb-6">Nikmati bagi hasil dari profit bisnis riil perusahaan. <strong>Perhatian:</strong> Penarikan sebelum 30 hari akan dikenakan <span class="text-red-400">Pinalti 15%</span> (didistribusikan ke member yang bertahan dan kas perusahaan). Ini melindungi kolam dari kutu loncat.</p>
                         
                         <div class="space-y-5">
                             <div>
                                 <label class="block text-sm text-secondary mb-2">Jumlah SNR</label>
                                 <div class="relative">
-                                    <input type="number" placeholder="0.0" class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
+                                    <input type="number" id="stake-input" placeholder="0.0" class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
                                     <span class="absolute right-4 top-3 text-primary font-bold">SNR</span>
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-sm text-secondary mb-2">Alamat Referrer (Opsional)</label>
-                                <input type="text" placeholder="0x..." class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
+                                <label class="block text-sm text-secondary mb-2">Alamat Referrer (Afiliasi) - Opsional</label>
+                                <input type="text" id="affiliate-input" placeholder="0x..." class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
                             </div>
-                            <button class="w-full py-4 mt-4 bg-primary text-black font-bold rounded-lg hover:bg-yellow-400 hover:shadow-[0_0_20px_rgba(255,204,0,0.3)] transition-all">
-                                Stake Now
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Affiliate Tab -->
-                    <div id="tab-network" class="dapp-tab glass-panel p-8 border-accent/30">
-                        <div class="flex items-start justify-between mb-6">
-                            <div>
-                                <h3 class="text-xl font-display font-bold text-white mb-2">Program Afiliasi 1-Level</h3>
-                                <p class="text-secondary text-sm max-w-md">Sistem pemasaran legal tanpa skema piramida. Dapatkan 5% *flat bonus* dari Treasury untuk setiap pengguna yang menggunakan link Anda untuk melakukan staking.</p>
-                            </div>
-                            <div class="hidden sm:flex w-16 h-16 rounded-full border-2 border-accent/20 items-center justify-center bg-card">
-                                <i data-lucide="award" class="w-8 h-8 text-accent"></i>
-                            </div>
-                        </div>
-
-                        <div class="mb-6 bg-background/50 border border-cardBorder p-4 rounded-lg">
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="text-secondary text-sm">Total Volume Afiliasi Anda:</span>
-                                <span class="font-bold">45,000 SNR</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-secondary text-sm">Posisi Leaderboard:</span>
-                                <span class="text-accent font-bold">#4</span>
-                            </div>
-                        </div>
-
-                        <div class="border-t border-cardBorder pt-6">
-                            <label class="block text-sm text-secondary mb-2">Tautan Afiliasi Anda</label>
-                            <div class="flex gap-2">
-                                <input type="text" readonly value="https://snr-vault.com/dapp?ref=0x5Ce1..." class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-secondary focus:outline-none">
-                                <button class="px-4 py-3 bg-card border border-cardBorder rounded-lg hover:bg-white/5 transition-colors flex items-center justify-center">
-                                    <i data-lucide="copy" class="w-5 h-5 text-white"></i>
+                            
+                            <div class="grid grid-cols-2 gap-4 mt-4">
+                                <button id="btn-stake" onclick="stakeSNR()" class="w-full py-4 bg-primary text-black font-bold rounded-lg hover:bg-yellow-400 hover:shadow-[0_0_20px_rgba(255,204,0,0.3)] transition-all flex justify-center items-center gap-2">
+                                    <i data-lucide="arrow-down-to-line" class="w-5 h-5"></i> Stake
+                                </button>
+                                <button id="btn-unstake" onclick="unstakeSNR()" class="w-full py-4 bg-card border border-red-500/50 text-red-400 font-bold rounded-lg hover:bg-red-500/10 transition-all flex justify-center items-center gap-2">
+                                    <i data-lucide="arrow-up-from-line" class="w-5 h-5"></i> Unstake
                                 </button>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- DEX Tab -->
-                    <div id="tab-p2p" class="dapp-tab glass-panel p-8 text-center min-h-[400px] flex flex-col items-center justify-center">
-                        <i data-lucide="arrow-right-left" class="w-16 h-16 text-primary mb-4"></i>
-                        <h3 class="text-2xl font-bold mb-4">Trade on PancakeSwap (DEX)</h3>
-                        <p class="text-secondary max-w-md mx-auto mb-8">SNR-VAULT V8 beroperasi 100% secara on-chain. Untuk membeli atau menjual SNR menjadi USDT/BNB secara instan dan aman, gunakan Decentralized Exchange resmi.</p>
-                        <a href="https://pancakeswap.finance/swap?outputCurrency=0xBC4d4D01f6cc6f483f355c6EBa45C7CcF54e5994" target="_blank" class="px-8 py-4 bg-primary text-black font-bold rounded-lg hover:bg-yellow-400 hover:shadow-[0_0_20px_rgba(255,204,0,0.4)] transition-all flex items-center gap-3">
-                            <i data-lucide="external-link" class="w-6 h-6"></i>
-                            Buka PancakeSwap
-                        </a>
                     </div>
 
                     <!-- Direct Buy / OTC Tab -->
@@ -322,7 +290,7 @@
                         <h3 class="text-2xl font-display font-bold mb-2 flex items-center gap-2 text-accent">
                             <i data-lucide="zap" class="w-6 h-6"></i> Direct Buy (No Slippage)
                         </h3>
-                        <p class="text-secondary text-sm mb-6">Beli SNR langsung dari Treasury Perusahaan tanpa manipulasi bot dan tanpa Slippage PancakeSwap. Pembayaran wajib menggunakan USDT (BEP-20). Harga dijamin tetap di Rp 5.010 / SNR.</p>
+                        <p class="text-secondary text-sm mb-6">Beli SNR langsung dari Treasury Perusahaan tanpa manipulasi bot dan tanpa Slippage PancakeSwap. Pembayaran wajib menggunakan USDT (BEP-20). Harga dijamin tetap.</p>
                         
                         <div class="space-y-5">
                             <div class="bg-background/50 border border-cardBorder p-4 rounded-lg flex justify-between items-center">
@@ -355,6 +323,58 @@
                             </button>
                         </div>
                     </div>
+
+                    <!-- Affiliate Tab -->
+                    <div id="tab-network" class="dapp-tab glass-panel p-8 border-accent/30">
+                        <div class="flex items-start justify-between mb-6">
+                            <div>
+                                <h3 class="text-xl font-display font-bold text-white mb-2">Program Afiliasi Transparan</h3>
+                                <p class="text-secondary text-sm max-w-md">Bebas skema piramida. Dapatkan 5% *flat bonus* untuk setiap pengguna yang menggunakan tautan Anda. Sistem pemasaran bersih dan sehat.</p>
+                            </div>
+                            <div class="hidden sm:flex w-16 h-16 rounded-full border-2 border-accent/20 items-center justify-center bg-card">
+                                <i data-lucide="award" class="w-8 h-8 text-accent"></i>
+                            </div>
+                        </div>
+
+                        <div class="mb-6 space-y-3">
+                            <div class="bg-background/50 border border-cardBorder p-4 rounded-lg flex justify-between items-center">
+                                <span class="text-secondary text-sm">Pangkat Leader Anda:</span>
+                                <span id="display-tier" class="font-bold text-accent">BRONZE (5%)</span>
+                            </div>
+                            <div class="bg-background/50 border border-cardBorder p-4 rounded-lg flex justify-between items-center">
+                                <span class="text-secondary text-sm">Total Omset Downline:</span>
+                                <span class="font-bold"><span id="display-aff-vol">0.00</span> SNR</span>
+                            </div>
+                            <div class="bg-background/50 border border-cardBorder p-4 rounded-lg flex flex-col gap-1">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-secondary text-sm">Sisa Kuota Max Cap (100%):</span>
+                                    <span class="font-bold text-primary"><span id="display-max-cap">0.00</span> SNR</span>
+                                </div>
+                                <p class="text-xs text-secondary mt-1">Kuota = (Modal Staking - Bonus Diterima). Lakukan Staking lagi untuk menambah Kuota Max Cap!</p>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-cardBorder pt-6">
+                            <label class="block text-sm text-secondary mb-2">Tautan Afiliasi Anda</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="ref-link" readonly value="Connect Wallet First" class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-secondary focus:outline-none">
+                                <button onclick="copyRef()" class="px-4 py-3 bg-card border border-cardBorder rounded-lg hover:bg-white/5 transition-colors flex items-center justify-center">
+                                    <i data-lucide="copy" class="w-5 h-5 text-white"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DEX Tab -->
+                    <div id="tab-p2p" class="dapp-tab glass-panel p-8 text-center min-h-[400px] flex flex-col items-center justify-center">
+                        <i data-lucide="arrow-right-left" class="w-16 h-16 text-primary mb-4"></i>
+                        <h3 class="text-2xl font-bold mb-4">Trade on PancakeSwap (DEX)</h3>
+                        <p class="text-secondary max-w-md mx-auto mb-8"><span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> beroperasi 100% on-chain. Untuk membeli atau menjual SNR menjadi USDT/BNB secara instan, gunakan Decentralized Exchange resmi.</p>
+                        <a href="https://pancakeswap.finance/swap?outputCurrency=0xBC4d4D01f6cc6f483f355c6EBa45C7CcF54e5994" target="_blank" class="px-8 py-4 bg-primary text-black font-bold rounded-lg hover:bg-yellow-400 hover:shadow-[0_0_20px_rgba(255,204,0,0.4)] transition-all flex items-center gap-3">
+                            <i data-lucide="external-link" class="w-6 h-6"></i>
+                            Buka PancakeSwap
+                        </a>
+                    </div>
                 </div>
 
                 <!-- Sidebar -->
@@ -363,7 +383,7 @@
                         <h4 class="font-display font-bold text-lg mb-2 flex items-center gap-2">
                             <i data-lucide="pie-chart" class="w-5 h-5 text-primary"></i> V8 Profit Logic
                         </h4>
-                        <p class="text-sm text-secondary mb-4">Setiap profit riil yang diinjeksi ke kontrak akan dipotong 20% otomatis ke Treasury (Platform Fee), dan 80% masuk ke Staking Pool. Perusahaan tidak pernah rugi, dan Member menerima yield 100% aman (back-ed by business).</p>
+                        <p class="text-sm text-secondary mb-4">Setiap profit riil yang disuntikkan akan didistribusikan secara adil: <strong>75% ke Stakers</strong> dan <strong>25% ke Perusahaan (Management Fee)</strong>. Alokasi ini krusial untuk operasional dan pengembangan. Dengan ini, perusahaan terjamin tidak akan pernah kolaps, menciptakan ekosistem sehat jangka panjang.</p>
                     </div>
                     <div class="glass-panel p-6">
                         <h4 class="font-bold text-lg mb-4">Informasi Kontrak (V8)</h4>
@@ -373,12 +393,12 @@
                                 <span class="text-green-400 font-bold">100% Compliant</span>
                             </div>
                             <div class="flex justify-between items-center border-b border-cardBorder pb-2">
-                                <span class="text-secondary">Smart Contract</span>
+                                <span class="text-secondary">Token Contract</span>
                                 <a href="https://bscscan.com/address/0xBC4d4D01f6cc6f483f355c6EBa45C7CcF54e5994" target="_blank" class="text-accent hover:underline text-xs">0xBC4d...5994</a>
                             </div>
                             <div class="flex justify-between items-center pb-2">
-                                <span class="text-secondary">Jaringan</span>
-                                <span>BSC Mainnet</span>
+                                <span class="text-secondary">Staking Contract</span>
+                                <a href="https://bscscan.com/address/0x7f0a098ce6BE15Ef47Ad9799Ea0B12886FB9944F" target="_blank" class="text-primary hover:underline text-xs">0x7f0a...944F</a>
                             </div>
                         </div>
                     </div>
@@ -386,6 +406,15 @@
             </div>
         </div>
     </div>
+
+    <!-- Legal Disclaimer Footer -->
+    <footer class="w-full bg-background border-t border-cardBorder py-6 mt-auto relative z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p class="text-[10px] sm:text-xs text-secondary/60 text-justify leading-relaxed">
+                <strong>DISCLAIMER:</strong> Perdagangan Aset Kripto memiliki tingkat fluktuasi dan risiko yang tinggi. <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> adalah platform teknologi Blockchain (DeFi) untuk utilitas ekosistem hadiah partisipasi (Reward), bukan produk perbankan atau sekuritas berizin. Nilai token dan bagi hasil dapat berubah sewaktu-waktu sesuai kondisi pasar bisnis riil. Tidak ada jaminan keuntungan tetap. Lakukan riset Anda sendiri (DYOR). Dengan menggunakan platform ini, Anda sepenuhnya menyadari dan menerima segala risiko volatilitas yang mungkin terjadi.
+            </p>
+        </div>
+    </footer>
 
     <!-- Logic Script -->
     <script>
@@ -478,21 +507,42 @@
         // Web3 & Metamask Integration
         let provider, signer, userAddress;
 
-        // OTC Configuration
+        // Config
+        const SNR_TOKEN_ADDRESS = "0xBC4d4D01f6cc6f483f355c6EBa45C7CcF54e5994";
+        const STAKING_CONTRACT_ADDRESS = "0x6597D33E8D7E97B90E26d0192D6FBed9E63BEA25";
         const OTC_CONTRACT_ADDRESS = "0x2A37ca96662D43B43beC41CDE61dfc4646Ea2d33";
         const USDT_ADDRESS = "0x55d398326f99059fF775485246999027B3197955";
         const RATE_MULTIPLIER = 3.5511;
 
         const ERC20_ABI = [
             "function approve(address spender, uint256 amount) public returns (bool)",
-            "function allowance(address owner, address spender) public view returns (uint256)"
+            "function allowance(address owner, address spender) public view returns (uint256)",
+            "function balanceOf(address account) public view returns (uint256)"
         ];
         
+        const STAKING_ABI = [
+            "function stake(uint256 _amount, address _affiliate) external",
+            "function unstake(uint256 _amount) external",
+            "function claimReward() external",
+            "function compoundReward() external",
+            "function pendingRewardView(address _user) external view returns (uint256)",
+            "function users(address) external view returns (uint256 stakedAmount, uint256 rewardDebt, uint256 pendingRewards, uint256 stakeTimestamp, address affiliate, uint256 affiliateEarned)",
+            "function affiliateVolume(address) external view returns (uint256)",
+            "function getAffiliateBonusRate(address) external view returns (uint256)"
+        ];
+
         const OTC_ABI = [
             "function buyTokens(uint256 _usdtAmount) external"
         ];
 
-        // UI Calculate Function
+        function copyRef() {
+            const input = document.getElementById('ref-link');
+            input.select();
+            document.execCommand('copy');
+            alert("Tautan Afiliasi disalin!");
+        }
+
+        // UI Calculate Function (OTC)
         function calculateSNR() {
             const usdtValue = document.getElementById('otc-usdt-input').value;
             const snrOutput = document.getElementById('otc-snr-output');
@@ -503,56 +553,48 @@
             }
         }
 
-        // Web3 Buy OTC Function
-        async function buyOTC() {
-            if (!signer) {
-                alert("Harap Connect Wallet terlebih dahulu!");
-                return;
-            }
-
-            const usdtInput = document.getElementById('otc-usdt-input').value;
-            if (!usdtInput || usdtInput <= 0) {
-                alert("Masukkan jumlah USDT yang valid!");
-                return;
-            }
-
-            const btn = document.getElementById('btn-buy-otc');
-            const originalBtnHtml = btn.innerHTML;
-            
+        async function updateBalances() {
+            if (!userAddress) return;
             try {
-                btn.innerHTML = `<i class="lucide-loader animate-spin w-5 h-5"></i> Memproses...`;
-                btn.disabled = true;
+                // Update BNB
+                const bnbBal = await provider.getBalance(userAddress);
+                document.getElementById('display-bnb').innerText = parseFloat(ethers.utils.formatEther(bnbBal)).toFixed(4);
 
-                const usdtAmountWei = ethers.utils.parseUnits(usdtInput.toString(), 18);
-                const usdtContract = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, signer);
-                const otcContract = new ethers.Contract(OTC_CONTRACT_ADDRESS, OTC_ABI, signer);
+                // Update SNR Wallet
+                const snrContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, provider);
+                const snrBal = await snrContract.balanceOf(userAddress);
+                document.getElementById('display-balance').innerText = parseFloat(ethers.utils.formatUnits(snrBal, 18)).toLocaleString('en-US', {maximumFractionDigits: 2});
 
-                // Check Allowance
-                btn.innerHTML = `<i class="lucide-loader animate-spin w-5 h-5"></i> Cek Limit USDT...`;
-                const allowance = await usdtContract.allowance(userAddress, OTC_CONTRACT_ADDRESS);
+                // Update Staking Data
+                const stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, provider);
+                const userInfo = await stakingContract.users(userAddress);
+                const stakedAmt = parseFloat(ethers.utils.formatUnits(userInfo.stakedAmount, 18));
+                document.getElementById('display-staked').innerText = stakedAmt.toLocaleString('en-US', {maximumFractionDigits: 2});
 
-                if (allowance.lt(usdtAmountWei)) {
-                    btn.innerHTML = `<i class="lucide-loader animate-spin w-5 h-5"></i> Approve USDT...`;
-                    const approveTx = await usdtContract.approve(OTC_CONTRACT_ADDRESS, ethers.constants.MaxUint256);
-                    await approveTx.wait();
-                }
+                const pending = await stakingContract.pendingRewardView(userAddress);
+                document.getElementById('display-reward').innerText = parseFloat(ethers.utils.formatUnits(pending, 18)).toLocaleString('en-US', {maximumFractionDigits: 4});
 
-                // Buy Tokens
-                btn.innerHTML = `<i class="lucide-loader animate-spin w-5 h-5"></i> Menyelesaikan Transaksi...`;
-                const buyTx = await otcContract.buyTokens(usdtAmountWei);
-                await buyTx.wait();
+                // Update Affiliate Stats
+                const affVol = await stakingContract.affiliateVolume(userAddress);
+                document.getElementById('display-aff-vol').innerText = parseFloat(ethers.utils.formatUnits(affVol, 18)).toLocaleString('en-US', {maximumFractionDigits: 2});
+                
+                const bonusRate = await stakingContract.getAffiliateBonusRate(userAddress);
+                const ratePercent = bonusRate / 100;
+                let tierName = "BRONZE";
+                if(ratePercent == 6) tierName = "SILVER";
+                if(ratePercent == 7) tierName = "GOLD";
+                if(ratePercent == 8) tierName = "PLATINUM";
+                if(ratePercent == 10) tierName = "DIAMOND";
+                document.getElementById('display-tier').innerText = `${tierName} (${ratePercent}%)`;
 
-                alert(`🎉 SUKSES! Anda telah membeli SNR dengan ${usdtInput} USDT.`);
-                document.getElementById('otc-usdt-input').value = "";
-                calculateSNR();
-
-            } catch (error) {
-                console.error("OTC Error:", error);
-                alert("Transaksi dibatalkan atau gagal: " + (error.data?.message || error.message));
-            } finally {
-                btn.innerHTML = originalBtnHtml;
-                btn.disabled = false;
-                lucide.createIcons();
+                const earnedAmt = parseFloat(ethers.utils.formatUnits(userInfo.affiliateEarned, 18));
+                let remainingCap = stakedAmt - earnedAmt;
+                if(remainingCap < 0) remainingCap = 0;
+                document.getElementById('display-max-cap').innerText = remainingCap.toLocaleString('en-US', {maximumFractionDigits: 2});
+                // Set Ref Link
+                document.getElementById('ref-link').value = window.location.origin + window.location.pathname + "?ref=" + userAddress;
+            } catch (e) {
+                console.error("Gagal update balance:", e);
             }
         }
 
@@ -566,18 +608,174 @@
                     
                     const shortAddress = userAddress.substring(0, 6) + '...' + userAddress.substring(38);
                     const btn = document.getElementById('connect-wallet-btn');
-                    btn.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i> <span>${shortAddress}</span>`;
+                    btn.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i> <span class="hidden sm:inline">${shortAddress}</span>`;
                     btn.classList.add('bg-accent/20');
                     btn.classList.remove('bg-card');
                     lucide.createIcons();
                     
-                    console.log('Wallet terhubung:', userAddress);
+                    // Pre-fill affiliate if present in URL
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const ref = urlParams.get('ref');
+                    if(ref) document.getElementById('affiliate-input').value = ref;
+
+                    await updateBalances();
                 } catch (error) {
                     console.error("Wallet connection failed:", error);
                     alert('Koneksi dibatalkan atau terjadi kesalahan.');
                 }
             } else {
-                alert('Web3 Wallet tidak terdeteksi. Harap buka di browser dApp seperti Metamask atau Token Pocket!');
+                alert('Web3 Wallet tidak terdeteksi. Harap buka di browser dApp seperti Metamask atau TrustWallet!');
+            }
+        }
+
+        // ================= STAKING FUNCTIONS =================
+        async function stakeSNR() {
+            if (!signer) return alert("Connect Wallet Dulu!");
+            const amt = document.getElementById('stake-input').value;
+            if (!amt || amt <= 0) return alert("Jumlah tidak valid");
+            let ref = document.getElementById('affiliate-input').value;
+            if (!ref || !ethers.utils.isAddress(ref)) ref = ethers.constants.AddressZero;
+
+            const btn = document.getElementById('btn-stake');
+            const ogHtml = btn.innerHTML;
+            
+            try {
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-5 h-5"></i> Approve...`;
+                btn.disabled = true;
+
+                const snrContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, signer);
+                const stakeContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
+                const amtWei = ethers.utils.parseUnits(amt.toString(), 18);
+
+                const allowance = await snrContract.allowance(userAddress, STAKING_CONTRACT_ADDRESS);
+                if (allowance.lt(amtWei)) {
+                    const txApprove = await snrContract.approve(STAKING_CONTRACT_ADDRESS, ethers.constants.MaxUint256);
+                    await txApprove.wait();
+                }
+
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-5 h-5"></i> Staking...`;
+                const txStake = await stakeContract.stake(amtWei, ref);
+                await txStake.wait();
+                
+                alert("Sukses Staking!");
+                document.getElementById('stake-input').value = "";
+                updateBalances();
+            } catch (e) {
+                alert("Gagal: " + (e.data?.message || e.message));
+            } finally {
+                btn.innerHTML = ogHtml; btn.disabled = false; lucide.createIcons();
+            }
+        }
+
+        async function unstakeSNR() {
+            if (!signer) return alert("Connect Wallet Dulu!");
+            const amt = document.getElementById('stake-input').value;
+            if (!amt || amt <= 0) return alert("Jumlah tidak valid");
+
+            const btn = document.getElementById('btn-unstake');
+            const ogHtml = btn.innerHTML;
+            
+            try {
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-5 h-5"></i> Unstaking...`;
+                btn.disabled = true;
+
+                const stakeContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
+                const amtWei = ethers.utils.parseUnits(amt.toString(), 18);
+
+                const tx = await stakeContract.unstake(amtWei);
+                await tx.wait();
+                
+                alert("Sukses Unstake!");
+                document.getElementById('stake-input').value = "";
+                updateBalances();
+            } catch (e) {
+                alert("Gagal: " + (e.data?.message || e.message));
+            } finally {
+                btn.innerHTML = ogHtml; btn.disabled = false; lucide.createIcons();
+            }
+        }
+
+        async function claimReward() {
+            if (!signer) return alert("Connect Wallet Dulu!");
+            const btn = document.getElementById('btn-claim');
+            const ogHtml = btn.innerHTML;
+            
+            try {
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-4 h-4 mr-1 inline"></i> Claiming...`;
+                btn.disabled = true;
+
+                const stakeContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
+                const tx = await stakeContract.claimReward();
+                await tx.wait();
+                
+                alert("Reward Berhasil Diklaim!");
+                updateBalances();
+            } catch (e) {
+                alert("Gagal: " + (e.data?.message || e.message));
+            } finally {
+                btn.innerHTML = ogHtml; btn.disabled = false;
+            }
+        }
+
+        async function compoundReward() {
+            if (!signer) return alert("Connect Wallet Dulu!");
+            const btn = document.getElementById('btn-compound');
+            const ogHtml = btn.innerHTML;
+            
+            try {
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-4 h-4 mr-1 inline"></i> Compounding...`;
+                btn.disabled = true;
+
+                const stakeContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
+                const tx = await stakeContract.compoundReward();
+                await tx.wait();
+                
+                alert("Profit berhasil di-Compound menjadi Modal!");
+                updateBalances();
+            } catch (e) {
+                alert("Gagal: " + (e.data?.message || e.message));
+            } finally {
+                btn.innerHTML = ogHtml; btn.disabled = false;
+            }
+        }
+
+        // ================= OTC FUNCTION =================
+        async function buyOTC() {
+            if (!signer) return alert("Harap Connect Wallet terlebih dahulu!");
+            const usdtInput = document.getElementById('otc-usdt-input').value;
+            if (!usdtInput || usdtInput <= 0) return alert("Masukkan jumlah USDT yang valid!");
+
+            const btn = document.getElementById('btn-buy-otc');
+            const ogHtml = btn.innerHTML;
+            
+            try {
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-5 h-5"></i> Memproses...`;
+                btn.disabled = true;
+
+                const usdtAmountWei = ethers.utils.parseUnits(usdtInput.toString(), 18);
+                const usdtContract = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, signer);
+                const otcContract = new ethers.Contract(OTC_CONTRACT_ADDRESS, OTC_ABI, signer);
+
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-5 h-5"></i> Approve USDT...`;
+                const allowance = await usdtContract.allowance(userAddress, OTC_CONTRACT_ADDRESS);
+                if (allowance.lt(usdtAmountWei)) {
+                    const txApprove = await usdtContract.approve(OTC_CONTRACT_ADDRESS, ethers.constants.MaxUint256);
+                    await txApprove.wait();
+                }
+
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-5 h-5"></i> Menyelesaikan Transaksi...`;
+                const txBuy = await otcContract.buyTokens(usdtAmountWei);
+                await txBuy.wait();
+
+                alert(`🎉 SUKSES! Anda telah membeli SNR dengan ${usdtInput} USDT.`);
+                document.getElementById('otc-usdt-input').value = "";
+                calculateSNR();
+                updateBalances();
+            } catch (error) {
+                console.error("OTC Error:", error);
+                alert("Transaksi dibatalkan atau gagal: " + (error.data?.message || error.message));
+            } finally {
+                btn.innerHTML = ogHtml; btn.disabled = false; lucide.createIcons();
             }
         }
     </script>
