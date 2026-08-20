@@ -11,8 +11,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Globe.gl -->
-    <script src="https://unpkg.com/globe.gl"></script>
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="SNR-VAULT | Real Yield DeFi Portal">
+    <meta property="og:description" content="The Deep Space Financial Fortress">
+    <meta property="og:image" content="https://snr-vault.com/logo_banner.jpeg">
+    <meta property="og:url" content="https://snr-vault.com">
+    <meta name="twitter:card" content="summary_large_image">
     <!-- Ethers.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
 
@@ -136,12 +140,9 @@
             <div class="absolute inset-0 z-0">
                 <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px]"></div>
                 <div class="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[150px]"></div>
-                <div id="globeViz" class="absolute inset-0 flex justify-center items-center opacity-60 mix-blend-screen pointer-events-none"></div>
             </div>
 
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-                <img src="logo_banner.jpeg" alt="SNR-VAULT Banner" class="max-w-[200px] md:max-w-xs w-full mx-auto mb-8 mix-blend-screen opacity-90 drop-shadow-[0_0_15px_rgba(255,204,0,0.3)]">
-
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center pt-8">
                 <div class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-green-500/30 bg-green-500/10 text-green-400 mb-8 animate-pulse max-w-full overflow-hidden">
                     <i data-lucide="check-circle" class="w-4 h-4 flex-shrink-0"></i>
                     <span class="text-xs sm:text-sm font-semibold tracking-wide truncate">EKOSISTEM DEFI TRANSPARAN (REAL YIELD)</span>
@@ -449,61 +450,7 @@
             btn.classList.add('bg-primary', 'text-black');
         }
 
-        // Initialize Globe with Blockchain Touch
-        const globeContainer = document.getElementById('globeViz');
-        if (globeContainer && typeof Globe !== 'undefined') {
-            const N = 40;
-            const nodesData = [...Array(N).keys()].map(() => ({
-                lat: (Math.random() - 0.5) * 180,
-                lng: (Math.random() - 0.5) * 360,
-                size: Math.random() * 0.4 + 0.1,
-                color: ['#00E5FF', '#FFCC00', '#ffffff'][Math.floor(Math.random() * 3)]
-            }));
-
-            const arcsData = [...Array(25).keys()].map(() => ({
-                startLat: (Math.random() - 0.5) * 180,
-                startLng: (Math.random() - 0.5) * 360,
-                endLat: (Math.random() - 0.5) * 180,
-                endLng: (Math.random() - 0.5) * 360,
-                color: ['rgba(0, 229, 255, 0.6)', 'rgba(255, 204, 0, 0.6)'][Math.round(Math.random())]
-            }));
-
-            const world = Globe()
-                (globeContainer)
-                .backgroundColor('rgba(0,0,0,0)')
-                .showGlobe(true)
-                .showAtmosphere(true)
-                .atmosphereColor('#00E5FF')
-                .atmosphereAltitude(0.2)
-                .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
-                .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
-                .pointsData(nodesData)
-                .pointColor('color')
-                .pointAltitude(0.02)
-                .pointRadius('size')
-                .pointsMerge(true)
-                .arcsData(arcsData)
-                .arcColor('color')
-                .arcDashLength(0.4)
-                .arcDashGap(0.2)
-                .arcDashAnimateTime(2000)
-                .width(globeContainer.clientWidth)
-                .height(globeContainer.clientHeight || window.innerHeight * 0.8);
-
-            world.controls().autoRotate = true;
-            world.controls().autoRotateSpeed = 1.2;
-            world.controls().enableZoom = false;
-
-            window.addEventListener('resize', () => {
-                world.width(globeContainer.clientWidth);
-                world.height(globeContainer.clientHeight || window.innerHeight * 0.8);
-            });
-
-            setTimeout(() => {
-                world.width(globeContainer.clientWidth);
-                world.height(globeContainer.clientHeight || window.innerHeight * 0.8);
-            }, 500);
-        }
+        // Globe removed for performance optimization
 
         // Web3 & Metamask Integration
         let provider, signer, userAddress;
