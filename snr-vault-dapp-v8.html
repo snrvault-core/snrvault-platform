@@ -467,7 +467,9 @@
                             </table>
                         </div>
                         <div class="mt-6 text-center">
-                            <button class="text-accent text-sm hover:underline" onclick="alert('Histori akan dimuat otomatis saat dompet terhubung.')">Muat Ulang (Refresh)</button>
+                            <button class="text-accent text-sm hover:underline flex items-center gap-1 mx-auto" onclick="updateTransactionHistory()">
+                                <i data-lucide="refresh-cw" class="w-4 h-4"></i> Muat Ulang Riwayat (Refresh)
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -593,9 +595,15 @@
             "function claimReward() external",
             "function compoundReward() external",
             "function pendingRewardView(address _user) external view returns (uint256)",
-            "function users(address) external view returns (uint256 stakedAmount, uint256 rewardDebt, uint256 pendingRewards, uint256 stakeTimestamp, address affiliate, uint256 affiliateEarned)",
-            "function affiliateVolume(address) external view returns (uint256)",
-            "function getAffiliateBonusRate(address) external view returns (uint256)"
+            "function users(address) external view returns (uint256 stakedAmount, uint256 rewardDebt, uint256 pendingRewards, uint256 stakeTimestamp, address affiliate, uint256 affiliateRewardEarned)",
+            "function cumulativeAffiliateVolume(address) external view returns (uint256)",
+            "function getAffiliateBonusRate(address) external view returns (uint256)",
+            "event Staked(address indexed user, uint256 grossAmount, uint256 netAmount, address indexed affiliate)",
+            "event Unstaked(address indexed user, uint256 grossAmount, uint256 feeOrPenalty)",
+            "event RewardClaimed(address indexed user, uint256 netReward)",
+            "event Compounded(address indexed user, uint256 grossReward, uint256 fee, uint256 netStake)",
+            "event AffiliatePaid(address indexed affiliate, uint256 amount, uint256 rateBP)",
+            "event RewardInjected(uint256 grossAmount, uint256 mgmtFee, uint256 netPool)"
         ];
 
         const OTC_ABI = [
@@ -642,7 +650,7 @@
                 document.getElementById('display-reward').innerText = parseFloat(ethers.utils.formatUnits(pending, 18)).toLocaleString('en-US', {maximumFractionDigits: 4});
 
                 // Update Affiliate Stats
-                const affVol = await stakingContract.affiliateVolume(userAddress);
+                const affVol = await stakingContract.cumulativeAffiliateVolume(userAddress);
                 document.getElementById('display-aff-vol').innerText = parseFloat(ethers.utils.formatUnits(affVol, 18)).toLocaleString('en-US', {maximumFractionDigits: 2});
                 
                 const bonusRate = await stakingContract.getAffiliateBonusRate(userAddress);
@@ -654,14 +662,160 @@
                 if(ratePercent == 10) tierName = "DIAMOND";
                 document.getElementById('display-tier').innerText = `${tierName} (${ratePercent}%)`;
 
-                const earnedAmt = parseFloat(ethers.utils.formatUnits(userInfo.affiliateEarned, 18));
+                const earnedAmt = parseFloat(ethers.utils.formatUnits(userInfo.affiliateRewardEarned || 0, 18));
                 let remainingCap = stakedAmt - earnedAmt;
                 if(remainingCap < 0) remainingCap = 0;
                 document.getElementById('display-max-cap').innerText = remainingCap.toLocaleString('en-US', {maximumFractionDigits: 2});
                 // Set Ref Link
                 document.getElementById('ref-link').value = window.location.origin + window.location.pathname + "?ref=" + userAddress;
+                
+                // Update On-Chain Transaction History
+                await updateTransactionHistory();
             } catch (e) {
                 console.error("Gagal update balance:", e);
+            }
+        }
+
+        async function updateTransactionHistory() {
+            const tableBody = document.getElementById('history-table-body');
+            if (!tableBody) return;
+
+            if (!userAddress) {
+                tableBody.innerHTML = `
+                    <tr class="border-b border-cardBorder/50 hover:bg-white/5 transition-colors">
+                        <td class="py-4 px-4 text-secondary text-center italic" colspan="4">Hubungkan dompet (Wallet) untuk melihat riwayat transaksi on-chain Anda.</td>
+                    </tr>`;
+                return;
+            }
+
+            tableBody.innerHTML = `
+                <tr class="border-b border-cardBorder/50 hover:bg-white/5 transition-colors">
+                    <td class="py-4 px-4 text-secondary text-center" colspan="4">
+                        <span class="inline-flex items-center gap-2 text-accent"><i data-lucide="loader" class="animate-spin w-4 h-4"></i> Memuat data transaksi on-chain...</span>
+                    </td>
+                </tr>`;
+            if (window.lucide) lucide.createIcons();
+
+            try {
+                const rpcProvider = provider || new ethers.providers.JsonRpcProvider("https://bsc-dataseed.binance.org/");
+                const stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, rpcProvider);
+
+                // Query all events for user
+                const fromBlock = 0;
+                const [stakedEvents, unstakedEvents, claimEvents, compoundEvents] = await Promise.all([
+                    stakingContract.queryFilter(stakingContract.filters.Staked(userAddress), fromBlock).catch(() => []),
+                    stakingContract.queryFilter(stakingContract.filters.Unstaked(userAddress), fromBlock).catch(() => []),
+                    stakingContract.queryFilter(stakingContract.filters.RewardClaimed(userAddress), fromBlock).catch(() => []),
+                    stakingContract.queryFilter(stakingContract.filters.Compounded(userAddress), fromBlock).catch(() => [])
+                ]);
+
+                const txList = [];
+
+                for (const ev of stakedEvents) {
+                    txList.push({
+                        type: 'STAKE',
+                        typeLabel: 'Deposit Stake',
+                        badgeClass: 'bg-primary/20 text-primary border-primary/30',
+                        amount: parseFloat(ethers.utils.formatUnits(ev.args.grossAmount || ev.args[1], 18)),
+                        blockNumber: ev.blockNumber,
+                        txHash: ev.transactionHash
+                    });
+                }
+
+                for (const ev of unstakedEvents) {
+                    txList.push({
+                        type: 'UNSTAKE',
+                        typeLabel: 'Tarik Modal (Unstake)',
+                        badgeClass: 'bg-red-500/20 text-red-400 border-red-500/30',
+                        amount: parseFloat(ethers.utils.formatUnits(ev.args.grossAmount || ev.args[1], 18)),
+                        blockNumber: ev.blockNumber,
+                        txHash: ev.transactionHash
+                    });
+                }
+
+                for (const ev of claimEvents) {
+                    txList.push({
+                        type: 'CLAIM',
+                        typeLabel: 'Klaim Dividen',
+                        badgeClass: 'bg-green-500/20 text-green-400 border-green-500/30',
+                        amount: parseFloat(ethers.utils.formatUnits(ev.args.netReward || ev.args[1], 18)),
+                        blockNumber: ev.blockNumber,
+                        txHash: ev.transactionHash
+                    });
+                }
+
+                for (const ev of compoundEvents) {
+                    txList.push({
+                        type: 'COMPOUND',
+                        typeLabel: 'Gulung Dividen (Compound)',
+                        badgeClass: 'bg-accent/20 text-accent border-accent/30',
+                        amount: parseFloat(ethers.utils.formatUnits(ev.args.grossReward || ev.args[1], 18)),
+                        blockNumber: ev.blockNumber,
+                        txHash: ev.transactionHash
+                    });
+                }
+
+                if (txList.length === 0) {
+                    tableBody.innerHTML = `
+                        <tr class="border-b border-cardBorder/50 hover:bg-white/5 transition-colors">
+                            <td class="py-4 px-4 text-secondary text-center italic" colspan="4">Belum ada riwayat transaksi Staking untuk dompet ini.</td>
+                        </tr>`;
+                    return;
+                }
+
+                // Sort descending by blockNumber
+                txList.sort((a, b) => b.blockNumber - a.blockNumber);
+
+                // Fetch block timestamps concurrently (cached by blockNumber)
+                const blockTimestamps = {};
+                const uniqueBlocks = [...new Set(txList.map(t => t.blockNumber))];
+                await Promise.all(uniqueBlocks.map(async (bNum) => {
+                    try {
+                        const block = await rpcProvider.getBlock(bNum);
+                        if (block) blockTimestamps[bNum] = block.timestamp;
+                    } catch (err) {
+                        blockTimestamps[bNum] = Math.floor(Date.now() / 1000);
+                    }
+                }));
+
+                let html = '';
+                for (const tx of txList) {
+                    const ts = blockTimestamps[tx.blockNumber] || Math.floor(Date.now() / 1000);
+                    const dateStr = new Date(ts * 1000).toLocaleString('id-ID', {
+                        year: 'numeric', month: 'short', day: 'numeric',
+                        hour: '2-digit', minute: '2-digit', second: '2-digit'
+                    });
+                    const shortHash = tx.txHash.substring(0, 6) + '...' + tx.txHash.substring(tx.txHash.length - 4);
+                    const bscUrl = `https://bscscan.com/tx/${tx.txHash}`;
+
+                    html += `
+                        <tr class="border-b border-cardBorder/50 hover:bg-white/5 transition-colors">
+                            <td class="py-3 px-4">
+                                <span class="px-2.5 py-1 rounded text-xs font-bold border ${tx.badgeClass}">${tx.typeLabel}</span>
+                            </td>
+                            <td class="py-3 px-4 font-bold text-white">
+                                ${tx.amount.toLocaleString('en-US', {maximumFractionDigits: 4})} <span class="text-xs text-primary">SNR</span>
+                            </td>
+                            <td class="py-3 px-4 text-secondary text-xs">
+                                ${dateStr}
+                            </td>
+                            <td class="py-3 px-4 text-right">
+                                <a href="${bscUrl}" target="_blank" class="inline-flex items-center gap-1 text-accent hover:underline text-xs">
+                                    ${shortHash} <i data-lucide="external-link" class="w-3 h-3"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    `;
+                }
+
+                tableBody.innerHTML = html;
+                if (window.lucide) lucide.createIcons();
+            } catch (err) {
+                console.error("Error updating transaction history:", err);
+                tableBody.innerHTML = `
+                    <tr class="border-b border-cardBorder/50 hover:bg-white/5 transition-colors">
+                        <td class="py-4 px-4 text-red-400 text-center text-xs" colspan="4">Gagal memuat riwayat: ${err.message || err}</td>
+                    </tr>`;
             }
         }
 
