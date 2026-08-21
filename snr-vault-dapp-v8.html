@@ -676,6 +676,32 @@
             }
         }
 
+        function saveLocalTx(type, typeLabel, amount, txHash) {
+            if (!userAddress) return;
+            try {
+                const key = 'snr_tx_history_' + userAddress.toLowerCase();
+                const existing = JSON.parse(localStorage.getItem(key) || '[]');
+                if (!existing.some(t => t.txHash.toLowerCase() === txHash.toLowerCase())) {
+                    let badgeClass = 'bg-primary/20 text-primary border-primary/30';
+                    if (type === 'UNSTAKE') badgeClass = 'bg-red-500/20 text-red-400 border-red-500/30';
+                    if (type === 'CLAIM') badgeClass = 'bg-green-500/20 text-green-400 border-green-500/30';
+                    if (type === 'COMPOUND') badgeClass = 'bg-accent/20 text-accent border-accent/30';
+                    
+                    existing.unshift({
+                        type,
+                        typeLabel,
+                        badgeClass,
+                        amount: parseFloat(amount),
+                        timestamp: Math.floor(Date.now() / 1000),
+                        txHash
+                    });
+                    localStorage.setItem(key, JSON.stringify(existing.slice(0, 50)));
+                }
+            } catch (err) {
+                console.error("Failed saving local tx:", err);
+            }
+        }
+
         async function updateTransactionHistory() {
             const tableBody = document.getElementById('history-table-body');
             if (!tableBody) return;
@@ -688,20 +714,23 @@
                 return;
             }
 
-            tableBody.innerHTML = `
-                <tr class="border-b border-cardBorder/50 hover:bg-white/5 transition-colors">
-                    <td class="py-4 px-4 text-secondary text-center" colspan="4">
-                        <span class="inline-flex items-center gap-2 text-accent"><i data-lucide="loader" class="animate-spin w-4 h-4"></i> Memuat data transaksi on-chain...</span>
-                    </td>
-                </tr>`;
-            if (window.lucide) lucide.createIcons();
-
+            // 1. First, load from localStorage for instant display
+            const key = 'snr_tx_history_' + userAddress.toLowerCase();
+            let localList = [];
             try {
-                const rpcProvider = provider || new ethers.providers.JsonRpcProvider("https://bsc-dataseed.binance.org/");
+                localList = JSON.parse(localStorage.getItem(key) || '[]');
+            } catch (e) {}
+
+            const txMap = new Map();
+            localList.forEach(t => txMap.set(t.txHash.toLowerCase(), t));
+
+            // 2. Try fetching from On-Chain RPC (safe range 1800 blocks)
+            try {
+                const rpcProvider = new ethers.providers.JsonRpcProvider("https://bsc-rpc.publicnode.com");
+                const currentBlock = await rpcProvider.getBlockNumber();
+                const fromBlock = currentBlock > 1800 ? currentBlock - 1800 : 0;
                 const stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, rpcProvider);
 
-                // Query all events for user
-                const fromBlock = 0;
                 const [stakedEvents, unstakedEvents, claimEvents, compoundEvents] = await Promise.all([
                     stakingContract.queryFilter(stakingContract.filters.Staked(userAddress), fromBlock).catch(() => []),
                     stakingContract.queryFilter(stakingContract.filters.Unstaked(userAddress), fromBlock).catch(() => []),
@@ -709,114 +738,111 @@
                     stakingContract.queryFilter(stakingContract.filters.Compounded(userAddress), fromBlock).catch(() => [])
                 ]);
 
-                const txList = [];
-
                 for (const ev of stakedEvents) {
-                    txList.push({
-                        type: 'STAKE',
-                        typeLabel: 'Deposit Stake',
-                        badgeClass: 'bg-primary/20 text-primary border-primary/30',
-                        amount: parseFloat(ethers.utils.formatUnits(ev.args.grossAmount || ev.args[1], 18)),
-                        blockNumber: ev.blockNumber,
-                        txHash: ev.transactionHash
-                    });
+                    if (!txMap.has(ev.transactionHash.toLowerCase())) {
+                        txMap.set(ev.transactionHash.toLowerCase(), {
+                            type: 'STAKE',
+                            typeLabel: 'Deposit Stake',
+                            badgeClass: 'bg-primary/20 text-primary border-primary/30',
+                            amount: parseFloat(ethers.utils.formatUnits(ev.args.grossAmount || ev.args[1], 18)),
+                            timestamp: Math.floor(Date.now() / 1000),
+                            txHash: ev.transactionHash
+                        });
+                    }
                 }
 
                 for (const ev of unstakedEvents) {
-                    txList.push({
-                        type: 'UNSTAKE',
-                        typeLabel: 'Tarik Modal (Unstake)',
-                        badgeClass: 'bg-red-500/20 text-red-400 border-red-500/30',
-                        amount: parseFloat(ethers.utils.formatUnits(ev.args.grossAmount || ev.args[1], 18)),
-                        blockNumber: ev.blockNumber,
-                        txHash: ev.transactionHash
-                    });
+                    if (!txMap.has(ev.transactionHash.toLowerCase())) {
+                        txMap.set(ev.transactionHash.toLowerCase(), {
+                            type: 'UNSTAKE',
+                            typeLabel: 'Tarik Modal (Unstake)',
+                            badgeClass: 'bg-red-500/20 text-red-400 border-red-500/30',
+                            amount: parseFloat(ethers.utils.formatUnits(ev.args.grossAmount || ev.args[1], 18)),
+                            timestamp: Math.floor(Date.now() / 1000),
+                            txHash: ev.transactionHash
+                        });
+                    }
                 }
 
                 for (const ev of claimEvents) {
-                    txList.push({
-                        type: 'CLAIM',
-                        typeLabel: 'Klaim Dividen',
-                        badgeClass: 'bg-green-500/20 text-green-400 border-green-500/30',
-                        amount: parseFloat(ethers.utils.formatUnits(ev.args.netReward || ev.args[1], 18)),
-                        blockNumber: ev.blockNumber,
-                        txHash: ev.transactionHash
-                    });
+                    if (!txMap.has(ev.transactionHash.toLowerCase())) {
+                        txMap.set(ev.transactionHash.toLowerCase(), {
+                            type: 'CLAIM',
+                            typeLabel: 'Klaim Dividen',
+                            badgeClass: 'bg-green-500/20 text-green-400 border-green-500/30',
+                            amount: parseFloat(ethers.utils.formatUnits(ev.args.netReward || ev.args[1], 18)),
+                            timestamp: Math.floor(Date.now() / 1000),
+                            txHash: ev.transactionHash
+                        });
+                    }
                 }
 
                 for (const ev of compoundEvents) {
-                    txList.push({
-                        type: 'COMPOUND',
-                        typeLabel: 'Gulung Dividen (Compound)',
-                        badgeClass: 'bg-accent/20 text-accent border-accent/30',
-                        amount: parseFloat(ethers.utils.formatUnits(ev.args.grossReward || ev.args[1], 18)),
-                        blockNumber: ev.blockNumber,
-                        txHash: ev.transactionHash
-                    });
-                }
-
-                if (txList.length === 0) {
-                    tableBody.innerHTML = `
-                        <tr class="border-b border-cardBorder/50 hover:bg-white/5 transition-colors">
-                            <td class="py-4 px-4 text-secondary text-center italic" colspan="4">Belum ada riwayat transaksi Staking untuk dompet ini.</td>
-                        </tr>`;
-                    return;
-                }
-
-                // Sort descending by blockNumber
-                txList.sort((a, b) => b.blockNumber - a.blockNumber);
-
-                // Fetch block timestamps concurrently (cached by blockNumber)
-                const blockTimestamps = {};
-                const uniqueBlocks = [...new Set(txList.map(t => t.blockNumber))];
-                await Promise.all(uniqueBlocks.map(async (bNum) => {
-                    try {
-                        const block = await rpcProvider.getBlock(bNum);
-                        if (block) blockTimestamps[bNum] = block.timestamp;
-                    } catch (err) {
-                        blockTimestamps[bNum] = Math.floor(Date.now() / 1000);
+                    if (!txMap.has(ev.transactionHash.toLowerCase())) {
+                        txMap.set(ev.transactionHash.toLowerCase(), {
+                            type: 'COMPOUND',
+                            typeLabel: 'Gulung Dividen (Compound)',
+                            badgeClass: 'bg-accent/20 text-accent border-accent/30',
+                            amount: parseFloat(ethers.utils.formatUnits(ev.args.grossReward || ev.args[1], 18)),
+                            timestamp: Math.floor(Date.now() / 1000),
+                            txHash: ev.transactionHash
+                        });
                     }
-                }));
-
-                let html = '';
-                for (const tx of txList) {
-                    const ts = blockTimestamps[tx.blockNumber] || Math.floor(Date.now() / 1000);
-                    const dateStr = new Date(ts * 1000).toLocaleString('id-ID', {
-                        year: 'numeric', month: 'short', day: 'numeric',
-                        hour: '2-digit', minute: '2-digit', second: '2-digit'
-                    });
-                    const shortHash = tx.txHash.substring(0, 6) + '...' + tx.txHash.substring(tx.txHash.length - 4);
-                    const bscUrl = `https://bscscan.com/tx/${tx.txHash}`;
-
-                    html += `
-                        <tr class="border-b border-cardBorder/50 hover:bg-white/5 transition-colors">
-                            <td class="py-3 px-4">
-                                <span class="px-2.5 py-1 rounded text-xs font-bold border ${tx.badgeClass}">${tx.typeLabel}</span>
-                            </td>
-                            <td class="py-3 px-4 font-bold text-white">
-                                ${tx.amount.toLocaleString('en-US', {maximumFractionDigits: 4})} <span class="text-xs text-primary">SNR</span>
-                            </td>
-                            <td class="py-3 px-4 text-secondary text-xs">
-                                ${dateStr}
-                            </td>
-                            <td class="py-3 px-4 text-right">
-                                <a href="${bscUrl}" target="_blank" class="inline-flex items-center gap-1 text-accent hover:underline text-xs">
-                                    ${shortHash} <i data-lucide="external-link" class="w-3 h-3"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    `;
                 }
+            } catch (rpcErr) {
+                console.warn("RPC event query skipped or rate-limited:", rpcErr);
+            }
 
-                tableBody.innerHTML = html;
-                if (window.lucide) lucide.createIcons();
-            } catch (err) {
-                console.error("Error updating transaction history:", err);
+            const allTx = Array.from(txMap.values());
+
+            if (allTx.length === 0) {
+                const bscAddressUrl = `https://bscscan.com/address/${userAddress}#tokentxns`;
                 tableBody.innerHTML = `
                     <tr class="border-b border-cardBorder/50 hover:bg-white/5 transition-colors">
-                        <td class="py-4 px-4 text-red-400 text-center text-xs" colspan="4">Gagal memuat riwayat: ${err.message || err}</td>
+                        <td class="py-6 px-4 text-center" colspan="4">
+                            <p class="text-secondary text-sm mb-2">Belum ada riwayat transaksi sesi lokal.</p>
+                            <a href="${bscAddressUrl}" target="_blank" class="inline-flex items-center gap-1 text-accent hover:underline text-xs font-semibold">
+                                Lihat Semua Mutasi Dompet di BscScan Explorer <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                            </a>
+                        </td>
                     </tr>`;
+                if (window.lucide) lucide.createIcons();
+                return;
             }
+
+            // Render table
+            let html = '';
+            for (const tx of allTx) {
+                const ts = tx.timestamp || Math.floor(Date.now() / 1000);
+                const dateStr = new Date(ts * 1000).toLocaleString('id-ID', {
+                    year: 'numeric', month: 'short', day: 'numeric',
+                    hour: '2-digit', minute: '2-digit', second: '2-digit'
+                });
+                const shortHash = tx.txHash.substring(0, 6) + '...' + tx.txHash.substring(tx.txHash.length - 4);
+                const bscUrl = `https://bscscan.com/tx/${tx.txHash}`;
+
+                html += `
+                    <tr class="border-b border-cardBorder/50 hover:bg-white/5 transition-colors">
+                        <td class="py-3 px-4">
+                            <span class="px-2.5 py-1 rounded text-xs font-bold border ${tx.badgeClass}">${tx.typeLabel}</span>
+                        </td>
+                        <td class="py-3 px-4 font-bold text-white">
+                            ${tx.amount.toLocaleString('en-US', {maximumFractionDigits: 4})} <span class="text-xs text-primary">SNR</span>
+                        </td>
+                        <td class="py-3 px-4 text-secondary text-xs">
+                            ${dateStr}
+                        </td>
+                        <td class="py-3 px-4 text-right">
+                            <a href="${bscUrl}" target="_blank" class="inline-flex items-center gap-1 text-accent hover:underline text-xs">
+                                ${shortHash} <i data-lucide="external-link" class="w-3 h-3"></i>
+                            </a>
+                        </td>
+                    </tr>
+                `;
+            }
+
+            tableBody.innerHTML = html;
+            if (window.lucide) lucide.createIcons();
         }
 
         async function connectWallet() {
@@ -878,6 +904,8 @@
                 const txStake = await stakeContract.stake(amtWei, ref);
                 await txStake.wait();
                 
+                saveLocalTx('STAKE', 'Deposit Stake', amt, txStake.hash);
+                
                 alert("Sukses Staking!");
                 document.getElementById('stake-input').value = "";
                 updateBalances();
@@ -906,6 +934,8 @@
                 const tx = await stakeContract.unstake(amtWei);
                 await tx.wait();
                 
+                saveLocalTx('UNSTAKE', 'Tarik Modal (Unstake)', amt, tx.hash);
+                
                 alert("Sukses Unstake!");
                 document.getElementById('stake-input').value = "";
                 updateBalances();
@@ -926,8 +956,13 @@
                 btn.disabled = true;
 
                 const stakeContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
+                const pending = await stakeContract.pendingRewardView(userAddress);
+                const pendingAmt = parseFloat(ethers.utils.formatUnits(pending, 18));
+
                 const tx = await stakeContract.claimReward();
                 await tx.wait();
+                
+                saveLocalTx('CLAIM', 'Klaim Dividen', pendingAmt, tx.hash);
                 
                 alert("Reward Berhasil Diklaim!");
                 updateBalances();
@@ -948,10 +983,15 @@
                 btn.disabled = true;
 
                 const stakeContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
+                const pending = await stakeContract.pendingRewardView(userAddress);
+                const pendingAmt = parseFloat(ethers.utils.formatUnits(pending, 18));
+
                 const tx = await stakeContract.compoundReward();
                 await tx.wait();
                 
-                alert("Profit berhasil di-Compound menjadi Modal!");
+                saveLocalTx('COMPOUND', 'Gulung Dividen (Compound)', pendingAmt, tx.hash);
+                
+                alert("Reward Berhasil Di-Compound!");
                 updateBalances();
             } catch (e) {
                 alert("Gagal: " + (e.data?.message || e.message));
