@@ -473,6 +473,10 @@
                                 <span id="display-tier" class="font-bold text-accent">BRONZE (5%)</span>
                             </div>
                             <div class="bg-background/50 border border-cardBorder p-4 rounded-lg flex justify-between items-center">
+                                <span class="text-secondary text-sm">Jumlah Member Langsung:</span>
+                                <span class="font-bold text-white"><span id="display-aff-count">0</span> Orang</span>
+                            </div>
+                            <div class="bg-background/50 border border-cardBorder p-4 rounded-lg flex justify-between items-center">
                                 <span class="text-secondary text-sm">Total Omset Downline:</span>
                                 <span class="font-bold"><span id="display-aff-vol">0.00</span> SNR</span>
                             </div>
@@ -799,6 +803,18 @@
                 const affVol = await stakingContract.cumulativeAffiliateVolume(userAddress);
                 document.getElementById('display-aff-vol').innerText = parseFloat(ethers.utils.formatUnits(affVol, 18)).toLocaleString('en-US', {maximumFractionDigits: 2});
                 
+                // Calculate Direct Downline Member Count
+                try {
+                    const filterStaked = stakingContract.filters.Staked(null, null, null, userAddress);
+                    const currentBlock = await provider.getBlockNumber();
+                    const fromBlock = Math.max(0, currentBlock - 49000);
+                    const stakeEvents = await stakingContract.queryFilter(filterStaked, fromBlock);
+                    const uniqueDownlines = new Set(stakeEvents.map(e => e.args.user.toLowerCase()));
+                    document.getElementById('display-aff-count').innerText = uniqueDownlines.size;
+                } catch (errEvents) {
+                    console.warn("Could not query downline events:", errEvents);
+                }
+
                 const bonusRate = await stakingContract.getAffiliateBonusRate(userAddress);
                 const ratePercent = bonusRate / 100;
                 let tierName = "BRONZE";
@@ -1046,6 +1062,7 @@
             document.getElementById('display-balance').innerText = "0.00";
             document.getElementById('display-staked').innerText = "0.00";
             document.getElementById('display-reward').innerText = "0.00";
+            document.getElementById('display-aff-count').innerText = "0";
             document.getElementById('display-aff-vol').innerText = "0.00";
             document.getElementById('display-tier').innerText = "BRONZE (5%)";
             document.getElementById('display-max-cap').innerText = "0.00";
