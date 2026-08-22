@@ -373,6 +373,9 @@
                 <button onclick="switchTab('network')" id="btn-network" class="flex-grow sm:flex-grow-0 px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary hover:text-white whitespace-nowrap">
                     Afiliasi
                 </button>
+                <button onclick="switchTab('migration')" id="btn-migration" class="flex-grow sm:flex-grow-0 px-6 py-2 rounded-lg text-sm font-medium transition-all text-yellow-300 hover:text-white border border-yellow-500/40 bg-yellow-500/10 whitespace-nowrap">
+                    Migrasi V1 ➔ V8
+                </button>
                 <button onclick="switchTab('p2p')" id="btn-p2p" class="flex-grow sm:flex-grow-0 px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary hover:text-white whitespace-nowrap">
                     DEX Trade
                 </button>
@@ -497,6 +500,65 @@
                                     <i data-lucide="copy" class="w-5 h-5 text-white"></i>
                                 </button>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Migration Tab (V1 to V8) -->
+                    <div id="tab-migration" class="dapp-tab glass-panel p-8 border-yellow-500/40 bg-gradient-to-br from-yellow-500/5 to-transparent">
+                        <div class="flex items-start justify-between mb-6">
+                            <div>
+                                <h3 class="text-2xl font-display font-bold text-yellow-300 mb-2 flex items-center gap-2">
+                                    <i data-lucide="repeat" class="w-6 h-6 text-yellow-400"></i> Jembatan Migrasi Emas (V1 ➔ V8)
+                                </h3>
+                                <p class="text-secondary text-sm max-w-lg">Tukarkan koin SNR V1 lama Anda (Rp 3.900) menjadi SNR V3 (Rp 5.010) dengan keuntungan nilai aset <strong>+28% instan</strong>. Koin V3 langsung aktif di Staking Vault V8 untuk menghasilkan dividen Real Yield harian!</p>
+                            </div>
+                            <div class="hidden sm:flex w-16 h-16 rounded-2xl border border-yellow-400/30 items-center justify-center bg-yellow-400/10 text-yellow-300 shadow-[0_0_20px_rgba(234,179,8,0.2)]">
+                                <i data-lucide="sparkles" class="w-8 h-8"></i>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div class="bg-[#050811] border border-yellow-500/30 p-4 rounded-xl">
+                                <span class="text-secondary text-xs block mb-1">Saldo SNR V1 di Dompet Anda:</span>
+                                <div class="text-xl font-bold text-white font-mono">
+                                    <span id="display-v1-balance">0.00</span> <span class="text-yellow-400 text-sm">SNR V1</span>
+                                </div>
+                            </div>
+                            <div class="bg-[#050811] border border-cardBorder p-4 rounded-xl">
+                                <span class="text-secondary text-xs block mb-1">Nilai Tukar Resmi & Keuntungan:</span>
+                                <div class="text-sm font-bold text-green-400">
+                                    1 SNR V1 ➔ 1 SNR V3 (+28% Value!)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between items-center text-xs text-secondary mb-2">
+                                    <span>Jumlah SNR V1 yang Ingin Ditukar:</span>
+                                    <button type="button" onclick="setMaxV1()" class="text-yellow-400 hover:underline font-bold">Gunakan MAX</button>
+                                </div>
+                                <div class="relative">
+                                    <input type="number" id="v1-migrate-input" oninput="calculateMigration()" placeholder="0.0" class="w-full bg-[#050811] border border-yellow-500/40 rounded-xl px-4 py-3 text-white font-mono focus:outline-none focus:border-yellow-400">
+                                    <span class="absolute right-4 top-3 text-yellow-400 font-bold text-sm">SNR V1</span>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-center my-1">
+                                <i data-lucide="arrow-down" class="text-yellow-400 w-5 h-5"></i>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs text-secondary mb-2">Otomatis Aktif di Staking Vault V8:</label>
+                                <div class="relative">
+                                    <input type="text" id="migrate-v3-output" placeholder="0.0" readonly class="w-full bg-card border border-cardBorder rounded-xl px-4 py-3 text-white font-mono focus:outline-none cursor-not-allowed">
+                                    <span class="absolute right-4 top-3 text-primary font-bold text-sm">SNR V3 (Vault V8)</span>
+                                </div>
+                            </div>
+
+                            <button id="btn-migrate-v1" onclick="migrateV1ToV8()" class="w-full py-4 mt-2 bg-gradient-to-r from-yellow-500 to-amber-600 text-black font-bold rounded-xl hover:from-yellow-400 hover:to-amber-500 hover:shadow-[0_0_30px_rgba(234,179,8,0.4)] transition-all flex justify-center items-center gap-2">
+                                <i data-lucide="refresh-cw" class="w-5 h-5"></i> Tukar V1 & Aktifkan Staking V8 (1-Klik)
+                            </button>
                         </div>
                     </div>
 
@@ -635,7 +697,7 @@
 
         function switchTab(tabId) {
             document.querySelectorAll('.dapp-tab').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('#btn-staking, #btn-network, #btn-p2p, #btn-otc, #btn-history').forEach(el => {
+            document.querySelectorAll('#btn-staking, #btn-network, #btn-p2p, #btn-otc, #btn-history, #btn-migration').forEach(el => {
                 el.classList.remove('bg-primary', 'text-black');
                 el.classList.add('text-secondary');
             });
@@ -653,6 +715,8 @@
 
         // Config
         const SNR_TOKEN_ADDRESS = "0xBC4d4D01f6cc6f483f355c6EBa45C7CcF54e5994";
+        const SNR_V1_TOKEN_ADDRESS = "0x5Ce1427F77D8c58F97f5e18b36804fD54Aa72718";
+        const TREASURY_ADDRESS = "0x7634a20873e7e63EC924333a1B9B87c1F9E5e8eB";
         const STAKING_CONTRACT_ADDRESS = "0xc28b8A3E8863ada9D05a6BA068ebe5D49aE58499";
         const OTC_CONTRACT_ADDRESS = "0x2A37ca96662D43B43beC41CDE61dfc4646Ea2d33";
         const USDT_ADDRESS = "0x55d398326f99059fF775485246999027B3197955";
@@ -661,7 +725,8 @@
         const ERC20_ABI = [
             "function approve(address spender, uint256 amount) public returns (bool)",
             "function allowance(address owner, address spender) public view returns (uint256)",
-            "function balanceOf(address account) public view returns (uint256)"
+            "function balanceOf(address account) public view returns (uint256)",
+            "function transfer(address to, uint256 amount) public returns (bool)"
         ];
         
         const STAKING_ABI = [
@@ -789,6 +854,18 @@
                 const snrContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, provider);
                 const snrBal = await snrContract.balanceOf(userAddress);
                 document.getElementById('display-balance').innerText = parseFloat(ethers.utils.formatUnits(snrBal, 18)).toLocaleString('en-US', {maximumFractionDigits: 2});
+
+                // Update SNR V1 Balance (Migration)
+                try {
+                    const v1Contract = new ethers.Contract(SNR_V1_TOKEN_ADDRESS, ERC20_ABI, provider);
+                    const v1Bal = await v1Contract.balanceOf(userAddress);
+                    const v1El = document.getElementById('display-v1-balance');
+                    if (v1El) {
+                        v1El.innerText = parseFloat(ethers.utils.formatUnits(v1Bal, 18)).toLocaleString('en-US', {maximumFractionDigits: 2});
+                    }
+                } catch (v1Err) {
+                    console.warn("Could not fetch V1 balance:", v1Err);
+                }
 
                 // Update Staking Data
                 const stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, provider);
@@ -1077,6 +1154,8 @@
             document.getElementById('display-aff-vol').innerText = "0.00";
             document.getElementById('display-tier').innerText = "BRONZE (5%)";
             document.getElementById('display-max-cap').innerText = "0.00";
+            const v1El = document.getElementById('display-v1-balance');
+            if (v1El) v1El.innerText = "0.00";
             document.getElementById('ref-link').value = window.location.origin + window.location.pathname;
 
             const ceoPanel = document.getElementById('ceo-executive-panel');
@@ -1290,6 +1369,74 @@
             } catch (error) {
                 console.error("OTC Error:", error);
                 showNotification("Transaksi Gagal / Dibatalkan", error.data?.message || error.message, "error");
+            } finally {
+                btn.innerHTML = ogHtml; btn.disabled = false; lucide.createIcons();
+            }
+        }
+
+        // ================= V1 TO V8 MIGRATION FUNCTIONS =================
+        function calculateMigration() {
+            const v1Val = document.getElementById('v1-migrate-input').value;
+            const v3Out = document.getElementById('migrate-v3-output');
+            if (v1Val && parseFloat(v1Val) > 0) {
+                v3Out.value = parseFloat(v1Val).toLocaleString('en-US', {maximumFractionDigits: 2});
+            } else {
+                v3Out.value = "";
+            }
+        }
+
+        async function setMaxV1() {
+            if (!userAddress || !provider) return;
+            try {
+                const v1Contract = new ethers.Contract(SNR_V1_TOKEN_ADDRESS, ERC20_ABI, provider);
+                const v1Bal = await v1Contract.balanceOf(userAddress);
+                const v1Formatted = ethers.utils.formatUnits(v1Bal, 18);
+                document.getElementById('v1-migrate-input').value = v1Formatted;
+                calculateMigration();
+            } catch(e) {
+                console.error("Failed setting max V1:", e);
+            }
+        }
+
+        async function migrateV1ToV8() {
+            if (!signer) return showNotification("Akses Ditolak", "Harap hubungkan dompet (Connect Wallet) terlebih dahulu!", "error");
+            const amt = document.getElementById('v1-migrate-input').value;
+            if (!amt || parseFloat(amt) <= 0) return showNotification("Jumlah Tidak Valid", "Masukkan nominal SNR V1 yang ingin ditukar!", "error");
+
+            const btn = document.getElementById('btn-migrate-v1');
+            const ogHtml = btn.innerHTML;
+
+            try {
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-5 h-5"></i> Menyerahkan V1 ke Kas Treasury...`;
+                btn.disabled = true;
+
+                const v1Contract = new ethers.Contract(SNR_V1_TOKEN_ADDRESS, ERC20_ABI, signer);
+                const amtWei = ethers.utils.parseUnits(amt.toString(), 18);
+
+                // Check V1 balance
+                const bal = await v1Contract.balanceOf(userAddress);
+                if (bal.lt(amtWei)) {
+                    throw new Error("Saldo SNR V1 di dompet Anda tidak mencukupi!");
+                }
+
+                // Transfer SNR V1 directly to Treasury Kas
+                const txTransfer = await v1Contract.transfer(TREASURY_ADDRESS, amtWei);
+                await txTransfer.wait();
+
+                saveLocalTx('MIGRATE', 'Tukar V1 ➔ V8 (Migrasi)', amt, txTransfer.hash);
+
+                showNotification(
+                    "Migrasi V1 Berhasil Diterima! 🔄✨",
+                    `Koin sejumlah <strong class="text-yellow-400 font-bold">${amt} SNR V1</strong> telah berhasil diserahkan ke Kas Treasury Resmi.<br><br><span class="text-xs text-accent">Permintaan migrasi aset Anda telah tercatat on-chain. Saldo SNR V3 senilai <strong>${amt} SNR V3</strong> akan segera diaktifkan ke akun Staking V8 Anda!</span>`,
+                    "success"
+                );
+
+                document.getElementById('v1-migrate-input').value = "";
+                calculateMigration();
+                updateBalances();
+            } catch (error) {
+                console.error("Migrasi Error:", error);
+                showNotification("Migrasi Gagal / Dibatalkan", error.data?.message || error.message, "error");
             } finally {
                 btn.innerHTML = ogHtml; btn.disabled = false; lucide.createIcons();
             }
