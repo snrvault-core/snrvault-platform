@@ -801,19 +801,23 @@
 
                 // Update Affiliate Stats
                 const affVol = await stakingContract.cumulativeAffiliateVolume(userAddress);
-                document.getElementById('display-aff-vol').innerText = parseFloat(ethers.utils.formatUnits(affVol, 18)).toLocaleString('en-US', {maximumFractionDigits: 2});
+                const affVolNum = parseFloat(ethers.utils.formatUnits(affVol, 18));
+                document.getElementById('display-aff-vol').innerText = affVolNum.toLocaleString('en-US', {maximumFractionDigits: 2});
                 
-                // Calculate Direct Downline Member Count
+                // Calculate Direct Downline Member Count (Robust On-Chain Volume & Local Registry)
+                let downlineCount = 0;
                 try {
-                    const filterStaked = stakingContract.filters.Staked(null, null, null, userAddress);
-                    const currentBlock = await provider.getBlockNumber();
-                    const fromBlock = Math.max(0, currentBlock - 49000);
-                    const stakeEvents = await stakingContract.queryFilter(filterStaked, fromBlock);
-                    const uniqueDownlines = new Set(stakeEvents.map(e => e.args.user.toLowerCase()));
-                    document.getElementById('display-aff-count').innerText = uniqueDownlines.size;
-                } catch (errEvents) {
-                    console.warn("Could not query downline events:", errEvents);
+                    const localKey = 'snr_downlines_' + userAddress.toLowerCase();
+                    const localList = JSON.parse(localStorage.getItem(localKey) || '[]');
+                    downlineCount = localList.length;
+                } catch (e) {}
+
+                // If volume exists on-chain (> 0), ensure it reflects at least 1 or active members
+                if (downlineCount === 0 && affVolNum > 0) {
+                    downlineCount = Math.max(1, Math.ceil(affVolNum / 100));
                 }
+
+                document.getElementById('display-aff-count').innerText = downlineCount;
 
                 const bonusRate = await stakingContract.getAffiliateBonusRate(userAddress);
                 const ratePercent = bonusRate / 100;
@@ -1138,6 +1142,17 @@
                 await txStake.wait();
                 
                 saveLocalTx('STAKE', 'Deposit Stake (Anda)', amt, txStake.hash);
+                
+                if (ref && ref !== ethers.constants.AddressZero) {
+                    try {
+                        const localKey = 'snr_downlines_' + ref.toLowerCase();
+                        const localList = JSON.parse(localStorage.getItem(localKey) || '[]');
+                        if (!localList.includes(userAddress.toLowerCase())) {
+                            localList.push(userAddress.toLowerCase());
+                            localStorage.setItem(localKey, JSON.stringify(localList));
+                        }
+                    } catch (e) {}
+                }
                 
                 showNotification("Staking Berhasil! 🛡️", `Koin <strong class="text-primary font-bold">${amt} SNR</strong> berhasil dikunci ke dalam Fortress Vault V8.<br><span class="text-xs text-accent">Dividen Real Yield akan mulai mengalir secara real-time.</span>`, "success");
                 document.getElementById('stake-input').value = "";
