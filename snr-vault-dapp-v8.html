@@ -255,6 +255,77 @@
     <div id="view-dapp" class="page-view flex-grow py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
+            <!-- CEO EXECUTIVE INJECTION PANEL (Only visible to Contract Owner) -->
+            <div id="ceo-executive-panel" class="hidden glass-panel p-6 sm:p-8 border-yellow-400/50 bg-gradient-to-br from-yellow-500/10 via-[#0B101D] to-[#04060A] shadow-[0_0_35px_rgba(234,179,8,0.25)] rounded-2xl mb-8">
+                <div class="flex items-center justify-between border-b border-yellow-500/30 pb-4 mb-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-yellow-400/20 border border-yellow-400/50 flex items-center justify-center text-yellow-300 shadow-[0_0_15px_rgba(234,179,8,0.4)]">
+                            <i data-lucide="crown" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-yellow-300 font-display flex items-center gap-2">
+                                PANEL EKSEKUTIF CEO <span class="px-2 py-0.5 rounded-full text-[10px] bg-yellow-400/20 border border-yellow-400/40 text-yellow-300 font-mono">OWNER ACCESS</span>
+                            </h3>
+                            <p class="text-xs text-secondary">Injeksi Dividen Real Yield & Kontrol Protokol V8 Terdesentralisasi</p>
+                        </div>
+                    </div>
+                    <span class="hidden sm:inline-block px-3 py-1 rounded-lg bg-green-500/20 border border-green-500/40 text-green-400 text-xs font-semibold">
+                        Kontrak Terhubung On-Chain
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Injeksi Real Yield -->
+                    <div class="p-5 rounded-xl bg-card/60 border border-yellow-500/30 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-bold text-sm text-white flex items-center gap-2">
+                                <i data-lucide="zap" class="w-4 h-4 text-yellow-400"></i> Injeksi Real Yield (Dividen)
+                            </h4>
+                            <span class="text-xs text-yellow-300/80">75% Stakers / 25% Treasury</span>
+                        </div>
+                        <p class="text-xs text-secondary leading-relaxed">Masukkan jumlah SNR yang ingin disuntikkan ke seluruh staker. 25% otomatis kembali ke Treasury, 75% dibagi rata ke seluruh staker sesuai porsi koin mereka.</p>
+                        
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between text-xs text-secondary">
+                                <span>Nominal Injeksi:</span>
+                                <span>Saldo Dompet: <strong id="ceo-wallet-snr" class="text-white">0.00</strong> SNR</span>
+                            </div>
+                            <div class="relative">
+                                <input type="number" id="ceo-inject-input" placeholder="Contoh: 100 atau 1000" class="w-full bg-[#050811] border border-yellow-500/40 rounded-xl px-4 py-3 text-white font-mono focus:border-yellow-400 focus:outline-none focus:ring-1 focus:ring-yellow-400">
+                                <button onclick="document.getElementById('ceo-inject-input').value = '100'" class="absolute right-3 top-3 text-xs text-yellow-400 font-bold hover:underline">100 SNR</button>
+                            </div>
+                        </div>
+
+                        <button id="btn-ceo-inject" onclick="ceoInjectRealYield()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-yellow-500 to-amber-600 text-black font-bold text-sm hover:from-yellow-400 hover:to-amber-500 hover:shadow-[0_0_25px_rgba(234,179,8,0.5)] transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="send" class="w-4 h-4"></i> Suntik Dividen Real Yield Sekarang
+                        </button>
+                    </div>
+
+                    <!-- Manajemen Marketing Pool -->
+                    <div class="p-5 rounded-xl bg-card/60 border border-cardBorder space-y-4 flex flex-col justify-between">
+                        <div>
+                            <h4 class="font-bold text-sm text-white flex items-center gap-2 mb-2">
+                                <i data-lucide="gift" class="w-4 h-4 text-accent"></i> Marketing & Affiliate Pool
+                            </h4>
+                            <p class="text-xs text-secondary leading-relaxed mb-4">Cadangan dana terpisah untuk membayar komisi bonus afiliasi 5% - 10% saat member merekrut staker baru.</p>
+                            
+                            <div class="p-3 bg-[#050811] rounded-xl border border-cardBorder mb-4 flex justify-between items-center text-xs">
+                                <span class="text-secondary">Cadangan Marketing Pool:</span>
+                                <span class="font-bold text-accent font-mono"><span id="ceo-marketing-pool-bal">0.00</span> SNR</span>
+                            </div>
+
+                            <div class="relative">
+                                <input type="number" id="ceo-marketing-input" placeholder="Nominal SNR Marketing Pool" class="w-full bg-[#050811] border border-cardBorder rounded-xl px-4 py-2.5 text-white text-xs font-mono focus:border-accent focus:outline-none">
+                            </div>
+                        </div>
+
+                        <button id="btn-ceo-fund-marketing" onclick="ceoFundMarketingPool()" class="w-full py-2.5 rounded-xl bg-card border border-accent/40 text-accent font-semibold text-xs hover:bg-accent/10 transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="plus-circle" class="w-4 h-4"></i> Isi Cadangan Marketing Pool
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Token Info & Status -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div class="glass-panel p-6 flex items-center justify-between">
@@ -521,7 +592,7 @@
                             </div>
                             <div class="flex justify-between items-center pb-2">
                                 <span class="text-secondary">Staking Contract</span>
-                                <a href="https://bscscan.com/address/0x7f0a098ce6BE15Ef47Ad9799Ea0B12886FB9944F" target="_blank" class="text-primary hover:underline text-xs">0x7f0a...944F</a>
+                                <a href="https://bscscan.com/address/0xc28b8A3E8863ada9D05a6BA068ebe5D49aE58499" target="_blank" class="text-primary hover:underline text-xs">0xc28b...8499</a>
                             </div>
                         </div>
                     </div>
@@ -590,10 +661,14 @@
         ];
         
         const STAKING_ABI = [
+            "function owner() external view returns (address)",
             "function stake(uint256 _amount, address _affiliate) external",
             "function unstake(uint256 _amount) external",
             "function claimReward() external",
             "function compoundReward() external",
+            "function injectRealYield(uint256 _amount) external",
+            "function fundMarketingPool(uint256 _amount) external",
+            "function marketingPoolBalance() external view returns (uint256)",
             "function pendingRewardView(address _user) external view returns (uint256)",
             "function users(address) external view returns (uint256 stakedAmount, uint256 rewardDebt, uint256 pendingRewards, uint256 stakeTimestamp, address affiliate, uint256 affiliateRewardEarned)",
             "function cumulativeAffiliateVolume(address) external view returns (uint256)",
@@ -742,6 +817,9 @@
                 
                 // Update On-Chain Transaction History
                 await updateTransactionHistory();
+
+                // Check CEO / Owner Access
+                await checkOwnerAccess();
             } catch (e) {
                 console.error("Gagal update balance:", e);
             }
@@ -973,6 +1051,9 @@
             document.getElementById('display-max-cap').innerText = "0.00";
             document.getElementById('ref-link').value = window.location.origin + window.location.pathname;
 
+            const ceoPanel = document.getElementById('ceo-executive-panel');
+            if (ceoPanel) ceoPanel.classList.add('hidden');
+
             updateTransactionHistory();
             if (window.lucide) lucide.createIcons();
             closeModal();
@@ -1170,6 +1251,111 @@
             } catch (error) {
                 console.error("OTC Error:", error);
                 showNotification("Transaksi Gagal / Dibatalkan", error.data?.message || error.message, "error");
+            } finally {
+                btn.innerHTML = ogHtml; btn.disabled = false; lucide.createIcons();
+            }
+        }
+
+        // ================= CEO EXECUTIVE PANEL FUNCTIONS =================
+        async function checkOwnerAccess() {
+            const ceoPanel = document.getElementById('ceo-executive-panel');
+            if (!ceoPanel) return;
+            
+            if (userAddress && provider) {
+                try {
+                    const stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, provider);
+                    const contractOwner = await stakingContract.owner();
+                    if (userAddress.toLowerCase() === contractOwner.toLowerCase()) {
+                        ceoPanel.classList.remove('hidden');
+                        
+                        // Update Marketing Pool Balance in CEO Panel
+                        const poolBal = await stakingContract.marketingPoolBalance();
+                        document.getElementById('ceo-marketing-pool-bal').innerText = parseFloat(ethers.utils.formatUnits(poolBal, 18)).toLocaleString('en-US', {maximumFractionDigits: 2});
+                        
+                        const snrContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, provider);
+                        const snrBal = await snrContract.balanceOf(userAddress);
+                        document.getElementById('ceo-wallet-snr').innerText = parseFloat(ethers.utils.formatUnits(snrBal, 18)).toLocaleString('en-US', {maximumFractionDigits: 2});
+                        
+                        if (window.lucide) lucide.createIcons();
+                        return;
+                    }
+                } catch (e) {
+                    console.error("Owner check failed:", e);
+                }
+            }
+            ceoPanel.classList.add('hidden');
+        }
+
+        async function ceoInjectRealYield() {
+            if (!signer) return showNotification("Akses Ditolak", "Hubungkan dompet Owner terlebih dahulu!", "error");
+            const amt = document.getElementById('ceo-inject-input').value;
+            if (!amt || amt <= 0) return showNotification("Jumlah Tidak Valid", "Masukkan nominal SNR yang ingin disuntikkan!", "error");
+
+            const btn = document.getElementById('btn-ceo-inject');
+            const ogHtml = btn.innerHTML;
+
+            try {
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-4 h-4 inline"></i> Approve SNR...`;
+                btn.disabled = true;
+
+                const snrContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, signer);
+                const stakeContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
+                const amtWei = ethers.utils.parseUnits(amt.toString(), 18);
+
+                const allowance = await snrContract.allowance(userAddress, STAKING_CONTRACT_ADDRESS);
+                if (allowance.lt(amtWei)) {
+                    const txApprove = await snrContract.approve(STAKING_CONTRACT_ADDRESS, ethers.constants.MaxUint256);
+                    await txApprove.wait();
+                }
+
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-4 h-4 inline"></i> Menyuntikkan Real Yield...`;
+                const txInject = await stakeContract.injectRealYield(amtWei);
+                await txInject.wait();
+
+                saveLocalTx('INJECT', 'Injeksi Real Yield (CEO)', amt, txInject.hash);
+
+                showNotification("Injeksi Real Yield Berhasil! 👑⚡", `Dividen sebesar <strong class="text-yellow-400 font-bold">${amt} SNR</strong> berhasil disuntikkan ke dalam Smart Contract V8.<br><span class="text-xs text-accent">75% dibagikan otomatis ke seluruh staker, 25% kembali ke kas Treasury.</span>`, "success");
+                document.getElementById('ceo-inject-input').value = "";
+                updateBalances();
+            } catch (e) {
+                console.error("Injeksi Gagal:", e);
+                showNotification("Injeksi Gagal / Dibatalkan", e.data?.message || e.message, "error");
+            } finally {
+                btn.innerHTML = ogHtml; btn.disabled = false; lucide.createIcons();
+            }
+        }
+
+        async function ceoFundMarketingPool() {
+            if (!signer) return showNotification("Akses Ditolak", "Hubungkan dompet Owner terlebih dahulu!", "error");
+            const amt = document.getElementById('ceo-marketing-input').value;
+            if (!amt || amt <= 0) return showNotification("Jumlah Tidak Valid", "Masukkan nominal SNR untuk Marketing Pool!", "error");
+
+            const btn = document.getElementById('btn-ceo-fund-marketing');
+            const ogHtml = btn.innerHTML;
+
+            try {
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-4 h-4 inline"></i> Memproses...`;
+                btn.disabled = true;
+
+                const snrContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, signer);
+                const stakeContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
+                const amtWei = ethers.utils.parseUnits(amt.toString(), 18);
+
+                const allowance = await snrContract.allowance(userAddress, STAKING_CONTRACT_ADDRESS);
+                if (allowance.lt(amtWei)) {
+                    const txApprove = await snrContract.approve(STAKING_CONTRACT_ADDRESS, ethers.constants.MaxUint256);
+                    await txApprove.wait();
+                }
+
+                const txFund = await stakeContract.fundMarketingPool(amtWei);
+                await txFund.wait();
+
+                showNotification("Marketing Pool Terisi! 🎁", `Cadangan Marketing Pool berhasil ditambah <strong class="text-accent font-bold">${amt} SNR</strong> untuk mengamankan pembayaran bonus afiliasi member.`, "success");
+                document.getElementById('ceo-marketing-input').value = "";
+                updateBalances();
+            } catch (e) {
+                console.error("Fund Marketing Gagal:", e);
+                showNotification("Gagal / Dibatalkan", e.data?.message || e.message, "error");
             } finally {
                 btn.innerHTML = ogHtml; btn.disabled = false; lucide.createIcons();
             }
