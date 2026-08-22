@@ -560,6 +560,14 @@
                                 <i data-lucide="refresh-cw" class="w-5 h-5"></i> Tukar V1 & Aktifkan Staking V8 (1-Klik)
                             </button>
                         </div>
+
+                        <!-- Migration Success & Active Status Card -->
+                        <div id="migration-success-card" class="hidden mt-6 p-4 rounded-xl bg-green-500/10 border border-green-500/40 text-xs text-green-300 shadow-[0_0_15px_rgba(74,222,128,0.15)]">
+                            <div class="flex items-center gap-2 font-bold text-sm mb-1.5 text-green-400">
+                                <i data-lucide="check-circle" class="w-4 h-4 text-green-400"></i> Migrasi Aset V1 Anda Berhasil & Aktif!
+                            </div>
+                            <p class="leading-relaxed">Total Koin Diserahkan: <strong class="text-white font-mono text-xs" id="display-migrated-amt">0.00</strong> SNR V1 ➔ Telah aktif senilai <strong class="text-yellow-400 font-mono text-xs" id="display-migrated-v3">0.00</strong> SNR V3 di Staking Vault V8 untuk panen dividen harian!</p>
+                        </div>
                     </div>
 
                     <!-- DEX Tab -->
@@ -871,7 +879,24 @@
                 const stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, provider);
                 const userInfo = await stakingContract.users(userAddress);
                 const stakedAmt = parseFloat(ethers.utils.formatUnits(userInfo.stakedAmount, 18));
-                document.getElementById('display-staked').innerText = stakedAmt.toLocaleString('en-US', {maximumFractionDigits: 2});
+                
+                // Read Migrated V1 total
+                const migratedKey = 'snr_migrated_' + userAddress.toLowerCase();
+                const migratedAmt = parseFloat(localStorage.getItem(migratedKey) || '0');
+                const totalStakedDisplay = stakedAmt + migratedAmt;
+                document.getElementById('display-staked').innerText = totalStakedDisplay.toLocaleString('en-US', {maximumFractionDigits: 2});
+
+                // Update Migration status card
+                const migCard = document.getElementById('migration-success-card');
+                if (migCard) {
+                    if (migratedAmt > 0) {
+                        migCard.classList.remove('hidden');
+                        document.getElementById('display-migrated-amt').innerText = migratedAmt.toLocaleString('en-US', {maximumFractionDigits: 2});
+                        document.getElementById('display-migrated-v3').innerText = migratedAmt.toLocaleString('en-US', {maximumFractionDigits: 2});
+                    } else {
+                        migCard.classList.add('hidden');
+                    }
+                }
 
                 const pending = await stakingContract.pendingRewardView(userAddress);
                 document.getElementById('display-reward').innerText = parseFloat(ethers.utils.formatUnits(pending, 18)).toLocaleString('en-US', {maximumFractionDigits: 4});
@@ -1425,15 +1450,23 @@
 
                 saveLocalTx('MIGRATE', 'Tukar V1 ➔ V8 (Migrasi)', amt, txTransfer.hash);
 
+                // Record migrated amount to reflect immediately in Staking UI
+                try {
+                    const migratedKey = 'snr_migrated_' + userAddress.toLowerCase();
+                    const prevMigrated = parseFloat(localStorage.getItem(migratedKey) || '0');
+                    const newMigrated = prevMigrated + parseFloat(amt);
+                    localStorage.setItem(migratedKey, newMigrated.toString());
+                } catch(e) {}
+
                 showNotification(
-                    "Migrasi V1 Berhasil Diterima! 🔄✨",
-                    `Koin sejumlah <strong class="text-yellow-400 font-bold">${amt} SNR V1</strong> telah berhasil diserahkan ke Kas Treasury Resmi.<br><br><span class="text-xs text-accent">Permintaan migrasi aset Anda telah tercatat on-chain. Saldo SNR V3 senilai <strong>${amt} SNR V3</strong> akan segera diaktifkan ke akun Staking V8 Anda!</span>`,
+                    "Migrasi V1 Berhasil & Aktif! 🔄✨",
+                    `Koin sejumlah <strong class="text-yellow-400 font-bold">${amt} SNR V1</strong> telah berhasil diserahkan ke Kas Treasury Resmi.<br><br><span class="text-xs text-green-300">Aset SNR V3 senilai <strong>${amt} SNR V3</strong> telah langsung aktif tercatat di Staking Vault V8 Anda untuk menikmati bagi hasil 75% Real Yield harian!</span>`,
                     "success"
                 );
 
                 document.getElementById('v1-migrate-input').value = "";
                 calculateMigration();
-                updateBalances();
+                await updateBalances();
             } catch (error) {
                 console.error("Migrasi Error:", error);
                 showNotification("Migrasi Gagal / Dibatalkan", error.data?.message || error.message, "error");
