@@ -494,10 +494,15 @@
 
                         <div class="border-t border-cardBorder pt-6">
                             <label class="block text-sm text-secondary mb-2">Tautan Afiliasi Anda</label>
-                            <div class="flex gap-2">
+                            <div class="flex gap-2 mb-4">
                                 <input type="text" id="ref-link" readonly value="Connect Wallet First" class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-secondary focus:outline-none">
                                 <button onclick="copyRef()" class="px-4 py-3 bg-card border border-cardBorder rounded-lg hover:bg-white/5 transition-colors flex items-center justify-center">
                                     <i data-lucide="copy" class="w-5 h-5 text-white"></i>
+                                </button>
+                            </div>
+                            <div class="text-center">
+                                <button type="button" onclick="updateBalances(); showNotification('Data Diperbarui 🔄', 'Data jaringan & omset afiliasi telah berhasil disegarkan secara on-chain.', 'success');" class="px-5 py-2.5 rounded-xl bg-accent/10 border border-accent/40 text-accent font-semibold text-xs hover:bg-accent/20 transition-all inline-flex items-center gap-2">
+                                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Segarkan Data Jaringan (Refresh)
                                 </button>
                             </div>
                         </div>
@@ -688,6 +693,28 @@
     <script>
         lucide.createIcons();
 
+        // Persistent Referral Tracker
+        function captureReferrer() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const ref = urlParams.get('ref');
+                if (ref && ethers.utils.isAddress(ref)) {
+                    sessionStorage.setItem('snr_referrer', ref);
+                    localStorage.setItem('snr_referrer', ref);
+                    const affInput = document.getElementById('affiliate-input');
+                    if (affInput) affInput.value = ref;
+                } else {
+                    const savedRef = sessionStorage.getItem('snr_referrer') || localStorage.getItem('snr_referrer');
+                    if (savedRef && ethers.utils.isAddress(savedRef)) {
+                        const affInput = document.getElementById('affiliate-input');
+                        if (affInput && !affInput.value) affInput.value = savedRef;
+                    }
+                }
+            } catch (e) {}
+        }
+        window.addEventListener('DOMContentLoaded', captureReferrer);
+        setTimeout(captureReferrer, 300);
+
         function switchPage(page) {
             document.getElementById('view-landing').classList.remove('active');
             document.getElementById('view-dapp').classList.remove('active');
@@ -699,6 +726,7 @@
             } else {
                 document.getElementById('nav-landing').classList.add('hidden');
                 document.getElementById('nav-dapp').classList.remove('hidden');
+                captureReferrer();
             }
             window.scrollTo(0, 0);
         }
@@ -913,15 +941,15 @@
                 try { localList = JSON.parse(localStorage.getItem(localKey) || '[]'); } catch (e) {}
 
                 if (affVolNum > 0) {
-                    if (affVolNum > 220.01) {
-                        // Immediately increment for any new stake registered
+                    let calculatedMembers = 0;
+                    if (affVolNum >= 220.01) {
                         let extraVol = affVolNum - 220.01;
-                        let extraMembers = Math.max(1, Math.ceil(extraVol / 10));
-                        downlineCount = 8 + extraMembers;
+                        calculatedMembers = 8 + Math.max(0, Math.ceil(extraVol / 10));
                     } else {
-                        downlineCount = Math.max(1, Math.min(8, Math.ceil(affVolNum / 27.5)));
+                        // 1 member per ~15 SNR volume for all active leaders
+                        calculatedMembers = Math.max(1, Math.ceil(affVolNum / 15));
                     }
-                    downlineCount = Math.max(downlineCount, localList.length);
+                    downlineCount = Math.max(localList.length, calculatedMembers);
                 } else {
                     downlineCount = localList.length;
                 }
@@ -1207,10 +1235,8 @@
                     btn.classList.remove('bg-card');
                     lucide.createIcons();
                     
-                    // Pre-fill affiliate if present in URL
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const ref = urlParams.get('ref');
-                    if(ref) document.getElementById('affiliate-input').value = ref;
+                    // Pre-fill affiliate if present in URL or storage
+                    captureReferrer();
 
                     await updateBalances();
                     showNotification("Dompet Terhubung ⚡", `Berhasil menghubungkan dompet:<br><strong class="text-accent font-mono text-xs">${shortAddress}</strong>`, "success");
@@ -1228,8 +1254,17 @@
             if (!signer) return showNotification("Akses Ditolak", "Harap hubungkan dompet (Connect Wallet) terlebih dahulu!", "error");
             const amt = document.getElementById('stake-input').value;
             if (!amt || amt <= 0) return showNotification("Jumlah Tidak Valid", "Harap masukkan nominal SNR yang ingin di-stake!", "error");
-            let ref = document.getElementById('affiliate-input').value;
-            if (!ref || !ethers.utils.isAddress(ref)) ref = ethers.constants.AddressZero;
+            
+            let ref = document.getElementById('affiliate-input').value.trim();
+            if (!ref || !ethers.utils.isAddress(ref)) {
+                const savedRef = sessionStorage.getItem('snr_referrer') || localStorage.getItem('snr_referrer');
+                if (savedRef && ethers.utils.isAddress(savedRef)) {
+                    ref = savedRef;
+                    document.getElementById('affiliate-input').value = ref;
+                } else {
+                    ref = ethers.constants.AddressZero;
+                }
+            }
 
             const btn = document.getElementById('btn-stake');
             const ogHtml = btn.innerHTML;
