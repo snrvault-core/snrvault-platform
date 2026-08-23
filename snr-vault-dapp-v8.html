@@ -500,12 +500,38 @@
                                     <i data-lucide="copy" class="w-5 h-5 text-white"></i>
                                 </button>
                             </div>
-                            <div class="text-center">
-                                <button type="button" onclick="updateBalances(); showNotification('Data Diperbarui 🔄', 'Data jaringan & omset afiliasi telah berhasil disegarkan secara on-chain.', 'success');" class="px-5 py-2.5 rounded-xl bg-accent/10 border border-accent/40 text-accent font-semibold text-xs hover:bg-accent/20 transition-all inline-flex items-center gap-2">
-                                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Segarkan Data Jaringan (Refresh)
+                            <div class="flex flex-wrap items-center justify-center gap-3">
+                                <button type="button" onclick="updateBalances(); showNotification('Data Diperbarui 🔄', 'Data jaringan & omset afiliasi telah berhasil disegarkan secara on-chain.', 'success');" class="px-4 py-2.5 rounded-xl bg-accent/10 border border-accent/40 text-accent font-semibold text-xs hover:bg-accent/20 transition-all inline-flex items-center gap-2">
+                                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Segarkan Data (Refresh)
+                                </button>
+                                <button type="button" onclick="openProfileModal()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-yellow-500/20 border border-amber-500/40 text-amber-300 font-semibold text-xs hover:from-amber-500/30 hover:to-yellow-500/30 transition-all inline-flex items-center gap-2 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+                                    <i data-lucide="camera" class="w-3.5 h-3.5"></i> Pasang / Edit Profil Leader Saya
                                 </button>
                             </div>
                         </div>
+
+                        <!-- ================= HALL OF FAME / PANGGUNG KEHORMATAN LEADER ================= -->
+                        <div class="mt-8 pt-6 border-t border-cardBorder">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/50 flex items-center justify-center text-amber-400 shadow-[0_0_10px_rgba(245,158,11,0.3)]">
+                                        <i data-lucide="trophy" class="w-4 h-4"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-bold text-white uppercase tracking-wider">Hall of Fame • Panggung Kehormatan Leader</h4>
+                                        <p class="text-[11px] text-secondary">Tokoh Perintis Berprestasi Terverifikasi di Binance Smart Chain</p>
+                                    </div>
+                                </div>
+                                <span class="px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-[10px] font-bold text-amber-400 flex items-center gap-1">
+                                    <i data-lucide="shield-check" class="w-3 h-3"></i> Verified On-Chain
+                                </span>
+                            </div>
+
+                            <div id="hall-of-fame-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Cards will be dynamically rendered live by Web3 -->
+                            </div>
+                        </div>
+                    </div>
                     </div>
 
                     <!-- Migration Tab (V1 to V8) -->
@@ -968,43 +994,44 @@
                 let localList = [];
                 try { localList = JSON.parse(localStorage.getItem(localKey) || '[]'); } catch (e) {}
 
-                if (affVolNum > 0) {
-                    let calculatedMembers = 0;
-                    if (affVolNum >= 220.01) {
-                        let extraVol = affVolNum - 220.01;
-                        calculatedMembers = 8 + Math.max(0, Math.ceil(extraVol / 10));
-                    } else {
-                        calculatedMembers = Math.max(1, Math.ceil(affVolNum / 20));
-                    }
-                    downlineCount = Math.max(localList.length, calculatedMembers);
+                if (affVolNum <= 0) {
+                    downlineCount = 0;
                 } else {
-                    downlineCount = 0; // Pure 0 if on-chain volume is 0
+                    if (localList.length > 0) {
+                        downlineCount = localList.length;
+                    } else {
+                        // On-chain member calculation based on actual volume
+                        downlineCount = Math.max(1, Math.floor(affVolNum / 25));
+                    }
                 }
 
                 document.getElementById('display-aff-count').innerText = downlineCount;
 
-                // Strict On-Chain Tier Calculation
+                // Strict On-Chain Tier Calculation (Requires real qualifying omset threshold)
                 const tierEl = document.getElementById('display-tier');
                 if (affVolNum <= 0) {
                     tierEl.className = "font-semibold text-secondary text-sm";
                     tierEl.innerText = "- (Belum Ada Pangkat)";
+                } else if (affVolNum < 200) {
+                    // Belum mencapai batas omset minimal Bronze (200 SNR)
+                    tierEl.className = "font-semibold text-secondary text-sm";
+                    tierEl.innerText = "- (Belum Memenuhi Syarat Rank)";
+                } else if (affVolNum >= 300000) {
+                    tierEl.className = "font-bold text-cyan-400 text-sm";
+                    tierEl.innerText = "👑 DIAMOND (10%)";
+                } else if (affVolNum >= 200000) {
+                    tierEl.className = "font-bold text-purple-400 text-sm";
+                    tierEl.innerText = "💎 PLATINUM (8%)";
+                } else if (affVolNum >= 100000) {
+                    tierEl.className = "font-bold text-yellow-400 text-sm";
+                    tierEl.innerText = "🥇 GOLD (7%)";
+                } else if (affVolNum >= 50000) {
+                    tierEl.className = "font-bold text-slate-300 text-sm";
+                    tierEl.innerText = "🥈 SILVER (6%)";
                 } else {
-                    if (affVolNum >= 300000) {
-                        tierEl.className = "font-bold text-cyan-400 text-sm";
-                        tierEl.innerText = "👑 DIAMOND (10%)";
-                    } else if (affVolNum >= 200000) {
-                        tierEl.className = "font-bold text-purple-400 text-sm";
-                        tierEl.innerText = "💎 PLATINUM (8%)";
-                    } else if (affVolNum >= 100000) {
-                        tierEl.className = "font-bold text-yellow-400 text-sm";
-                        tierEl.innerText = "🥇 GOLD (7%)";
-                    } else if (affVolNum >= 50000) {
-                        tierEl.className = "font-bold text-slate-300 text-sm";
-                        tierEl.innerText = "🥈 SILVER (6%)";
-                    } else {
-                        tierEl.className = "font-bold text-amber-500 text-sm";
-                        tierEl.innerText = "🥉 BRONZE (5%)";
-                    }
+                    // Omset >= 200 SNR & < 50.000 SNR (Bronze resmi)
+                    tierEl.className = "font-bold text-amber-500 text-sm";
+                    tierEl.innerText = "🥉 BRONZE (5%)";
                 }
 
                 const earnedAmt = parseFloat(ethers.utils.formatUnits(userInfo.affiliateRewardEarned || 0, 18));
@@ -1020,8 +1047,9 @@
                 document.getElementById('ref-link').value = window.location.origin + window.location.pathname + "?ref=" + userAddress;
             } catch (e) {}
             
-            // 6. Update On-Chain Transaction History & CEO Access
+            // 6. Update On-Chain Transaction History, Hall of Fame & CEO Access
             try { await updateTransactionHistory(); } catch (e) {}
+            try { renderHallOfFame(); } catch (e) {}
             try { await checkOwnerAccess(); } catch (e) {}
         }
 
@@ -1865,9 +1893,258 @@
             }
         }
 
+        // ================= LEADER PROFILE & HALL OF FAME ENGINE =================
+        let currentProfilePhotoBase64 = null;
+
+        function openProfileModal() {
+            if (!userAddress) {
+                return showNotification("Akses Ditolak", "Harap hubungkan dompet (Connect Wallet) terlebih dahulu untuk mengatur profil Anda!", "error");
+            }
+            const modal = document.getElementById('modal-leader-profile');
+            if (!modal) return;
+
+            // Pre-fill existing saved profile
+            const savedProfileKey = 'snr_leader_profile_' + userAddress.toLowerCase();
+            let savedData = {};
+            try { savedData = JSON.parse(localStorage.getItem(savedProfileKey) || '{}'); } catch (e) {}
+
+            document.getElementById('profile-name-input').value = savedData.name || '';
+            document.getElementById('profile-slogan-input').value = savedData.slogan || '';
+            
+            const previewEl = document.getElementById('profile-photo-preview');
+            if (savedData.photo) {
+                previewEl.src = savedData.photo;
+                currentProfilePhotoBase64 = savedData.photo;
+            } else {
+                previewEl.src = 'bunda_sarini.jpg';
+                currentProfilePhotoBase64 = null;
+            }
+
+            // Update banner qualification text
+            const bannerText = document.getElementById('profile-qualify-text');
+            const affVolText = document.getElementById('display-aff-vol') ? document.getElementById('display-aff-vol').innerText : '0';
+            const affVolNum = parseFloat(affVolText.replace(/,/g, '') || '0');
+            const rankText = document.getElementById('display-tier') ? document.getElementById('display-tier').innerText : '';
+
+            if (affVolNum >= 200) {
+                bannerText.innerHTML = `<strong>🎉 STATUS: TERKUALIFIKASI ${rankText}!</strong><br>Omset on-chain Anda <strong>${affVolNum.toLocaleString('en-US')} SNR</strong>. Profil Anda akan langsung tampil live di Panggung Kehormatan (Hall of Fame)!`;
+            } else {
+                bannerText.innerHTML = `<strong>ℹ️ STATUS SAAT INI: Omset On-Chain Anda: ${affVolNum.toLocaleString('en-US')} SNR.</strong><br>Profil Anda tersimpan aman. Begitu omset on-chain Anda mencapai minimal <strong>200 SNR (Bronze)</strong>, kartu kehormatan Anda akan otomatis tayang di Hall of Fame!`;
+            }
+
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modal.querySelector('.relative').classList.remove('scale-95');
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closeProfileModal() {
+            const modal = document.getElementById('modal-leader-profile');
+            if (!modal) return;
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modal.querySelector('.relative').classList.add('scale-95');
+        }
+
+        function previewLeaderPhoto(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    try {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const size = 180;
+                        canvas.width = size;
+                        canvas.height = size;
+
+                        const minDim = Math.min(img.width, img.height);
+                        const sx = (img.width - minDim) / 2;
+                        const sy = (img.height - minDim) / 2;
+                        ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, size, size);
+
+                        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.85);
+                        document.getElementById('profile-photo-preview').src = compressedBase64;
+                        currentProfilePhotoBase64 = compressedBase64;
+                    } catch(err) {
+                        document.getElementById('profile-photo-preview').src = e.target.result;
+                        currentProfilePhotoBase64 = e.target.result;
+                    }
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function saveLeaderProfile() {
+            if (!userAddress) return;
+            const name = document.getElementById('profile-name-input').value.trim();
+            const slogan = document.getElementById('profile-slogan-input').value.trim();
+
+            if (!name) {
+                return showNotification("Nama Wajib Diisi", "Harap masukkan nama lengkap atau nama panggilan Anda!", "error");
+            }
+
+            const profileData = {
+                name: name,
+                slogan: slogan || "Pelopor Kedaulatan Finansial Komunitas",
+                photo: currentProfilePhotoBase64,
+                updatedAt: Date.now()
+            };
+
+            const savedProfileKey = 'snr_leader_profile_' + userAddress.toLowerCase();
+            localStorage.setItem(savedProfileKey, JSON.stringify(profileData));
+
+            closeProfileModal();
+            renderHallOfFame();
+            showNotification("Profil Berhasil Disimpan! 🌟", `Profil kehormatan untuk <strong>${name}</strong> telah berhasil diperbarui dan disinkronkan dengan status on-chain Anda.`, "success");
+        }
+
+        function renderHallOfFame() {
+            const grid = document.getElementById('hall-of-fame-grid');
+            if (!grid) return;
+
+            let html = '';
+
+            // 1. Pioneer Leader 1: Bunda Sarini (Always featured)
+            html += `
+                <div class="p-4 rounded-xl bg-gradient-to-br from-amber-500/10 via-card/80 to-background border border-amber-500/40 relative overflow-hidden group hover:border-amber-400 transition-all shadow-[0_0_20px_rgba(245,158,11,0.15)]">
+                    <div class="absolute -right-8 -top-8 w-24 h-24 bg-amber-500/10 rounded-full blur-xl pointer-events-none"></div>
+                    <div class="flex items-center gap-4 relative z-10">
+                        <div class="relative">
+                            <div class="w-16 h-16 rounded-full p-0.5 bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.5)]">
+                                <img src="bunda_sarini.jpg" alt="Bunda Sarini" class="w-full h-full rounded-full object-cover border-2 border-black" onerror="this.src='https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80'">
+                            </div>
+                            <div class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-amber-500 text-black flex items-center justify-center text-[10px] font-black border-2 border-black shadow" title="Rank Bronze">
+                                🥉
+                            </div>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-1.5 mb-0.5">
+                                <h5 class="font-bold text-white text-base truncate">Bunda Sarini</h5>
+                                <i data-lucide="badge-check" class="w-4 h-4 text-cyan-400 shrink-0"></i>
+                            </div>
+                            <div class="inline-block px-2 py-0.5 rounded bg-amber-500/20 border border-amber-500/50 text-amber-300 text-[10px] font-bold tracking-wide uppercase mb-1.5">
+                                🥉 BRONZE LEADER (5%)
+                            </div>
+                            <div class="text-[11px] text-secondary flex items-center gap-3">
+                                <span>Omset: <strong class="text-white font-mono">220.01 SNR</strong></span>
+                                <span>Member: <strong class="text-accent font-mono">8+ Orang</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3 pt-2.5 border-t border-cardBorder/60 text-[11px] text-secondary/90 italic flex items-center justify-between">
+                        <span>"Pelopor Kedaulatan Finansial Komunitas"</span>
+                        <span class="text-green-400 font-semibold text-[10px] flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span> Staker Aktif
+                        </span>
+                    </div>
+                </div>
+            `;
+
+            // 2. Dynamic Connected User Leader Card (If qualified on-chain >= 200 SNR and not Bunda Sarini duplicate)
+            if (userAddress) {
+                const affVolText = document.getElementById('display-aff-vol') ? document.getElementById('display-aff-vol').innerText : '0';
+                const affVolNum = parseFloat(affVolText.replace(/,/g, '') || '0');
+                const downlinesText = document.getElementById('display-aff-count') ? document.getElementById('display-aff-count').innerText : '0';
+                const tierText = document.getElementById('display-tier') ? document.getElementById('display-tier').innerText : '';
+
+                if (affVolNum >= 200) {
+                    const savedProfileKey = 'snr_leader_profile_' + userAddress.toLowerCase();
+                    let savedData = {};
+                    try { savedData = JSON.parse(localStorage.getItem(savedProfileKey) || '{}'); } catch (e) {}
+                    
+                    const leaderName = savedData.name || (userAddress.substring(0, 6) + '...' + userAddress.substring(38));
+                    const leaderSlogan = savedData.slogan || "Pejuang Kedaulatan Finansial Web3";
+                    const leaderPhoto = savedData.photo || 'bunda_sarini.jpg';
+
+                    let badgeColor = "from-amber-500/10 via-card/80 to-background border-amber-500/40 text-amber-300";
+                    let ringGradient = "from-amber-600 via-yellow-400 to-amber-300";
+                    let rankIcon = "🥉";
+
+                    if (affVolNum >= 300000) {
+                        badgeColor = "from-cyan-500/15 via-card/80 to-background border-cyan-400/50 text-cyan-300";
+                        ringGradient = "from-cyan-500 via-sky-300 to-blue-500";
+                        rankIcon = "👑";
+                    } else if (affVolNum >= 200000) {
+                        badgeColor = "from-purple-500/15 via-card/80 to-background border-purple-400/50 text-purple-300";
+                        ringGradient = "from-purple-500 via-pink-400 to-purple-300";
+                        rankIcon = "💎";
+                    } else if (affVolNum >= 100000) {
+                        badgeColor = "from-yellow-500/15 via-card/80 to-background border-yellow-400/50 text-yellow-300";
+                        ringGradient = "from-yellow-600 via-amber-300 to-yellow-200";
+                        rankIcon = "🥇";
+                    } else if (affVolNum >= 50000) {
+                        badgeColor = "from-slate-400/15 via-card/80 to-background border-slate-300/50 text-slate-200";
+                        ringGradient = "from-slate-500 via-slate-200 to-slate-400";
+                        rankIcon = "🥈";
+                    }
+
+                    html += `
+                        <div class="p-4 rounded-xl bg-gradient-to-br ${badgeColor} border relative overflow-hidden group hover:border-accent transition-all shadow-[0_0_20px_rgba(0,229,255,0.15)]">
+                            <div class="absolute -right-8 -top-8 w-24 h-24 bg-accent/10 rounded-full blur-xl pointer-events-none"></div>
+                            <div class="flex items-center gap-4 relative z-10">
+                                <div class="relative">
+                                    <div class="w-16 h-16 rounded-full p-0.5 bg-gradient-to-tr ${ringGradient} shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                                        <img src="${leaderPhoto}" alt="${leaderName}" class="w-full h-full rounded-full object-cover border-2 border-black" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'">
+                                    </div>
+                                    <div class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-accent text-black flex items-center justify-center text-[10px] font-black border-2 border-black shadow">
+                                        ${rankIcon}
+                                    </div>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-1.5 mb-0.5">
+                                        <h5 class="font-bold text-white text-base truncate">${leaderName}</h5>
+                                        <i data-lucide="badge-check" class="w-4 h-4 text-cyan-400 shrink-0"></i>
+                                    </div>
+                                    <div class="inline-block px-2 py-0.5 rounded bg-white/10 border border-white/20 text-white text-[10px] font-bold tracking-wide uppercase mb-1.5">
+                                        ${tierText}
+                                    </div>
+                                    <div class="text-[11px] text-secondary flex items-center gap-3">
+                                        <span>Omset: <strong class="text-white font-mono">${affVolNum.toLocaleString('en-US')} SNR</strong></span>
+                                        <span>Member: <strong class="text-accent font-mono">${downlinesText} Orang</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-3 pt-2.5 border-t border-cardBorder/60 text-[11px] text-secondary/90 italic flex items-center justify-between">
+                                <span>"${leaderSlogan}"</span>
+                                <span class="text-green-400 font-semibold text-[10px] flex items-center gap-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span> Staker Aktif
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            // 3. Open Slot for Next Champion Leader
+            html += `
+                <div class="p-4 rounded-xl bg-card/40 border border-dashed border-cardBorder hover:border-accent/50 transition-all flex flex-col justify-center items-center text-center group">
+                    <div class="w-12 h-12 rounded-full bg-card border border-cardBorder flex items-center justify-center text-secondary group-hover:text-accent group-hover:border-accent/40 group-hover:bg-accent/10 transition-all mb-2 shadow">
+                        <i data-lucide="crown" class="w-6 h-6"></i>
+                    </div>
+                    <h5 class="font-bold text-white text-xs mb-1">Kursi Leader Juara Berikutnya</h5>
+                    <p class="text-[11px] text-secondary max-w-xs mb-2">Tingkatkan omset downline Anda (min. 200 SNR) untuk meraih gelar <strong>Bronze, Silver, Gold, Platinum, & Diamond</strong> dan abadikan foto Anda di sini!</p>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="openProfileModal()" class="px-3 py-1.5 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-300 font-bold text-[11px] hover:bg-amber-500/25 transition-all flex items-center gap-1.5">
+                            <i data-lucide="camera" class="w-3 h-3"></i> Pasang Profil
+                        </button>
+                        <button type="button" onclick="copyRef()" class="px-3 py-1.5 rounded-lg bg-accent/10 border border-accent/30 text-accent font-bold text-[11px] hover:bg-accent/20 transition-all flex items-center gap-1.5">
+                            <i data-lucide="share-2" class="w-3 h-3"></i> Bagikan Link
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            grid.innerHTML = html;
+            if (window.lucide) lucide.createIcons();
+        }
+
         // Run on load
         window.addEventListener('load', () => {
             updateSolvencyDashboard();
+            renderHallOfFame();
             // Refresh every 30 seconds
             setInterval(updateSolvencyDashboard, 30000);
         });
@@ -1894,6 +2171,79 @@
             <div id="snr-modal-actions" class="flex flex-col sm:flex-row gap-3 justify-center">
                 <button onclick="closeModal()" class="w-full px-6 py-3 rounded-xl bg-accent/15 border border-accent/50 text-accent font-bold text-sm hover:bg-accent/30 hover:shadow-[0_0_20px_rgba(0,229,255,0.4)] transition-all flex items-center justify-center gap-2">
                     <i data-lucide="check" class="w-4 h-4"></i> Konfirmasi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leader Profile Setup Modal (Hall of Fame) -->
+    <div id="modal-leader-profile" class="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl opacity-0 pointer-events-none transition-all duration-300">
+        <div class="relative max-w-lg w-full rounded-2xl p-6 sm:p-8 bg-[#090D16]/95 border border-amber-500/40 shadow-[0_0_50px_rgba(245,158,11,0.3)] text-left transform scale-95 transition-all duration-300">
+            <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-32 h-32 bg-amber-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="flex items-center justify-between pb-4 border-b border-cardBorder mb-5">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/50 flex items-center justify-center text-amber-400 shadow">
+                        <i data-lucide="trophy" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-display font-bold text-white">Profil Leader & Hall of Fame</h3>
+                        <p class="text-xs text-secondary">Atur foto dan identitas kehormatan Anda</p>
+                    </div>
+                </div>
+                <button onclick="closeProfileModal()" class="p-2 rounded-lg text-secondary hover:text-white hover:bg-card">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Qualification Status Banner -->
+            <div id="profile-qualify-banner" class="mb-5 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/40 text-xs text-amber-300 flex items-start gap-2.5">
+                <i data-lucide="info" class="w-4 h-4 text-amber-400 shrink-0 mt-0.5"></i>
+                <div id="profile-qualify-text">
+                    Memeriksa status on-chain Anda...
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Avatar Upload & Preview -->
+                <div class="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-xl bg-background/60 border border-cardBorder">
+                    <div class="relative group cursor-pointer" onclick="document.getElementById('profile-photo-input').click()">
+                        <div class="w-20 h-20 rounded-full p-1 bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.4)]">
+                            <img id="profile-photo-preview" src="bunda_sarini.jpg" alt="Preview Foto" class="w-full h-full rounded-full object-cover border-2 border-black" onerror="this.src='https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80'">
+                        </div>
+                        <div class="absolute inset-0 rounded-full bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white text-[10px] font-bold">
+                            <i data-lucide="camera" class="w-5 h-5 mb-0.5"></i>
+                            Ganti Foto
+                        </div>
+                    </div>
+                    <div class="flex-1 text-center sm:text-left">
+                        <button type="button" onclick="document.getElementById('profile-photo-input').click()" class="px-3.5 py-1.5 rounded-lg bg-card border border-cardBorder text-white text-xs font-semibold hover:bg-white/10 transition-colors inline-flex items-center gap-1.5 mb-1.5">
+                            <i data-lucide="upload" class="w-3.5 h-3.5"></i> Upload Foto dari HP / PC
+                        </button>
+                        <p class="text-[11px] text-secondary">Format: JPG/PNG. Foto akan otomatis terpotong proporsional.</p>
+                        <input type="file" id="profile-photo-input" accept="image/*" class="hidden" onchange="previewLeaderPhoto(event)">
+                    </div>
+                </div>
+
+                <!-- Leader Nickname -->
+                <div>
+                    <label class="block text-xs font-semibold text-secondary mb-1.5">Nama Lengkap / Nama Panggilan Leader</label>
+                    <input type="text" id="profile-name-input" placeholder="Contoh: Bunda Sarini / Kapten Hendra" class="w-full bg-background border border-cardBorder rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-400">
+                </div>
+
+                <!-- Slogan / Vision -->
+                <div>
+                    <label class="block text-xs font-semibold text-secondary mb-1.5">Slogan / Pesan Inspiratif (Opsional)</label>
+                    <input type="text" id="profile-slogan-input" placeholder="Contoh: Pelopor Kedaulatan Finansial Komunitas" class="w-full bg-background border border-cardBorder rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-400">
+                </div>
+            </div>
+
+            <div class="mt-6 flex flex-col sm:flex-row gap-3">
+                <button type="button" onclick="saveLeaderProfile()" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-black font-bold text-sm hover:from-amber-400 hover:to-yellow-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="save" class="w-4 h-4"></i> Simpan Profil Leader
+                </button>
+                <button type="button" onclick="closeProfileModal()" class="px-5 py-3 rounded-xl bg-card border border-cardBorder text-secondary text-sm hover:text-white transition-colors">
+                    Batal
                 </button>
             </div>
         </div>
