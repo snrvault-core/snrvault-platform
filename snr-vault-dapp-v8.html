@@ -881,30 +881,52 @@
 
         async function updateBalances() {
             if (!userAddress) return;
+            
+            // Safe RPC Provider fallback if wallet provider lags
+            let readProvider = provider;
+            if (!readProvider) {
+                try { readProvider = new ethers.providers.JsonRpcProvider('https://bsc-rpc.publicnode.com'); } catch (e) {}
+            }
+
+            // 1. Update BNB
             try {
-                // Update BNB
-                const bnbBal = await provider.getBalance(userAddress);
+                const bnbBal = await readProvider.getBalance(userAddress);
                 document.getElementById('display-bnb').innerText = parseFloat(ethers.utils.formatEther(bnbBal)).toFixed(4);
+            } catch (e) {
+                console.warn("BNB balance fetch error:", e);
+            }
 
-                // Update SNR Wallet
-                const snrContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, provider);
+            // 2. Update SNR V3 Wallet Balance
+            try {
+                const snrContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, readProvider);
                 const snrBal = await snrContract.balanceOf(userAddress);
-                document.getElementById('display-balance').innerText = parseFloat(ethers.utils.formatUnits(snrBal, 18)).toLocaleString('en-US', {maximumFractionDigits: 2});
-
-                // Update SNR V1 Balance (Migration)
-                try {
-                    const v1Contract = new ethers.Contract(SNR_V1_TOKEN_ADDRESS, ERC20_ABI, provider);
-                    const v1Bal = await v1Contract.balanceOf(userAddress);
-                    const v1El = document.getElementById('display-v1-balance');
-                    if (v1El) {
-                        v1El.innerText = parseFloat(ethers.utils.formatUnits(v1Bal, 18)).toLocaleString('en-US', {maximumFractionDigits: 2});
-                    }
-                } catch (v1Err) {
-                    console.warn("Could not fetch V1 balance:", v1Err);
+                const formattedSNR = parseFloat(ethers.utils.formatUnits(snrBal, 18));
+                document.getElementById('display-balance').innerText = formattedSNR.toLocaleString('en-US', {maximumFractionDigits: 2});
+                
+                // Update CEO Wallet Balance if CEO panel element exists
+                const ceoWalletEl = document.getElementById('ceo-wallet-snr');
+                if (ceoWalletEl) {
+                    ceoWalletEl.innerText = formattedSNR.toLocaleString('en-US', {maximumFractionDigits: 2});
                 }
+            } catch (e) {
+                console.warn("SNR V3 balance fetch error:", e);
+            }
 
-                // Update Staking Data
-                const stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, provider);
+            // 3. Update SNR V1 Balance (Migration)
+            try {
+                const v1Contract = new ethers.Contract(SNR_V1_TOKEN_ADDRESS, ERC20_ABI, readProvider);
+                const v1Bal = await v1Contract.balanceOf(userAddress);
+                const v1El = document.getElementById('display-v1-balance');
+                if (v1El) {
+                    v1El.innerText = parseFloat(ethers.utils.formatUnits(v1Bal, 18)).toLocaleString('en-US', {maximumFractionDigits: 2});
+                }
+            } catch (v1Err) {
+                console.warn("Could not fetch V1 balance:", v1Err);
+            }
+
+            // 4. Update Staking Data
+            try {
+                const stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, readProvider);
                 const userInfo = await stakingContract.users(userAddress);
                 const stakedAmt = parseFloat(ethers.utils.formatUnits(userInfo.stakedAmount, 18));
                 
@@ -946,7 +968,6 @@
                         let extraVol = affVolNum - 220.01;
                         calculatedMembers = 8 + Math.max(0, Math.ceil(extraVol / 10));
                     } else {
-                        // 1 member per ~15 SNR volume for all active leaders
                         calculatedMembers = Math.max(1, Math.ceil(affVolNum / 15));
                     }
                     downlineCount = Math.max(localList.length, calculatedMembers);
@@ -969,17 +990,18 @@
                 let remainingCap = stakedAmt - earnedAmt;
                 if(remainingCap < 0) remainingCap = 0;
                 document.getElementById('display-max-cap').innerText = remainingCap.toLocaleString('en-US', {maximumFractionDigits: 2});
-                // Set Ref Link
-                document.getElementById('ref-link').value = window.location.origin + window.location.pathname + "?ref=" + userAddress;
-                
-                // Update On-Chain Transaction History
-                await updateTransactionHistory();
-
-                // Check CEO / Owner Access
-                await checkOwnerAccess();
-            } catch (e) {
-                console.error("Gagal update balance:", e);
+            } catch (stakeErr) {
+                console.warn("Staking data fetch error:", stakeErr);
             }
+
+            // 5. Set Ref Link
+            try {
+                document.getElementById('ref-link').value = window.location.origin + window.location.pathname + "?ref=" + userAddress;
+            } catch (e) {}
+            
+            // 6. Update On-Chain Transaction History & CEO Access
+            try { await updateTransactionHistory(); } catch (e) {}
+            try { await checkOwnerAccess(); } catch (e) {}
         }
 
         function saveLocalTx(type, typeLabel, amount, txHash) {
@@ -1515,26 +1537,44 @@
             const ceoPanel = document.getElementById('ceo-executive-panel');
             if (!ceoPanel) return;
             
-            if (userAddress && provider) {
-                try {
-                    const stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, provider);
-                    const contractOwner = await stakingContract.owner();
-                    if (userAddress.toLowerCase() === contractOwner.toLowerCase()) {
-                        ceoPanel.classList.remove('hidden');
-                        
-                        // Update Marketing Pool Balance in CEO Panel
-                        const poolBal = await stakingContract.marketingPoolBalance();
-                        document.getElementById('ceo-marketing-pool-bal').innerText = parseFloat(ethers.utils.formatUnits(poolBal, 18)).toLocaleString('en-US', {maximumFractionDigits: 2});
-                        
-                        const snrContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, provider);
-                        const snrBal = await snrContract.balanceOf(userAddress);
-                        document.getElementById('ceo-wallet-snr').innerText = parseFloat(ethers.utils.formatUnits(snrBal, 18)).toLocaleString('en-US', {maximumFractionDigits: 2});
-                        
-                        if (window.lucide) lucide.createIcons();
-                        return;
+            if (userAddress) {
+                const OWNER_ADDR = "0x2e85b6e42fad35af0fc0520e40e1738d284f0050";
+                let isOwner = (userAddress.toLowerCase() === OWNER_ADDR);
+                
+                let readProvider = provider;
+                if (!readProvider) {
+                    try { readProvider = new ethers.providers.JsonRpcProvider('https://bsc-rpc.publicnode.com'); } catch (e) {}
+                }
+
+                if (!isOwner && readProvider) {
+                    try {
+                        const stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, readProvider);
+                        const contractOwner = await stakingContract.owner();
+                        if (userAddress.toLowerCase() === contractOwner.toLowerCase()) {
+                            isOwner = true;
+                        }
+                    } catch (e) {}
+                }
+
+                if (isOwner) {
+                    ceoPanel.classList.remove('hidden');
+                    
+                    if (readProvider) {
+                        try {
+                            const stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, readProvider);
+                            const poolBal = await stakingContract.marketingPoolBalance();
+                            document.getElementById('ceo-marketing-pool-bal').innerText = parseFloat(ethers.utils.formatUnits(poolBal, 18)).toLocaleString('en-US', {maximumFractionDigits: 2});
+                        } catch (e) {}
+
+                        try {
+                            const snrContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, readProvider);
+                            const snrBal = await snrContract.balanceOf(userAddress);
+                            document.getElementById('ceo-wallet-snr').innerText = parseFloat(ethers.utils.formatUnits(snrBal, 18)).toLocaleString('en-US', {maximumFractionDigits: 2});
+                        } catch (e) {}
                     }
-                } catch (e) {
-                    console.error("Owner check failed:", e);
+                    
+                    if (window.lucide) lucide.createIcons();
+                    return;
                 }
             }
             ceoPanel.classList.add('hidden');
