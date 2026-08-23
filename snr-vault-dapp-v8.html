@@ -1242,9 +1242,45 @@
             showNotification("Koneksi Diputuskan", "Dompet berhasil dilepas. Anda sekarang dapat menghubungkan dompet baru.", "info");
         }
 
+        async function ensureBscNetwork() {
+            if (!window.ethereum) return;
+            const BSC_CHAIN_ID_HEX = "0x38"; // 56 in decimal
+            try {
+                const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
+                if (currentChainId !== BSC_CHAIN_ID_HEX) {
+                    try {
+                        await window.ethereum.request({
+                            method: 'wallet_switchEthereumChain',
+                            params: [{ chainId: BSC_CHAIN_ID_HEX }],
+                        });
+                    } catch (switchError) {
+                        if (switchError.code === 4902 || switchError.data?.originalError?.code === 4902) {
+                            await window.ethereum.request({
+                                method: 'wallet_addEthereumChain',
+                                params: [{
+                                    chainId: BSC_CHAIN_ID_HEX,
+                                    chainName: 'BNB Smart Chain Mainnet',
+                                    nativeCurrency: {
+                                        name: 'BNB',
+                                        symbol: 'BNB',
+                                        decimals: 18
+                                    },
+                                    rpcUrls: ['https://bsc-dataseed.binance.org/', 'https://bsc-rpc.publicnode.com'],
+                                    blockExplorerUrls: ['https://bscscan.com/']
+                                }],
+                            });
+                        }
+                    }
+                }
+            } catch (err) {
+                console.warn("Network switch error:", err);
+            }
+        }
+
         async function connectWallet() {
             if (typeof window.ethereum !== 'undefined') {
                 try {
+                    await ensureBscNetwork();
                     await window.ethereum.request({ method: 'eth_requestAccounts' });
                     provider = new ethers.providers.Web3Provider(window.ethereum);
                     signer = provider.getSigner();
@@ -1261,7 +1297,7 @@
                     captureReferrer();
 
                     await updateBalances();
-                    showNotification("Dompet Terhubung ⚡", `Berhasil menghubungkan dompet:<br><strong class="text-accent font-mono text-xs">${shortAddress}</strong>`, "success");
+                    showNotification("Dompet Terhubung (BSC) ⚡", `Berhasil menghubungkan dompet di jaringan BNB Smart Chain:<br><strong class="text-accent font-mono text-xs">${shortAddress}</strong>`, "success");
                 } catch (error) {
                     console.error("Wallet connection failed:", error);
                     showNotification("Koneksi Dibatalkan", "Permintaan koneksi dompet dibatalkan oleh pengguna.", "error");
@@ -1604,6 +1640,8 @@
             if (!signer) return showNotification("Akses Ditolak", "Hubungkan dompet Owner terlebih dahulu!", "error");
             const amt = document.getElementById('ceo-inject-input').value;
             if (!amt || amt <= 0) return showNotification("Jumlah Tidak Valid", "Masukkan nominal SNR yang ingin disuntikkan!", "error");
+
+            await ensureBscNetwork();
 
             const btn = document.getElementById('btn-ceo-inject');
             const ogHtml = btn.innerHTML;
