@@ -2177,72 +2177,75 @@
     </div>
 
     <!-- Leader Profile Setup Modal (Hall of Fame) -->
-    <div id="modal-leader-profile" class="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl opacity-0 pointer-events-none transition-all duration-300">
-        <div class="relative max-w-lg w-full rounded-2xl p-6 sm:p-8 bg-[#090D16]/95 border border-amber-500/40 shadow-[0_0_50px_rgba(245,158,11,0.3)] text-left transform scale-95 transition-all duration-300">
+    <div id="modal-leader-profile" class="fixed inset-0 z-[110] flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-xl opacity-0 pointer-events-none transition-all duration-300 overflow-y-auto" onclick="if(event.target === this) closeProfileModal();">
+        <div class="relative max-w-md sm:max-w-lg w-full max-h-[92vh] flex flex-col rounded-2xl p-4 sm:p-6 bg-[#090D16]/98 border border-amber-500/40 shadow-[0_0_50px_rgba(245,158,11,0.3)] text-left transform scale-95 transition-all duration-300 my-auto overflow-hidden">
             <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-32 h-32 bg-amber-500/20 rounded-full blur-3xl pointer-events-none"></div>
 
-            <div class="flex items-center justify-between pb-4 border-b border-cardBorder mb-5">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/50 flex items-center justify-center text-amber-400 shadow">
-                        <i data-lucide="trophy" class="w-5 h-5"></i>
+            <!-- Sticky Modal Header -->
+            <div class="flex items-center justify-between pb-3 border-b border-cardBorder mb-3 shrink-0">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/50 flex items-center justify-center text-amber-400 shadow shrink-0">
+                        <i data-lucide="trophy" class="w-4 h-4"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-display font-bold text-white">Profil Leader & Hall of Fame</h3>
-                        <p class="text-xs text-secondary">Atur foto dan identitas kehormatan Anda</p>
+                        <h3 class="text-base sm:text-lg font-display font-bold text-white leading-tight">Profil Leader & Hall of Fame</h3>
+                        <p class="text-[11px] text-secondary">Atur foto & identitas kehormatan Anda</p>
                     </div>
                 </div>
-                <button onclick="closeProfileModal()" class="p-2 rounded-lg text-secondary hover:text-white hover:bg-card">
-                    <i data-lucide="x" class="w-5 h-5"></i>
+                <button type="button" onclick="closeProfileModal()" class="px-2.5 py-1 rounded-lg bg-red-500/15 border border-red-500/30 text-red-400 hover:bg-red-500/30 transition-colors text-xs font-bold flex items-center gap-1">
+                    <i data-lucide="x" class="w-3.5 h-3.5"></i> Tutup
                 </button>
             </div>
 
-            <!-- Qualification Status Banner -->
-            <div id="profile-qualify-banner" class="mb-5 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/40 text-xs text-amber-300 flex items-start gap-2.5">
-                <i data-lucide="info" class="w-4 h-4 text-amber-400 shrink-0 mt-0.5"></i>
-                <div id="profile-qualify-text">
-                    Memeriksa status on-chain Anda...
+            <!-- Scrollable Modal Body -->
+            <div class="overflow-y-auto flex-1 pr-1 space-y-3.5">
+                <!-- Qualification Status Banner -->
+                <div id="profile-qualify-banner" class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/40 text-xs text-amber-300 flex items-start gap-2">
+                    <i data-lucide="info" class="w-4 h-4 text-amber-400 shrink-0 mt-0.5"></i>
+                    <div id="profile-qualify-text" class="leading-relaxed">
+                        Memeriksa status on-chain Anda...
+                    </div>
                 </div>
-            </div>
 
-            <div class="space-y-4">
                 <!-- Avatar Upload & Preview -->
-                <div class="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-xl bg-background/60 border border-cardBorder">
-                    <div class="relative group cursor-pointer" onclick="document.getElementById('profile-photo-input').click()">
-                        <div class="w-20 h-20 rounded-full p-1 bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.4)]">
+                <div class="flex items-center gap-3.5 p-3.5 rounded-xl bg-background/60 border border-cardBorder">
+                    <div class="relative group cursor-pointer shrink-0" onclick="document.getElementById('profile-photo-input').click()">
+                        <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full p-0.5 bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.4)]">
                             <img id="profile-photo-preview" src="bunda_sarini.jpg" alt="Preview Foto" class="w-full h-full rounded-full object-cover border-2 border-black" onerror="this.src='https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80'">
                         </div>
-                        <div class="absolute inset-0 rounded-full bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white text-[10px] font-bold">
-                            <i data-lucide="camera" class="w-5 h-5 mb-0.5"></i>
-                            Ganti Foto
+                        <div class="absolute inset-0 rounded-full bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white text-[9px] font-bold">
+                            <i data-lucide="camera" class="w-4 h-4 mb-0.5"></i>
+                            Ganti
                         </div>
                     </div>
-                    <div class="flex-1 text-center sm:text-left">
-                        <button type="button" onclick="document.getElementById('profile-photo-input').click()" class="px-3.5 py-1.5 rounded-lg bg-card border border-cardBorder text-white text-xs font-semibold hover:bg-white/10 transition-colors inline-flex items-center gap-1.5 mb-1.5">
-                            <i data-lucide="upload" class="w-3.5 h-3.5"></i> Upload Foto dari HP / PC
+                    <div class="flex-1 min-w-0">
+                        <button type="button" onclick="document.getElementById('profile-photo-input').click()" class="px-3 py-1.5 rounded-lg bg-card border border-cardBorder text-white text-xs font-semibold hover:bg-white/10 transition-colors inline-flex items-center gap-1.5 mb-1">
+                            <i data-lucide="upload" class="w-3.5 h-3.5"></i> Upload Foto dari HP
                         </button>
-                        <p class="text-[11px] text-secondary">Format: JPG/PNG. Foto akan otomatis terpotong proporsional.</p>
+                        <p class="text-[10px] text-secondary">Format: JPG/PNG. Otomatis dipotong bulat rapi.</p>
                         <input type="file" id="profile-photo-input" accept="image/*" class="hidden" onchange="previewLeaderPhoto(event)">
                     </div>
                 </div>
 
                 <!-- Leader Nickname -->
                 <div>
-                    <label class="block text-xs font-semibold text-secondary mb-1.5">Nama Lengkap / Nama Panggilan Leader</label>
-                    <input type="text" id="profile-name-input" placeholder="Contoh: Bunda Sarini / Kapten Hendra" class="w-full bg-background border border-cardBorder rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-400">
+                    <label class="block text-xs font-semibold text-secondary mb-1">Nama Lengkap / Nama Panggilan</label>
+                    <input type="text" id="profile-name-input" placeholder="Contoh: Bunda Sarini / Kapten Hendra" class="w-full bg-background border border-cardBorder rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400">
                 </div>
 
                 <!-- Slogan / Vision -->
                 <div>
-                    <label class="block text-xs font-semibold text-secondary mb-1.5">Slogan / Pesan Inspiratif (Opsional)</label>
-                    <input type="text" id="profile-slogan-input" placeholder="Contoh: Pelopor Kedaulatan Finansial Komunitas" class="w-full bg-background border border-cardBorder rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-400">
+                    <label class="block text-xs font-semibold text-secondary mb-1">Slogan / Pesan Inspiratif (Opsional)</label>
+                    <input type="text" id="profile-slogan-input" placeholder="Contoh: Pelopor Kedaulatan Finansial Komunitas" class="w-full bg-background border border-cardBorder rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400">
                 </div>
             </div>
 
-            <div class="mt-6 flex flex-col sm:flex-row gap-3">
-                <button type="button" onclick="saveLeaderProfile()" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-black font-bold text-sm hover:from-amber-400 hover:to-yellow-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all flex items-center justify-center gap-2">
-                    <i data-lucide="save" class="w-4 h-4"></i> Simpan Profil Leader
+            <!-- Sticky Footer Action Buttons -->
+            <div class="mt-4 pt-3 border-t border-cardBorder flex gap-2 shrink-0">
+                <button type="button" onclick="saveLeaderProfile()" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-black font-bold text-xs sm:text-sm hover:from-amber-400 hover:to-yellow-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all flex items-center justify-center gap-1.5">
+                    <i data-lucide="save" class="w-4 h-4"></i> Simpan Profil
                 </button>
-                <button type="button" onclick="closeProfileModal()" class="px-5 py-3 rounded-xl bg-card border border-cardBorder text-secondary text-sm hover:text-white transition-colors">
+                <button type="button" onclick="closeProfileModal()" class="px-4 py-2.5 rounded-xl bg-card border border-cardBorder text-secondary text-xs sm:text-sm hover:text-white transition-colors">
                     Batal
                 </button>
             </div>
