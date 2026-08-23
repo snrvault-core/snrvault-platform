@@ -1350,6 +1350,13 @@
             const ogHtml = btn.innerHTML;
             
             try {
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-5 h-5"></i> Memproses...`;
+                btn.disabled = true;
+
+                const snrContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, signer);
+                const stakeContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
+                const amtWei = ethers.utils.parseUnits(amt.toString(), 18);
+
                 // Safe Allowance Check
                 let needsApprove = false;
                 try {
