@@ -1292,21 +1292,28 @@
             const ogHtml = btn.innerHTML;
             
             try {
-                btn.innerHTML = `<i class="lucide-loader animate-spin w-5 h-5"></i> Approve...`;
-                btn.disabled = true;
+                // Safe Allowance Check
+                let needsApprove = false;
+                try {
+                    let checkProvider = provider;
+                    if (!checkProvider) checkProvider = new ethers.providers.JsonRpcProvider('https://bsc-rpc.publicnode.com');
+                    const readSnr = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, checkProvider);
+                    const allowance = await readSnr.allowance(userAddress, STAKING_CONTRACT_ADDRESS);
+                    if (allowance.lt(amtWei)) {
+                        needsApprove = true;
+                    }
+                } catch (allowErr) {
+                    console.warn("Stake allowance check fallback:", allowErr);
+                }
 
-                const snrContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, signer);
-                const stakeContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
-                const amtWei = ethers.utils.parseUnits(amt.toString(), 18);
-
-                const allowance = await snrContract.allowance(userAddress, STAKING_CONTRACT_ADDRESS);
-                if (allowance.lt(amtWei)) {
+                if (needsApprove) {
+                    btn.innerHTML = `<i class="lucide-loader animate-spin w-5 h-5"></i> Approve SNR...`;
                     const txApprove = await snrContract.approve(STAKING_CONTRACT_ADDRESS, ethers.constants.MaxUint256);
                     await txApprove.wait();
                 }
 
                 btn.innerHTML = `<i class="lucide-loader animate-spin w-5 h-5"></i> Staking...`;
-                const txStake = await stakeContract.stake(amtWei, ref);
+                const txStake = await stakeContract.stake(amtWei, ref, { gasLimit: 350000 });
                 await txStake.wait();
                 
                 saveLocalTx('STAKE', 'Deposit Stake (Anda)', amt, txStake.hash);
@@ -1433,15 +1440,28 @@
                 const usdtContract = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, signer);
                 const otcContract = new ethers.Contract(OTC_CONTRACT_ADDRESS, OTC_ABI, signer);
 
-                btn.innerHTML = `<i class="lucide-loader animate-spin w-5 h-5"></i> Approve USDT...`;
-                const allowance = await usdtContract.allowance(userAddress, OTC_CONTRACT_ADDRESS);
-                if (allowance.lt(usdtAmountWei)) {
+                // Safe Allowance Check
+                let needsApprove = false;
+                try {
+                    let checkProvider = provider;
+                    if (!checkProvider) checkProvider = new ethers.providers.JsonRpcProvider('https://bsc-rpc.publicnode.com');
+                    const readUsdt = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, checkProvider);
+                    const allowance = await readUsdt.allowance(userAddress, OTC_CONTRACT_ADDRESS);
+                    if (allowance.lt(usdtAmountWei)) {
+                        needsApprove = true;
+                    }
+                } catch (allowErr) {
+                    console.warn("OTC allowance check fallback:", allowErr);
+                }
+
+                if (needsApprove) {
+                    btn.innerHTML = `<i class="lucide-loader animate-spin w-5 h-5"></i> Approve USDT...`;
                     const txApprove = await usdtContract.approve(OTC_CONTRACT_ADDRESS, ethers.constants.MaxUint256);
                     await txApprove.wait();
                 }
 
                 btn.innerHTML = `<i class="lucide-loader animate-spin w-5 h-5"></i> Menyelesaikan Transaksi...`;
-                const txBuy = await otcContract.buyTokens(usdtAmountWei);
+                const txBuy = await otcContract.buyTokens(usdtAmountWei, { gasLimit: 250000 });
                 await txBuy.wait();
 
                 showNotification("Pembelian OTC Sukses! ⚡", `Anda telah berhasil membeli token SNR senilai <strong class="text-accent font-bold">${usdtInput} USDT</strong> langsung dari kas Treasury tanpa slippage.`, "success");
@@ -1589,21 +1609,35 @@
             const ogHtml = btn.innerHTML;
 
             try {
-                btn.innerHTML = `<i class="lucide-loader animate-spin w-4 h-4 inline"></i> Approve SNR...`;
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-4 h-4 inline"></i> Memeriksa Izin...`;
                 btn.disabled = true;
 
                 const snrContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, signer);
                 const stakeContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
                 const amtWei = ethers.utils.parseUnits(amt.toString(), 18);
 
-                const allowance = await snrContract.allowance(userAddress, STAKING_CONTRACT_ADDRESS);
-                if (allowance.lt(amtWei)) {
+                // Safe Allowance Check via Read Provider
+                let needsApprove = false;
+                try {
+                    let checkProvider = provider;
+                    if (!checkProvider) checkProvider = new ethers.providers.JsonRpcProvider('https://bsc-rpc.publicnode.com');
+                    const readSnr = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, checkProvider);
+                    const allowance = await readSnr.allowance(userAddress, STAKING_CONTRACT_ADDRESS);
+                    if (allowance.lt(amtWei)) {
+                        needsApprove = true;
+                    }
+                } catch (allowErr) {
+                    console.warn("Allowance check fallback:", allowErr);
+                }
+
+                if (needsApprove) {
+                    btn.innerHTML = `<i class="lucide-loader animate-spin w-4 h-4 inline"></i> Approve SNR...`;
                     const txApprove = await snrContract.approve(STAKING_CONTRACT_ADDRESS, ethers.constants.MaxUint256);
                     await txApprove.wait();
                 }
 
                 btn.innerHTML = `<i class="lucide-loader animate-spin w-4 h-4 inline"></i> Menyuntikkan Real Yield...`;
-                const txInject = await stakeContract.injectRealYield(amtWei);
+                const txInject = await stakeContract.injectRealYield(amtWei, { gasLimit: 350000 });
                 await txInject.wait();
 
                 saveLocalTx('INJECT', 'Injeksi Real Yield (CEO)', amt, txInject.hash);
@@ -1628,28 +1662,42 @@
             const ogHtml = btn.innerHTML;
 
             try {
-                btn.innerHTML = `<i class="lucide-loader animate-spin w-4 h-4 inline"></i> Memproses...`;
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-4 h-4 inline"></i> Memeriksa Izin...`;
                 btn.disabled = true;
 
                 const snrContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, signer);
                 const stakeContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
                 const amtWei = ethers.utils.parseUnits(amt.toString(), 18);
 
-                const allowance = await snrContract.allowance(userAddress, STAKING_CONTRACT_ADDRESS);
-                if (allowance.lt(amtWei)) {
+                let needsApprove = false;
+                try {
+                    let checkProvider = provider;
+                    if (!checkProvider) checkProvider = new ethers.providers.JsonRpcProvider('https://bsc-rpc.publicnode.com');
+                    const readSnr = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, checkProvider);
+                    const allowance = await readSnr.allowance(userAddress, STAKING_CONTRACT_ADDRESS);
+                    if (allowance.lt(amtWei)) {
+                        needsApprove = true;
+                    }
+                } catch (allowErr) {
+                    console.warn("Marketing allowance check fallback:", allowErr);
+                }
+
+                if (needsApprove) {
+                    btn.innerHTML = `<i class="lucide-loader animate-spin w-4 h-4 inline"></i> Approve SNR...`;
                     const txApprove = await snrContract.approve(STAKING_CONTRACT_ADDRESS, ethers.constants.MaxUint256);
                     await txApprove.wait();
                 }
 
-                const txFund = await stakeContract.fundMarketingPool(amtWei);
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-4 h-4 inline"></i> Mengisi Pool...`;
+                const txFund = await stakeContract.fundMarketingPool(amtWei, { gasLimit: 250000 });
                 await txFund.wait();
 
-                showNotification("Marketing Pool Terisi! 🎁", `Cadangan Marketing Pool berhasil ditambah <strong class="text-accent font-bold">${amt} SNR</strong> untuk mengamankan pembayaran bonus afiliasi member.`, "success");
+                showNotification("Marketing Pool Terisi! 🎁⚡", `Cadangan dana sebesar <strong class="text-accent font-bold">${amt} SNR</strong> berhasil disetor ke dalam Marketing & Affiliate Pool.`, "success");
                 document.getElementById('ceo-marketing-input').value = "";
                 updateBalances();
             } catch (e) {
                 console.error("Fund Marketing Gagal:", e);
-                showNotification("Gagal / Dibatalkan", e.data?.message || e.message, "error");
+                showNotification("Pengisian Gagal / Dibatalkan", e.data?.message || e.message, "error");
             } finally {
                 btn.innerHTML = ogHtml; btn.disabled = false; lucide.createIcons();
             }
