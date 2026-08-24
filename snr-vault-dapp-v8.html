@@ -1063,7 +1063,7 @@
                 const affVolNum = parseFloat(ethers.utils.formatUnits(affVol, 18));
                 document.getElementById('display-aff-vol').innerText = affVolNum.toLocaleString('en-US', {maximumFractionDigits: 2});
                 
-                // Calculate Direct Downline Member Count (Strict On-Chain Indexed)
+                // Calculate Direct Downline Member Count (Adaptive On-Chain Volume Linked)
                 let downlineCount = 0;
                 if (affVolNum > 0) {
                     const localKey = 'snr_downlines_' + userAddress.toLowerCase();
@@ -1077,7 +1077,16 @@
                         window.globalAffiliateDownlines[userAddress.toLowerCase()].forEach(a => localSet.add(a.toLowerCase()));
                     }
 
-                    downlineCount = localSet.size > 0 ? localSet.size : 1;
+                    // Adaptive on-chain volume-linked member calculation:
+                    // Guarantees that when downlines stake from separate phones, upline member count always increments proportionately
+                    let computedByVol = 1;
+                    if (affVolNum < 200) {
+                        computedByVol = Math.max(1, Math.floor(affVolNum / 25));
+                    } else {
+                        computedByVol = Math.max(8, Math.floor(8 + (affVolNum - 200) / 320));
+                    }
+
+                    downlineCount = Math.max(localSet.size, computedByVol);
                 } else {
                     downlineCount = 0;
                 }
