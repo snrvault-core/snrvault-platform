@@ -673,26 +673,29 @@
                 <div class="space-y-6">
                     <!-- Solvency Dashboard / Proof of Accounting -->
                     <div class="glass-panel p-6 border-accent/40 bg-accent/5">
-                        <h4 class="font-display font-bold text-lg mb-2 flex items-center gap-2 text-accent">
-                            <i data-lucide="shield-check" class="w-5 h-5"></i> Proof of Accounting
-                        </h4>
-                        <p class="text-xs text-secondary mb-4">Verifikasi solvabilitas on-chain (Real-Time). Sistem memastikan kas fisik kontrak selalu menutupi total kewajiban kepada member.</p>
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-display font-bold text-base sm:text-lg flex items-center gap-2 text-accent">
+                                <i data-lucide="shield-check" class="w-5 h-5"></i> Protocol Accounting Status
+                            </h4>
+                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-accent/10 border border-accent/30 text-accent font-mono">ON-CHAIN DERIVED</span>
+                        </div>
+                        <p class="text-xs text-secondary mb-4">Verifikasi solvabilitas neraca on-chain (Real-Time). Sistem memverifikasi saldo fisik token kontrak terhadap seluruh liabilitas protokol.</p>
                         <div class="space-y-3 text-sm">
                             <div class="flex justify-between items-center border-b border-cardBorder pb-2">
-                                <span class="text-secondary">Physical Token Balance</span>
-                                <span class="font-bold text-white"><span id="solvency-balance">3,551,100</span> SNR</span>
+                                <span class="text-secondary text-xs sm:text-sm">Physical Token Balance (Assets)</span>
+                                <span class="font-bold text-white font-mono"><span id="solvency-balance">0.00</span> SNR</span>
                             </div>
                             <div class="flex justify-between items-center border-b border-cardBorder pb-2">
-                                <span class="text-secondary">Total Liabilities</span>
-                                <span class="font-bold text-red-400"><span id="solvency-liabilities">3,551,100</span> SNR</span>
+                                <span class="text-secondary text-xs sm:text-sm">Total Protocol Liabilities</span>
+                                <span class="font-bold text-red-400 font-mono"><span id="solvency-liabilities">0.00</span> SNR</span>
                             </div>
                             <div class="flex justify-between items-center border-b border-cardBorder pb-2">
-                                <span class="text-secondary">Total Reward Injected</span>
-                                <span class="font-bold text-primary"><span id="solvency-injected">125,000</span> SNR</span>
+                                <span class="text-secondary text-xs sm:text-sm">Total Reward Injected (Gross)</span>
+                                <span class="font-bold text-primary font-mono"><span id="solvency-injected">0.00</span> SNR</span>
                             </div>
                             <div class="flex justify-between items-center pt-2">
-                                <span class="text-secondary">System Status</span>
-                                <span id="solvency-status" class="px-2 py-1 rounded bg-green-500/20 text-green-400 text-xs font-bold border border-green-500/30 shadow-[0_0_10px_rgba(74,222,128,0.2)]">100% SOLVENT</span>
+                                <span class="text-secondary text-xs sm:text-sm">Accounting Solvency</span>
+                                <span id="solvency-status" class="px-2.5 py-1 rounded bg-green-500/20 text-green-400 text-xs font-bold border border-green-500/30 shadow-[0_0_10px_rgba(74,222,128,0.2)]">SYNCING...</span>
                             </div>
                         </div>
                     </div>
@@ -1072,34 +1075,24 @@
                 const affVolNum = parseFloat(ethers.utils.formatUnits(affVol, 18));
                 document.getElementById('display-aff-vol').innerText = affVolNum.toLocaleString('en-US', {maximumFractionDigits: 2});
                 
-                // Calculate Direct Downline Member Count (Adaptive On-Chain Volume Linked)
+                // Calculate Direct Downline Member Count (100% On-Chain Event Derived, Zero Estimation)
                 let downlineCount = 0;
-                if (affVolNum > 0) {
-                    const localKey = 'snr_downlines_' + userAddress.toLowerCase();
-                    let localSet = new Set();
-                    try {
-                        const saved = JSON.parse(localStorage.getItem(localKey) || '[]');
-                        saved.forEach(a => localSet.add(a.toLowerCase()));
-                    } catch(e) {}
+                const userKey = userAddress.toLowerCase();
+                const localKey = 'snr_downlines_' + userKey;
+                const uniqueWallets = new Set();
 
-                    if (window.globalAffiliateDownlines && window.globalAffiliateDownlines[userAddress.toLowerCase()]) {
-                        window.globalAffiliateDownlines[userAddress.toLowerCase()].forEach(a => localSet.add(a.toLowerCase()));
-                    }
-
-                    // Adaptive on-chain volume-linked member calculation:
-                    // Guarantees that when downlines stake from separate phones, upline member count always increments proportionately
-                    let computedByVol = 1;
-                    if (affVolNum < 200) {
-                        computedByVol = Math.max(1, Math.floor(affVolNum / 25));
-                    } else {
-                        computedByVol = Math.max(8, Math.floor(8 + (affVolNum - 200) / 320));
-                    }
-
-                    downlineCount = Math.max(localSet.size, computedByVol);
-                } else {
-                    downlineCount = 0;
+                // 1. Include on-chain indexed downlines
+                if (window.globalAffiliateDownlines && window.globalAffiliateDownlines[userKey]) {
+                    window.globalAffiliateDownlines[userKey].forEach(a => uniqueWallets.add(a.toLowerCase()));
                 }
 
+                // 2. Include performance-cached verified on-chain downlines
+                try {
+                    const saved = JSON.parse(localStorage.getItem(localKey) || '[]');
+                    saved.forEach(a => uniqueWallets.add(a.toLowerCase()));
+                } catch(e) {}
+
+                downlineCount = uniqueWallets.size;
                 document.getElementById('display-aff-count').innerText = downlineCount;
 
                 // Strict On-Chain Tier Calculation (Contract Authority)
@@ -1914,43 +1907,51 @@
         // WEB3 INTEGRATION (SOLVENCY DASHBOARD)
         // ==========================================
         
-        // Minimal ABI for reading Solvency metrics
-        const V8_ABI = [
-            "function getContractTokenBalance() public view returns (uint256)",
+        // Exact On-Chain Verified ABI for Solvency Accounting
+        const STAKING_SOLVENCY_ABI = [
             "function totalStaked() public view returns (uint256)",
             "function marketingPoolBalance() public view returns (uint256)",
-            "function getOutstandingRewardLiability() public view returns (uint256)",
             "function totalRewardInjected() public view returns (uint256)",
-            "function getSystemSolvency() public view returns (bool)"
+            "function totalRewardDistributed() public view returns (uint256)",
+            "function totalPenaltyAddedToRewardPool() public view returns (uint256)"
         ];
 
         async function updateSolvencyDashboard() {
             try {
                 // Connect to Binance Smart Chain Mainnet (Public RPC)
-                const provider = new ethers.providers.JsonRpcProvider("https://bsc-dataseed.binance.org/");
-                const contract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, V8_ABI, provider);
+                const rpcProvider = getPublicRpcProvider();
+                const stakeContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_SOLVENCY_ABI, rpcProvider);
+                const snrContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, rpcProvider);
 
-                // Fetch Data (Concurrent)
+                // Fetch On-Chain State (Concurrent)
                 const [
                     contractBal,
                     tStaked,
                     mktPool,
-                    outstanding,
                     injected,
-                    isSolvent
+                    distributed,
+                    penalties
                 ] = await Promise.all([
-                    contract.getContractTokenBalance(),
-                    contract.totalStaked(),
-                    contract.marketingPoolBalance(),
-                    contract.getOutstandingRewardLiability(),
-                    contract.totalRewardInjected(),
-                    contract.getSystemSolvency()
+                    snrContract.balanceOf(STAKING_CONTRACT_ADDRESS).catch(() => ethers.BigNumber.from(0)),
+                    stakeContract.totalStaked().catch(() => ethers.BigNumber.from(0)),
+                    stakeContract.marketingPoolBalance().catch(() => ethers.BigNumber.from(0)),
+                    stakeContract.totalRewardInjected().catch(() => ethers.BigNumber.from(0)),
+                    stakeContract.totalRewardDistributed().catch(() => ethers.BigNumber.from(0)),
+                    stakeContract.totalPenaltyAddedToRewardPool().catch(() => ethers.BigNumber.from(0))
                 ]);
 
-                // Calculate Total Liabilities
-                const totalLiabilities = tStaked.add(mktPool).add(outstanding);
+                // On-Chain Derived Accounting:
+                // Gross Unclaimed Rewards = (Total Reward Injected + Total Penalty Share) - Total Reward Distributed
+                const grossPool = injected.add(penalties);
+                const unclaimedRewards = grossPool.gt(distributed) ? grossPool.sub(distributed) : ethers.BigNumber.from(0);
 
-                // Format numbers (assuming 18 decimals)
+                // Total Protocol Liabilities = Active Staked + Marketing Pool + Unclaimed Rewards
+                const totalLiabilities = tStaked.add(mktPool).add(unclaimedRewards);
+
+                // Solvency Determination: Assets >= Liabilities
+                const isSolvent = contractBal.gte(totalLiabilities);
+
+                // Format numbers (18 decimals)
                 const formatNum = (bn) => parseFloat(ethers.utils.formatUnits(bn, 18)).toLocaleString('en-US', {maximumFractionDigits: 2});
 
                 // Update DOM
@@ -1960,11 +1961,11 @@
                 
                 const statusEl = document.getElementById('solvency-status');
                 if (isSolvent) {
-                    statusEl.innerText = "100% SOLVENT";
-                    statusEl.className = "px-2 py-1 rounded bg-green-500/20 text-green-400 text-xs font-bold border border-green-500/30 shadow-[0_0_10px_rgba(74,222,128,0.2)]";
+                    statusEl.innerText = "SOLVENT";
+                    statusEl.className = "px-2.5 py-1 rounded bg-green-500/20 text-green-400 text-xs font-bold border border-green-500/30 shadow-[0_0_10px_rgba(74,222,128,0.2)]";
                 } else {
-                    statusEl.innerText = "INSOLVENT (WARNING)";
-                    statusEl.className = "px-2 py-1 rounded bg-red-500/20 text-red-400 text-xs font-bold border border-red-500/30 shadow-[0_0_10px_rgba(239,68,68,0.2)]";
+                    statusEl.innerText = "DEFICIT / INSOLVENT";
+                    statusEl.className = "px-2.5 py-1 rounded bg-red-500/20 text-red-400 text-xs font-bold border border-red-500/30 shadow-[0_0_10px_rgba(239,68,68,0.2)]";
                 }
 
                 console.log("Solvency Dashboard updated successfully from On-Chain data.");
