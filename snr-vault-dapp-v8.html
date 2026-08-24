@@ -465,85 +465,88 @@
                     </div>
 
                     <!-- Affiliate Tab -->
-                    <div id="tab-network" class="dapp-tab glass-panel p-8 border-accent/30">
-                        <div class="flex items-start justify-between mb-6">
+                    <div id="tab-network" class="dapp-tab glass-panel p-4 sm:p-8 border-accent/30 rounded-2xl">
+                        <!-- Header & Trust Badge -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-cardBorder">
                             <div>
-                                <h3 class="text-xl font-display font-bold text-white mb-2">Program Afiliasi Transparan</h3>
-                                <p class="text-secondary text-sm max-w-md">Bebas skema piramida. Dapatkan 5% <strong class="font-bold text-accent">flat bonus</strong> untuk setiap pengguna yang menggunakan tautan Anda. Sistem pemasaran bersih dan sehat.</p>
+                                <h3 class="text-lg sm:text-xl font-display font-bold text-white mb-1">Program Afiliasi Transparan</h3>
+                                <p class="text-secondary text-xs sm:text-sm max-w-md">Bebas skema piramida. Dapatkan komisi 5% - 10% flat bonus sesuai peringkat on-chain Anda.</p>
                             </div>
-                        <div class="mb-4 flex items-center justify-between flex-wrap gap-2">
-                            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/30 text-green-400 text-xs font-semibold">
-                                <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
-                                <span>100% On-Chain Verified (Smart Contract Direct Referral)</span>
-                            </div>
-                            <a href="https://bscscan.com/address/0xc28b8A3E8863ada9D05a6BA068ebe5D49aE58499" target="_blank" class="text-[11px] text-accent hover:text-cyan-300 transition-colors flex items-center gap-1 font-mono">
-                                <span>Cek Data On-Chain di BscScan</span>
-                                <i data-lucide="external-link" class="w-3 h-3"></i>
-                            </a>
-                        </div>
-
-                        <div class="mb-6 space-y-3">
-                            <div class="bg-background/50 border border-cardBorder p-4 rounded-lg flex justify-between items-center">
-                                <span class="text-secondary text-sm">Pangkat Leader Anda:</span>
-                                <span id="display-tier" class="font-semibold text-secondary text-sm">- (Belum Ada Pangkat)</span>
-                            </div>
-                            <div class="bg-background/50 border border-cardBorder p-4 rounded-lg flex justify-between items-center">
-                                <span class="text-secondary text-sm">Jumlah Member Langsung:</span>
-                                <span class="font-bold text-white"><span id="display-aff-count">0</span> Orang</span>
-                            </div>
-                            <div class="bg-background/50 border border-cardBorder p-4 rounded-lg flex justify-between items-center">
-                                <span class="text-secondary text-sm">Total Omset Downline:</span>
-                                <span class="font-bold"><span id="display-aff-vol">0.00</span> SNR</span>
-                            </div>
-                            <div class="bg-background/50 border border-cardBorder p-4 rounded-lg flex flex-col gap-1">
-                                <div class="flex justify-between items-center">
-                                    <span class="text-secondary text-sm">Sisa Kuota Max Cap (100%):</span>
-                                    <span class="font-bold text-primary"><span id="display-max-cap">0.00</span> SNR</span>
+                            <div class="flex flex-col sm:items-end gap-1.5 shrink-0">
+                                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/30 text-green-400 text-xs font-semibold">
+                                    <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+                                    <span>100% On-Chain Verified</span>
                                 </div>
-                                <p class="text-xs text-secondary mt-1">Kuota = (Modal Staking - Bonus Diterima). Lakukan Staking lagi untuk menambah Kuota Max Cap!</p>
+                                <a href="https://bscscan.com/address/0xc28b8A3E8863ada9D05a6BA068ebe5D49aE58499" target="_blank" class="text-[11px] text-accent hover:text-cyan-300 transition-colors flex items-center gap-1 font-mono">
+                                    <span>Cek Data di BscScan</span>
+                                    <i data-lucide="external-link" class="w-3 h-3"></i>
+                                </a>
                             </div>
                         </div>
 
-                        <div class="border-t border-cardBorder pt-6">
-                            <label class="block text-sm text-secondary mb-2">Tautan Afiliasi Anda</label>
+                        <!-- Statistics Metric Cards -->
+                        <div class="mb-6 space-y-3">
+                            <div class="bg-background/60 border border-cardBorder p-3.5 sm:p-4 rounded-xl flex justify-between items-center">
+                                <span class="text-secondary text-xs sm:text-sm">Pangkat Leader Anda:</span>
+                                <span id="display-tier" class="font-semibold text-secondary text-xs sm:text-sm">- (Belum Ada Pangkat)</span>
+                            </div>
+                            <div class="bg-background/60 border border-cardBorder p-3.5 sm:p-4 rounded-xl flex justify-between items-center">
+                                <span class="text-secondary text-xs sm:text-sm">Jumlah Member Langsung:</span>
+                                <span class="font-bold text-white text-xs sm:text-sm"><span id="display-aff-count">0</span> Orang</span>
+                            </div>
+                            <div class="bg-background/60 border border-cardBorder p-3.5 sm:p-4 rounded-xl flex justify-between items-center">
+                                <span class="text-secondary text-xs sm:text-sm">Total Omset Downline:</span>
+                                <span class="font-bold text-xs sm:text-sm"><span id="display-aff-vol" class="font-mono">0.00</span> SNR</span>
+                            </div>
+                            <div class="bg-background/60 border border-cardBorder p-3.5 sm:p-4 rounded-xl flex flex-col gap-1">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-secondary text-xs sm:text-sm">Sisa Kuota Max Cap (100%):</span>
+                                    <span class="font-bold text-primary text-xs sm:text-sm"><span id="display-max-cap" class="font-mono">0.00</span> SNR</span>
+                                </div>
+                                <p class="text-[11px] text-secondary mt-1">Kuota = (Modal Staking - Bonus Diterima). Lakukan Staking lagi untuk menambah Kuota Max Cap!</p>
+                            </div>
+                        </div>
+
+                        <!-- Referral Link & Action Buttons -->
+                        <div class="border-t border-cardBorder pt-5">
+                            <label class="block text-xs sm:text-sm text-secondary mb-2">Tautan Afiliasi Anda</label>
                             <div class="flex gap-2 mb-4">
-                                <input type="text" id="ref-link" readonly value="Connect Wallet First" class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-secondary focus:outline-none">
-                                <button onclick="copyRef()" class="px-4 py-3 bg-card border border-cardBorder rounded-lg hover:bg-white/5 transition-colors flex items-center justify-center">
-                                    <i data-lucide="copy" class="w-5 h-5 text-white"></i>
+                                <input type="text" id="ref-link" readonly value="Connect Wallet First" class="w-full bg-background border border-cardBorder rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-secondary focus:outline-none font-mono truncate">
+                                <button type="button" onclick="copyRef()" class="px-4 py-2.5 bg-card border border-cardBorder rounded-xl hover:bg-white/5 transition-colors flex items-center justify-center shrink-0">
+                                    <i data-lucide="copy" class="w-4 h-4 text-white"></i>
                                 </button>
                             </div>
-                            <div class="flex flex-wrap items-center justify-center gap-3">
-                                <button type="button" onclick="updateBalances(); showNotification('Data Diperbarui 🔄', 'Data jaringan & omset afiliasi telah berhasil disegarkan secara on-chain.', 'success');" class="px-4 py-2.5 rounded-xl bg-accent/10 border border-accent/40 text-accent font-semibold text-xs hover:bg-accent/20 transition-all inline-flex items-center gap-2">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                <button type="button" onclick="updateBalances(); showNotification('Data Diperbarui 🔄', 'Data jaringan & omset afiliasi telah berhasil disegarkan secara on-chain.', 'success');" class="w-full py-2.5 rounded-xl bg-accent/10 border border-accent/40 text-accent font-semibold text-xs hover:bg-accent/20 transition-all flex items-center justify-center gap-2">
                                     <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Segarkan Data (Refresh)
                                 </button>
-                                <button type="button" onclick="openProfileModal()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-yellow-500/20 border border-amber-500/40 text-amber-300 font-semibold text-xs hover:from-amber-500/30 hover:to-yellow-500/30 transition-all inline-flex items-center gap-2 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
-                                    <i data-lucide="camera" class="w-3.5 h-3.5"></i> Pasang / Edit Profil Leader Saya
+                                <button type="button" onclick="openProfileModal()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-yellow-500/20 border border-amber-500/40 text-amber-300 font-semibold text-xs hover:from-amber-500/30 hover:to-yellow-500/30 transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+                                    <i data-lucide="camera" class="w-3.5 h-3.5"></i> Pasang / Edit Profil Leader
                                 </button>
                             </div>
                         </div>
 
                         <!-- ================= HALL OF FAME / PANGGUNG KEHORMATAN LEADER ================= -->
                         <div class="mt-8 pt-6 border-t border-cardBorder">
-                            <div class="flex items-center justify-between mb-4">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/50 flex items-center justify-center text-amber-400 shadow-[0_0_10px_rgba(245,158,11,0.3)]">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/50 flex items-center justify-center text-amber-400 shadow-[0_0_10px_rgba(245,158,11,0.3)] shrink-0">
                                         <i data-lucide="trophy" class="w-4 h-4"></i>
                                     </div>
                                     <div>
-                                        <h4 class="text-sm font-bold text-white uppercase tracking-wider">Hall of Fame • Panggung Kehormatan Leader</h4>
-                                        <p class="text-[11px] text-secondary">Tokoh Perintis Berprestasi Terverifikasi di Binance Smart Chain</p>
+                                        <h4 class="text-xs sm:text-sm font-bold text-white uppercase tracking-wider">Hall of Fame • Panggung Kehormatan Leader</h4>
+                                        <p class="text-[10px] sm:text-[11px] text-secondary">Tokoh Perintis Berprestasi Terverifikasi di Binance Smart Chain</p>
                                     </div>
                                 </div>
-                                <span class="px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-[10px] font-bold text-amber-400 flex items-center gap-1">
+                                <span class="self-start sm:self-auto px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-[10px] font-bold text-amber-400 flex items-center gap-1">
                                     <i data-lucide="shield-check" class="w-3 h-3"></i> Verified On-Chain
                                 </span>
                             </div>
 
-                            <div id="hall-of-fame-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div id="hall-of-fame-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
                                 <!-- Cards will be dynamically rendered live by Web3 -->
                             </div>
                         </div>
-                    </div>
                     </div>
 
                     <!-- Migration Tab (V1 to V8) -->
