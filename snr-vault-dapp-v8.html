@@ -404,8 +404,14 @@
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-sm text-secondary mb-2">Alamat Referrer (Afiliasi) - Opsional</label>
-                                <input type="text" id="affiliate-input" placeholder="0x..." class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
+                                <div class="flex items-center justify-between mb-2">
+                                    <label class="block text-sm text-secondary">Alamat Sponsor / Referrer (Afiliasi)</label>
+                                    <span id="ref-status-badge" class="text-[11px] text-green-400 font-semibold hidden flex items-center gap-1">
+                                        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-green-400"></i> Sponsor Terverifikasi
+                                    </span>
+                                </div>
+                                <input type="text" id="affiliate-input" placeholder="0x... (Otomatis terkunci jika klik link referral)" class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary font-mono text-sm" oninput="validateReferrerInput(this.value)">
+                                <p id="ref-status-text" class="text-[11px] text-secondary mt-1.5 hidden"></p>
                             </div>
                             
                             <div class="grid grid-cols-2 gap-4 mt-4">
@@ -723,27 +729,97 @@
     <script>
         lucide.createIcons();
 
+        // Robust EVM Address Validator
+        function isValidAddress(addr) {
+            if (!addr || typeof addr !== 'string') return false;
+            const clean = addr.trim();
+            try {
+                if (typeof ethers !== 'undefined' && ethers.utils && ethers.utils.isAddress) {
+                    return ethers.utils.isAddress(clean);
+                }
+            } catch (e) {}
+            return /^0x[a-fA-F0-9]{40}$/.test(clean);
+        }
+
+        function updateReferrerUI(ref) {
+            const badge = document.getElementById('ref-status-badge');
+            const text = document.getElementById('ref-status-text');
+            const input = document.getElementById('affiliate-input');
+            if (!badge || !text) return;
+
+            if (ref && isValidAddress(ref) && ref !== ethers.constants?.AddressZero) {
+                const shortRef = ref.substring(0, 6) + '...' + ref.substring(38);
+                badge.classList.remove('hidden');
+                badge.className = "text-[11px] text-green-400 font-semibold flex items-center gap-1";
+                badge.innerHTML = `<i data-lucide="shield-check" class="w-3.5 h-3.5 text-green-400"></i> Sponsor Terkunci (${shortRef})`;
+                text.classList.remove('hidden');
+                text.className = "text-[11px] text-green-400/90 mt-1.5 flex items-center gap-1";
+                text.innerHTML = `✓ Transaksi staking Anda akan otomatis tercatat ke sponsor <strong>${shortRef}</strong> di blockchain.`;
+                if (input && input.value !== ref) input.value = ref;
+            } else {
+                badge.classList.add('hidden');
+                text.classList.add('hidden');
+            }
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function validateReferrerInput(val) {
+            const clean = (val || '').trim();
+            if (!clean) {
+                updateReferrerUI(null);
+                return;
+            }
+            if (isValidAddress(clean)) {
+                sessionStorage.setItem('snr_referrer', clean);
+                localStorage.setItem('snr_referrer', clean);
+                updateReferrerUI(clean);
+            } else {
+                const badge = document.getElementById('ref-status-badge');
+                const text = document.getElementById('ref-status-text');
+                if (badge) badge.classList.add('hidden');
+                if (text) {
+                    text.classList.remove('hidden');
+                    text.className = "text-[11px] text-amber-400 mt-1.5";
+                    text.innerText = "Format alamat dompet BSC belum lengkap (harus diawali 0x dan 42 karakter).";
+                }
+            }
+        }
+
         // Persistent Referral Tracker
         function captureReferrer() {
             try {
                 const urlParams = new URLSearchParams(window.location.search);
-                const ref = urlParams.get('ref');
-                if (ref && ethers.utils.isAddress(ref)) {
+                let ref = urlParams.get('ref');
+
+                // Support hash routing ref parameter
+                if (!ref && window.location.hash && window.location.hash.includes('ref=')) {
+                    const hashParts = window.location.hash.split('ref=');
+                    if (hashParts.length > 1) {
+                        ref = hashParts[1].split('&')[0];
+                    }
+                }
+
+                if (ref && isValidAddress(ref)) {
                     sessionStorage.setItem('snr_referrer', ref);
                     localStorage.setItem('snr_referrer', ref);
                     const affInput = document.getElementById('affiliate-input');
                     if (affInput) affInput.value = ref;
+                    updateReferrerUI(ref);
                 } else {
                     const savedRef = sessionStorage.getItem('snr_referrer') || localStorage.getItem('snr_referrer');
-                    if (savedRef && ethers.utils.isAddress(savedRef)) {
+                    if (savedRef && isValidAddress(savedRef)) {
                         const affInput = document.getElementById('affiliate-input');
                         if (affInput && !affInput.value) affInput.value = savedRef;
+                        updateReferrerUI(savedRef);
                     }
                 }
-            } catch (e) {}
+            } catch (e) {
+                console.warn("captureReferrer error:", e);
+            }
         }
         window.addEventListener('DOMContentLoaded', captureReferrer);
         setTimeout(captureReferrer, 300);
+        setTimeout(captureReferrer, 1000);
 
         function switchPage(page) {
             document.getElementById('view-landing').classList.remove('active');
@@ -982,7 +1058,6 @@
                 const pending = await stakingContract.pendingRewardView(userAddress);
                 document.getElementById('display-reward').innerText = parseFloat(ethers.utils.formatUnits(pending, 18)).toLocaleString('en-US', {maximumFractionDigits: 4});
 
-                // Update Affiliate Stats
                 // Update Affiliate Stats & Strict On-Chain Tier
                 const affVol = await stakingContract.cumulativeAffiliateVolume(userAddress);
                 const affVolNum = parseFloat(ethers.utils.formatUnits(affVol, 18));
@@ -991,18 +1066,38 @@
                 // Calculate Direct Downline Member Count (Strict On-Chain)
                 let downlineCount = 0;
                 const localKey = 'snr_downlines_' + userAddress.toLowerCase();
-                let localList = [];
-                try { localList = JSON.parse(localStorage.getItem(localKey) || '[]'); } catch (e) {}
+                const uniqueDownlines = new Set();
+                try {
+                    const localList = JSON.parse(localStorage.getItem(localKey) || '[]');
+                    localList.forEach(addr => uniqueDownlines.add(addr.toLowerCase()));
+                } catch (e) {}
+
+                // Fetch On-Chain Staked & AffiliatePaid logs for this user from BSC RPC
+                try {
+                    const rpcProvider = new ethers.providers.JsonRpcProvider("https://bsc-rpc.publicnode.com");
+                    const currentBlock = await rpcProvider.getBlockNumber();
+                    const readStaking = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, rpcProvider);
+
+                    const [stakedLogs, paidLogs] = await Promise.all([
+                        readStaking.queryFilter(readStaking.filters.Staked(null, null, null, userAddress), Math.max(0, currentBlock - 30000), 'latest').catch(() => []),
+                        readStaking.queryFilter(readStaking.filters.AffiliatePaid(userAddress), Math.max(0, currentBlock - 30000), 'latest').catch(() => [])
+                    ]);
+
+                    stakedLogs.forEach(l => {
+                        if (l.args && l.args.user) uniqueDownlines.add(l.args.user.toLowerCase());
+                    });
+                    
+                    if (uniqueDownlines.size > 0) {
+                        localStorage.setItem(localKey, JSON.stringify(Array.from(uniqueDownlines)));
+                    }
+                } catch (rpcDownlineErr) {
+                    console.warn("RPC downline fetch notice:", rpcDownlineErr);
+                }
 
                 if (affVolNum <= 0) {
                     downlineCount = 0;
                 } else {
-                    if (localList.length > 0) {
-                        downlineCount = localList.length;
-                    } else {
-                        // On-chain member calculation based on actual volume
-                        downlineCount = Math.max(1, Math.floor(affVolNum / 25));
-                    }
+                    downlineCount = uniqueDownlines.size > 0 ? uniqueDownlines.size : 1;
                 }
 
                 document.getElementById('display-aff-count').innerText = downlineCount;
@@ -1363,15 +1458,21 @@
             const amt = document.getElementById('stake-input').value;
             if (!amt || amt <= 0) return showNotification("Jumlah Tidak Valid", "Harap masukkan nominal SNR yang ingin di-stake!", "error");
             
-            let ref = document.getElementById('affiliate-input').value.trim();
-            if (!ref || !ethers.utils.isAddress(ref)) {
+            let ref = (document.getElementById('affiliate-input')?.value || '').trim();
+            if (!isValidAddress(ref)) {
                 const savedRef = sessionStorage.getItem('snr_referrer') || localStorage.getItem('snr_referrer');
-                if (savedRef && ethers.utils.isAddress(savedRef)) {
+                if (savedRef && isValidAddress(savedRef)) {
                     ref = savedRef;
-                    document.getElementById('affiliate-input').value = ref;
+                    const affInp = document.getElementById('affiliate-input');
+                    if (affInp) affInp.value = ref;
                 } else {
                     ref = ethers.constants.AddressZero;
                 }
+            }
+
+            // Prevent self-referral
+            if (ref && userAddress && ref.toLowerCase() === userAddress.toLowerCase()) {
+                ref = ethers.constants.AddressZero;
             }
 
             const btn = document.getElementById('btn-stake');
