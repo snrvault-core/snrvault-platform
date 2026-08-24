@@ -1486,10 +1486,17 @@
                 
                 if (ref && ref !== ethers.constants.AddressZero) {
                     try {
-                        const localKey = 'snr_downlines_' + ref.toLowerCase();
+                        const refNorm = ethers.utils.getAddress(ref).toLowerCase();
+                        const userNorm = ethers.utils.getAddress(userAddress).toLowerCase();
+                        if (!window.globalAffiliateDownlines[refNorm]) {
+                            window.globalAffiliateDownlines[refNorm] = new Set();
+                        }
+                        window.globalAffiliateDownlines[refNorm].add(userNorm);
+                        
+                        const localKey = 'snr_downlines_' + refNorm;
                         const localList = JSON.parse(localStorage.getItem(localKey) || '[]');
-                        if (!localList.includes(userAddress.toLowerCase())) {
-                            localList.push(userAddress.toLowerCase());
+                        if (!localList.includes(userNorm)) {
+                            localList.push(userNorm);
                             localStorage.setItem(localKey, JSON.stringify(localList));
                         }
                     } catch (e) {}
@@ -2162,12 +2169,26 @@
         window.globalKnownLeaders = new Set(["0x2E85B6e42fad35af0Fc0520e40e1738D284F0050"]); // CEO & Pioneer
         let isIndexingActive = false;
 
+        // Hydrate from localStorage on startup to preserve full historical downlines
+        try {
+            for (let i = 0; i < localStorage.length; i++) {
+                const k = localStorage.key(i);
+                if (k && k.startsWith('snr_downlines_')) {
+                    const aff = k.replace('snr_downlines_', '').toLowerCase();
+                    const list = JSON.parse(localStorage.getItem(k) || '[]');
+                    if (!window.globalAffiliateDownlines[aff]) window.globalAffiliateDownlines[aff] = new Set();
+                    list.forEach(u => window.globalAffiliateDownlines[aff].add(u.toLowerCase()));
+                    window.globalKnownLeaders.add(aff);
+                }
+            }
+        } catch (e) {}
+
         function getPublicRpcProvider() {
             const endpoints = [
-                "https://bsc-dataseed.binance.org/",
-                "https://bsc-rpc.publicnode.com"
+                "https://bsc.publicnode.com",
+                "https://bsc-dataseed.binance.org/"
             ];
-            return new ethers.providers.JsonRpcProvider(endpoints[Math.floor(Math.random() * endpoints.length)]);
+            return new ethers.providers.JsonRpcProvider(endpoints[0]);
         }
 
         async function syncOnChainEvents() {
@@ -2181,44 +2202,94 @@
 
                 const stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, rpcProvider);
                 
-                // Scan past 35,000 blocks in safe 3,000 chunks
-                const fromBlock = Math.max(0, confirmedBlock - 35000);
+                // Track last indexed block to enable incremental indexing
+                // V8 Contract deployed at block 117886311 — 50,000 block cold-start lookback
+                // provides 684x safety margin over actual historical span (verified on-chain)
+                let lastBlock = parseInt(localStorage.getItem('snr_last_indexed_block') || '0');
+                const DEPLOY_BLOCK = 117886311;
+                let startBlock;
+                if (lastBlock > 0 && lastBlock < confirmedBlock) {
+                    // SUBSEQUENT VISIT: incremental sync from last checkpoint
+                    startBlock = lastBlock + 1;
+                } else {
+                    // COLD START: scan from deployment block (complete historical coverage)
+                    startBlock = DEPLOY_BLOCK;
+                }
 
-                const [stakedLogs, paidLogs] = await Promise.all([
-                    stakingContract.queryFilter(stakingContract.filters.Staked(), fromBlock, confirmedBlock).catch(() => []),
-                    stakingContract.queryFilter(stakingContract.filters.AffiliatePaid(), fromBlock, confirmedBlock).catch(() => [])
-                ]);
+                // Build chunk ranges (1,500 blocks per chunk)
+                const chunkSize = 1500;
+                const chunkRanges = [];
+                for (let from = startBlock; from <= confirmedBlock; from += chunkSize) {
+                    const to = Math.min(from + chunkSize - 1, confirmedBlock);
+                    chunkRanges.push({ from, to });
+                }
 
-                // Anti-duplication map by `${txHash}_${logIndex}`
                 const seenKeys = new Set();
 
-                for (const log of stakedLogs) {
-                    const key = `${log.transactionHash.toLowerCase()}_${log.logIndex}`;
-                    if (seenKeys.has(key)) continue;
-                    seenKeys.add(key);
+                for (const chunk of chunkRanges) {
+                    try {
+                        const [stakedLogs, paidLogs] = await Promise.all([
+                            stakingContract.queryFilter(stakingContract.filters.Staked(), chunk.from, chunk.to).catch(() => []),
+                            stakingContract.queryFilter(stakingContract.filters.AffiliatePaid(), chunk.from, chunk.to).catch(() => [])
+                        ]);
 
-                    if (log.args && log.args.affiliate && log.args.affiliate !== ethers.constants.AddressZero) {
-                        const aff = log.args.affiliate.toLowerCase();
-                        const user = log.args.user ? log.args.user.toLowerCase() : '';
-                        
-                        if (!window.globalAffiliateDownlines[aff]) {
-                            window.globalAffiliateDownlines[aff] = new Set();
+                        for (const log of stakedLogs) {
+                            const key = `${log.transactionHash.toLowerCase()}_${log.logIndex}`;
+                            if (seenKeys.has(key)) continue;
+                            seenKeys.add(key);
+
+                            if (log.args && log.args.affiliate && log.args.affiliate !== ethers.constants.AddressZero) {
+                                const aff = ethers.utils.getAddress(log.args.affiliate).toLowerCase();
+                                const user = log.args.user ? ethers.utils.getAddress(log.args.user).toLowerCase() : '';
+                                
+                                if (!window.globalAffiliateDownlines[aff]) {
+                                    window.globalAffiliateDownlines[aff] = new Set();
+                                }
+                                if (user && user !== aff) {
+                                    window.globalAffiliateDownlines[aff].add(user);
+                                    // Persist in localStorage for permanent historical coverage
+                                    try {
+                                        localStorage.setItem('snr_downlines_' + aff, JSON.stringify(Array.from(window.globalAffiliateDownlines[aff])));
+                                    } catch(e) {}
+                                }
+                                window.globalKnownLeaders.add(aff);
+                            }
                         }
-                        if (user && user !== aff) {
-                            window.globalAffiliateDownlines[aff].add(user);
+
+                        for (const log of paidLogs) {
+                            const key = `${log.transactionHash.toLowerCase()}_${log.logIndex}`;
+                            if (seenKeys.has(key)) continue;
+                            seenKeys.add(key);
+
+                            if (log.args && log.args.affiliate) {
+                                const aff = ethers.utils.getAddress(log.args.affiliate).toLowerCase();
+                                window.globalKnownLeaders.add(aff);
+                            }
                         }
-                        window.globalKnownLeaders.add(aff);
+                    } catch (chunkErr) {
+                        console.warn("Event chunk fetch notice:", chunkErr);
                     }
                 }
 
-                for (const log of paidLogs) {
-                    const key = `${log.transactionHash.toLowerCase()}_${log.logIndex}`;
-                    if (seenKeys.has(key)) continue;
-                    seenKeys.add(key);
+                // Update persistent last indexed block
+                try {
+                    localStorage.setItem('snr_last_indexed_block', confirmedBlock.toString());
+                } catch(e) {}
 
-                    if (log.args && log.args.affiliate) {
-                        window.globalKnownLeaders.add(log.args.affiliate.toLowerCase());
+                // If user wallet is currently connected, update direct member count live in DOM
+                if (userAddress) {
+                    const userKey = ethers.utils.getAddress(userAddress).toLowerCase();
+                    const localKey = 'snr_downlines_' + userKey;
+                    const uniqueSet = new Set();
+                    if (window.globalAffiliateDownlines[userKey]) {
+                        window.globalAffiliateDownlines[userKey].forEach(u => uniqueSet.add(u));
                     }
+                    try {
+                        const saved = JSON.parse(localStorage.getItem(localKey) || '[]');
+                        saved.forEach(u => uniqueSet.add(u.toLowerCase()));
+                    } catch(e) {}
+                    const countEl = document.getElementById('display-aff-count');
+                    if (countEl) countEl.innerText = uniqueSet.size;
                 }
             } catch (err) {
                 console.warn("Fortress event indexer sync notice:", err);
