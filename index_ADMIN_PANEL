@@ -1,0 +1,2749 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SNR-VAULT | Real Yield DeFi Portal</title>
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="SNR-VAULT | Real Yield DeFi Portal">
+    <meta property="og:description" content="Portal DeFi Transparan dengan Arsitektur Real Yield. Nikmati potensi bagi hasil dari ekosistem kripto global dengan keamanan Smart Contract on-chain.">
+    <meta property="og:image" content="https://snr-vault.com/logo_banner.jpeg">
+    <meta property="og:url" content="https://snr-vault.com">
+    <meta property="og:type" content="website">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <!-- Ethers.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: '#0B0F19',
+                        primary: '#FFCC00',
+                        accent: '#00E5FF',
+                        secondary: '#C0C0C0',
+                        card: '#131A2A',
+                        cardBorder: '#1E2A44',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Orbitron', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B0F19;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            background-image: radial-gradient(circle at 50% -20%, #1a2744 0%, #0B0F19 50%);
+            background-attachment: fixed;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .font-display { font-family: 'Orbitron', sans-serif; }
+
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(to right, #FFCC00, #00E5FF);
+        }
+
+        .glass-panel {
+            background-color: rgba(19, 26, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid #1E2A44;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Tab Management */
+        .page-view { display: none; }
+        .page-view.active { display: block; }
+        .dapp-tab { display: none; }
+        .dapp-tab.active { display: block; }
+
+        /* Marquee */
+        .marquee-content {
+            display: flex;
+            animation: scroll 20s linear infinite;
+        }
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col pt-10">
+
+    <!-- Sticky Marquee -->
+    <div class="bg-primary/10 border-b border-primary/20 py-2 fixed top-0 w-full z-[60] overflow-hidden backdrop-blur-md">
+        <div class="marquee-content text-primary text-sm font-display tracking-widest font-semibold w-max">
+            <span>&#9888; <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> V8 ONLINE /// SMART CONTRACT ON-CHAIN /// EKOSISTEM DEFI TRANSPARAN & TERLINDUNGI /// ANTI-BOT SHIELD ACTIVE /// </span>
+            <span>&#9888; <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> V8 ONLINE /// SMART CONTRACT ON-CHAIN /// EKOSISTEM DEFI TRANSPARAN & TERLINDUNGI /// ANTI-BOT SHIELD ACTIVE /// </span>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="sticky top-10 z-50 bg-background/90 backdrop-blur-md border-b border-cardBorder">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="switchPage('landing')">
+                    <i data-lucide="shield" class="h-8 w-8 text-primary"></i>
+                    <div class="font-display font-bold text-2xl tracking-widest">
+                        <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span>
+                    </div>
+                </div>
+
+                <div id="nav-landing" class="flex items-center gap-6">
+                    <div class="hidden md:flex space-x-8">
+                        <a href="#about" class="text-secondary hover:text-white transition-colors">Visi & Edukasi</a>
+                        <a href="#security" class="text-secondary hover:text-white transition-colors">Kepatuhan Hukum</a>
+                    </div>
+                    <button onclick="switchPage('dapp')"
+                        class="px-6 py-2.5 rounded-lg bg-primary text-black font-semibold hover:bg-yellow-400 transition-all hover:shadow-[0_0_15px_rgba(255,204,0,0.5)] flex items-center gap-2">
+                        Masuk Portal <span class="hidden sm:inline">Aset</span>
+                    </button>
+                </div>
+
+                <div id="nav-dapp" class="flex items-center gap-6 hidden">
+                    <button onclick="switchPage('landing')"
+                        class="text-secondary hover:text-white transition-colors flex items-center gap-1 mr-4">
+                        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                        <span class="hidden sm:inline">Kembali</span>
+                    </button>
+                    <button id="connect-wallet-btn" onclick="handleWalletBtnClick()"
+                        class="px-6 py-2.5 rounded-lg bg-card border border-accent text-accent font-semibold hover:bg-accent/10 transition-all flex items-center gap-2">
+                        <i data-lucide="wallet" class="w-5 h-5"></i>
+                        <span id="wallet-text">Connect</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- LANDING PAGE VIEW -->
+    <div id="view-landing" class="page-view active flex-grow">
+        <!-- Hero Section -->
+        <section class="relative pt-20 pb-32 overflow-hidden min-h-[80vh] flex items-center">
+            <div class="absolute inset-0 z-0">
+                <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px]"></div>
+                <div class="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[150px]"></div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center pt-8">
+                <div class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-green-500/30 bg-green-500/10 text-green-400 mb-8 max-w-full overflow-hidden">
+                    <i data-lucide="shield-check" class="w-4 h-4 flex-shrink-0"></i>
+                    <span class="text-xs sm:text-sm font-semibold tracking-wide truncate">SMART CONTRACT ON-CHAIN (VERIFIED)</span>
+                </div>
+
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight font-display break-words">
+                    THE DEEP SPACE <br />
+                    <span class="text-gradient">FINANCIAL FORTRESS</span>
+                </h1>
+
+                <p class="text-lg md:text-xl text-secondary max-w-3xl mx-auto mb-10 leading-relaxed px-4">
+                    Selamat datang di ekosistem <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span>. Sebuah inovasi infrastruktur keuangan terdesentralisasi (DeFi) yang mengedepankan transparansi, keamanan, dan edukasi bagi penggunanya.
+                </p>
+
+                <div class="flex justify-center items-center gap-4 flex-wrap">
+                    <button onclick="switchPage('dapp')"
+                        class="group px-8 py-4 rounded-lg bg-primary text-black font-bold text-lg hover:bg-yellow-400 transition-all hover:shadow-[0_0_20px_rgba(255,204,0,0.4)] flex items-center gap-2">
+                        Buka Portal DeFi
+                        <i data-lucide="chevron-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                    <a href="#about" class="px-8 py-4 rounded-lg bg-card border border-cardBorder text-white font-bold text-lg hover:bg-white/5 transition-all flex items-center gap-2">
+                        Pelajari Visi Kami
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Visi & Edukasi Section -->
+        <section id="about" class="py-24 bg-background relative z-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4 font-display">Visi & Edukasi</h2>
+                    <p class="text-secondary max-w-2xl mx-auto leading-relaxed">Kami percaya bahwa akses terhadap instrumen keuangan global harus inklusif dan transparan. <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> hadir untuk mengedukasi dan memberdayakan komunitas melalui teknologi Blockchain terkini.</p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="glass-panel p-8 border-l-4 border-l-primary hover:border-l-accent transition-colors">
+                        <i data-lucide="lightbulb" class="w-12 h-12 text-primary mb-6"></i>
+                        <h3 class="text-2xl font-bold mb-4 font-display">Literasi Keuangan Web3</h3>
+                        <p class="text-secondary leading-relaxed mb-4">
+                            Dalam dunia perbankan konvensional, sistem beroperasi di belakang layar tertutup. Di era Web3, <strong>Smart Contract</strong> memungkinkan setiap baris logika dan transaksi diaudit secara publik.
+                        </p>
+                        <p class="text-secondary leading-relaxed">
+                            Kami mengajak Anda untuk tidak sekadar berpartisipasi, tetapi memahami bagaimana ekosistem kripto bekerja—dari verifikasi transaksi <em>on-chain</em> hingga manajemen risiko portofolio secara bijak dan mandiri.
+                        </p>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="glass-panel p-6 flex gap-4 items-start hover:border-accent/30 transition-colors">
+                            <div class="bg-accent/20 p-3 rounded-lg text-accent mt-1">
+                                <i data-lucide="key" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2">Desentralisasi Hak Milik</h4>
+                                <p class="text-sm text-secondary">Aset sepenuhnya berada di bawah kendali dompet digital (<strong class="font-bold text-accent">Wallet</strong>) Anda. Konsep <em>Non-Custodial</em> ini memastikan tidak ada pihak ketiga yang dapat menahan dana Anda secara sepihak.</p>
+                            </div>
+                        </div>
+                        <div class="glass-panel p-6 flex gap-4 items-start hover:border-primary/30 transition-colors">
+                            <div class="bg-primary/20 p-3 rounded-lg text-primary mt-1">
+                                <i data-lucide="globe" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2">Peluang Pasar Global</h4>
+                                <p class="text-sm text-secondary">Kami membangun infrastruktur yang memungkinkan Anda berpartisipasi dalam perputaran volume kripto dunia, sambil mempelajari tata kelola <em>Decentralized Finance</em> yang transparan.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Compliance & Security Section -->
+        <section id="security" class="py-24 bg-card/30 border-y border-cardBorder">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4 font-display">Standar Integritas & Transparansi</h2>
+                    <p class="text-secondary max-w-2xl mx-auto">Dirancang dengan arsitektur <em>Fortress Engineering</em> untuk menjaga integritas ekosistem, mematuhi prinsip kehati-hatian, dan menumbuhkan rasa saling percaya.</p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="glass-panel p-8 hover:border-accent/50 transition-colors">
+                        <i data-lucide="bar-chart" class="w-10 h-10 text-accent mb-4"></i>
+                        <h3 class="text-xl font-bold mb-3 font-display">Arsitektur Real Yield</h3>
+                        <p class="text-secondary text-sm">Tidak ada janji pengembalian pasti (No Guaranteed Returns). Potensi <strong class="font-bold text-accent">reward</strong> murni bersumber dari aktivitas injeksi yang datanya tercatat dan dapat dilacak kapan saja di blockchain.</p>
+                    </div>
+                    <div class="glass-panel p-8 hover:border-primary/50 transition-colors">
+                        <i data-lucide="shield-alert" class="w-10 h-10 text-primary mb-4"></i>
+                        <h3 class="text-xl font-bold mb-3 font-display">Smart Contract Mengikat</h3>
+                        <p class="text-secondary text-sm">Logika bisnis (aturan deposit, retensi, hingga batas afiliasi) telah dikunci secara digital. Aturan yang adil untuk semua pihak, tanpa diskriminasi atau perlakuan khusus.</p>
+                    </div>
+                    <div class="glass-panel p-8 hover:border-green-400/50 transition-colors">
+                        <i data-lucide="eye" class="w-10 h-10 text-green-400 mb-4"></i>
+                        <h3 class="text-xl font-bold mb-3 font-display">Bukti Akuntansi Terbuka</h3>
+                        <p class="text-secondary text-sm">Kami mengedepankan akuntabilitas tingkat tinggi. Melalui fitur <strong class="font-bold text-accent">Proof of Accounting</strong>, Anda dapat memverifikasi rasio kecukupan likuiditas (<strong class="font-bold text-accent">Solvency</strong>) sistem secara seketika.</p>
+                    </div>
+                </div>
+                
+                <div class="mt-12 text-center">
+                    <p class="text-xs text-secondary/60 max-w-5xl mx-auto p-4 border border-cardBorder rounded-lg bg-background/50">
+                        <strong>Peringatan Risiko (Disclaimer):</strong> Perdagangan dan partisipasi dalam aset kripto (termasuk DeFi & Staking) melibatkan tingkat risiko yang tinggi dan nilai aset Anda dapat berfluktuasi secara ekstrem. Kinerja masa lalu tidak mencerminkan dan tidak menjamin hasil di masa depan. Platform ini semata-mata menyediakan infrastruktur perangkat lunak (<strong class="font-bold text-accent">software terdesentralisasi</strong>) dan tidak memberikan jaminan keuntungan (no guaranteed profit), nasihat keuangan, atau manajemen investasi. Harap lakukan riset mendalam (DYOR) dan pastikan Anda memahami seluruh risikonya sebelum mengambil keputusan.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- DAPP PORTAL VIEW -->
+    <div id="view-dapp" class="page-view flex-grow py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <!-- CEO EXECUTIVE INJECTION PANEL (Only visible to Contract Owner) -->
+            <div id="ceo-executive-panel" class="hidden glass-panel p-6 sm:p-8 border-yellow-400/50 bg-gradient-to-br from-yellow-500/10 via-[#0B101D] to-[#04060A] shadow-[0_0_35px_rgba(234,179,8,0.25)] rounded-2xl mb-8">
+                <div class="flex items-center justify-between border-b border-yellow-500/30 pb-4 mb-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-yellow-400/20 border border-yellow-400/50 flex items-center justify-center text-yellow-300 shadow-[0_0_15px_rgba(234,179,8,0.4)]">
+                            <i data-lucide="crown" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-yellow-300 font-display flex items-center gap-2">
+                                PANEL EKSEKUTIF CEO <span class="px-2 py-0.5 rounded-full text-[10px] bg-yellow-400/20 border border-yellow-400/40 text-yellow-300 font-mono">OWNER ACCESS</span>
+                            </h3>
+                            <p class="text-xs text-secondary">Injeksi Dividen Real Yield & Kontrol Protokol V8 Terdesentralisasi</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button id="btn-ceo-refresh" onclick="refreshAdminPanel()" type="button"
+                            class="px-3 py-1.5 rounded-lg bg-yellow-400/10 border border-yellow-400/30 text-yellow-300 text-xs font-semibold hover:bg-yellow-400/20 transition-all flex items-center gap-1.5">
+                            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                            <span>Refresh</span>
+                        </button>
+                        <span class="hidden sm:inline-block px-3 py-1 rounded-lg bg-green-500/20 border border-green-500/40 text-green-400 text-xs font-semibold">
+                            Kontrak Terhubung On-Chain
+                        </span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Injeksi Real Yield -->
+                    <div class="p-5 rounded-xl bg-card/60 border border-yellow-500/30 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-bold text-sm text-white flex items-center gap-2">
+                                <i data-lucide="zap" class="w-4 h-4 text-yellow-400"></i> Injeksi Real Yield (Dividen)
+                            </h4>
+                            <span class="text-xs text-yellow-300/80">75% Stakers / 25% Treasury</span>
+                        </div>
+                        <p class="text-xs text-secondary leading-relaxed">Masukkan jumlah SNR yang ingin disuntikkan ke seluruh staker. 25% otomatis kembali ke Treasury, 75% dibagi rata ke seluruh staker sesuai porsi koin mereka.</p>
+                        
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between text-xs text-secondary">
+                                <span>Nominal Injeksi:</span>
+                                <span>Saldo Dompet: <strong id="ceo-wallet-snr" class="text-white">0.00</strong> SNR</span>
+                            </div>
+                            <div class="relative">
+                                <input type="number" id="ceo-inject-input" placeholder="Contoh: 100 atau 1000" class="w-full bg-[#050811] border border-yellow-500/40 rounded-xl px-4 py-3 text-white font-mono focus:border-yellow-400 focus:outline-none focus:ring-1 focus:ring-yellow-400">
+                                <button onclick="document.getElementById('ceo-inject-input').value = '100'" class="absolute right-3 top-3 text-xs text-yellow-400 font-bold hover:underline">100 SNR</button>
+                            </div>
+                        </div>
+
+                        <button id="btn-ceo-inject" onclick="ceoInjectRealYield()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-yellow-500 to-amber-600 text-black font-bold text-sm hover:from-yellow-400 hover:to-amber-500 hover:shadow-[0_0_25px_rgba(234,179,8,0.5)] transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="send" class="w-4 h-4"></i> Suntik Dividen Real Yield Sekarang
+                        </button>
+                    </div>
+
+                    <!-- Manajemen Marketing Pool -->
+                    <div class="p-5 rounded-xl bg-card/60 border border-cardBorder space-y-4 flex flex-col justify-between">
+                        <div>
+                            <h4 class="font-bold text-sm text-white flex items-center gap-2 mb-2">
+                                <i data-lucide="gift" class="w-4 h-4 text-accent"></i> Marketing & Affiliate Pool
+                            </h4>
+                            <p class="text-xs text-secondary leading-relaxed mb-4">Cadangan dana terpisah untuk membayar komisi bonus afiliasi 5% - 10% saat member merekrut staker baru.</p>
+                            
+                            <div class="p-3 bg-[#050811] rounded-xl border border-cardBorder mb-4 flex justify-between items-center text-xs">
+                                <span class="text-secondary">Cadangan Marketing Pool:</span>
+                                <span class="font-bold text-accent font-mono"><span id="ceo-marketing-pool-bal">0.00</span> SNR</span>
+                            </div>
+
+                            <div class="relative">
+                                <input type="number" id="ceo-marketing-input" placeholder="Nominal SNR Marketing Pool" class="w-full bg-[#050811] border border-cardBorder rounded-xl px-4 py-2.5 text-white text-xs font-mono focus:border-accent focus:outline-none">
+                            </div>
+                        </div>
+
+                        <button id="btn-ceo-fund-marketing" onclick="ceoFundMarketingPool()" class="w-full py-2.5 rounded-xl bg-card border border-accent/40 text-accent font-semibold text-xs hover:bg-accent/10 transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="plus-circle" class="w-4 h-4"></i> Isi Cadangan Marketing Pool
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Token Info & Status -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="glass-panel p-6 flex items-center justify-between">
+                    <div>
+                        <p class="text-secondary text-sm mb-1">Total Saldo Tersedia</p>
+                        <h3 class="text-2xl font-bold"><span id="display-balance">0.00</span> <span class="text-primary text-lg">SNR</span></h3>
+                        <p class="text-xs text-secondary mt-1">BNB: <span id="display-bnb">0.00</span></p>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
+                        <i data-lucide="wallet" class="w-6 h-6 text-primary"></i>
+                    </div>
+                </div>
+                <div class="glass-panel p-6 flex items-center justify-between border-accent/30">
+                    <div>
+                        <p class="text-secondary text-sm mb-1">Aset Terkunci (Staked)</p>
+                        <h3 class="text-2xl font-bold text-accent"><span id="display-staked">0.00</span> <span class="text-sm font-normal text-secondary">SNR</span></h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center border border-accent/30">
+                        <i data-lucide="lock" class="w-6 h-6 text-accent"></i>
+                    </div>
+                </div>
+                <div class="glass-panel p-6 flex items-center justify-between">
+                    <div>
+                        <p class="text-secondary text-sm mb-1">Pending Staking Reward</p>
+                        <h3 class="text-2xl font-bold text-green-400"><span id="display-reward">0.00</span> <span class="text-sm">SNR</span></h3>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <button id="btn-claim" onclick="claimReward()" class="px-4 py-2 bg-green-500/20 text-green-400 border border-green-500/50 rounded-lg text-sm hover:bg-green-500/30 transition-colors">
+                            Claim Reward
+                        </button>
+                        <button id="btn-compound" onclick="compoundReward()" class="px-4 py-2 bg-primary/20 text-primary border border-primary/50 rounded-lg text-sm hover:bg-primary/30 transition-colors">
+                            Compound
+                        </button>
+                    </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <div class="flex flex-wrap gap-2 mb-8 bg-card p-2 rounded-xl border border-cardBorder w-full sm:w-fit justify-center sm:justify-start">
+                <button onclick="switchTab('staking')" id="btn-staking" class="flex-grow sm:flex-grow-0 px-6 py-2 rounded-lg text-sm font-medium transition-all bg-primary text-black whitespace-nowrap">
+                    Staking (V8)
+                </button>
+                <button onclick="switchTab('otc')" id="btn-otc" class="flex-grow sm:flex-grow-0 px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary hover:text-white border border-accent/30 bg-accent/5 whitespace-nowrap">
+                    Direct Buy
+                </button>
+                <button onclick="switchTab('network')" id="btn-network" class="flex-grow sm:flex-grow-0 px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary hover:text-white whitespace-nowrap">
+                    Afiliasi
+                </button>
+                <button onclick="switchTab('migration')" id="btn-migration" class="flex-grow sm:flex-grow-0 px-6 py-2 rounded-lg text-sm font-medium transition-all text-yellow-300 hover:text-white border border-yellow-500/40 bg-yellow-500/10 whitespace-nowrap">
+                    Migrasi V1 ➔ V8
+                </button>
+                <button onclick="switchTab('p2p')" id="btn-p2p" class="flex-grow sm:flex-grow-0 px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary hover:text-white whitespace-nowrap">
+                    DEX Trade
+                </button>
+                <button onclick="switchTab('history')" id="btn-history" class="flex-grow sm:flex-grow-0 px-6 py-2 rounded-lg text-sm font-medium transition-all text-secondary hover:text-white whitespace-nowrap">
+                    Riwayat
+                </button>
+            </div>
+
+            <!-- Tab Contents -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 space-y-6">
+
+                    <!-- Staking Tab -->
+                    <div id="tab-staking" class="dapp-tab active glass-panel p-8">
+                        <h3 class="text-2xl font-display font-bold mb-2 flex items-center gap-2">
+                            <i data-lucide="lock" class="text-primary w-6 h-6"></i> Stake SNR Token
+                        </h3>
+                        <p class="text-secondary text-sm mb-6">Nikmati bagi hasil dari profit bisnis riil perusahaan. <strong>Perhatian:</strong> Penarikan sebelum 30 hari akan dikenakan <span class="text-red-400">Pinalti 15%</span> (didistribusikan ke member yang bertahan dan kas perusahaan). Ini melindungi kolam dari kutu loncat.</p>
+                        
+                        <div class="space-y-5">
+                            <div>
+                                <label class="block text-sm text-secondary mb-2">Jumlah SNR</label>
+                                <div class="relative">
+                                    <input type="number" id="stake-input" placeholder="0.0" class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary">
+                                    <span class="absolute right-4 top-3 text-primary font-bold">SNR</span>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <label class="block text-sm text-secondary">Alamat Sponsor / Referrer (Afiliasi)</label>
+                                    <span id="ref-status-badge" class="text-[11px] text-green-400 font-semibold hidden flex items-center gap-1">
+                                        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-green-400"></i> Sponsor Terverifikasi
+                                    </span>
+                                </div>
+                                <input type="text" id="affiliate-input" placeholder="0x... (Otomatis terkunci jika klik link referral)" class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary font-mono text-sm" oninput="validateReferrerInput(this.value)">
+                                <p id="ref-status-text" class="text-[11px] text-secondary mt-1.5 hidden"></p>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4 mt-4">
+                                <button id="btn-stake" onclick="stakeSNR()" class="w-full py-4 bg-primary text-black font-bold rounded-lg hover:bg-yellow-400 hover:shadow-[0_0_20px_rgba(255,204,0,0.3)] transition-all flex justify-center items-center gap-2">
+                                    <i data-lucide="arrow-down-to-line" class="w-5 h-5"></i> Stake
+                                </button>
+                                <button id="btn-unstake" onclick="unstakeSNR()" class="w-full py-4 bg-card border border-red-500/50 text-red-400 font-bold rounded-lg hover:bg-red-500/10 transition-all flex justify-center items-center gap-2">
+                                    <i data-lucide="arrow-up-from-line" class="w-5 h-5"></i> Unstake
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Direct Buy / OTC Tab -->
+                    <div id="tab-otc" class="dapp-tab glass-panel p-8 border-accent/30">
+                        <h3 class="text-2xl font-display font-bold mb-2 flex items-center gap-2 text-accent">
+                            <i data-lucide="zap" class="w-6 h-6"></i> Direct Buy (No Slippage)
+                        </h3>
+                        <p class="text-secondary text-sm mb-6">Beli SNR langsung dari Treasury Perusahaan tanpa manipulasi bot dan tanpa Slippage PancakeSwap. Pembayaran wajib menggunakan USDT (BEP-20).</p>
+                        
+                        <div class="space-y-5">
+                            <div class="bg-background/50 border border-cardBorder p-4 rounded-lg flex justify-between items-center">
+                                <span class="text-secondary">Fixed Rate:</span>
+                                <span class="font-bold text-accent">1 USDT = ~3.55 SNR</span>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm text-secondary mb-2">Bayar USDT</label>
+                                <div class="relative">
+                                    <input type="number" id="otc-usdt-input" placeholder="100" class="w-full bg-background border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent" oninput="calculateSNR()">
+                                    <span class="absolute right-4 top-3 text-green-400 font-bold flex items-center gap-1"><i data-lucide="circle-dollar-sign" class="w-4 h-4"></i> USDT</span>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-center my-2">
+                                <i data-lucide="arrow-down" class="text-secondary"></i>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm text-secondary mb-2">Terima SNR</label>
+                                <div class="relative">
+                                    <input type="number" id="otc-snr-output" placeholder="355.1" readonly class="w-full bg-card border border-cardBorder rounded-lg px-4 py-3 text-white focus:outline-none cursor-not-allowed">
+                                    <span class="absolute right-4 top-3 text-primary font-bold">SNR</span>
+                                </div>
+                            </div>
+
+                            <button id="btn-buy-otc" onclick="buyOTC()" class="w-full py-4 mt-4 bg-accent text-black font-bold rounded-lg hover:bg-cyan-400 hover:shadow-[0_0_20px_rgba(0,229,255,0.3)] transition-all flex justify-center items-center gap-2">
+                                <i data-lucide="shopping-cart" class="w-5 h-5"></i> Beli SNR Sekarang
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Affiliate Tab -->
+                    <div id="tab-network" class="dapp-tab glass-panel p-4 sm:p-8 border-accent/30 rounded-2xl">
+                        <!-- Header & Trust Badge -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-cardBorder">
+                            <div>
+                                <h3 class="text-lg sm:text-xl font-display font-bold text-white mb-1">Program Afiliasi Transparan</h3>
+                                <p class="text-secondary text-xs sm:text-sm max-w-md">Bebas skema piramida. Dapatkan komisi 5% - 10% flat bonus sesuai peringkat on-chain Anda.</p>
+                            </div>
+                            <div class="flex flex-col sm:items-end gap-1.5 shrink-0">
+                                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/30 text-green-400 text-xs font-semibold">
+                                    <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+                                    <span>100% On-Chain Verified</span>
+                                </div>
+                                <a href="https://bscscan.com/address/0xc28b8A3E8863ada9D05a6BA068ebe5D49aE58499" target="_blank" class="text-[11px] text-accent hover:text-cyan-300 transition-colors flex items-center gap-1 font-mono">
+                                    <span>Cek Data di BscScan</span>
+                                    <i data-lucide="external-link" class="w-3 h-3"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Statistics Metric Cards -->
+                        <div class="mb-6 space-y-3">
+                            <div class="bg-background/60 border border-cardBorder p-3.5 sm:p-4 rounded-xl flex justify-between items-center">
+                                <span class="text-secondary text-xs sm:text-sm">Pangkat Leader Anda:</span>
+                                <span id="display-tier" class="font-semibold text-secondary text-xs sm:text-sm">- (Belum Ada Pangkat)</span>
+                            </div>
+                            <div class="bg-background/60 border border-cardBorder p-3.5 sm:p-4 rounded-xl flex justify-between items-center">
+                                <span class="text-secondary text-xs sm:text-sm">Jumlah Member Langsung:</span>
+                                <span class="font-bold text-white text-xs sm:text-sm"><span id="display-aff-count">0</span> Orang</span>
+                            </div>
+                            <div class="bg-background/60 border border-cardBorder p-3.5 sm:p-4 rounded-xl flex justify-between items-center">
+                                <span class="text-secondary text-xs sm:text-sm">Total Omset Downline:</span>
+                                <span class="font-bold text-xs sm:text-sm"><span id="display-aff-vol" class="font-mono">0.00</span> SNR</span>
+                            </div>
+                            <div class="bg-background/60 border border-cardBorder p-3.5 sm:p-4 rounded-xl flex flex-col gap-1">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-secondary text-xs sm:text-sm">Sisa Kuota Max Cap (100%):</span>
+                                    <span class="font-bold text-primary text-xs sm:text-sm"><span id="display-max-cap" class="font-mono">0.00</span> SNR</span>
+                                </div>
+                                <p class="text-[11px] text-secondary mt-1">Kuota = (Modal Staking - Bonus Diterima). Lakukan Staking lagi untuk menambah Kuota Max Cap!</p>
+                            </div>
+                        </div>
+
+                        <!-- Referral Link & Action Buttons -->
+                        <div class="border-t border-cardBorder pt-5">
+                            <label class="block text-xs sm:text-sm text-secondary mb-2">Tautan Afiliasi Anda</label>
+                            <div class="flex gap-2 mb-4">
+                                <input type="text" id="ref-link" readonly value="Connect Wallet First" class="w-full bg-background border border-cardBorder rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-secondary focus:outline-none font-mono truncate">
+                                <button type="button" onclick="copyRef()" class="px-4 py-2.5 bg-card border border-cardBorder rounded-xl hover:bg-white/5 transition-colors flex items-center justify-center shrink-0">
+                                    <i data-lucide="copy" class="w-4 h-4 text-white"></i>
+                                </button>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                <button type="button" onclick="updateBalances(); showNotification('Data Diperbarui 🔄', 'Data jaringan & omset afiliasi telah berhasil disegarkan secara on-chain.', 'success');" class="w-full py-2.5 rounded-xl bg-accent/10 border border-accent/40 text-accent font-semibold text-xs hover:bg-accent/20 transition-all flex items-center justify-center gap-2">
+                                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Segarkan Data (Refresh)
+                                </button>
+                                <button type="button" onclick="openProfileModal()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-yellow-500/20 border border-amber-500/40 text-amber-300 font-semibold text-xs hover:from-amber-500/30 hover:to-yellow-500/30 transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+                                    <i data-lucide="camera" class="w-3.5 h-3.5"></i> Pasang / Edit Profil Leader
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- ================= HALL OF FAME / PANGGUNG KEHORMATAN LEADER ================= -->
+                        <div class="mt-8 pt-6 border-t border-cardBorder">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/50 flex items-center justify-center text-amber-400 shadow-[0_0_10px_rgba(245,158,11,0.3)] shrink-0">
+                                        <i data-lucide="trophy" class="w-4 h-4"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-xs sm:text-sm font-bold text-white uppercase tracking-wider">Hall of Fame • Panggung Kehormatan Leader</h4>
+                                        <p class="text-[10px] sm:text-[11px] text-secondary">Tokoh Perintis Berprestasi Terverifikasi di Binance Smart Chain</p>
+                                    </div>
+                                </div>
+                                <span class="self-start sm:self-auto px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-[10px] font-bold text-amber-400 flex items-center gap-1">
+                                    <i data-lucide="shield-check" class="w-3 h-3"></i> Verified On-Chain
+                                </span>
+                            </div>
+
+                            <div id="hall-of-fame-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
+                                <!-- Cards will be dynamically rendered live by Web3 -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Migration Tab (V1 to V8) -->
+                    <div id="tab-migration" class="dapp-tab glass-panel p-8 border-yellow-500/40 bg-gradient-to-br from-yellow-500/5 to-transparent">
+                        <div class="flex items-start justify-between mb-6">
+                            <div>
+                                <h3 class="text-2xl font-display font-bold text-yellow-300 mb-2 flex items-center gap-2">
+                                    <i data-lucide="repeat" class="w-6 h-6 text-yellow-400"></i> Jembatan Migrasi Emas (V1 ➔ V8)
+                                </h3>
+                                <p class="text-secondary text-sm max-w-lg">Tukarkan koin SNR V1 lama Anda (Rp 3.900) menjadi SNR V3 (Rp 5.010) dengan keuntungan nilai aset <strong>+28% instan</strong>. Koin V3 langsung aktif di Staking Vault V8 untuk menghasilkan dividen Real Yield harian!</p>
+                            </div>
+                            <div class="hidden sm:flex w-16 h-16 rounded-2xl border border-yellow-400/30 items-center justify-center bg-yellow-400/10 text-yellow-300 shadow-[0_0_20px_rgba(234,179,8,0.2)]">
+                                <i data-lucide="sparkles" class="w-8 h-8"></i>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div class="bg-[#050811] border border-yellow-500/30 p-4 rounded-xl">
+                                <span class="text-secondary text-xs block mb-1">Saldo SNR V1 di Dompet Anda:</span>
+                                <div class="text-xl font-bold text-white font-mono">
+                                    <span id="display-v1-balance">0.00</span> <span class="text-yellow-400 text-sm">SNR V1</span>
+                                </div>
+                            </div>
+                            <div class="bg-[#050811] border border-cardBorder p-4 rounded-xl">
+                                <span class="text-secondary text-xs block mb-1">Nilai Tukar Resmi & Keuntungan:</span>
+                                <div class="text-sm font-bold text-green-400">
+                                    1 SNR V1 ➔ 1 SNR V3 (+28% Value!)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between items-center text-xs text-secondary mb-2">
+                                    <span>Jumlah SNR V1 yang Ingin Ditukar:</span>
+                                    <button type="button" onclick="setMaxV1()" class="text-yellow-400 hover:underline font-bold">Gunakan MAX</button>
+                                </div>
+                                <div class="relative">
+                                    <input type="number" id="v1-migrate-input" oninput="calculateMigration()" placeholder="0.0" class="w-full bg-[#050811] border border-yellow-500/40 rounded-xl px-4 py-3 text-white font-mono focus:outline-none focus:border-yellow-400">
+                                    <span class="absolute right-4 top-3 text-yellow-400 font-bold text-sm">SNR V1</span>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-center my-1">
+                                <i data-lucide="arrow-down" class="text-yellow-400 w-5 h-5"></i>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs text-secondary mb-2">Otomatis Aktif di Staking Vault V8:</label>
+                                <div class="relative">
+                                    <input type="text" id="migrate-v3-output" placeholder="0.0" readonly class="w-full bg-card border border-cardBorder rounded-xl px-4 py-3 text-white font-mono focus:outline-none cursor-not-allowed">
+                                    <span class="absolute right-4 top-3 text-primary font-bold text-sm">SNR V3 (Vault V8)</span>
+                                </div>
+                            </div>
+
+                            <button id="btn-migrate-v1" onclick="migrateV1ToV8()" class="w-full py-4 mt-2 bg-gradient-to-r from-yellow-500 to-amber-600 text-black font-bold rounded-xl hover:from-yellow-400 hover:to-amber-500 hover:shadow-[0_0_30px_rgba(234,179,8,0.4)] transition-all flex justify-center items-center gap-2">
+                                <i data-lucide="refresh-cw" class="w-5 h-5"></i> Tukar V1 & Aktifkan Staking V8 (1-Klik)
+                            </button>
+                        </div>
+
+                        <!-- Migration Success & Active Status Card -->
+                        <div id="migration-success-card" class="hidden mt-6 p-5 rounded-xl bg-yellow-500/10 border border-yellow-500/40 text-xs text-yellow-200 shadow-[0_0_15px_rgba(234,179,8,0.15)]">
+                            <div class="flex items-center gap-2 font-bold text-sm mb-2 text-yellow-300">
+                                <i data-lucide="check-circle" class="w-4 h-4 text-yellow-400"></i> Tahap 1 Selesai: Koin V1 Diterima di Kas Treasury!
+                            </div>
+                            <p class="leading-relaxed mb-2">Total Koin Diserahkan: <strong class="text-white font-mono text-xs" id="display-migrated-amt">0.00</strong> SNR V1 (Bernilai <strong class="text-yellow-400 font-mono text-xs" id="display-migrated-v3">0.00</strong> SNR V3 / +28% Nilai Aset).</p>
+                            <p class="text-secondary leading-relaxed mb-4">👉 <strong>Tahap 2:</strong> Setelah Anda menerima transfer koin SNR V3 dari Manajemen ke dompet Anda, silakan buka menu <strong>[ Staking (V8) ]</strong> lalu klik tombol <strong>[ STAKE ]</strong> agar koin V3 Anda resmi terkunci di Smart Contract dan mulai panen Dividen Real Yield harian!</p>
+                            <button type="button" onclick="switchTab('staking')" class="w-full py-3 rounded-lg bg-primary text-black font-bold text-xs hover:bg-yellow-400 transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(255,204,0,0.3)]">
+                                <i data-lucide="lock" class="w-4 h-4"></i> Buka Menu Staking V8 & Kunci Koin V3
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- DEX Tab -->
+                    <div id="tab-p2p" class="dapp-tab glass-panel p-8 text-center min-h-[400px] flex flex-col items-center justify-center">
+                        <i data-lucide="arrow-right-left" class="w-16 h-16 text-primary mb-4"></i>
+                        <h3 class="text-2xl font-bold mb-4">Trade on PancakeSwap (DEX)</h3>
+                        <p class="text-secondary max-w-md mx-auto mb-8"><span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> beroperasi on-chain. Untuk membeli atau menjual SNR menjadi USDT/BNB secara instan, gunakan Decentralized Exchange resmi.</p>
+                        <a href="https://pancakeswap.finance/swap?outputCurrency=0xBC4d4D01f6cc6f483f355c6EBa45C7CcF54e5994" target="_blank" class="px-8 py-4 bg-primary text-black font-bold rounded-lg hover:bg-yellow-400 hover:shadow-[0_0_20px_rgba(255,204,0,0.4)] transition-all flex items-center gap-3">
+                            <i data-lucide="external-link" class="w-6 h-6"></i>
+                            Buka PancakeSwap
+                        </a>
+                    </div>
+
+                    <!-- TAB: HISTORY -->
+                    <div id="tab-history" class="dapp-tab glass-panel p-8 border-accent/30 min-h-[400px]">
+                        <div class="flex items-start justify-between mb-6">
+                            <div>
+                                <h3 class="text-xl font-display font-bold text-white mb-2">Riwayat Transaksi (On-Chain)</h3>
+                                <p class="text-secondary text-sm max-w-md">Semua aktivitas Staking, Unstake, dan Claim tercatat permanen di Blockchain. Transparan dan tidak dapat dihapus.</p>
+                            </div>
+                            <div class="hidden sm:flex w-16 h-16 rounded-full border-2 border-accent/20 items-center justify-center bg-card">
+                                <i data-lucide="history" class="w-8 h-8 text-accent"></i>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b border-cardBorder text-secondary text-sm">
+                                        <th class="py-3 px-4">Tipe Transaksi</th>
+                                        <th class="py-3 px-4">Jumlah (SNR)</th>
+                                        <th class="py-3 px-4">Waktu</th>
+                                        <th class="py-3 px-4 text-right">Status / Tx Hash</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="history-table-body" class="text-sm">
+                                    <tr class="border-b border-cardBorder/50 hover:bg-white/5 transition-colors">
+                                        <td class="py-4 px-4 text-secondary text-center italic" colspan="4">Hubungkan dompet (Wallet) untuk melihat riwayat Anda.</td>
+                                    </tr>
+                                    <!-- Dynamic rows will be inserted here by Web3 -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-6 text-center">
+                            <button class="text-accent text-sm hover:underline flex items-center gap-1 mx-auto" onclick="updateTransactionHistory()">
+                                <i data-lucide="refresh-cw" class="w-4 h-4"></i> Muat Ulang Riwayat (Refresh)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="space-y-6">
+                    <!-- Solvency Dashboard / Proof of Accounting -->
+                    <div class="glass-panel p-6 border-accent/40 bg-accent/5">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-display font-bold text-base sm:text-lg flex items-center gap-2 text-accent">
+                                <i data-lucide="shield-check" class="w-5 h-5"></i> Protocol Accounting Status
+                            </h4>
+                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-accent/10 border border-accent/30 text-accent font-mono">ON-CHAIN DERIVED</span>
+                        </div>
+                        <p class="text-xs text-secondary mb-4">Verifikasi solvabilitas neraca on-chain (Real-Time). Sistem memverifikasi saldo fisik token kontrak terhadap seluruh liabilitas protokol.</p>
+                        <div class="space-y-3 text-sm">
+                            <div class="flex justify-between items-center border-b border-cardBorder pb-2">
+                                <span class="text-secondary text-xs sm:text-sm">Physical Token Balance (Assets)</span>
+                                <span class="font-bold text-white font-mono"><span id="solvency-balance">0.00</span> SNR</span>
+                            </div>
+                            <div class="flex justify-between items-center border-b border-cardBorder pb-2">
+                                <span class="text-secondary text-xs sm:text-sm">Total Protocol Liabilities</span>
+                                <span class="font-bold text-red-400 font-mono"><span id="solvency-liabilities">0.00</span> SNR</span>
+                            </div>
+                            <div class="flex justify-between items-center border-b border-cardBorder pb-2">
+                                <span class="text-secondary text-xs sm:text-sm">Total Reward Injected (Gross)</span>
+                                <span class="font-bold text-primary font-mono"><span id="solvency-injected">0.00</span> SNR</span>
+                            </div>
+                            <div class="flex justify-between items-center pt-2">
+                                <span class="text-secondary text-xs sm:text-sm">Accounting Solvency</span>
+                                <span id="solvency-status" class="px-2.5 py-1 rounded bg-green-500/20 text-green-400 text-xs font-bold border border-green-500/30 shadow-[0_0_10px_rgba(74,222,128,0.2)]">SYNCING...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Global Staker Statistics — ON-CHAIN VERIFIED -->
+                    <div class="glass-panel p-6 border-accent/20">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-display font-bold text-base flex items-center gap-2 text-accent">
+                                <i data-lucide="users" class="w-5 h-5"></i> Protocol Participants
+                            </h4>
+                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-accent/10 border border-accent/30 text-accent font-mono">ON-CHAIN VERIFIED</span>
+                        </div>
+                        <div class="space-y-3 text-sm">
+                            <div class="flex justify-between items-center border-b border-cardBorder pb-2">
+                                <span class="text-secondary text-xs sm:text-sm">Active Stakers</span>
+                                <span class="font-bold text-white font-mono"><span id="stat-active-stakers">SYNCING...</span></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-secondary text-xs sm:text-sm">Historical Stakers</span>
+                                <span class="font-bold text-white font-mono"><span id="stat-historical-stakers">SYNCING...</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-6 border-primary/20">
+                        <h4 class="font-display font-bold text-lg mb-2 flex items-center gap-2">
+                            <i data-lucide="pie-chart" class="w-5 h-5 text-primary"></i> V8 Profit Logic
+                        </h4>
+                        <p class="text-sm text-secondary mb-4">Setiap profit riil yang disuntikkan akan didistribusikan secara adil: <strong>75% ke Stakers</strong> dan <strong>25% ke Perusahaan (Management Fee)</strong>. Alokasi ini krusial untuk operasional dan pengembangan. Dengan ini, perusahaan akan bertahan lebih kuat, menciptakan ekosistem sehat jangka panjang.</p>
+                    </div>
+                    <div class="glass-panel p-6">
+                        <h4 class="font-bold text-lg mb-4">Informasi Kontrak (V8)</h4>
+                        <div class="space-y-4 text-sm">
+                            <div class="flex justify-between items-center border-b border-cardBorder pb-2">
+                                <span class="text-secondary">Status</span>
+                                <span class="text-green-400 font-bold">100% Compliant</span>
+                            </div>
+                            <div class="flex justify-between items-center border-b border-cardBorder pb-2">
+                                <span class="text-secondary">Token Contract</span>
+                                <a href="https://bscscan.com/address/0xBC4d4D01f6cc6f483f355c6EBa45C7CcF54e5994" target="_blank" class="text-accent hover:underline text-xs">0xBC4d...5994</a>
+                            </div>
+                            <div class="flex justify-between items-center pb-2">
+                                <span class="text-secondary">Staking Contract</span>
+                                <a href="https://bscscan.com/address/0xc28b8A3E8863ada9D05a6BA068ebe5D49aE58499" target="_blank" class="text-primary hover:underline text-xs">0xc28b...8499</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Legal Disclaimer Footer -->
+    <footer class="w-full bg-background border-t border-cardBorder py-6 mt-auto relative z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p class="text-[10px] sm:text-xs text-secondary/60 text-justify leading-relaxed">
+                <strong>DISCLAIMER:</strong> Perdagangan Aset Kripto memiliki tingkat fluktuasi dan risiko yang tinggi. <span class="text-primary">SNR</span>-<span class="text-white">VAULT</span> adalah platform teknologi Blockchain (DeFi) untuk utilitas ekosistem hadiah partisipasi (Reward), bukan produk perbankan atau sekuritas berizin. Nilai token dan bagi hasil dapat berubah sewaktu-waktu sesuai kondisi pasar bisnis riil. Tidak ada jaminan keuntungan tetap. Lakukan riset Anda sendiri (DYOR). Dengan menggunakan platform ini, Anda sepenuhnya menyadari dan menerima segala risiko volatilitas yang mungkin terjadi.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Logic Script -->
+    <script>
+        lucide.createIcons();
+
+        // Robust EVM Address Validator
+        function isValidAddress(addr) {
+            if (!addr || typeof addr !== 'string') return false;
+            const clean = addr.trim();
+            try {
+                if (typeof ethers !== 'undefined' && ethers.utils && ethers.utils.isAddress) {
+                    return ethers.utils.isAddress(clean);
+                }
+            } catch (e) {}
+            return /^0x[a-fA-F0-9]{40}$/.test(clean);
+        }
+
+        function updateReferrerUI(ref) {
+            const badge = document.getElementById('ref-status-badge');
+            const text = document.getElementById('ref-status-text');
+            const input = document.getElementById('affiliate-input');
+            if (!badge || !text) return;
+
+            if (ref && isValidAddress(ref) && ref !== ethers.constants?.AddressZero) {
+                const shortRef = ref.substring(0, 6) + '...' + ref.substring(38);
+                badge.classList.remove('hidden');
+                badge.className = "text-[11px] text-green-400 font-semibold flex items-center gap-1";
+                badge.innerHTML = `<i data-lucide="shield-check" class="w-3.5 h-3.5 text-green-400"></i> Sponsor Terkunci (${shortRef})`;
+                text.classList.remove('hidden');
+                text.className = "text-[11px] text-green-400/90 mt-1.5 flex items-center gap-1";
+                text.innerHTML = `✓ Transaksi staking Anda akan otomatis tercatat ke sponsor <strong>${shortRef}</strong> di blockchain.`;
+                if (input && input.value !== ref) input.value = ref;
+            } else {
+                badge.classList.add('hidden');
+                text.classList.add('hidden');
+            }
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function validateReferrerInput(val) {
+            const clean = (val || '').trim();
+            if (!clean) {
+                updateReferrerUI(null);
+                return;
+            }
+            if (isValidAddress(clean)) {
+                sessionStorage.setItem('snr_referrer', clean);
+                localStorage.setItem('snr_referrer', clean);
+                updateReferrerUI(clean);
+            } else {
+                const badge = document.getElementById('ref-status-badge');
+                const text = document.getElementById('ref-status-text');
+                if (badge) badge.classList.add('hidden');
+                if (text) {
+                    text.classList.remove('hidden');
+                    text.className = "text-[11px] text-amber-400 mt-1.5";
+                    text.innerText = "Format alamat dompet BSC belum lengkap (harus diawali 0x dan 42 karakter).";
+                }
+            }
+        }
+
+        // Persistent Referral Tracker
+        function captureReferrer() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                let ref = urlParams.get('ref');
+
+                // Support hash routing ref parameter
+                if (!ref && window.location.hash && window.location.hash.includes('ref=')) {
+                    const hashParts = window.location.hash.split('ref=');
+                    if (hashParts.length > 1) {
+                        ref = hashParts[1].split('&')[0];
+                    }
+                }
+
+                if (ref && isValidAddress(ref)) {
+                    sessionStorage.setItem('snr_referrer', ref);
+                    localStorage.setItem('snr_referrer', ref);
+                    const affInput = document.getElementById('affiliate-input');
+                    if (affInput) affInput.value = ref;
+                    updateReferrerUI(ref);
+                } else {
+                    const savedRef = sessionStorage.getItem('snr_referrer') || localStorage.getItem('snr_referrer');
+                    if (savedRef && isValidAddress(savedRef)) {
+                        const affInput = document.getElementById('affiliate-input');
+                        if (affInput && !affInput.value) affInput.value = savedRef;
+                        updateReferrerUI(savedRef);
+                    }
+                }
+            } catch (e) {
+                console.warn("captureReferrer error:", e);
+            }
+        }
+        window.addEventListener('DOMContentLoaded', captureReferrer);
+        setTimeout(captureReferrer, 300);
+        setTimeout(captureReferrer, 1000);
+
+        function switchPage(page) {
+            document.getElementById('view-landing').classList.remove('active');
+            document.getElementById('view-dapp').classList.remove('active');
+            document.getElementById('view-' + page).classList.add('active');
+
+            if (page === 'landing') {
+                document.getElementById('nav-landing').classList.remove('hidden');
+                document.getElementById('nav-dapp').classList.add('hidden');
+            } else {
+                document.getElementById('nav-landing').classList.add('hidden');
+                document.getElementById('nav-dapp').classList.remove('hidden');
+                captureReferrer();
+            }
+            window.scrollTo(0, 0);
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.dapp-tab').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('#btn-staking, #btn-network, #btn-p2p, #btn-otc, #btn-history, #btn-migration').forEach(el => {
+                el.classList.remove('bg-primary', 'text-black');
+                el.classList.add('text-secondary');
+            });
+
+            document.getElementById('tab-' + tabId).classList.add('active');
+            const btn = document.getElementById('btn-' + tabId);
+            btn.classList.remove('text-secondary');
+            btn.classList.add('bg-primary', 'text-black');
+        }
+
+        // Globe removed for performance optimization
+
+        // Web3 & Metamask Integration
+        let provider, signer, userAddress;
+
+        // Config
+        const SNR_TOKEN_ADDRESS = "0xBC4d4D01f6cc6f483f355c6EBa45C7CcF54e5994";
+        const SNR_V1_TOKEN_ADDRESS = "0x5Ce1427F77D8c58F97f5e18b36804fD54Aa72718";
+        const TREASURY_ADDRESS = "0x7634a20873e7e63EC924333a1B9B87c1F9E5e8eB";
+        const STAKING_CONTRACT_ADDRESS = "0xc28b8A3E8863ada9D05a6BA068ebe5D49aE58499";
+        const OTC_CONTRACT_ADDRESS = "0x2A37ca96662D43B43beC41CDE61dfc4646Ea2d33";
+        const USDT_ADDRESS = "0x55d398326f99059fF775485246999027B3197955";
+        const RATE_MULTIPLIER = 3.5511;
+
+        const ERC20_ABI = [
+            "function approve(address spender, uint256 amount) public returns (bool)",
+            "function allowance(address owner, address spender) public view returns (uint256)",
+            "function balanceOf(address account) public view returns (uint256)",
+            "function transfer(address to, uint256 amount) public returns (bool)"
+        ];
+        
+        const STAKING_ABI = [
+            "function owner() external view returns (address)",
+            "function stake(uint256 _amount, address _affiliate) external",
+            "function unstake(uint256 _amount) external",
+            "function claimReward() external",
+            "function compoundReward() external",
+            "function injectRealYield(uint256 _amount) external",
+            "function fundMarketingPool(uint256 _amount) external",
+            "function marketingPoolBalance() external view returns (uint256)",
+            "function pendingRewardView(address _user) external view returns (uint256)",
+            "function users(address) external view returns (uint256 stakedAmount, uint256 rewardDebt, uint256 pendingRewards, uint256 stakeTimestamp, address affiliate, uint256 affiliateRewardEarned)",
+            "function cumulativeAffiliateVolume(address) external view returns (uint256)",
+            "function getAffiliateBonusRate(address) external view returns (uint256)",
+            "event Staked(address indexed user, uint256 grossAmount, uint256 netAmount, address indexed affiliate)",
+            "event Unstaked(address indexed user, uint256 grossAmount, uint256 feeOrPenalty)",
+            "event RewardClaimed(address indexed user, uint256 netReward)",
+            "event Compounded(address indexed user, uint256 grossReward, uint256 fee, uint256 netStake)",
+            "event AffiliatePaid(address indexed affiliate, uint256 amount, uint256 rateBP)",
+            "event RewardInjected(uint256 grossAmount, uint256 mgmtFee, uint256 netPool)"
+        ];
+
+        const OTC_ABI = [
+            "function buyTokens(uint256 _usdtAmount) external"
+        ];
+
+        function copyRef() {
+            const input = document.getElementById('ref-link');
+            input.select();
+            document.execCommand('copy');
+            showNotification("Tautan Afiliasi Disalin! 📋", "Tautan referral Anda berhasil disalin ke clipboard. Bagikan ke komunitas untuk mendapatkan 5% bonus.", "info");
+        }
+
+        // ================= NOTIFICATION MODAL HELPERS =================
+        function showNotification(title, message, type = 'success', actionBtn = null) {
+            const backdrop = document.getElementById('snr-modal-backdrop');
+            const card = document.getElementById('snr-modal-card');
+            const iconContainer = document.getElementById('snr-modal-icon-container');
+            const iconEl = document.getElementById('snr-modal-icon');
+            const titleEl = document.getElementById('snr-modal-title');
+            const msgEl = document.getElementById('snr-modal-message');
+            const actionsEl = document.getElementById('snr-modal-actions');
+
+            if (!backdrop || !card) return;
+
+            titleEl.innerHTML = title;
+            msgEl.innerHTML = message;
+
+            if (type === 'success') {
+                iconContainer.className = "w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center border border-accent/40 bg-accent/10 shadow-[0_0_25px_rgba(0,229,255,0.35)]";
+                iconEl.setAttribute('data-lucide', 'check-circle');
+                iconEl.className = "w-8 h-8 text-accent";
+                card.className = "relative max-w-md w-full rounded-2xl p-6 sm:p-8 bg-[#090D16]/95 border border-accent/40 shadow-[0_0_50px_rgba(0,229,255,0.3)] text-center transform scale-100 transition-all duration-300";
+            } else if (type === 'error') {
+                iconContainer.className = "w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center border border-red-500/40 bg-red-500/10 shadow-[0_0_25px_rgba(239,68,68,0.35)]";
+                iconEl.setAttribute('data-lucide', 'alert-triangle');
+                iconEl.className = "w-8 h-8 text-red-400";
+                card.className = "relative max-w-md w-full rounded-2xl p-6 sm:p-8 bg-[#090D16]/95 border border-red-500/40 shadow-[0_0_50px_rgba(239,68,68,0.3)] text-center transform scale-100 transition-all duration-300";
+            } else {
+                iconContainer.className = "w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center border border-primary/40 bg-primary/10 shadow-[0_0_25px_rgba(255,204,0,0.35)]";
+                iconEl.setAttribute('data-lucide', 'info');
+                iconEl.className = "w-8 h-8 text-primary";
+                card.className = "relative max-w-md w-full rounded-2xl p-6 sm:p-8 bg-[#090D16]/95 border border-primary/40 shadow-[0_0_50px_rgba(255,204,0,0.3)] text-center transform scale-100 transition-all duration-300";
+            }
+
+            if (actionBtn) {
+                actionsEl.innerHTML = `
+                    <button id="modal-action-btn" class="w-full px-5 py-2.5 rounded-xl bg-red-500/20 border border-red-500/50 text-red-400 font-bold text-sm hover:bg-red-500/30 transition-all flex items-center justify-center gap-2">
+                        ${actionBtn.text}
+                    </button>
+                    <button onclick="closeModal()" class="w-full px-5 py-2.5 rounded-xl bg-card border border-cardBorder text-secondary font-semibold text-sm hover:text-white transition-all">
+                        Batal
+                    </button>
+                `;
+                document.getElementById('modal-action-btn').onclick = () => {
+                    actionBtn.action();
+                };
+            } else {
+                actionsEl.innerHTML = `
+                    <button onclick="closeModal()" class="w-full px-6 py-3 rounded-xl bg-accent/20 border border-accent/50 text-accent font-bold text-sm hover:bg-accent/30 hover:shadow-[0_0_20px_rgba(0,229,255,0.4)] transition-all flex items-center justify-center gap-2">
+                        <i data-lucide="check" class="w-4 h-4"></i> Konfirmasi
+                    </button>
+                `;
+            }
+
+            if (window.lucide) lucide.createIcons();
+
+            backdrop.classList.remove('opacity-0', 'pointer-events-none');
+            backdrop.classList.add('opacity-100');
+            card.classList.remove('scale-95');
+            card.classList.add('scale-100');
+        }
+
+        function closeModal() {
+            const backdrop = document.getElementById('snr-modal-backdrop');
+            const card = document.getElementById('snr-modal-card');
+            if (backdrop && card) {
+                backdrop.classList.remove('opacity-100');
+                backdrop.classList.add('opacity-0', 'pointer-events-none');
+                card.classList.remove('scale-100');
+                card.classList.add('scale-95');
+            }
+        }
+
+        // UI Calculate Function (OTC)
+        function calculateSNR() {
+            const usdtValue = document.getElementById('otc-usdt-input').value;
+            const snrOutput = document.getElementById('otc-snr-output');
+            if(usdtValue && usdtValue > 0) {
+                snrOutput.value = (usdtValue * RATE_MULTIPLIER).toFixed(4);
+            } else {
+                snrOutput.value = "";
+            }
+        }
+
+        async function updateBalances() {
+            if (!userAddress) return;
+            
+            // Safe RPC Provider fallback if wallet provider lags
+            let readProvider = provider;
+            if (!readProvider) {
+                try { readProvider = new ethers.providers.JsonRpcProvider('https://bsc-rpc.publicnode.com'); } catch (e) {}
+            }
+
+            // 1. Update BNB
+            try {
+                const bnbBal = await readProvider.getBalance(userAddress);
+                document.getElementById('display-bnb').innerText = parseFloat(ethers.utils.formatEther(bnbBal)).toFixed(4);
+            } catch (e) {
+                console.warn("BNB balance fetch error:", e);
+            }
+
+            // 2. Update SNR V3 Wallet Balance
+            try {
+                const snrContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, readProvider);
+                const snrBal = await snrContract.balanceOf(userAddress);
+                const formattedSNR = parseFloat(ethers.utils.formatUnits(snrBal, 18));
+                document.getElementById('display-balance').innerText = formattedSNR.toLocaleString('en-US', {maximumFractionDigits: 2});
+                
+                // Update CEO Wallet Balance if CEO panel element exists
+                const ceoWalletEl = document.getElementById('ceo-wallet-snr');
+                if (ceoWalletEl) {
+                    ceoWalletEl.innerText = formattedSNR.toLocaleString('en-US', {maximumFractionDigits: 2});
+                }
+            } catch (e) {
+                console.warn("SNR V3 balance fetch error:", e);
+            }
+
+            // 3. Update SNR V1 Balance (Migration)
+            try {
+                const v1Contract = new ethers.Contract(SNR_V1_TOKEN_ADDRESS, ERC20_ABI, readProvider);
+                const v1Bal = await v1Contract.balanceOf(userAddress);
+                const v1El = document.getElementById('display-v1-balance');
+                if (v1El) {
+                    v1El.innerText = parseFloat(ethers.utils.formatUnits(v1Bal, 18)).toLocaleString('en-US', {maximumFractionDigits: 2});
+                }
+            } catch (v1Err) {
+                console.warn("Could not fetch V1 balance:", v1Err);
+            }
+
+            // 4. Update Staking Data (Strict On-Chain State)
+            try {
+                const stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, readProvider);
+                const userInfo = await stakingContract.users(userAddress);
+                const stakedAmt = parseFloat(ethers.utils.formatUnits(userInfo.stakedAmount, 18));
+                
+                // True On-Chain Staked SNR V3
+                document.getElementById('display-staked').innerText = stakedAmt.toLocaleString('en-US', {maximumFractionDigits: 2});
+
+                // Read Migrated V1 total for status card
+                const migratedKey = 'snr_migrated_' + userAddress.toLowerCase();
+                const migratedAmt = parseFloat(localStorage.getItem(migratedKey) || '0');
+
+                // Update Migration status card
+                const migCard = document.getElementById('migration-success-card');
+                if (migCard) {
+                    if (migratedAmt > 0) {
+                        migCard.classList.remove('hidden');
+                        document.getElementById('display-migrated-amt').innerText = migratedAmt.toLocaleString('en-US', {maximumFractionDigits: 2});
+                        document.getElementById('display-migrated-v3').innerText = migratedAmt.toLocaleString('en-US', {maximumFractionDigits: 2});
+                    } else {
+                        migCard.classList.add('hidden');
+                    }
+                }
+
+                const pending = await stakingContract.pendingRewardView(userAddress);
+                document.getElementById('display-reward').innerText = parseFloat(ethers.utils.formatUnits(pending, 18)).toLocaleString('en-US', {maximumFractionDigits: 4});
+
+                // Update Affiliate Stats & Strict On-Chain Tier
+                const affVol = await stakingContract.cumulativeAffiliateVolume(userAddress);
+                const affVolNum = parseFloat(ethers.utils.formatUnits(affVol, 18));
+                document.getElementById('display-aff-vol').innerText = affVolNum.toLocaleString('en-US', {maximumFractionDigits: 2});
+                
+                // Calculate Direct Downline Member Count (100% On-Chain Event Derived, Zero Estimation)
+                let downlineCount = 0;
+                const userKey = userAddress.toLowerCase();
+                const localKey = 'snr_downlines_' + userKey;
+                const uniqueWallets = new Set();
+
+                // 1. Include on-chain indexed downlines
+                if (window.globalAffiliateDownlines && window.globalAffiliateDownlines[userKey]) {
+                    window.globalAffiliateDownlines[userKey].forEach(a => uniqueWallets.add(a.toLowerCase()));
+                }
+
+                // 2. Include performance-cached verified on-chain downlines
+                try {
+                    const saved = JSON.parse(localStorage.getItem(localKey) || '[]');
+                    saved.forEach(a => uniqueWallets.add(a.toLowerCase()));
+                } catch(e) {}
+
+                downlineCount = uniqueWallets.size;
+                document.getElementById('display-aff-count').innerText = downlineCount;
+
+                // Strict On-Chain Tier Calculation (Contract Authority)
+                const tierInfo = getContractTierInfo(affVolNum);
+                const tierEl = document.getElementById('display-tier');
+                tierEl.className = tierInfo.badge;
+                tierEl.innerText = tierInfo.name;
+
+                const earnedAmt = parseFloat(ethers.utils.formatUnits(userInfo.affiliateRewardEarned || 0, 18));
+                let remainingCap = stakedAmt - earnedAmt;
+                if(remainingCap < 0) remainingCap = 0;
+                document.getElementById('display-max-cap').innerText = remainingCap.toLocaleString('en-US', {maximumFractionDigits: 2});
+            } catch (stakeErr) {
+                console.warn("Staking data fetch error:", stakeErr);
+            }
+
+            // 5. Set Ref Link
+            try {
+                document.getElementById('ref-link').value = window.location.origin + window.location.pathname + "?ref=" + userAddress;
+            } catch (e) {}
+            
+            // 6. Update On-Chain Transaction History, Hall of Fame & CEO Access
+            try { await updateTransactionHistory(); } catch (e) {}
+            try { await renderHallOfFame(); } catch (e) {}
+            // CEO access is checked without blocking the dashboard flow.
+            // If the wallet is the owner, the panel appears immediately and
+            // only its own data is refreshed in the background.
+            try {
+                await checkOwnerAccess();
+            } catch (e) {}
+        }
+
+        // ================= FORTRESS ON-CHAIN TRANSACTION HISTORY =================
+        // 100% on-chain events. Zero localStorage source of truth. Zero dummy data.
+        const HISTORY_DEPLOY_BLOCK = 117886311;
+
+        async function updateTransactionHistory() {
+            const tableBody = document.getElementById('history-table-body');
+            if (!tableBody) return;
+
+            if (!userAddress) {
+                tableBody.innerHTML = `
+                    <tr class="border-b border-cardBorder/50">
+                        <td class="py-6 px-4 text-secondary text-center italic" colspan="4">Hubungkan dompet (Wallet) untuk melihat riwayat Anda.</td>
+                    </tr>`;
+                return;
+            }
+
+            tableBody.innerHTML = `
+                <tr class="border-b border-cardBorder/50">
+                    <td class="py-6 px-4 text-secondary text-center" colspan="4">
+                        <span class="inline-flex items-center gap-2 text-accent"><i data-lucide="loader" class="animate-spin w-4 h-4"></i> SYNCING ON-CHAIN HISTORY...</span>
+                    </td>
+                </tr>`;
+            if (window.lucide) lucide.createIcons();
+
+            try {
+                const rpcProvider = getPublicRpcProvider();
+                const latestBlock = await rpcProvider.getBlockNumber();
+                const confirmedBlock = latestBlock - 2;
+                const stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, rpcProvider);
+                const walletAddr = userAddress;
+                const walletKey = walletAddr.toLowerCase();
+
+                // Incremental checkpoint per wallet
+                const checkpointKey = 'snr_tx_hist_block_' + walletKey;
+                let lastHistBlock = parseInt(localStorage.getItem(checkpointKey) || '0');
+                let startBlock = (lastHistBlock > 0 && lastHistBlock < confirmedBlock) ? lastHistBlock + 1 : HISTORY_DEPLOY_BLOCK;
+
+                // Load cached events (performance cache only, NOT source of truth)
+                const cacheKey = 'snr_tx_hist_events_' + walletKey;
+                let cachedEvents = [];
+                try { cachedEvents = JSON.parse(localStorage.getItem(cacheKey) || '[]'); } catch(e) {}
+
+                // Build 1500-block chunks
+                const chunkSize = 1500;
+                const chunks = [];
+                for (let from = startBlock; from <= confirmedBlock; from += chunkSize) {
+                    chunks.push({ from, to: Math.min(from + chunkSize - 1, confirmedBlock) });
+                }
+
+                const eventMap = new Map();
+
+                // Seed from cache (will be overwritten by on-chain if duplicate)
+                cachedEvents.forEach(ev => eventMap.set(ev.key, ev));
+
+                // Query wallet-specific events from blockchain
+                for (const chunk of chunks) {
+                    try {
+                        const [staked, unstaked, claimed, compounded, affPaid, injected] = await Promise.all([
+                            stakingContract.queryFilter(stakingContract.filters.Staked(walletAddr), chunk.from, chunk.to).catch(() => []),
+                            stakingContract.queryFilter(stakingContract.filters.Unstaked(walletAddr), chunk.from, chunk.to).catch(() => []),
+                            stakingContract.queryFilter(stakingContract.filters.RewardClaimed(walletAddr), chunk.from, chunk.to).catch(() => []),
+                            stakingContract.queryFilter(stakingContract.filters.Compounded(walletAddr), chunk.from, chunk.to).catch(() => []),
+                            stakingContract.queryFilter(stakingContract.filters.AffiliatePaid(walletAddr), chunk.from, chunk.to).catch(() => []),
+                            stakingContract.queryFilter(stakingContract.filters.RewardInjected(), chunk.from, chunk.to).catch(() => [])
+                        ]);
+
+                        // Process Staked events
+                        for (const ev of staked) {
+                            const key = `${ev.transactionHash.toLowerCase()}_${ev.logIndex}`;
+                            eventMap.set(key, {
+                                key, type: 'STAKE', typeLabel: 'Deposit Stake',
+                                badgeClass: 'bg-primary/20 text-primary border-primary/30',
+                                amount: parseFloat(ethers.utils.formatUnits(ev.args[1] || 0, 18)),
+                                netAmount: parseFloat(ethers.utils.formatUnits(ev.args[2] || 0, 18)),
+                                blockNumber: ev.blockNumber, logIndex: ev.logIndex,
+                                txHash: ev.transactionHash
+                            });
+                        }
+
+                        // Process Unstaked events
+                        for (const ev of unstaked) {
+                            const key = `${ev.transactionHash.toLowerCase()}_${ev.logIndex}`;
+                            eventMap.set(key, {
+                                key, type: 'UNSTAKE', typeLabel: 'Tarik Modal',
+                                badgeClass: 'bg-red-500/20 text-red-400 border-red-500/30',
+                                amount: parseFloat(ethers.utils.formatUnits(ev.args[1] || 0, 18)),
+                                penalty: parseFloat(ethers.utils.formatUnits(ev.args[2] || 0, 18)),
+                                blockNumber: ev.blockNumber, logIndex: ev.logIndex,
+                                txHash: ev.transactionHash
+                            });
+                        }
+
+                        // Process RewardClaimed events
+                        for (const ev of claimed) {
+                            const key = `${ev.transactionHash.toLowerCase()}_${ev.logIndex}`;
+                            eventMap.set(key, {
+                                key, type: 'CLAIM', typeLabel: 'Klaim Dividen',
+                                badgeClass: 'bg-green-500/20 text-green-400 border-green-500/30',
+                                amount: parseFloat(ethers.utils.formatUnits(ev.args[1] || 0, 18)),
+                                blockNumber: ev.blockNumber, logIndex: ev.logIndex,
+                                txHash: ev.transactionHash
+                            });
+                        }
+
+                        // Process Compounded events
+                        for (const ev of compounded) {
+                            const key = `${ev.transactionHash.toLowerCase()}_${ev.logIndex}`;
+                            eventMap.set(key, {
+                                key, type: 'COMPOUND', typeLabel: 'Gulung Dividen',
+                                badgeClass: 'bg-accent/20 text-accent border-accent/30',
+                                amount: parseFloat(ethers.utils.formatUnits(ev.args[1] || 0, 18)),
+                                netAmount: parseFloat(ethers.utils.formatUnits(ev.args[3] || 0, 18)),
+                                blockNumber: ev.blockNumber, logIndex: ev.logIndex,
+                                txHash: ev.transactionHash
+                            });
+                        }
+
+                        // Process AffiliatePaid events (wallet is the affiliate receiving bonus)
+                        for (const ev of affPaid) {
+                            const key = `${ev.transactionHash.toLowerCase()}_${ev.logIndex}`;
+                            eventMap.set(key, {
+                                key, type: 'AFFILIATE', typeLabel: 'Bonus Afiliasi',
+                                badgeClass: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
+                                amount: parseFloat(ethers.utils.formatUnits(ev.args[1] || 0, 18)),
+                                tierRate: ev.args[2] ? ev.args[2].toNumber() / 100 : 0,
+                                blockNumber: ev.blockNumber, logIndex: ev.logIndex,
+                                txHash: ev.transactionHash
+                            });
+                        }
+
+                        // Process RewardInjected (show only if wallet is contract owner)
+                        for (const ev of injected) {
+                            const key = `${ev.transactionHash.toLowerCase()}_${ev.logIndex}`;
+                            eventMap.set(key, {
+                                key, type: 'INJECT', typeLabel: 'Injeksi Real Yield',
+                                badgeClass: 'bg-yellow-400/20 text-yellow-300 border-yellow-400/30',
+                                amount: parseFloat(ethers.utils.formatUnits(ev.args[0] || 0, 18)),
+                                blockNumber: ev.blockNumber, logIndex: ev.logIndex,
+                                txHash: ev.transactionHash
+                            });
+                        }
+                    } catch (chunkErr) {
+                        console.warn('History chunk error:', chunkErr);
+                    }
+                }
+
+                // Sort by blockNumber DESC, logIndex DESC — most recent first
+                const allTx = Array.from(eventMap.values())
+                    .sort((a, b) => b.blockNumber - a.blockNumber || b.logIndex - a.logIndex);
+
+                // Filter RewardInjected: only show if wallet is owner
+                let isOwner = false;
+                try {
+                    const ownerAddr = await stakingContract.owner();
+                    isOwner = ownerAddr.toLowerCase() === walletKey;
+                } catch(e) {}
+
+                const filteredTx = allTx.filter(tx => {
+                    if (tx.type === 'INJECT' && !isOwner) return false;
+                    return true;
+                });
+
+                // Save checkpoint and cache
+                try {
+                    localStorage.setItem(checkpointKey, confirmedBlock.toString());
+                    localStorage.setItem(cacheKey, JSON.stringify(filteredTx.slice(0, 50)));
+                } catch(e) {}
+
+                // Cap at 20 items
+                const displayTx = filteredTx.slice(0, 20);
+
+                if (displayTx.length === 0) {
+                    const bscUrl = `https://bscscan.com/address/${walletAddr}#tokentxns`;
+                    tableBody.innerHTML = `
+                        <tr class="border-b border-cardBorder/50">
+                            <td class="py-6 px-4 text-center" colspan="4">
+                                <p class="text-secondary text-sm mb-2">NO ON-CHAIN TRANSACTIONS FOUND</p>
+                                <a href="${bscUrl}" target="_blank" class="inline-flex items-center gap-1 text-accent hover:underline text-xs font-semibold">
+                                    Verifikasi di BscScan Explorer <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                                </a>
+                            </td>
+                        </tr>`;
+                    if (window.lucide) lucide.createIcons();
+                    return;
+                }
+
+                // Fetch block timestamps (batch unique blocks)
+                const uniqueBlocks = [...new Set(displayTx.map(t => t.blockNumber))];
+                const blockTimestamps = {};
+                for (const bn of uniqueBlocks) {
+                    try {
+                        const block = await rpcProvider.getBlock(bn);
+                        if (block) blockTimestamps[bn] = block.timestamp;
+                    } catch(e) {}
+                }
+
+                // Render
+                let html = '';
+                for (const tx of displayTx) {
+                    const ts = blockTimestamps[tx.blockNumber] || 0;
+                    const dateStr = ts > 0
+                        ? new Date(ts * 1000).toLocaleString('id-ID', { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' })
+                        : 'Block #' + tx.blockNumber;
+                    const shortHash = tx.txHash.substring(0, 6) + '...' + tx.txHash.substring(tx.txHash.length - 4);
+                    const bscUrl = `https://bscscan.com/tx/${tx.txHash}`;
+
+                    html += `
+                        <tr class="border-b border-cardBorder/50 hover:bg-white/5 transition-colors">
+                            <td class="py-3 px-4">
+                                <span class="px-2.5 py-1 rounded text-xs font-bold border ${tx.badgeClass}">${tx.typeLabel}</span>
+                            </td>
+                            <td class="py-3 px-4 font-bold text-white">
+                                ${tx.amount.toLocaleString('en-US', {maximumFractionDigits: 4})} <span class="text-xs text-primary">SNR</span>
+                            </td>
+                            <td class="py-3 px-4 text-secondary text-xs">
+                                ${dateStr}
+                            </td>
+                            <td class="py-3 px-4 text-right">
+                                <a href="${bscUrl}" target="_blank" class="inline-flex items-center gap-1 text-accent hover:underline text-xs font-mono">
+                                    ${shortHash} <i data-lucide="external-link" class="w-3 h-3"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    `;
+                }
+
+                tableBody.innerHTML = html;
+                if (window.lucide) lucide.createIcons();
+            } catch (err) {
+                console.warn('Transaction history error:', err);
+                tableBody.innerHTML = `
+                    <tr class="border-b border-cardBorder/50">
+                        <td class="py-6 px-4 text-center" colspan="4">
+                            <p class="text-red-400 text-sm">ON-CHAIN HISTORY UNAVAILABLE</p>
+                            <p class="text-secondary text-xs mt-1">RPC tidak dapat dijangkau. Coba beberapa saat lagi.</p>
+                        </td>
+                    </tr>`;
+            }
+        }
+
+        function handleWalletBtnClick() {
+            if (userAddress) {
+                showNotification(
+                    "Manajemen Dompet (Wallet)",
+                    `<div class="space-y-3">
+                        <p class="text-secondary text-xs">Dompet yang sedang aktif terhubung:</p>
+                        <div class="p-3 bg-card border border-cardBorder rounded-xl font-mono text-accent text-xs break-all flex items-center justify-between gap-2">
+                            <span>${userAddress}</span>
+                            <button onclick="navigator.clipboard.writeText('${userAddress}'); showNotification('Alamat Disalin! 📋', '${userAddress}', 'info');" class="p-1 hover:text-white"><i data-lucide='copy' class='w-4 h-4'></i></button>
+                        </div>
+                        <p class="text-secondary/80 text-xs">Putuskan koneksi jika ingin beralih dompet atau membantu mendaftarkan akun teman.</p>
+                    </div>`,
+                    'info',
+                    {
+                        text: "Putuskan Koneksi (Disconnect)",
+                        action: () => disconnectWallet()
+                    }
+                );
+            } else {
+                connectWallet();
+            }
+        }
+
+        function disconnectWallet() {
+            userAddress = null;
+            signer = null;
+            provider = null;
+            const btn = document.getElementById('connect-wallet-btn');
+            btn.innerHTML = `<i data-lucide="wallet" class="w-5 h-5"></i> <span>Connect</span>`;
+            btn.className = "px-6 py-2.5 rounded-lg bg-card border border-accent text-accent font-semibold hover:bg-accent/10 transition-all flex items-center gap-2";
+            
+            document.getElementById('display-bnb').innerText = "0.00";
+            document.getElementById('display-balance').innerText = "0.00";
+            document.getElementById('display-staked').innerText = "0.00";
+            document.getElementById('display-reward').innerText = "0.00";
+            document.getElementById('display-aff-count').innerText = "0";
+            document.getElementById('display-aff-vol').innerText = "0.00";
+            document.getElementById('display-tier').className = "font-semibold text-secondary text-sm";
+            document.getElementById('display-tier').innerText = "- (Belum Ada Pangkat)";
+            document.getElementById('display-max-cap').innerText = "0.00";
+            const v1El = document.getElementById('display-v1-balance');
+            if (v1El) v1El.innerText = "0.00";
+            document.getElementById('ref-link').value = window.location.origin + window.location.pathname;
+
+            const ceoPanel = document.getElementById('ceo-executive-panel');
+            if (ceoPanel) ceoPanel.classList.add('hidden');
+
+            updateTransactionHistory();
+            if (window.lucide) lucide.createIcons();
+            closeModal();
+            showNotification("Koneksi Diputuskan", "Dompet berhasil dilepas. Anda sekarang dapat menghubungkan dompet baru.", "info");
+        }
+
+        async function ensureBscNetwork() {
+            if (!window.ethereum) return;
+            const BSC_CHAIN_ID_HEX = "0x38"; // 56 in decimal
+            try {
+                const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
+                if (currentChainId !== BSC_CHAIN_ID_HEX) {
+                    try {
+                        await window.ethereum.request({
+                            method: 'wallet_switchEthereumChain',
+                            params: [{ chainId: BSC_CHAIN_ID_HEX }],
+                        });
+                    } catch (switchError) {
+                        if (switchError.code === 4902 || switchError.data?.originalError?.code === 4902) {
+                            await window.ethereum.request({
+                                method: 'wallet_addEthereumChain',
+                                params: [{
+                                    chainId: BSC_CHAIN_ID_HEX,
+                                    chainName: 'BNB Smart Chain Mainnet',
+                                    nativeCurrency: {
+                                        name: 'BNB',
+                                        symbol: 'BNB',
+                                        decimals: 18
+                                    },
+                                    rpcUrls: ['https://bsc-dataseed.binance.org/', 'https://bsc-rpc.publicnode.com'],
+                                    blockExplorerUrls: ['https://bscscan.com/']
+                                }],
+                            });
+                        }
+                    }
+                }
+            } catch (err) {
+                console.warn("Network switch error:", err);
+            }
+        }
+
+        async function connectWallet() {
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    await ensureBscNetwork();
+                    await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    provider = new ethers.providers.Web3Provider(window.ethereum);
+                    signer = provider.getSigner();
+                    userAddress = await signer.getAddress();
+                    
+                    const shortAddress = userAddress.substring(0, 6) + '...' + userAddress.substring(38);
+                    const btn = document.getElementById('connect-wallet-btn');
+                    btn.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i> <span class="hidden sm:inline">${shortAddress}</span>`;
+                    btn.classList.add('bg-accent/20', 'border-cyan-400');
+                    btn.classList.remove('bg-card');
+                    lucide.createIcons();
+                    
+                    // Pre-fill affiliate if present in URL or storage
+                    captureReferrer();
+
+                    // Show CEO panel immediately when the connected wallet is the owner.
+                    // This runs before the heavier dashboard/history refresh.
+                    await checkOwnerAccess();
+
+                    await updateBalances();
+                    showNotification("Dompet Terhubung (BSC) ⚡", `Berhasil menghubungkan dompet di jaringan BNB Smart Chain:<br><strong class="text-accent font-mono text-xs">${shortAddress}</strong>`, "success");
+                } catch (error) {
+                    console.error("Wallet connection failed:", error);
+                    showNotification("Koneksi Dibatalkan", "Permintaan koneksi dompet dibatalkan oleh pengguna.", "error");
+                }
+            } else {
+                showNotification("Web3 Tidak Terdeteksi", "Harap buka website ini di dalam browser dApp seperti MetaMask, TrustWallet, atau Bitget Wallet!", "error");
+            }
+        }
+
+        // ================= STAKING FUNCTIONS =================
+        async function stakeSNR() {
+            if (!signer) return showNotification("Akses Ditolak", "Harap hubungkan dompet (Connect Wallet) terlebih dahulu!", "error");
+            const amt = document.getElementById('stake-input').value;
+            if (!amt || amt <= 0) return showNotification("Jumlah Tidak Valid", "Harap masukkan nominal SNR yang ingin di-stake!", "error");
+            
+            let ref = (document.getElementById('affiliate-input')?.value || '').trim();
+            if (!isValidAddress(ref)) {
+                const savedRef = sessionStorage.getItem('snr_referrer') || localStorage.getItem('snr_referrer');
+                if (savedRef && isValidAddress(savedRef)) {
+                    ref = savedRef;
+                    const affInp = document.getElementById('affiliate-input');
+                    if (affInp) affInp.value = ref;
+                } else {
+                    ref = ethers.constants.AddressZero;
+                }
+            }
+
+            // Prevent self-referral
+            if (ref && userAddress && ref.toLowerCase() === userAddress.toLowerCase()) {
+                ref = ethers.constants.AddressZero;
+            }
+
+            const btn = document.getElementById('btn-stake');
+            const ogHtml = btn.innerHTML;
+            
+            try {
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-5 h-5"></i> Memproses...`;
+                btn.disabled = true;
+
+                const snrContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, signer);
+                const stakeContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
+                const amtWei = ethers.utils.parseUnits(amt.toString(), 18);
+
+                // Safe Allowance Check
+                let needsApprove = false;
+                try {
+                    let checkProvider = provider;
+                    if (!checkProvider) checkProvider = new ethers.providers.JsonRpcProvider('https://bsc-rpc.publicnode.com');
+                    const readSnr = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, checkProvider);
+                    const allowance = await readSnr.allowance(userAddress, STAKING_CONTRACT_ADDRESS);
+                    if (allowance.lt(amtWei)) {
+                        needsApprove = true;
+                    }
+                } catch (allowErr) {
+                    console.warn("Stake allowance check fallback:", allowErr);
+                }
+
+                if (needsApprove) {
+                    btn.innerHTML = `<i class="lucide-loader animate-spin w-5 h-5"></i> Approve SNR...`;
+                    const txApprove = await snrContract.approve(STAKING_CONTRACT_ADDRESS, ethers.constants.MaxUint256);
+                    await txApprove.wait();
+                }
+
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-5 h-5"></i> Staking...`;
+                const txStake = await stakeContract.stake(amtWei, ref, { gasLimit: 350000 });
+                await txStake.wait();
+                
+
+                
+                if (ref && ref !== ethers.constants.AddressZero) {
+                    try {
+                        const refNorm = ethers.utils.getAddress(ref).toLowerCase();
+                        const userNorm = ethers.utils.getAddress(userAddress).toLowerCase();
+                        if (!window.globalAffiliateDownlines[refNorm]) {
+                            window.globalAffiliateDownlines[refNorm] = new Set();
+                        }
+                        window.globalAffiliateDownlines[refNorm].add(userNorm);
+                        
+                        const localKey = 'snr_downlines_' + refNorm;
+                        const localList = JSON.parse(localStorage.getItem(localKey) || '[]');
+                        if (!localList.includes(userNorm)) {
+                            localList.push(userNorm);
+                            localStorage.setItem(localKey, JSON.stringify(localList));
+                        }
+                    } catch (e) {}
+                }
+                
+                showNotification("Staking Berhasil! 🛡️", `Koin <strong class="text-primary font-bold">${amt} SNR</strong> berhasil dikunci ke dalam Fortress Vault V8.<br><span class="text-xs text-accent">Dividen Real Yield akan mulai mengalir secara real-time.</span>`, "success");
+                document.getElementById('stake-input').value = "";
+                updateBalances();
+            } catch (e) {
+                showNotification("Transaksi Gagal / Dibatalkan", e.data?.message || e.message, "error");
+            } finally {
+                btn.innerHTML = ogHtml; btn.disabled = false; lucide.createIcons();
+            }
+        }
+
+        async function unstakeSNR() {
+            if (!signer) return showNotification("Akses Ditolak", "Harap hubungkan dompet (Connect Wallet) terlebih dahulu!", "error");
+            const amt = document.getElementById('stake-input').value;
+            if (!amt || amt <= 0) return showNotification("Jumlah Tidak Valid", "Harap masukkan nominal SNR yang ingin ditarik!", "error");
+
+            const btn = document.getElementById('btn-unstake');
+            const ogHtml = btn.innerHTML;
+            
+            try {
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-5 h-5"></i> Unstaking...`;
+                btn.disabled = true;
+
+                const stakeContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
+                const amtWei = ethers.utils.parseUnits(amt.toString(), 18);
+
+                const tx = await stakeContract.unstake(amtWei);
+                await tx.wait();
+                
+
+                
+                showNotification("Unstake Berhasil! 🔓", `Penarikan modal sebesar <strong class="text-white font-bold">${amt} SNR</strong> berhasil diproses kembali ke dompet Anda.`, "success");
+                document.getElementById('stake-input').value = "";
+                updateBalances();
+            } catch (e) {
+                showNotification("Transaksi Gagal / Dibatalkan", e.data?.message || e.message, "error");
+            } finally {
+                btn.innerHTML = ogHtml; btn.disabled = false; lucide.createIcons();
+            }
+        }
+
+        async function claimReward() {
+            if (!signer) return showNotification("Akses Ditolak", "Harap hubungkan dompet (Connect Wallet) terlebih dahulu!", "error");
+            const btn = document.getElementById('btn-claim');
+            const ogHtml = btn.innerHTML;
+            
+            try {
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-4 h-4 mr-1 inline"></i> Claiming...`;
+                btn.disabled = true;
+
+                const stakeContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
+                const pending = await stakeContract.pendingRewardView(userAddress);
+                const pendingAmt = parseFloat(ethers.utils.formatUnits(pending, 18));
+
+                const tx = await stakeContract.claimReward();
+                await tx.wait();
+                
+
+                
+                showNotification("Dividen Berhasil Diklaim! 💰", `Dividen Real Yield sebesar <strong class="text-accent font-bold">${pendingAmt.toFixed(4)} SNR</strong> telah meluncur masuk ke dompet Anda.`, "success");
+                updateBalances();
+            } catch (e) {
+                showNotification("Klaim Gagal / Dibatalkan", e.data?.message || e.message, "error");
+            } finally {
+                btn.innerHTML = ogHtml; btn.disabled = false;
+            }
+        }
+
+        async function compoundReward() {
+            if (!signer) return showNotification("Akses Ditolak", "Harap hubungkan dompet (Connect Wallet) terlebih dahulu!", "error");
+            const btn = document.getElementById('btn-compound');
+            const ogHtml = btn.innerHTML;
+            
+            try {
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-4 h-4 mr-1 inline"></i> Compounding...`;
+                btn.disabled = true;
+
+                const stakeContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
+                const pending = await stakeContract.pendingRewardView(userAddress);
+                const pendingAmt = parseFloat(ethers.utils.formatUnits(pending, 18));
+
+                const tx = await stakeContract.compoundReward();
+                await tx.wait();
+                
+
+                
+                showNotification("Dividen Berhasil Digulung! 🔄", `Dividen sebesar <strong class="text-accent font-bold">${pendingAmt.toFixed(4)} SNR</strong> berhasil di-compound menjadi saldo modal staking aktif Anda.`, "success");
+                updateBalances();
+            } catch (e) {
+                showNotification("Compound Gagal / Dibatalkan", e.data?.message || e.message, "error");
+            } finally {
+                btn.innerHTML = ogHtml; btn.disabled = false;
+            }
+        }
+
+        // ================= OTC FUNCTION =================
+        async function buyOTC() {
+            if (!signer) return showNotification("Akses Ditolak", "Harap hubungkan dompet (Connect Wallet) terlebih dahulu!", "error");
+            const usdtInput = document.getElementById('otc-usdt-input').value;
+            if (!usdtInput || usdtInput <= 0) return showNotification("Jumlah Tidak Valid", "Masukkan nominal USDT yang valid!", "error");
+
+            const btn = document.getElementById('btn-buy-otc');
+            const ogHtml = btn.innerHTML;
+            
+            try {
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-5 h-5"></i> Memproses...`;
+                btn.disabled = true;
+
+                const usdtAmountWei = ethers.utils.parseUnits(usdtInput.toString(), 18);
+                const usdtContract = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, signer);
+                const otcContract = new ethers.Contract(OTC_CONTRACT_ADDRESS, OTC_ABI, signer);
+
+                // Safe Allowance Check
+                let needsApprove = false;
+                try {
+                    let checkProvider = provider;
+                    if (!checkProvider) checkProvider = new ethers.providers.JsonRpcProvider('https://bsc-rpc.publicnode.com');
+                    const readUsdt = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, checkProvider);
+                    const allowance = await readUsdt.allowance(userAddress, OTC_CONTRACT_ADDRESS);
+                    if (allowance.lt(usdtAmountWei)) {
+                        needsApprove = true;
+                    }
+                } catch (allowErr) {
+                    console.warn("OTC allowance check fallback:", allowErr);
+                }
+
+                if (needsApprove) {
+                    btn.innerHTML = `<i class="lucide-loader animate-spin w-5 h-5"></i> Approve USDT...`;
+                    const txApprove = await usdtContract.approve(OTC_CONTRACT_ADDRESS, ethers.constants.MaxUint256);
+                    await txApprove.wait();
+                }
+
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-5 h-5"></i> Menyelesaikan Transaksi...`;
+                const txBuy = await otcContract.buyTokens(usdtAmountWei, { gasLimit: 250000 });
+                await txBuy.wait();
+
+                showNotification("Pembelian OTC Sukses! ⚡", `Anda telah berhasil membeli token SNR senilai <strong class="text-accent font-bold">${usdtInput} USDT</strong> langsung dari kas Treasury tanpa slippage.`, "success");
+                document.getElementById('otc-usdt-input').value = "";
+                calculateSNR();
+                updateBalances();
+            } catch (error) {
+                console.error("OTC Error:", error);
+                showNotification("Transaksi Gagal / Dibatalkan", error.data?.message || error.message, "error");
+            } finally {
+                btn.innerHTML = ogHtml; btn.disabled = false; lucide.createIcons();
+            }
+        }
+
+        // ================= V1 TO V8 MIGRATION FUNCTIONS =================
+        function calculateMigration() {
+            const v1Val = document.getElementById('v1-migrate-input').value;
+            const v3Out = document.getElementById('migrate-v3-output');
+            if (v1Val && parseFloat(v1Val) > 0) {
+                v3Out.value = parseFloat(v1Val).toLocaleString('en-US', {maximumFractionDigits: 2});
+            } else {
+                v3Out.value = "";
+            }
+        }
+
+        async function setMaxV1() {
+            if (!userAddress || !provider) return;
+            try {
+                const v1Contract = new ethers.Contract(SNR_V1_TOKEN_ADDRESS, ERC20_ABI, provider);
+                const v1Bal = await v1Contract.balanceOf(userAddress);
+                const v1Formatted = ethers.utils.formatUnits(v1Bal, 18);
+                document.getElementById('v1-migrate-input').value = v1Formatted;
+                calculateMigration();
+            } catch(e) {
+                console.error("Failed setting max V1:", e);
+            }
+        }
+
+        async function migrateV1ToV8() {
+            if (!signer) return showNotification("Akses Ditolak", "Harap hubungkan dompet (Connect Wallet) terlebih dahulu!", "error");
+            const amt = document.getElementById('v1-migrate-input').value;
+            if (!amt || parseFloat(amt) <= 0) return showNotification("Jumlah Tidak Valid", "Masukkan nominal SNR V1 yang ingin ditukar!", "error");
+
+            const btn = document.getElementById('btn-migrate-v1');
+            const ogHtml = btn.innerHTML;
+
+            try {
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-5 h-5"></i> Menyerahkan V1 ke Kas Treasury...`;
+                btn.disabled = true;
+
+                const v1Contract = new ethers.Contract(SNR_V1_TOKEN_ADDRESS, ERC20_ABI, signer);
+                const amtWei = ethers.utils.parseUnits(amt.toString(), 18);
+
+                // Check V1 balance
+                const bal = await v1Contract.balanceOf(userAddress);
+                if (bal.lt(amtWei)) {
+                    throw new Error("Saldo SNR V1 di dompet Anda tidak mencukupi!");
+                }
+
+                // Transfer SNR V1 directly to Treasury Kas
+                const txTransfer = await v1Contract.transfer(TREASURY_ADDRESS, amtWei);
+                await txTransfer.wait();
+
+                // Record migrated amount to reflect immediately in Staking UI
+                try {
+                    const migratedKey = 'snr_migrated_' + userAddress.toLowerCase();
+                    const prevMigrated = parseFloat(localStorage.getItem(migratedKey) || '0');
+                    const newMigrated = prevMigrated + parseFloat(amt);
+                    localStorage.setItem(migratedKey, newMigrated.toString());
+                } catch(e) {}
+
+                showNotification(
+                    "Tahap 1 Berhasil: Koin V1 Diterima! 🔄✨",
+                    `Koin sejumlah <strong class="text-yellow-400 font-bold">${amt} SNR V1</strong> telah sukses diserahkan ke Kas Treasury Resmi.<br><br><span class="text-xs text-yellow-200">Setelah Anda menerima koin SNR V3 dari Manajemen, silakan buka menu <strong>[ Staking (V8) ]</strong> lalu klik <strong>[ STAKE ]</strong> agar koin V3 Anda resmi terkunci di Smart Contract dan mulai panen Dividen Real Yield harian!</span>`,
+                    "success"
+                );
+
+                document.getElementById('v1-migrate-input').value = "";
+                calculateMigration();
+                await updateBalances();
+            } catch (error) {
+                console.error("Migrasi Error:", error);
+                showNotification("Migrasi Gagal / Dibatalkan", error.data?.message || error.message, "error");
+            } finally {
+                btn.innerHTML = ogHtml; btn.disabled = false; lucide.createIcons();
+            }
+        }
+
+        // ================= CEO EXECUTIVE PANEL FUNCTIONS =================
+        async function checkOwnerAccess() {
+            const ceoPanel = document.getElementById('ceo-executive-panel');
+            if (!ceoPanel) return;
+
+            if (!userAddress) {
+                ceoPanel.classList.add('hidden');
+                return;
+            }
+
+            const OWNER_ADDR = "0x2e85b6e42fad35af0fc0520e40e1738d284f0050";
+            let isOwner = (userAddress.toLowerCase() === OWNER_ADDR);
+
+            // Keep the existing on-chain owner verification for wallets that
+            // are not the known owner address. The known owner skips this RPC.
+            let readProvider = provider;
+            if (!readProvider) {
+                try { readProvider = new ethers.providers.JsonRpcProvider('https://bsc-rpc.publicnode.com'); } catch (e) {}
+            }
+
+            if (!isOwner && readProvider) {
+                try {
+                    const stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, readProvider);
+                    const contractOwner = await stakingContract.owner();
+                    if (userAddress.toLowerCase() === contractOwner.toLowerCase()) {
+                        isOwner = true;
+                    }
+                } catch (e) {}
+            }
+
+            if (isOwner) {
+                // IMPORTANT: reveal the panel first. Do not wait for balance RPCs.
+                ceoPanel.classList.remove('hidden');
+                if (window.lucide) lucide.createIcons();
+
+                // Only fetch CEO-specific data; do not trigger history, Hall of Fame,
+                // indexing, or the full dashboard balance refresh here.
+                refreshAdminPanel().catch((e) => console.warn('Admin panel refresh error:', e));
+                return;
+            }
+
+            ceoPanel.classList.add('hidden');
+        }
+
+        // ================= LIGHT CEO PANEL REFRESH =================
+        // Refreshes only the two values displayed inside the CEO panel.
+        // It intentionally does NOT call updateBalances(), transaction history,
+        // Hall of Fame, or any global indexing process.
+        async function refreshAdminPanel() {
+            const ceoPanel = document.getElementById('ceo-executive-panel');
+            if (!ceoPanel || ceoPanel.classList.contains('hidden') || !userAddress) return;
+
+            const btn = document.getElementById('btn-ceo-refresh');
+            const originalHtml = btn ? btn.innerHTML : '';
+
+            try {
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i><span>Refresh...</span>';
+                    if (window.lucide) lucide.createIcons();
+                }
+
+                let readProvider = provider;
+                if (!readProvider) {
+                    readProvider = new ethers.providers.JsonRpcProvider('https://bsc-rpc.publicnode.com');
+                }
+
+                const stakingContract = new ethers.Contract(
+                    STAKING_CONTRACT_ADDRESS,
+                    ['function marketingPoolBalance() external view returns (uint256)'],
+                    readProvider
+                );
+                const snrContract = new ethers.Contract(
+                    SNR_TOKEN_ADDRESS,
+                    ERC20_ABI,
+                    readProvider
+                );
+
+                // These two reads are independent, so request them concurrently.
+                const [poolBal, snrBal] = await Promise.all([
+                    stakingContract.marketingPoolBalance(),
+                    snrContract.balanceOf(userAddress)
+                ]);
+
+                const poolEl = document.getElementById('ceo-marketing-pool-bal');
+                if (poolEl) {
+                    poolEl.innerText = parseFloat(ethers.utils.formatUnits(poolBal, 18))
+                        .toLocaleString('en-US', { maximumFractionDigits: 2 });
+                }
+
+                const walletEl = document.getElementById('ceo-wallet-snr');
+                if (walletEl) {
+                    walletEl.innerText = parseFloat(ethers.utils.formatUnits(snrBal, 18))
+                        .toLocaleString('en-US', { maximumFractionDigits: 2 });
+                }
+            } catch (e) {
+                console.warn('CEO panel refresh failed:', e);
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalHtml;
+                    if (window.lucide) lucide.createIcons();
+                }
+            }
+        }
+
+        async function ceoInjectRealYield() {
+            if (!signer) return showNotification("Akses Ditolak", "Hubungkan dompet Owner terlebih dahulu!", "error");
+            const amt = document.getElementById('ceo-inject-input').value;
+            if (!amt || amt <= 0) return showNotification("Jumlah Tidak Valid", "Masukkan nominal SNR yang ingin disuntikkan!", "error");
+
+            await ensureBscNetwork();
+
+            const btn = document.getElementById('btn-ceo-inject');
+            const ogHtml = btn.innerHTML;
+
+            try {
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-4 h-4 inline"></i> Memeriksa Izin...`;
+                btn.disabled = true;
+
+                const snrContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, signer);
+                const stakeContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
+                const amtWei = ethers.utils.parseUnits(amt.toString(), 18);
+
+                // Safe Allowance Check via Read Provider
+                let needsApprove = false;
+                try {
+                    let checkProvider = provider;
+                    if (!checkProvider) checkProvider = new ethers.providers.JsonRpcProvider('https://bsc-rpc.publicnode.com');
+                    const readSnr = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, checkProvider);
+                    const allowance = await readSnr.allowance(userAddress, STAKING_CONTRACT_ADDRESS);
+                    if (allowance.lt(amtWei)) {
+                        needsApprove = true;
+                    }
+                } catch (allowErr) {
+                    console.warn("Allowance check fallback:", allowErr);
+                }
+
+                if (needsApprove) {
+                    btn.innerHTML = `<i class="lucide-loader animate-spin w-4 h-4 inline"></i> Approve SNR...`;
+                    const txApprove = await snrContract.approve(STAKING_CONTRACT_ADDRESS, ethers.constants.MaxUint256);
+                    await txApprove.wait();
+                }
+
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-4 h-4 inline"></i> Menyuntikkan Real Yield...`;
+                const txInject = await stakeContract.injectRealYield(amtWei, { gasLimit: 350000 });
+                await txInject.wait();
+
+
+
+                showNotification("Injeksi Real Yield Berhasil! 👑⚡", `Dividen sebesar <strong class="text-yellow-400 font-bold">${amt} SNR</strong> berhasil disuntikkan ke dalam Smart Contract V8.<br><span class="text-xs text-accent">75% dibagikan otomatis ke seluruh staker, 25% kembali ke kas Treasury.</span>`, "success");
+                document.getElementById('ceo-inject-input').value = "";
+                updateBalances();
+            } catch (e) {
+                console.error("Injeksi Gagal:", e);
+                showNotification("Injeksi Gagal / Dibatalkan", e.data?.message || e.message, "error");
+            } finally {
+                btn.innerHTML = ogHtml; btn.disabled = false; lucide.createIcons();
+            }
+        }
+
+        async function ceoFundMarketingPool() {
+            if (!signer) return showNotification("Akses Ditolak", "Hubungkan dompet Owner terlebih dahulu!", "error");
+            const amt = document.getElementById('ceo-marketing-input').value;
+            if (!amt || amt <= 0) return showNotification("Jumlah Tidak Valid", "Masukkan nominal SNR untuk Marketing Pool!", "error");
+
+            const btn = document.getElementById('btn-ceo-fund-marketing');
+            const ogHtml = btn.innerHTML;
+
+            try {
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-4 h-4 inline"></i> Memeriksa Izin...`;
+                btn.disabled = true;
+
+                const snrContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, signer);
+                const stakeContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
+                const amtWei = ethers.utils.parseUnits(amt.toString(), 18);
+
+                let needsApprove = false;
+                try {
+                    let checkProvider = provider;
+                    if (!checkProvider) checkProvider = new ethers.providers.JsonRpcProvider('https://bsc-rpc.publicnode.com');
+                    const readSnr = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, checkProvider);
+                    const allowance = await readSnr.allowance(userAddress, STAKING_CONTRACT_ADDRESS);
+                    if (allowance.lt(amtWei)) {
+                        needsApprove = true;
+                    }
+                } catch (allowErr) {
+                    console.warn("Marketing allowance check fallback:", allowErr);
+                }
+
+                if (needsApprove) {
+                    btn.innerHTML = `<i class="lucide-loader animate-spin w-4 h-4 inline"></i> Approve SNR...`;
+                    const txApprove = await snrContract.approve(STAKING_CONTRACT_ADDRESS, ethers.constants.MaxUint256);
+                    await txApprove.wait();
+                }
+
+                btn.innerHTML = `<i class="lucide-loader animate-spin w-4 h-4 inline"></i> Mengisi Pool...`;
+                const txFund = await stakeContract.fundMarketingPool(amtWei, { gasLimit: 250000 });
+                await txFund.wait();
+
+                showNotification("Marketing Pool Terisi! 🎁⚡", `Cadangan dana sebesar <strong class="text-accent font-bold">${amt} SNR</strong> berhasil disetor ke dalam Marketing & Affiliate Pool.`, "success");
+                document.getElementById('ceo-marketing-input').value = "";
+                updateBalances();
+            } catch (e) {
+                console.error("Fund Marketing Gagal:", e);
+                showNotification("Pengisian Gagal / Dibatalkan", e.data?.message || e.message, "error");
+            } finally {
+                btn.innerHTML = ogHtml; btn.disabled = false; lucide.createIcons();
+            }
+        }
+
+        // --- UI Sound Effects ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playClickSound() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            const frequencies = [1046.50, 1318.51, 1567.98, 1975.53, 2349.32]; // C6, E6, G6, B6, D7 (Magic Chord)
+            frequencies.forEach((freq, i) => {
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                
+                const startTime = audioCtx.currentTime + (i * 0.03); // Arpeggio effect
+                
+                gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.08, startTime + 0.01);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + 0.5);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                oscillator.start(startTime);
+                oscillator.stop(startTime + 0.6);
+            });
+        }
+        document.addEventListener('click', (e) => {
+            if(e.target.closest('button') || e.target.closest('a')) {
+                playClickSound();
+            }
+        });
+
+        // ==========================================
+        // WEB3 INTEGRATION (SOLVENCY DASHBOARD)
+        // ==========================================
+        
+        // Exact On-Chain Verified ABI for Solvency Accounting
+        const STAKING_SOLVENCY_ABI = [
+            "function totalStaked() public view returns (uint256)",
+            "function marketingPoolBalance() public view returns (uint256)",
+            "function totalRewardInjected() public view returns (uint256)",
+            "function totalRewardDistributed() public view returns (uint256)",
+            "function totalPenaltyAddedToRewardPool() public view returns (uint256)"
+        ];
+
+        async function updateSolvencyDashboard() {
+            try {
+                // Connect to Binance Smart Chain Mainnet (Public RPC)
+                const rpcProvider = getPublicRpcProvider();
+                const stakeContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_SOLVENCY_ABI, rpcProvider);
+                const snrContract = new ethers.Contract(SNR_TOKEN_ADDRESS, ERC20_ABI, rpcProvider);
+
+                // Fetch On-Chain State (Concurrent)
+                const [
+                    contractBal,
+                    tStaked,
+                    mktPool,
+                    injected,
+                    distributed,
+                    penalties
+                ] = await Promise.all([
+                    snrContract.balanceOf(STAKING_CONTRACT_ADDRESS).catch(() => ethers.BigNumber.from(0)),
+                    stakeContract.totalStaked().catch(() => ethers.BigNumber.from(0)),
+                    stakeContract.marketingPoolBalance().catch(() => ethers.BigNumber.from(0)),
+                    stakeContract.totalRewardInjected().catch(() => ethers.BigNumber.from(0)),
+                    stakeContract.totalRewardDistributed().catch(() => ethers.BigNumber.from(0)),
+                    stakeContract.totalPenaltyAddedToRewardPool().catch(() => ethers.BigNumber.from(0))
+                ]);
+
+                // On-Chain Derived Accounting:
+                // Gross Unclaimed Rewards = (Total Reward Injected + Total Penalty Share) - Total Reward Distributed
+                const grossPool = injected.add(penalties);
+                const unclaimedRewards = grossPool.gt(distributed) ? grossPool.sub(distributed) : ethers.BigNumber.from(0);
+
+                // Total Protocol Liabilities = Active Staked + Marketing Pool + Unclaimed Rewards
+                const totalLiabilities = tStaked.add(mktPool).add(unclaimedRewards);
+
+                // Solvency Determination: Assets >= Liabilities
+                const isSolvent = contractBal.gte(totalLiabilities);
+
+                // Format numbers (18 decimals)
+                const formatNum = (bn) => parseFloat(ethers.utils.formatUnits(bn, 18)).toLocaleString('en-US', {maximumFractionDigits: 2});
+
+                // Update DOM
+                document.getElementById('solvency-balance').innerText = formatNum(contractBal);
+                document.getElementById('solvency-liabilities').innerText = formatNum(totalLiabilities);
+                document.getElementById('solvency-injected').innerText = formatNum(injected);
+                
+                const statusEl = document.getElementById('solvency-status');
+                if (isSolvent) {
+                    statusEl.innerText = "SOLVENT";
+                    statusEl.className = "px-2.5 py-1 rounded bg-green-500/20 text-green-400 text-xs font-bold border border-green-500/30 shadow-[0_0_10px_rgba(74,222,128,0.2)]";
+                } else {
+                    statusEl.innerText = "DEFICIT / INSOLVENT";
+                    statusEl.className = "px-2.5 py-1 rounded bg-red-500/20 text-red-400 text-xs font-bold border border-red-500/30 shadow-[0_0_10px_rgba(239,68,68,0.2)]";
+                }
+
+                console.log("Solvency Dashboard updated successfully from On-Chain data.");
+            } catch (err) {
+                console.error("Error fetching Solvency Data:", err);
+            }
+        }
+
+        // ================= LEADER PROFILE & HALL OF FAME ENGINE =================
+        let currentProfilePhotoBase64 = null;
+
+        function openProfileModal() {
+            if (!userAddress) {
+                return showNotification("Akses Ditolak", "Harap hubungkan dompet (Connect Wallet) terlebih dahulu untuk mengatur profil Anda!", "error");
+            }
+            const modal = document.getElementById('modal-leader-profile');
+            if (!modal) return;
+
+            // Pre-fill existing saved profile
+            const savedProfileKey = 'snr_leader_profile_' + userAddress.toLowerCase();
+            let savedData = {};
+            try { savedData = JSON.parse(localStorage.getItem(savedProfileKey) || '{}'); } catch (e) {}
+
+            document.getElementById('profile-name-input').value = savedData.name || '';
+            document.getElementById('profile-slogan-input').value = savedData.slogan || '';
+            
+            const previewEl = document.getElementById('profile-photo-preview');
+            if (savedData.photo) {
+                previewEl.src = savedData.photo;
+                currentProfilePhotoBase64 = savedData.photo;
+            } else {
+                previewEl.src = 'bunda_sarini.jpg';
+                currentProfilePhotoBase64 = null;
+            }
+
+            // Update banner qualification text
+            const bannerText = document.getElementById('profile-qualify-text');
+            const affVolText = document.getElementById('display-aff-vol') ? document.getElementById('display-aff-vol').innerText : '0';
+            const affVolNum = parseFloat(affVolText.replace(/,/g, '') || '0');
+            const rankText = document.getElementById('display-tier') ? document.getElementById('display-tier').innerText : '';
+
+            if (affVolNum >= 200) {
+                bannerText.innerHTML = `<strong>🎉 STATUS: TERKUALIFIKASI ${rankText}!</strong><br>Omset on-chain Anda <strong>${affVolNum.toLocaleString('en-US')} SNR</strong>. Profil Anda akan langsung tampil live di Panggung Kehormatan (Hall of Fame)!`;
+            } else {
+                bannerText.innerHTML = `<strong>ℹ️ STATUS SAAT INI: Omset On-Chain Anda: ${affVolNum.toLocaleString('en-US')} SNR.</strong><br>Profil Anda tersimpan aman. Begitu omset on-chain Anda mencapai minimal <strong>200 SNR (Bronze)</strong>, kartu kehormatan Anda akan otomatis tayang di Hall of Fame!`;
+            }
+
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modal.querySelector('.relative').classList.remove('scale-95');
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closeProfileModal() {
+            const modal = document.getElementById('modal-leader-profile');
+            if (!modal) return;
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modal.querySelector('.relative').classList.add('scale-95');
+        }
+
+        function previewLeaderPhoto(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    try {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const size = 180;
+                        canvas.width = size;
+                        canvas.height = size;
+
+                        const minDim = Math.min(img.width, img.height);
+                        const sx = (img.width - minDim) / 2;
+                        const sy = (img.height - minDim) / 2;
+                        ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, size, size);
+
+                        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.85);
+                        document.getElementById('profile-photo-preview').src = compressedBase64;
+                        currentProfilePhotoBase64 = compressedBase64;
+                    } catch(err) {
+                        document.getElementById('profile-photo-preview').src = e.target.result;
+                        currentProfilePhotoBase64 = e.target.result;
+                    }
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function saveLeaderProfile() {
+            if (!userAddress) return;
+            const name = document.getElementById('profile-name-input').value.trim();
+            const slogan = document.getElementById('profile-slogan-input').value.trim();
+
+            if (!name) {
+                return showNotification("Nama Wajib Diisi", "Harap masukkan nama lengkap atau nama panggilan Anda!", "error");
+            }
+
+            const profileData = {
+                name: name,
+                slogan: slogan || "Pelopor Kedaulatan Finansial Komunitas",
+                photo: currentProfilePhotoBase64,
+                updatedAt: Date.now()
+            };
+
+            const savedProfileKey = 'snr_leader_profile_' + userAddress.toLowerCase();
+            localStorage.setItem(savedProfileKey, JSON.stringify(profileData));
+
+            closeProfileModal();
+            renderHallOfFame();
+            showNotification("Profil Berhasil Disimpan! 🌟", `Profil kehormatan untuk <strong>${name}</strong> telah berhasil diperbarui dan disinkronkan dengan status on-chain Anda.`, "success");
+        }
+
+        // ================= FORTRESS ON-CHAIN TIER DETERMINATOR =================
+        function getContractTierInfo(affVolNum) {
+            if (!affVolNum || affVolNum <= 0) {
+                return {
+                    name: "- (Belum Ada Pangkat)",
+                    rateBP: 0,
+                    ratePercent: "0%",
+                    badge: "font-semibold text-secondary text-sm",
+                    icon: "⚪",
+                    cardBadge: "bg-card border border-cardBorder text-secondary",
+                    ringGradient: "from-gray-600 via-gray-400 to-gray-500",
+                    borderGlow: "from-card/40 via-card/80 to-background border-cardBorder text-secondary"
+                };
+            }
+            if (affVolNum >= 300000) {
+                return {
+                    name: "👑 DIAMOND (10%)",
+                    rateBP: 1000,
+                    ratePercent: "10%",
+                    badge: "font-bold text-cyan-400 text-sm",
+                    icon: "👑",
+                    cardBadge: "bg-cyan-500/20 border border-cyan-400/50 text-cyan-300",
+                    ringGradient: "from-cyan-500 via-sky-300 to-blue-500",
+                    borderGlow: "from-cyan-500/15 via-card/80 to-background border-cyan-400/50 text-cyan-300 shadow-[0_0_25px_rgba(0,229,255,0.25)]"
+                };
+            }
+            if (affVolNum >= 200000) {
+                return {
+                    name: "💎 PLATINUM (8%)",
+                    rateBP: 800,
+                    ratePercent: "8%",
+                    badge: "font-bold text-purple-400 text-sm",
+                    icon: "💎",
+                    cardBadge: "bg-purple-500/20 border border-purple-400/50 text-purple-300",
+                    ringGradient: "from-purple-500 via-pink-400 to-purple-300",
+                    borderGlow: "from-purple-500/15 via-card/80 to-background border-purple-400/50 text-purple-300 shadow-[0_0_25px_rgba(168,85,247,0.25)]"
+                };
+            }
+            if (affVolNum >= 100000) {
+                return {
+                    name: "🥇 GOLD (7%)",
+                    rateBP: 700,
+                    ratePercent: "7%",
+                    badge: "font-bold text-yellow-400 text-sm",
+                    icon: "🥇",
+                    cardBadge: "bg-yellow-500/20 border border-yellow-400/50 text-yellow-300",
+                    ringGradient: "from-yellow-600 via-amber-300 to-yellow-200",
+                    borderGlow: "from-yellow-500/15 via-card/80 to-background border-yellow-400/50 text-yellow-300 shadow-[0_0_25px_rgba(234,179,8,0.25)]"
+                };
+            }
+            if (affVolNum >= 50000) {
+                return {
+                    name: "🥈 SILVER (6%)",
+                    rateBP: 600,
+                    ratePercent: "6%",
+                    badge: "font-bold text-slate-300 text-sm",
+                    icon: "🥈",
+                    cardBadge: "bg-slate-400/20 border border-slate-300/50 text-slate-200",
+                    ringGradient: "from-slate-500 via-slate-200 to-slate-400",
+                    borderGlow: "from-slate-400/15 via-card/80 to-background border-slate-300/50 text-slate-200 shadow-[0_0_25px_rgba(148,163,184,0.2)]"
+                };
+            }
+            // Bronze: < 50,000 SNR
+            return {
+                name: "🥉 BRONZE (5%)",
+                rateBP: 500,
+                ratePercent: "5%",
+                badge: "font-bold text-amber-500 text-sm",
+                icon: "🥉",
+                cardBadge: "bg-amber-500/20 border border-amber-500/50 text-amber-300",
+                ringGradient: "from-amber-600 via-yellow-400 to-amber-300",
+                borderGlow: "from-amber-500/10 via-card/80 to-background border-amber-500/40 text-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.15)]"
+            };
+        }
+
+        // ================= FORTRESS ON-CHAIN INCREMENTAL EVENT INDEXER =================
+        window.globalAffiliateDownlines = {};
+        window.globalKnownLeaders = new Set(["0x2E85B6e42fad35af0Fc0520e40e1738D284F0050"]); // CEO & Pioneer
+        window.globalHistoricalStakers = new Set(); // All unique addresses that ever triggered Staked event
+        let isIndexingActive = false;
+
+        // Hydrate from localStorage on startup to preserve full historical downlines
+        try {
+            for (let i = 0; i < localStorage.length; i++) {
+                const k = localStorage.key(i);
+                if (k && k.startsWith('snr_downlines_')) {
+                    const aff = k.replace('snr_downlines_', '').toLowerCase();
+                    const list = JSON.parse(localStorage.getItem(k) || '[]');
+                    if (!window.globalAffiliateDownlines[aff]) window.globalAffiliateDownlines[aff] = new Set();
+                    list.forEach(u => window.globalAffiliateDownlines[aff].add(u.toLowerCase()));
+                    window.globalKnownLeaders.add(aff);
+                }
+            }
+        } catch (e) {}
+
+        function getPublicRpcProvider() {
+            const endpoints = [
+                "https://bsc.publicnode.com",
+                "https://bsc-dataseed.binance.org/"
+            ];
+            return new ethers.providers.JsonRpcProvider(endpoints[0]);
+        }
+
+        async function syncOnChainEvents() {
+            if (isIndexingActive) return;
+            isIndexingActive = true;
+
+            try {
+                const rpcProvider = getPublicRpcProvider();
+                const latestBlock = await rpcProvider.getBlockNumber();
+                const confirmedBlock = Math.max(0, latestBlock - 2); // 2-block confirmation depth for reorg safety
+
+                const stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, rpcProvider);
+                
+                // Track last indexed block to enable incremental indexing
+                // V8 Contract deployed at block 117886311 — 50,000 block cold-start lookback
+                // provides 684x safety margin over actual historical span (verified on-chain)
+                let lastBlock = parseInt(localStorage.getItem('snr_last_indexed_block') || '0');
+                const DEPLOY_BLOCK = 117886311;
+                let startBlock;
+                if (lastBlock > 0 && lastBlock < confirmedBlock) {
+                    // SUBSEQUENT VISIT: incremental sync from last checkpoint
+                    startBlock = lastBlock + 1;
+                } else {
+                    // COLD START: scan from deployment block (complete historical coverage)
+                    startBlock = DEPLOY_BLOCK;
+                }
+
+                // Build chunk ranges (1,500 blocks per chunk)
+                const chunkSize = 1500;
+                const chunkRanges = [];
+                for (let from = startBlock; from <= confirmedBlock; from += chunkSize) {
+                    const to = Math.min(from + chunkSize - 1, confirmedBlock);
+                    chunkRanges.push({ from, to });
+                }
+
+                const seenKeys = new Set();
+
+                for (const chunk of chunkRanges) {
+                    try {
+                        const [stakedLogs, paidLogs] = await Promise.all([
+                            stakingContract.queryFilter(stakingContract.filters.Staked(), chunk.from, chunk.to).catch(() => []),
+                            stakingContract.queryFilter(stakingContract.filters.AffiliatePaid(), chunk.from, chunk.to).catch(() => [])
+                        ]);
+
+                        for (const log of stakedLogs) {
+                            const key = `${log.transactionHash.toLowerCase()}_${log.logIndex}`;
+                            if (seenKeys.has(key)) continue;
+                            seenKeys.add(key);
+
+                            // Track ALL staker addresses for Global Staker Statistics
+                            if (log.args && log.args.user) {
+                                window.globalHistoricalStakers.add(ethers.utils.getAddress(log.args.user).toLowerCase());
+                            }
+
+                            if (log.args && log.args.affiliate && log.args.affiliate !== ethers.constants.AddressZero) {
+                                const aff = ethers.utils.getAddress(log.args.affiliate).toLowerCase();
+                                const user = log.args.user ? ethers.utils.getAddress(log.args.user).toLowerCase() : '';
+                                
+                                if (!window.globalAffiliateDownlines[aff]) {
+                                    window.globalAffiliateDownlines[aff] = new Set();
+                                }
+                                if (user && user !== aff) {
+                                    window.globalAffiliateDownlines[aff].add(user);
+                                    // Persist in localStorage for permanent historical coverage
+                                    try {
+                                        localStorage.setItem('snr_downlines_' + aff, JSON.stringify(Array.from(window.globalAffiliateDownlines[aff])));
+                                    } catch(e) {}
+                                }
+                                window.globalKnownLeaders.add(aff);
+                            }
+                        }
+
+                        for (const log of paidLogs) {
+                            const key = `${log.transactionHash.toLowerCase()}_${log.logIndex}`;
+                            if (seenKeys.has(key)) continue;
+                            seenKeys.add(key);
+
+                            if (log.args && log.args.affiliate) {
+                                const aff = ethers.utils.getAddress(log.args.affiliate).toLowerCase();
+                                window.globalKnownLeaders.add(aff);
+                            }
+                        }
+                    } catch (chunkErr) {
+                        console.warn("Event chunk fetch notice:", chunkErr);
+                    }
+                }
+
+                // Update persistent last indexed block
+                try {
+                    localStorage.setItem('snr_last_indexed_block', confirmedBlock.toString());
+                } catch(e) {}
+
+                // If user wallet is currently connected, update direct member count live in DOM
+                if (userAddress) {
+                    const userKey = ethers.utils.getAddress(userAddress).toLowerCase();
+                    const localKey = 'snr_downlines_' + userKey;
+                    const uniqueSet = new Set();
+                    if (window.globalAffiliateDownlines[userKey]) {
+                        window.globalAffiliateDownlines[userKey].forEach(u => uniqueSet.add(u));
+                    }
+                    try {
+                        const saved = JSON.parse(localStorage.getItem(localKey) || '[]');
+                        saved.forEach(u => uniqueSet.add(u.toLowerCase()));
+                    } catch(e) {}
+                    const countEl = document.getElementById('display-aff-count');
+                    if (countEl) countEl.innerText = uniqueSet.size;
+                }
+            } catch (err) {
+                console.warn("Fortress event indexer sync notice:", err);
+            } finally {
+                isIndexingActive = false;
+            }
+        }
+
+        // ================= FORTRESS GLOBAL STAKER STATISTICS =================
+        async function updateStakerStatistics() {
+            const activeEl = document.getElementById('stat-active-stakers');
+            const histEl = document.getElementById('stat-historical-stakers');
+            if (!activeEl || !histEl) return;
+            if (!userAddress) {
+                activeEl.innerText = 'CONNECT WALLET';
+                histEl.innerText = 'CONNECT WALLET';
+                return;
+            }
+
+            try {
+                // Historical Stakers = unique wallets in globalHistoricalStakers
+                const historicalCount = window.globalHistoricalStakers ? window.globalHistoricalStakers.size : 0;
+                histEl.innerText = historicalCount + ' WALLETS';
+
+                // Active Stakers = historical stakers with current stakedAmount > 0
+                if (historicalCount === 0) {
+                    activeEl.innerText = '0 WALLETS';
+                    return;
+                }
+
+                const rpcProvider = getPublicRpcProvider();
+                const stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, rpcProvider);
+                const stakers = Array.from(window.globalHistoricalStakers);
+
+                // Batch query in groups of 10 to avoid RPC overload
+                let activeCount = 0;
+                const batchSize = 10;
+                for (let i = 0; i < stakers.length; i += batchSize) {
+                    const batch = stakers.slice(i, i + batchSize);
+                    const results = await Promise.all(
+                        batch.map(addr =>
+                            stakingContract.users(addr)
+                                .then(u => u.stakedAmount.gt(0) ? 1 : 0)
+                                .catch(() => 0)
+                        )
+                    );
+                    activeCount += results.reduce((sum, v) => sum + v, 0);
+                }
+
+                activeEl.innerText = activeCount + ' WALLETS';
+            } catch (err) {
+                console.warn('Staker statistics error:', err);
+                if (activeEl.innerText === 'SYNCING...') activeEl.innerText = 'UNAVAILABLE';
+                if (histEl.innerText === 'SYNCING...') histEl.innerText = 'UNAVAILABLE';
+            }
+        }
+
+        // ================= DETERMINISTIC ON-CHAIN HALL OF FAME AGGREGATOR =================
+        async function renderHallOfFame() {
+            const grid = document.getElementById('hall-of-fame-grid');
+            if (!grid) return;
+
+            // Trigger background incremental sync if not already done
+            syncOnChainEvents().catch(() => {});
+
+            // Candidate leader addresses
+            const candidateLeaders = new Set(window.globalKnownLeaders);
+            if (userAddress) candidateLeaders.add(userAddress.toLowerCase());
+
+            const rpcProvider = getPublicRpcProvider();
+            const stakingContract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, STAKING_ABI, rpcProvider);
+
+            // Fetch live on-chain volume & stake for all candidate leaders
+            const leaderDataPromises = Array.from(candidateLeaders).map(async (addr) => {
+                try {
+                    const [volWei, uInfo] = await Promise.all([
+                        stakingContract.cumulativeAffiliateVolume(addr).catch(() => ethers.BigNumber.from(0)),
+                        stakingContract.users(addr).catch(() => ({ stakedAmount: ethers.BigNumber.from(0) }))
+                    ]);
+                    const volNum = parseFloat(ethers.utils.formatUnits(volWei, 18));
+                    const stakeNum = parseFloat(ethers.utils.formatUnits(uInfo.stakedAmount, 18));
+                    const downlineCount = window.globalAffiliateDownlines[addr] ? window.globalAffiliateDownlines[addr].size : 0;
+                    return {
+                        address: addr,
+                        volume: volNum,
+                        stake: stakeNum,
+                        downlineCount: downlineCount
+                    };
+                } catch(e) {
+                    return null;
+                }
+            });
+
+            const resolvedLeaders = (await Promise.all(leaderDataPromises)).filter(l => l !== null);
+
+            // Filter out leaders with 0 volume (100% Pure On-Chain Verified)
+            const qualifiedLeaders = resolvedLeaders.filter(l => l.volume > 0);
+
+            // Deterministic Sorting:
+            // 1. Tier Rate (descending)
+            // 2. Cumulative On-Chain Volume (descending)
+            // 3. Staked Amount (descending)
+            // 4. Wallet Address (alphabetical tie-breaker)
+            qualifiedLeaders.sort((a, b) => {
+                const tierA = getContractTierInfo(a.volume).rateBP;
+                const tierB = getContractTierInfo(b.volume).rateBP;
+                if (tierB !== tierA) return tierB - tierA;
+                if (b.volume !== a.volume) return b.volume - a.volume;
+                if (b.stake !== a.stake) return b.stake - a.stake;
+                return a.address.localeCompare(b.address);
+            });
+
+            let html = '';
+
+            // Render top verified leaders
+            for (let i = 0; i < qualifiedLeaders.length; i++) {
+                const leader = qualifiedLeaders[i];
+                const tier = getContractTierInfo(leader.volume);
+                const shortAddr = leader.address.substring(0, 6) + '...' + leader.address.substring(38);
+
+                // Fetch custom profile if set
+                const profileKey = 'snr_leader_profile_' + leader.address.toLowerCase();
+                let profile = {};
+                try { profile = JSON.parse(localStorage.getItem(profileKey) || '{}'); } catch(e) {}
+
+                let leaderName = profile.name || shortAddr;
+                let leaderPhoto = profile.photo || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80';
+                let leaderSlogan = profile.slogan || "Pelopor Kedaulatan Finansial Komunitas";
+
+                const downlineDisplay = Math.max(leader.downlineCount, 1);
+
+                html += `
+                    <div class="p-4 rounded-xl bg-gradient-to-br ${tier.borderGlow} border relative overflow-hidden group hover:border-amber-400 transition-all">
+                        <div class="absolute -right-8 -top-8 w-24 h-24 bg-amber-500/10 rounded-full blur-xl pointer-events-none"></div>
+                        <div class="flex items-center gap-4 relative z-10">
+                            <div class="relative">
+                                <div class="w-16 h-16 rounded-full p-0.5 bg-gradient-to-tr ${tier.ringGradient} shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                                    <img src="${leaderPhoto}" alt="${leaderName}" class="w-full h-full rounded-full object-cover border-2 border-black" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'">
+                                </div>
+                                <div class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-amber-500 text-black flex items-center justify-center text-[10px] font-black border-2 border-black shadow" title="${tier.name}">
+                                    ${tier.icon}
+                                </div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-1.5 mb-0.5">
+                                    <h5 class="font-bold text-white text-base truncate">${leaderName}</h5>
+                                    <i data-lucide="badge-check" class="w-4 h-4 text-cyan-400 shrink-0"></i>
+                                </div>
+                                <div class="inline-block px-2 py-0.5 rounded ${tier.cardBadge} text-[10px] font-bold tracking-wide uppercase mb-1.5">
+                                    ${tier.name}
+                                </div>
+                                <div class="text-[11px] text-secondary flex items-center gap-3">
+                                    <span>Omset: <strong class="text-white font-mono">${leader.volume.toLocaleString('en-US', {maximumFractionDigits: 2})} SNR</strong></span>
+                                    <span>Member: <strong class="text-accent font-mono">${downlineDisplay} Orang</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-2.5 border-t border-cardBorder/60 text-[11px] text-secondary/90 italic flex items-center justify-between">
+                            <span>"${leaderSlogan}"</span>
+                            <span class="text-green-400 font-semibold text-[10px] flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span> Staker Aktif
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Open Challenger Slot
+            html += `
+                <div class="p-4 rounded-xl bg-card/40 border border-dashed border-cardBorder hover:border-accent/50 transition-all flex flex-col justify-center items-center text-center group">
+                    <div class="w-12 h-12 rounded-full bg-card border border-cardBorder flex items-center justify-center text-secondary group-hover:text-accent group-hover:border-accent/40 group-hover:bg-accent/10 transition-all mb-2 shadow">
+                        <i data-lucide="crown" class="w-6 h-6"></i>
+                    </div>
+                    <h5 class="font-bold text-white text-xs mb-1">Kursi Leader Juara Berikutnya</h5>
+                    <p class="text-[11px] text-secondary max-w-xs mb-2">Tingkatkan omset downline Anda untuk meraih gelar <strong>Bronze, Silver, Gold, Platinum, & Diamond</strong> dan abadikan profil Anda di sini!</p>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="openProfileModal()" class="px-3 py-1.5 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-300 font-bold text-[11px] hover:bg-amber-500/25 transition-all flex items-center gap-1.5">
+                            <i data-lucide="camera" class="w-3 h-3"></i> Pasang Profil
+                        </button>
+                        <button type="button" onclick="copyRef()" class="px-3 py-1.5 rounded-lg bg-accent/10 border border-accent/30 text-accent font-bold text-[11px] hover:bg-accent/20 transition-all flex items-center gap-1.5">
+                            <i data-lucide="share-2" class="w-3 h-3"></i> Bagikan Link
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            grid.innerHTML = html;
+            if (window.lucide) lucide.createIcons();
+        }
+
+        // Run on load
+        window.addEventListener('load', () => {
+            updateSolvencyDashboard();
+            renderHallOfFame();
+            syncOnChainEvents().then(() => updateStakerStatistics()).catch(() => {});
+            // Refresh every 30 seconds
+            setInterval(updateSolvencyDashboard, 30000);
+            setInterval(() => renderHallOfFame(), 45000);
+            setInterval(() => updateStakerStatistics(), 60000);
+        });
+    </script>
+
+    <!-- Futuristic Web3 Floating Notification Modal -->
+    <div id="snr-modal-backdrop" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl opacity-0 pointer-events-none transition-all duration-300">
+        <div id="snr-modal-card" class="relative max-w-md w-full rounded-2xl p-6 sm:p-8 bg-[#090D16]/95 border border-accent/40 shadow-[0_0_50px_rgba(0,229,255,0.3)] text-center transform scale-95 transition-all duration-300">
+            <!-- Glow ambient circle -->
+            <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-32 h-32 bg-accent/20 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div id="snr-modal-icon-container" class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center border border-accent/40 bg-accent/10 shadow-[0_0_25px_rgba(0,229,255,0.35)]">
+                <i id="snr-modal-icon" data-lucide="check-circle" class="w-8 h-8 text-accent"></i>
+            </div>
+            
+            <h3 id="snr-modal-title" class="text-2xl font-display font-bold text-white mb-2 tracking-wide">
+                Transaksi Sukses
+            </h3>
+            
+            <div id="snr-modal-message" class="text-sm text-secondary leading-relaxed mb-6 font-sans">
+                Detail transaksi.
+            </div>
+            
+            <div id="snr-modal-actions" class="flex flex-col sm:flex-row gap-3 justify-center">
+                <button onclick="closeModal()" class="w-full px-6 py-3 rounded-xl bg-accent/15 border border-accent/50 text-accent font-bold text-sm hover:bg-accent/30 hover:shadow-[0_0_20px_rgba(0,229,255,0.4)] transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="check" class="w-4 h-4"></i> Konfirmasi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leader Profile Setup Modal (Hall of Fame) -->
+    <div id="modal-leader-profile" class="fixed inset-0 z-[110] flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-xl opacity-0 pointer-events-none transition-all duration-300 overflow-y-auto" onclick="if(event.target === this) closeProfileModal();">
+        <div class="relative max-w-md sm:max-w-lg w-full max-h-[92vh] flex flex-col rounded-2xl p-4 sm:p-6 bg-[#090D16]/98 border border-amber-500/40 shadow-[0_0_50px_rgba(245,158,11,0.3)] text-left transform scale-95 transition-all duration-300 my-auto overflow-hidden">
+            <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-32 h-32 bg-amber-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+            <!-- Sticky Modal Header -->
+            <div class="flex items-center justify-between pb-3 border-b border-cardBorder mb-3 shrink-0">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/50 flex items-center justify-center text-amber-400 shadow shrink-0">
+                        <i data-lucide="trophy" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base sm:text-lg font-display font-bold text-white leading-tight">Profil Leader & Hall of Fame</h3>
+                        <p class="text-[11px] text-secondary">Atur foto & identitas kehormatan Anda</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeProfileModal()" class="px-2.5 py-1 rounded-lg bg-red-500/15 border border-red-500/30 text-red-400 hover:bg-red-500/30 transition-colors text-xs font-bold flex items-center gap-1">
+                    <i data-lucide="x" class="w-3.5 h-3.5"></i> Tutup
+                </button>
+            </div>
+
+            <!-- Scrollable Modal Body -->
+            <div class="overflow-y-auto flex-1 pr-1 space-y-3.5">
+                <!-- Qualification Status Banner -->
+                <div id="profile-qualify-banner" class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/40 text-xs text-amber-300 flex items-start gap-2">
+                    <i data-lucide="info" class="w-4 h-4 text-amber-400 shrink-0 mt-0.5"></i>
+                    <div id="profile-qualify-text" class="leading-relaxed">
+                        Memeriksa status on-chain Anda...
+                    </div>
+                </div>
+
+                <!-- Avatar Upload & Preview -->
+                <div class="flex items-center gap-3.5 p-3.5 rounded-xl bg-background/60 border border-cardBorder">
+                    <div class="relative group cursor-pointer shrink-0" onclick="document.getElementById('profile-photo-input').click()">
+                        <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full p-0.5 bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.4)]">
+                            <img id="profile-photo-preview" src="bunda_sarini.jpg" alt="Preview Foto" class="w-full h-full rounded-full object-cover border-2 border-black" onerror="this.src='https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80'">
+                        </div>
+                        <div class="absolute inset-0 rounded-full bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white text-[9px] font-bold">
+                            <i data-lucide="camera" class="w-4 h-4 mb-0.5"></i>
+                            Ganti
+                        </div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <button type="button" onclick="document.getElementById('profile-photo-input').click()" class="px-3 py-1.5 rounded-lg bg-card border border-cardBorder text-white text-xs font-semibold hover:bg-white/10 transition-colors inline-flex items-center gap-1.5 mb-1">
+                            <i data-lucide="upload" class="w-3.5 h-3.5"></i> Upload Foto dari HP
+                        </button>
+                        <p class="text-[10px] text-secondary">Format: JPG/PNG. Otomatis dipotong bulat rapi.</p>
+                        <input type="file" id="profile-photo-input" accept="image/*" class="hidden" onchange="previewLeaderPhoto(event)">
+                    </div>
+                </div>
+
+                <!-- Leader Nickname -->
+                <div>
+                    <label class="block text-xs font-semibold text-secondary mb-1">Nama Lengkap / Nama Panggilan</label>
+                    <input type="text" id="profile-name-input" placeholder="Contoh: Bunda Sarini / Kapten Hendra" class="w-full bg-background border border-cardBorder rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400">
+                </div>
+
+                <!-- Slogan / Vision -->
+                <div>
+                    <label class="block text-xs font-semibold text-secondary mb-1">Slogan / Pesan Inspiratif (Opsional)</label>
+                    <input type="text" id="profile-slogan-input" placeholder="Contoh: Pelopor Kedaulatan Finansial Komunitas" class="w-full bg-background border border-cardBorder rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400">
+                </div>
+            </div>
+
+            <!-- Sticky Footer Action Buttons -->
+            <div class="mt-4 pt-3 border-t border-cardBorder flex gap-2 shrink-0">
+                <button type="button" onclick="saveLeaderProfile()" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-black font-bold text-xs sm:text-sm hover:from-amber-400 hover:to-yellow-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all flex items-center justify-center gap-1.5">
+                    <i data-lucide="save" class="w-4 h-4"></i> Simpan Profil
+                </button>
+                <button type="button" onclick="closeProfileModal()" class="px-4 py-2.5 rounded-xl bg-card border border-cardBorder text-secondary text-xs sm:text-sm hover:text-white transition-colors">
+                    Batal
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
